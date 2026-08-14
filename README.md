@@ -1,6 +1,6 @@
-# Idle Fantasy
+# Idle Fantasy Premium
 
-**Set your hero to work. Close the app. Come back to loot.**
+**Set your hero to work. Close the app. Come back to *twice* the loot.**
 
 A free, open-source offline idle RPG for Android. No internet connection, no account, no ads.
 
@@ -10,6 +10,19 @@ A free, open-source offline idle RPG for Android. No internet connection, no acc
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" width="170" alt="Combat session">
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/12.png" width="170" alt="Profile">
 </p>
+
+## ✨ You're a Premium member now ✨
+
+**Congratulations! Your subscription is active.** You didn't enter a card number, you didn't sign up for anything, and no one is charging you $4.99/month — but as far as your hero is concerned, you're a whale.
+
+This is a joke fork of [Idle Fantasy](https://github.com/tristinbaker/IdleFantasy) that bakes the "premium perks" straight into the app, so it *feels* like you bought a microtransaction bundle or backed a Patreon tier that doesn't exist. No paywall, no popups begging you to upgrade, no "watch an ad to double your rewards." You just get the good stuff:
+
+- 🚀 **2× XP on everything.** The base experience rate is doubled across all 23 skills, combat, crafting, bone burying — everything. Every session pays out like a permanent XP boost is always running (and it still stacks on top of the real in-game boosts and blessings).
+- 📋 **8 job queue slots instead of 3.** Line up way more sessions before you put your phone down. Queue Master and Monument bonuses still stack on top, so you can push the queue even higher.
+
+The goal is simply to skip the grind and enjoy the "supporter" fantasy — all the smugness of a premium account, none of the transactions. Installs as a **separate app** called **Idle Fantasy+**, so you can keep the original alongside it (saves aren't shared).
+
+👉 **Grab the APK from the [Releases page](https://github.com/mjjvanderveldt/IdleFantasyPremium/releases).**
 
 ## How it works
 
