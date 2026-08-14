@@ -57,7 +57,7 @@ data class MercantileUiState(
     val snackbarMessage: String? = null,
     val anySessionActive: Boolean = false,
     val queueSize: Int = 0,
-    val maxQueueSize: Int = 3,
+    val maxQueueSize: Int = 8,
     val activeQuests: Map<String, List<QuestIndicator>> = emptyMap(),
 )
 

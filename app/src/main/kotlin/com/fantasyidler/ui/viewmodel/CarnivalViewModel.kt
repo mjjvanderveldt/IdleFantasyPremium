@@ -61,7 +61,7 @@ data class CarnivalUiState(
     val skillXp: Map<String, Long> = emptyMap(),
     val tierBonus: Float = 0f,
     val queueSize: Int = 0,
-    val maxQueueSize: Int = 3,
+    val maxQueueSize: Int = 8,
     val ownedPrizeKeys: Set<String> = emptySet(),
     val snackbarMessage: String? = null,
     val ringTossState: ActiveGameState = ActiveGameState.Ready,

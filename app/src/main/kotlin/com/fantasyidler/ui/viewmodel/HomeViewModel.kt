@@ -164,7 +164,7 @@ data class HomeUiState(
     /** Resolved, localized title name (e.g. "Master Smith"), or null if none equipped. */
     val titleName: String? = null,
     val sessionQueue: List<QueuedAction> = emptyList(),
-    val maxQueueSize: Int = 3,
+    val maxQueueSize: Int = 8,
     /** Highest Tower floor already cleared; used to preview upcoming queued floor numbers live. */
     val towerCurrentFloor: Int = 0,
     val showWhatsNew: Boolean = false,
