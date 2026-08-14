@@ -20,13 +20,13 @@ This is a joke fork of [Idle Fantasy](https://github.com/tristinbaker/IdleFantas
 - 🚀 **2× XP on everything.** The base experience rate is doubled across all 23 skills, combat, crafting, bone burying — everything. Every session pays out like a permanent XP boost is always running (and it still stacks on top of the real in-game boosts and blessings).
 - 📋 **8 job queue slots instead of 3.** Line up way more sessions before you put your phone down. Queue Master and Monument bonuses still stack on top, so you can push the queue even higher.
 
-The goal is simply to skip the grind and enjoy the "supporter" fantasy — all the smugness of a premium account, none of the transactions. Installs as a **separate app** called **Idle Fantasy+**, so you can keep the original alongside it (saves aren't shared).
+The goal is simply to skip the grind and enjoy the "supporter" fantasy — all the smugness of a premium account, none of the transactions. Installs as a **separate app** called **Idle Fantasy+**, so it lives alongside the original with its own separate progress. Already have a save in the base game? Use the game's built-in **export/import** to bring it straight over — your hero comes with you.
 
 👉 **Grab the APK from the [Releases page](https://github.com/mjjvanderveldt/IdleFantasyPremium/releases).**
 
 ## How it works
 
-Please see the [dedicated wiki](https://idlefantasy.tristinbaker.xyz/) for more detailed information.
+The gameplay is identical to the original, so the [game wiki](https://idlefantasy.tristinbaker.xyz/) is still a great reference for detailed mechanics — just remember that Idle Fantasy+ doubles the XP rates and starts you at 8 queue slots instead of the 3 the wiki describes.
 
 Pick a skill or dungeon, start a session, then put your phone down. Your hero keeps training for up to an hour while the app is closed. Come back whenever you want to collect your XP and loot, then send them back out. There is no stamina bar, no energy system, and nothing that pressures you to stay in the app.
 
@@ -83,19 +83,23 @@ Visit the traveling Carnival to play idle minigames, the Archery Range, Strongma
 
 ## Getting the app
 
-[Download F-Droid](https://f-droid.org/), and set up the official [Idle Fantasy Repository](https://github.com/tristinbaker/IdleFantasy/discussions/516)
+Idle Fantasy+ is distributed as a sideloadable APK — it's not on any app store.
 
-Or grab the latest APK from the [Releases page](https://github.com/tristinbaker/IdleFantasy/releases).
+1. Download the latest `IdleFantasyPlus-vX.Y.Z.apk` from the [Releases page](https://github.com/mjjvanderveldt/IdleFantasyPremium/releases).
+2. Open the file on your Android device and allow "install from unknown sources" if prompted.
+3. Play Protect may warn that it's from an unknown developer — that's normal for a sideloaded app; tap **Install anyway**.
+
+Requires Android 8.0 (API 26) or newer. It installs alongside the original as a separate app, so you can bring your existing save over with the in-game **export/import**.
 
 ## Translating
 
 The game is available in 18 languages translated through community contributions. Translations live in standard Android string resource files and are Weblate-compatible. See [Translating](/TRANSLATING.md) to add a new language or improve an existing one.
 
-## Contributing
+## Credits
 
-Bug reports and pull requests are welcome. Open an issue before starting large changes so the approach can be discussed first.
+Idle Fantasy+ is a fun personal mod of **[Idle Fantasy](https://github.com/tristinbaker/IdleFantasy)** by [tristinbaker](https://github.com/tristinbaker) and its contributors. All of the actual game — the 23 skills, dungeons, quests, art, and translations — is their work; this fork only turns up the XP and queue dials. It is not affiliated with or endorsed by the original project. Go support the original if you enjoy it.
 
-See the [contributors graph](https://github.com/tristinbaker/IdleFantasy/graphs/contributors) for a full list of contributors.
+Issues or ideas specific to this mod can go on this repo's [issue tracker](https://github.com/mjjvanderveldt/IdleFantasyPremium/issues).
 
 ---
 
@@ -111,19 +115,28 @@ See the [contributors graph](https://github.com/tristinbaker/IdleFantasy/graphs/
 **Notifications:** NotificationCompat  
 **Localization:** Android string resources (Weblate-compatible)
 
-No Google Play Services dependency. F-Droid compatible.
+No Google Play Services dependency.
 
 ### Building from source
 
 Requirements: Android Studio Hedgehog or newer, JDK 17+, Android SDK 35
 
 ```bash
-git clone https://github.com/tristinbaker/IdleFantasy.git
-cd IdleFantasy
+git clone https://github.com/mjjvanderveldt/IdleFantasyPremium.git
+cd IdleFantasyPremium
 ./gradlew :app:assembleDebug
 ```
 
 The debug APK will be at `app/build/outputs/apk/debug/app-debug.apk`.
+
+To build the signed release (the "Idle Fantasy+" APK with the `.premium` app id), provide your own keystore at `~/.android/idlefantasyplus-release.jks` (alias `idlefantasyplus`), then:
+
+```bash
+export IFPLUS_STORE_PASSWORD=... IFPLUS_KEY_PASSWORD=...
+./gradlew :app:assembleRelease
+```
+
+The signed APK lands at `app/build/outputs/apk/release/IdleFantasyPlus-vX.Y.Z.apk`.
 
 ## License
 
