@@ -72,7 +72,7 @@ data class SkillsUiState(
     val petFoundName: String? = null,
     val anySessionActive: Boolean = false,
     val queueSize: Int = 0,
-    val maxQueueSize: Int = 3,
+    val maxQueueSize: Int = 8,
     val miningEfficiency: Float = 1.0f,
     val woodcuttingEfficiency: Float = 1.0f,
     val fishingEfficiency: Float = 1.0f,

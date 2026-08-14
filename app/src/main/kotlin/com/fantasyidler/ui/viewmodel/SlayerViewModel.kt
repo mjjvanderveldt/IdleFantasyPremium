@@ -49,7 +49,7 @@ data class SlayerUiState(
     val taskIsStuck: Boolean = false,
     /** Current player session queue size. */
     val queueSize: Int = 0,
-    val maxQueueSize: Int = 3,
+    val maxQueueSize: Int = 8,
     val unlockedDungeons: Set<String> = emptySet(),
     val inventory: Map<String, Int> = emptyMap(),
     val skillLevels: Map<String, Int> = emptyMap(),

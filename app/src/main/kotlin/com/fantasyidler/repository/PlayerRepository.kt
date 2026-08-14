@@ -121,7 +121,8 @@ class PlayerRepository @Inject constructor(
         val player    = getOrCreatePlayer()
         val flags: PlayerFlags = json.decodeFromString(player.flags)
         val boostActive = !flags.ironman && flags.xpBoostExpiresAt > System.currentTimeMillis()
-        val scaledXp = if (efficiencyMultiplier == 1.0f) xpGained else (xpGained * efficiencyMultiplier).toLong()
+        val ratedXp = xpGained * BASE_XP_RATE_MULTIPLIER
+        val scaledXp = if (efficiencyMultiplier == 1.0f) ratedXp else (ratedXp * efficiencyMultiplier).toLong()
         val blessingMult = if (flags.ironman) 1.0f else ChurchRepository.xpMultiplier(flags)
         val baseXp = ((if (boostActive) scaledXp * 2 else scaledXp) * blessingMult).toLong()
         val prestigeLevel = if (flags.ironman) 0 else flags.skillPrestige[skillName] ?: 0
@@ -189,7 +190,7 @@ class PlayerRepository @Inject constructor(
         val available = inventory[boneKey] ?: 0
         val buried    = minOf(count, available)
         if (buried <= 0) return BuryBonesResult(0, 0L, null)
-        val xpGained  = if (buried == count) xpToAward else xpToAward * buried / count
+        val xpGained  = (if (buried == count) xpToAward else xpToAward * buried / count) * BASE_XP_RATE_MULTIPLIER
 
         val newQty = available - buried
         if (newQty <= 0) inventory.remove(boneKey) else inventory[boneKey] = newQty
@@ -392,7 +393,7 @@ class PlayerRepository @Inject constructor(
 
     suspend fun getQueue(): List<QueuedAction> = getFlags().sessionQueue
 
-    /** Base queue size (3) plus any Queue Master town building bonus, plus the Monument's Gilded stage. */
+    /** Base queue size (8) plus any Queue Master town building bonus, plus the Monument's Gilded stage. */
     fun maxQueueSize(flags: PlayerFlags): Int {
         var extraSlots = 0
         flags.townBuildingTiers.forEach { (buildingName, tier) ->
@@ -400,7 +401,7 @@ class PlayerRepository @Inject constructor(
             extraSlots += bonuses?.get("queue_slots")?.toInt() ?: 0
         }
         if (flags.monumentTier >= 4) extraSlots += 1
-        return 3 + extraSlots
+        return 8 + extraSlots
     }
 
     /** Appends an action to the queue. Returns false (no change) if the queue is already full. */
@@ -724,7 +725,8 @@ class PlayerRepository @Inject constructor(
         val awardedCapes = mutableListOf<String>()
         for ((skill, xp) in xpPerSkill) {
             val oldLevel = XpTable.levelForXp(xpMap[skill] ?: 0L)
-            val scaledXp = if (efficiencyMultiplier == 1.0f) xp else (xp * efficiencyMultiplier).toLong()
+            val ratedXp = xp * BASE_XP_RATE_MULTIPLIER
+            val scaledXp = if (efficiencyMultiplier == 1.0f) ratedXp else (ratedXp * efficiencyMultiplier).toLong()
             val petPct = if (flags.ironman) 0 else perSkillPetBoostPct[skill] ?: 0
             val withPet = if (petPct > 0) (scaledXp * (1.0 + petPct / 100.0)).toLong() else scaledXp
             val afterBoostBlessing = (withPet * boostMult * xpBlessingMult).toLong()
@@ -942,6 +944,12 @@ class PlayerRepository @Inject constructor(
     }
 
     companion object {
+        /**
+         * Global base XP multiplier applied to every source of skill XP before any other
+         * bonuses (boost/blessing/prestige/pet). Set to 2 to double the base exp rate everywhere.
+         */
+        const val BASE_XP_RATE_MULTIPLIER = 2L
+
         const val XP_BOOST_COST = 2_500_000L
         const val XP_BOOST_DURATION_MS = 48 * 3_600_000L   // 48 hours
 
@@ -994,7 +1002,7 @@ class PlayerRepository @Inject constructor(
         inventory[outputKey] = (inventory[outputKey] ?: 0) + totalOut
 
         // Add XP and recalculate level
-        val xpGained = (xpPerItem * quantity).toLong()
+        val xpGained = (xpPerItem * quantity).toLong() * BASE_XP_RATE_MULTIPLIER
         val newXp    = (xpMap[skillName] ?: 0L) + xpGained
         xpMap[skillName]    = newXp
         levels[skillName]   = XpTable.levelForXp(newXp)
