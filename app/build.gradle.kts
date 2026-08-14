@@ -26,15 +26,17 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile     = file("${System.getProperty("user.home")}/.android/defide-release.jks")
-            storePassword = System.getenv("DEFIDE_STORE_PASSWORD") ?: ""
-            keyAlias      = "defide"
-            keyPassword   = System.getenv("DEFIDE_KEY_PASSWORD") ?: ""
+            storeFile     = file("${System.getProperty("user.home")}/.android/idlefantasyplus-release.jks")
+            storePassword = System.getenv("IFPLUS_STORE_PASSWORD") ?: ""
+            keyAlias      = "idlefantasyplus"
+            keyPassword   = System.getenv("IFPLUS_KEY_PASSWORD") ?: ""
         }
     }
 
     buildTypes {
         release {
+            // "Idle Fantasy+" mod: separate app id so it installs alongside the original.
+            applicationIdSuffix = ".premium"
             isMinifyEnabled = true
             signingConfig   = signingConfigs.getByName("release")
             proguardFiles(
@@ -64,7 +66,7 @@ android {
             if (this is com.android.build.gradle.internal.api.BaseVariantOutputImpl &&
                 buildType.name == "release"
             ) {
-                outputFileName = "IdleFantasy-v$vName.apk"
+                outputFileName = "IdleFantasyPlus-v$vName.apk"
             }
         }
     }
