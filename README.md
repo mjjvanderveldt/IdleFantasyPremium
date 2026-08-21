@@ -22,7 +22,7 @@ This is a joke fork of [Idle Fantasy](https://github.com/tristinbaker/IdleFantas
 
 The goal is simply to skip the grind and enjoy the "supporter" fantasy — all the smugness of a premium account, none of the transactions. Installs as a **separate app** called **Idle Fantasy+**, so it lives alongside the original with its own separate progress. Already have a save in the base game? Use the game's built-in **export/import** to bring it straight over — your hero comes with you.
 
-👉 **Grab the APK from the [Releases page](https://github.com/mjjvanderveldt/IdleFantasyPremium/releases).**
+👉 **Grab the APK from the [Releases page](https://github.com/mjjvanderveldt/IdleFantasyPremium/releases)**, or add this repo to [Obtainium](#recommended-install-with-obtainium) to get every update automatically.
 
 ## How it works
 
@@ -83,11 +83,27 @@ Visit the traveling Carnival to play idle minigames, the Archery Range, Strongma
 
 ## Getting the app
 
-Idle Fantasy+ is distributed as a sideloadable APK — it's not on any app store.
+Idle Fantasy+ is distributed as a sideloadable APK — it's not on any app store, which also means nothing will keep it up to date for you unless you set that up. Obtainium is the easy way to do that.
+
+### Recommended: install with Obtainium
+
+[Obtainium](https://github.com/ImranR98/Obtainium) watches a project's GitHub releases and pulls updates straight from the source, so you get a notification the moment a new Idle Fantasy+ build is out instead of having to check this repo yourself.
+
+1. Install Obtainium — from [F-Droid](https://f-droid.org/packages/dev.imranr.obtainium.fdroid/) (`dev.imranr.obtainium.fdroid`), [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/dev.imranr.obtainium), or its own [GitHub releases](https://github.com/ImranR98/Obtainium/releases/latest).
+2. In Obtainium, tap **Add App** and paste this repo's URL: `https://github.com/mjjvanderveldt/IdleFantasyPremium`
+3. Tap **Add**. Obtainium reads the latest release and picks up the `IdleFantasyPlus-vX.Y.Z.apk` asset on its own — there's only one APK per release, so there's nothing to choose.
+
+After that, updates are a tap away whenever one is published. They install straight over the top and **your save is untouched**, because every release is signed with the same key.
+
+### Manual install
+
+If you'd rather not use Obtainium:
 
 1. Download the latest `IdleFantasyPlus-vX.Y.Z.apk` from the [Releases page](https://github.com/mjjvanderveldt/IdleFantasyPremium/releases).
 2. Open the file on your Android device and allow "install from unknown sources" if prompted.
 3. Play Protect may warn that it's from an unknown developer — that's normal for a sideloaded app; tap **Install anyway**.
+
+You'll need to repeat this by hand for every update, which is exactly the chore Obtainium removes.
 
 Requires Android 8.0 (API 26) or newer. It installs alongside the original as a separate app, so you can bring your existing save over with the in-game **export/import**.
 
