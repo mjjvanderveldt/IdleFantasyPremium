@@ -3,7 +3,6 @@ package com.fantasyidler.ui.viewmodel
 import com.fantasyidler.util.withAppLocale
 
 import android.content.Context
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fantasyidler.R
@@ -45,6 +44,8 @@ data class ArmoryUiState(
     val totalOwned: Int = 0,
     val totalCount: Int = 0,
     val isLoading: Boolean = true,
+    /** Heirloom item key -> accumulated item XP, for the detail sheet. */
+    val heirloomXp: Map<String, Long> = emptyMap(),
 )
 
 @HiltViewModel
@@ -67,6 +68,23 @@ class ArmoryViewModel @Inject constructor(
 
     private val sourceMap: Map<String, String> by lazy { buildSourceMap() }
 
+    // Locale collation over translated names, not the English displayName (issue #1685).
+    // Resolved and sorted once per ViewModel: doing this inside the combine lambda froze
+    // the UI for seconds, because the comparator re-resolved every name (each lookup
+    // creating a configuration context) on every comparison, on every emission (issue
+    // #1710). Safe to cache: an in-app language change recreates the activity.
+    private val sortedEquipment: List<Pair<String, EquipmentData>> by lazy {
+        val ctx = context.withAppLocale()
+        val collator = java.text.Collator.getInstance(ctx.resources.configuration.locales[0])
+        val names = gameData.equipment.keys.associateWith { GameStrings.itemName(ctx, it) }
+        gameData.equipment.entries
+            .sortedWith(
+                compareBy<Map.Entry<String, EquipmentData>> { slotSortOrder(it.value.slot) }
+                    .thenBy(collator) { names.getValue(it.key) }
+            )
+            .map { it.key to it.value }
+    }
+
     val uiState: StateFlow<ArmoryUiState> = combine(
         playerRepo.playerFlow,
         _filter,
@@ -79,14 +97,14 @@ class ArmoryViewModel @Inject constructor(
         val equippedValues = equipped.values.filterNotNull().toSet()
         val flags: PlayerFlags = json.decodeFromString(player.flags)
 
-        val allEntries = gameData.equipment.map { (key, item) ->
+        val allEntries = sortedEquipment.map { (key, item) ->
             ArmoryEntry(
                 key    = key,
                 item   = item,
                 owned  = (inventory[key] ?: 0) > 0 || key in equippedValues || key in flags.seenItemKeys,
                 source = sourceMap[key] ?: item.description.takeIf { it.isNotBlank() } ?: "Unknown source",
             )
-        }.sortedWith(compareBy({ slotSortOrder(it.item.slot) }, { it.item.displayName }))
+        }
 
         val filtered = when (filter) {
             ArmoryFilter.ALL         -> allEntries
@@ -111,27 +129,62 @@ class ArmoryViewModel @Inject constructor(
             totalOwned = allEntries.count { it.owned },
             totalCount = allEntries.size,
             isLoading  = false,
+            heirloomXp = flags.heirloomXp,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ArmoryUiState())
 
     fun setFilter(filter: ArmoryFilter) { _filter.value = filter }
     fun setSort(sort: ArmorySort) { _sort.value = sort }
 
+    private data class RecipeGate(val label: String, val races: List<String>?)
+
+    private val TIER_NUMERALS = listOf("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X")
+
+    private fun buildRecipeGates(): Map<String, RecipeGate> {
+        val gates = mutableMapOf<String, RecipeGate>()
+        gameData.prestigeTrees.forEach { (skill, tree) ->
+            tree.paths.forEach { path ->
+                path.nodes.forEachIndexed { idx, node ->
+                    val unlock = node.unlock ?: return@forEachIndexed
+                    val label = GameStrings.prestigePathName(context, skill, path.key) +
+                        " " + (TIER_NUMERALS.getOrNull(idx) ?: (idx + 1).toString())
+                    gates[unlock] = RecipeGate(label, node.races)
+                }
+            }
+        }
+        return gates
+    }
+
     private fun buildSourceMap(): Map<String, String> {
         val map = mutableMapOf<String, String>()
+        val gates = buildRecipeGates()
+
+        // Recipes gated behind an unlock_recipe prestige node show the perk (and race lock)
+        // needed to craft them instead of looking like ordinary recipes (issue #1631).
+        fun craftSource(key: String, baseRes: Int): String {
+            val base = context.withAppLocale().getString(baseRes)
+            val gate = gates[key] ?: return base
+            return if (gate.races.isNullOrEmpty())
+                context.withAppLocale().getString(R.string.armory_source_prestige_locked_any, base, gate.label)
+            else
+                context.withAppLocale().getString(
+                    R.string.armory_source_prestige_locked, base, gate.label,
+                    GameStrings.raceNames(context, gate.races),
+                )
+        }
 
         carnivalRepo.prizes.keys.forEach { key ->
             map[key] = context.withAppLocale().getString(R.string.armory_source_carnival)
         }
         gameData.smithingRecipes.keys.forEach { key ->
-            if (key !in map) map[key] = context.withAppLocale().getString(R.string.armory_source_smithing)
+            if (key !in map) map[key] = craftSource(key, R.string.armory_source_smithing)
         }
         gameData.craftingRecipes.keys.forEach { key ->
-            if (key !in map) map[key] = context.withAppLocale().getString(R.string.armory_source_crafting)
+            if (key !in map) map[key] = craftSource(key, R.string.armory_source_crafting)
         }
         gameData.fletchingRecipes.values.forEach { recipe ->
             val key = recipe.itemName
-            if (key !in map) map[key] = context.withAppLocale().getString(R.string.armory_source_fletching)
+            if (key !in map) map[key] = craftSource(key, R.string.armory_source_fletching)
         }
         // Bosses are checked before regular enemies so an item dropped by both (e.g. Ring of
         // Dragon's Might, dropped by both King Black Dragon and Abyssal Lord) resolves to the

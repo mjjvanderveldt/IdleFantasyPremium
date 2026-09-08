@@ -6,12 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.fantasyidler.R
 import com.fantasyidler.data.json.CropData
 import com.fantasyidler.data.model.FarmingPatch
+import com.fantasyidler.data.model.PlayerFlags
+import com.fantasyidler.data.model.QuestProgress
 import com.fantasyidler.data.model.Skills
 import com.fantasyidler.repository.FarmingRepository
 import com.fantasyidler.repository.GameDataRepository
 import com.fantasyidler.repository.GuildRepository
 import com.fantasyidler.repository.PlayerRepository
 import com.fantasyidler.repository.QuestRepository
+import com.fantasyidler.repository.SeasonalEventRepository
 import com.fantasyidler.repository.TownRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -82,6 +85,7 @@ class FarmingViewModel @Inject constructor(
     private val gameData: GameDataRepository,
     private val townRepo: TownRepository,
     private val questRepo: QuestRepository,
+    private val seasonalEventRepo: SeasonalEventRepository,
     private val json: Json,
 ) : ViewModel() {
 
@@ -107,7 +111,7 @@ class FarmingViewModel @Inject constructor(
         val levels: Map<String, Int>  = json.decodeFromString(player.skillLevels)
         val xpMap:  Map<String, Long> = json.decodeFromString(player.skillXp)
         val inv:    Map<String, Int>  = json.decodeFromString(player.inventory)
-        val flags = try { json.decodeFromString<com.fantasyidler.data.model.PlayerFlags>(player.flags) } catch (_: Exception) { com.fantasyidler.data.model.PlayerFlags() }
+        val flags = try { json.decodeFromString<PlayerFlags>(player.flags) } catch (_: Exception) { PlayerFlags() }
 
         val farmingLevel = levels[Skills.FARMING] ?: 1
         val farmingXp    = xpMap[Skills.FARMING]  ?: 0L
@@ -257,8 +261,8 @@ class FarmingViewModel @Inject constructor(
     fun snackbarConsumed()      = _extra.update { it.copy(snackbarMessage = null) }
 
     private fun computeQuestIndicators(
-        questProgress: List<com.fantasyidler.data.model.QuestProgress>,
-        flags: com.fantasyidler.data.model.PlayerFlags,
+        questProgress: List<QuestProgress>,
+        flags: PlayerFlags,
     ): Map<String, List<QuestIndicator>> {
         val result = mutableMapOf<String, MutableList<QuestIndicator>>()
         val progressById = questProgress.associateBy { it.questId }
@@ -266,8 +270,8 @@ class FarmingViewModel @Inject constructor(
         val guildPool = gameData.guildDailyPool.associateBy { it.id }
         val activeGuildDailyIds = flags.guildDailyIds.filter { it !in flags.guildDailyClaimed }
 
-        fun addIndicator(cropId: String, category: QuestCategory, questId: String) {
-            result.getOrPut(cropId) { mutableListOf() }.add(QuestIndicator(category, isCompletable = true, questId = questId))
+        fun addIndicator(cropId: String, category: QuestCategory, questId: String, customEmoji: String? = null) {
+            result.getOrPut(cropId) { mutableListOf() }.add(QuestIndicator(category, isCompletable = true, questId = questId, customEmoji = customEmoji))
         }
 
         for ((id, quest) in gameData.guildQuests) {
@@ -287,6 +291,14 @@ class FarmingViewModel @Inject constructor(
             val progress = flags.guildDailyProgress[id] ?: 0
             if (template.amount - progress <= 0) continue
             addIndicator(template.target, QuestCategory.GUILD_DAILY, id)
+        }
+
+        // Seasonal Event Bounties
+        val eventEmoji = seasonalEventRepo.activeEvent()?.iconEmoji ?: QuestCategory.SEASONAL.emoji
+        for (bounty in seasonalEventRepo.getActiveBounties(flags)) {
+            val task = bounty.task
+            if (task.skill != Skills.FARMING || bounty.progress >= task.amount) continue
+            addIndicator(task.target, QuestCategory.SEASONAL, task.id, eventEmoji)
         }
 
         return result

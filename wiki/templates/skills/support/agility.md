@@ -6,7 +6,7 @@ Agility reduces session time across **all skills**. Higher levels mean faster se
 
 {session_duration_table}
 
-Duration scales linearly from 60 minutes at level 1 to 40 minutes at level 99. Additionally, each agility prestige reduces the floor by about 3 mins. For more info, see {prestige_link}.
+Duration scales linearly from 60 minutes at level 1 to 40 minutes at level 99. Additionally, the agility prestige tree can lower the floor by up to 10 more minutes. For more info, see {prestige_link}.
 
 ## Courses
 

@@ -8,6 +8,7 @@ import com.fantasyidler.data.json.CookingRecipe
 import com.fantasyidler.data.json.CraftingRecipe
 import com.fantasyidler.data.json.CropData
 import com.fantasyidler.data.json.EquipmentData
+import com.fantasyidler.simulator.HeirloomStats
 import com.fantasyidler.data.json.FishData
 import com.fantasyidler.data.json.FletchingRecipe
 import com.fantasyidler.data.json.HerbloreRecipe
@@ -38,6 +39,8 @@ import com.fantasyidler.simulator.CombatSimulator
 import com.fantasyidler.repository.PlayerRepository
 import com.fantasyidler.repository.TitleRepository
 import com.fantasyidler.util.GameStrings
+import com.fantasyidler.util.formatCoins
+import com.fantasyidler.util.formatDurationMs
 import com.fantasyidler.util.stringByName
 import com.fantasyidler.util.withAppLocale
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,8 +52,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import com.fantasyidler.R
+import com.fantasyidler.data.model.OwnedPet
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 /** One row on the Profile Banners tab — either an earned banner or a locked placeholder for a known event. */
@@ -116,6 +123,8 @@ class InventoryViewModel @Inject constructor(
         val prestigeUnspentBySkill: Map<String, Int> = emptyMap(),
         val ironmanRaceLocked: Boolean = false,
         val raceChangeTokens: Int = 0,
+        /** Epoch ms of the last race change; the 24h cooldown is derived from it. */
+        val raceLastChangedAt: Long = 0L,
         /** Active prestige-node effects: skill -> effect key -> total value. */
         val prestigeEffects: Map<String, Map<String, Double>> = emptyMap(),
         val townBuildingTiers: Map<String, Int> = emptyMap(),
@@ -127,8 +136,15 @@ class InventoryViewModel @Inject constructor(
         val activeWeaponSlot: String? = null,
         /** Global "start eating" threshold as % of max HP. */
         val foodEatThresholdPct: Int = 50,
+        val foodEatOrder: String = "descending",
+        /** Heirloom item key -> accumulated item XP. */
+        val heirloomXp: Map<String, Long> = emptyMap(),
     ) {
-        val totalLevel: Int get() = skillLevels.values.sum()
+        val totalLevel: Int get() = totalLevelFrom(skillLevels)
+
+        /** [allEquipment] with heirloom entries replaced by their effective stats for this player. */
+        fun resolvedEquipment(allEquipment: Map<String, EquipmentData>): Map<String, EquipmentData> =
+            HeirloomStats.resolveAll(allEquipment, skillLevels, heirloomXp)
 
         /** Items in inventory that can go into [pickingSlot]. */
         fun candidatesFor(slot: String, allEquipment: Map<String, EquipmentData>): List<EquipmentData> {
@@ -173,7 +189,7 @@ class InventoryViewModel @Inject constructor(
             extra
         } else {
             val inventory: Map<String, Int> = json.decodeFromString(player.inventory)
-            val pets: List<com.fantasyidler.data.model.OwnedPet> = json.decodeFromString(player.pets)
+            val pets: List<OwnedPet> = json.decodeFromString(player.pets)
             val flags: PlayerFlags = json.decodeFromString(player.flags)
             extra.copy(
                 coins       = player.coins,
@@ -216,6 +232,7 @@ class InventoryViewModel @Inject constructor(
                 prestigeUnspentBySkill  = boostRepo.unspentPointsBySkill(flags),
                 ironmanRaceLocked       = flags.ironmanRaceLocked,
                 raceChangeTokens        = inventory[PlayerRepository.RACE_CHANGE_TOKEN_ITEM] ?: 0,
+                raceLastChangedAt       = flags.raceLastChangedAt,
                 prestigeEffects         = boostRepo.activeEffectsBySkill(flags),
                 townBuildingTiers       = flags.townBuildingTiers,
                 seasonalBanners         = buildSeasonalBannerDisplays(flags),
@@ -223,6 +240,8 @@ class InventoryViewModel @Inject constructor(
                 equippedTitle           = flags.equippedTitle,
                 activeWeaponSlot        = flags.activeWeaponSlot,
                 foodEatThresholdPct     = flags.foodEatThresholdPct,
+                foodEatOrder            = flags.foodEatOrder,
+                heirloomXp              = flags.heirloomXp,
                 displayName             = run {
                     val baseName = flags.characterName.ifBlank { context.withAppLocale().getString(R.string.profile_unnamed) }
                     val titleName = titleRepo.displayName(context, flags.equippedTitle, flags)
@@ -240,14 +259,14 @@ class InventoryViewModel @Inject constructor(
      */
     private fun buildSeasonalBannerDisplays(flags: PlayerFlags): List<SeasonalBannerDisplay> {
         val earnedById = flags.seasonalBannersEarned.associateBy { it.eventId }
-        val yearFormat = java.text.SimpleDateFormat("yyyy", java.util.Locale.getDefault())
+        val yearFormat = SimpleDateFormat("yyyy", Locale.getDefault())
         val allIds = gameData.seasonalEvents.keys + earnedById.keys
         return allIds.distinct().mapNotNull { id ->
             val earned = earnedById[id]
             val event = gameData.seasonalEvents[id]
             val eventName = event?.let { GameStrings.seasonalEventName(context, id, it.displayName) }
             val label = when {
-                eventName != null -> "$eventName ${yearFormat.format(java.util.Date(event.startMs))}"
+                eventName != null -> "$eventName ${yearFormat.format(Date(event.startMs))}"
                 earned    != null -> earned.displayText
                 else              -> return@mapNotNull null
             }
@@ -263,6 +282,18 @@ class InventoryViewModel @Inject constructor(
     }
 
     // ------------------------------------------------------------------
+
+    fun openAncientTreasures(all: Boolean) {
+        viewModelScope.launch {
+            val (opened, coins, gems) = playerRepo.openAncientTreasures(if (all) Int.MAX_VALUE else 1) ?: return@launch
+            val ctx = context.withAppLocale()
+            val message = if (gems.isEmpty())
+                ctx.getString(R.string.treasure_open_result, opened, coins.formatCoins())
+            else
+                ctx.getString(R.string.treasure_open_result_gems, opened, coins.formatCoins(), gems.values.sum())
+            _extra.update { it.copy(snackbarMessage = message) }
+        }
+    }
 
     fun openSlotPicker(slot: String) = _extra.update { it.copy(pickingSlot = slot) }
     fun dismissSlotPicker()          = _extra.update { it.copy(pickingSlot = null) }
@@ -286,11 +317,14 @@ class InventoryViewModel @Inject constructor(
             if (slot in EquipSlot.WEAPON_SLOTS && itemData?.twoHanded == true) {
                 current[EquipSlot.SHIELD] = null
             } else if (slot == EquipSlot.SHIELD) {
-                for (weaponSlot in EquipSlot.WEAPON_SLOTS) {
-                    val equipped = current[weaponSlot]
-                    if (equipped != null && gameData.equipment[equipped]?.twoHanded == true) {
-                        current[weaponSlot] = null
-                    }
+                // Only the active style's weapon conflicts with the shield right now; other
+                // styles keep their 2H weapons and drop the shield when switched to via
+                // applyLoadout, instead of losing their weapons here (issue #1601).
+                val activeSlot = playerRepo.getFlags().activeWeaponSlot
+                    ?: EquipSlot.WEAPON_SLOTS.firstOrNull { current[it] != null }
+                    ?: EquipSlot.WEAPON_ATK
+                if (gameData.equipment[current[activeSlot]]?.twoHanded == true) {
+                    current[activeSlot] = null
                 }
             }
             playerRepo.updateEquipped(current)
@@ -400,13 +434,27 @@ class InventoryViewModel @Inject constructor(
     private fun equipBestForSlots(slots: List<String>) {
         viewModelScope.launch {
             val state = uiState.value
-            val equipment = allEquipment
+            // Score heirlooms at their current effective stats, not their level-99
+            // potential, so a fresh heirloom can't outrank stronger gear (issue #1595).
+            val equipment = state.resolvedEquipment(allEquipment)
             val before = playerRepo.getEquipped()
             val newEquipped = before.toMutableMap()
             val skillLevels = state.skillLevels
             val activeStyle = resolveActiveStyle(playerRepo.getFlags(), before)
 
             for (slot in slots) {
+                // Weapon slots precede SHIELD in EquipSlot.ALL, so the chosen weapons are
+                // already in newEquipped: keep equip()'s two-handed/shield exclusivity,
+                // letting the best weapons win over the shield (issue #1564). Scoped to the
+                // active style's weapon: another style's 2H weapon (e.g. a bow) must not
+                // strip the shield from this style's gear (issue #1601).
+                val activeWeaponSlot = EquipSlot.WEAPON_SLOTS.firstOrNull { EquipSlot.combatStyleForSlot(it) == activeStyle }
+                if (slot == EquipSlot.SHIELD &&
+                    activeWeaponSlot != null && equipment[newEquipped[activeWeaponSlot]]?.twoHanded == true
+                ) {
+                    newEquipped[slot] = null
+                    continue
+                }
                 val best = bestItemForSlot(slot, skillLevels, state.inventory, equipment, activeStyle)
                 val currentItemKey = newEquipped[slot]
                 val currentItemValid = currentItemKey == null || run {
@@ -428,10 +476,49 @@ class InventoryViewModel @Inject constructor(
 
             playerRepo.updateEquipped(newEquipped)
             recordArmorLoadoutChanges(before, newEquipped)
+            if (EquipSlot.ARMOR_SLOTS.any { it in slots }) {
+                updateBestArmorLoadouts(newEquipped, skillLevels, state.inventory, equipment, activeStyle)
+            }
         }
     }
 
-    fun equipBestGear() = equipBestForSlots(EquipSlot.ALL)
+    /**
+     * Writes each non-active style's remembered armor loadout with the best armor scored
+     * for that style, so "Equip Best Gear" upgrades every loadout the way it already
+     * upgrades every weapon slot (issue #1565). Scored per style, not with the active
+     * style, because the armor weights differ (ranged/magic bonuses vs melee).
+     */
+    private suspend fun updateBestArmorLoadouts(
+        newEquipped: Map<String, String?>,
+        skillLevels: Map<String, Int>,
+        inventory: Map<String, Int>,
+        equipment: Map<String, EquipmentData>,
+        activeStyle: String,
+    ) {
+        val flags = playerRepo.getFlags()
+        val updated = flags.armorLoadouts.toMutableMap()
+        for (weaponSlot in EquipSlot.WEAPON_SLOTS) {
+            val style = EquipSlot.combatStyleForSlot(weaponSlot) ?: continue
+            if (style == activeStyle) continue
+            val twoHanded = equipment[newEquipped[weaponSlot]]?.twoHanded == true
+            val current = flags.armorLoadouts[style] ?: emptyMap()
+            updated[style] = EquipSlot.ARMOR_SLOTS.associateWith { slot ->
+                if (slot == EquipSlot.SHIELD && twoHanded) return@associateWith null
+                val best = bestItemForSlot(slot, skillLevels, inventory, equipment, style)
+                val currentKey  = current[slot]
+                val currentItem = currentKey?.let { equipment[it] }
+                // Same tie-keep rule as equipBestForSlots: an equal score keeps the
+                // remembered (possibly cosmetic) choice.
+                val keepCurrent = currentItem != null && (inventory[currentKey] ?: 0) > 0 &&
+                    currentItem.requirements.all { (skill, lvl) -> (skillLevels[skill] ?: 1) >= lvl } &&
+                    (best == null || slotScore(currentItem, slot, style) >= slotScore(best, slot, style))
+                if (keepCurrent) currentKey else best?.name
+            }
+        }
+        playerRepo.updateFlags(flags.copy(armorLoadouts = updated))
+    }
+
+    fun equipBestGear() = equipBestForSlots(EquipSlot.COMBAT_SLOTS)
 
     fun equipBestTools() = equipBestForSlots(EquipSlot.TOOL_SLOTS)
 
@@ -453,6 +540,13 @@ class InventoryViewModel @Inject constructor(
         viewModelScope.launch {
             val flags = playerRepo.getFlags()
             playerRepo.updateFlags(flags.copy(foodEatThresholdPct = pct.coerceIn(10, 90)))
+        }
+    }
+
+    fun setFoodEatOrder(order: String) {
+        viewModelScope.launch {
+            val flags = playerRepo.getFlags()
+            playerRepo.updateFlags(flags.copy(foodEatOrder = order))
         }
     }
 
@@ -491,6 +585,12 @@ class InventoryViewModel @Inject constructor(
                     _extra.update { it.copy(snackbarMessage = context.getString(R.string.race_change_ironman_locked)) }
                 PrestigeActionResult.CANT_AFFORD ->
                     _extra.update { it.copy(snackbarMessage = context.getString(R.string.race_change_cannot_afford)) }
+                PrestigeActionResult.COOLDOWN -> {
+                    val remaining = (uiState.value.raceLastChangedAt +
+                        PlayerRepository.RACE_CHANGE_COOLDOWN_MS - System.currentTimeMillis()).coerceAtLeast(0L)
+                    _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(
+                        R.string.race_change_cooldown_wait, remaining.formatDurationMs(context))) }
+                }
                 else -> {}
             }
         }
@@ -688,10 +788,3 @@ class InventoryViewModel @Inject constructor(
 enum class InventoryCategory {
     WEAPONS, ARMOUR, TOOLS, FOOD, RAW_FOOD, POTIONS, AMMUNITION, ORES, CONSTRUCTION, SEEDS, MATERIALS, OTHER
 }
-
-/** Ordered list of all skills for display (gathering → crafting → combat). */
-val DISPLAY_SKILL_ORDER = Skills.GATHERING + Skills.CRAFTING_SKILLS + Skills.COMBAT
-
-/** Human-readable label for an equip slot key. */
-fun slotDisplayName(context: Context, slot: String): String =
-    GameStrings.slotName(context, slot)

@@ -3,6 +3,7 @@ package com.fantasyidler.repository
 import com.fantasyidler.data.model.PlayerFlags
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.serialization.json.Json
 
 sealed class UpgradeBuildingResult {
     object Success : UpgradeBuildingResult()
@@ -209,7 +210,7 @@ class TownRepository @Inject constructor(
 
         val tierDef = building.tiers[currentTier]
         val player = playerRepo.getOrCreatePlayer()
-        val skillLevels: Map<String, Int> = kotlinx.serialization.json.Json.decodeFromString(player.skillLevels)
+        val skillLevels: Map<String, Int> = Json.decodeFromString(player.skillLevels)
         val constructionLevel = skillLevels["construction"] ?: 1
 
         if (constructionLevel < tierDef.constructionLevelRequired) {
@@ -222,7 +223,7 @@ class TownRepository @Inject constructor(
 
         if (player.coins < coinCost) return@withLock UpgradeBuildingResult.InsufficientCoins
 
-        val inventory: Map<String, Int> = kotlinx.serialization.json.Json.decodeFromString(player.inventory)
+        val inventory: Map<String, Int> = Json.decodeFromString(player.inventory)
         for ((item, qty) in materials) {
             if ((inventory[item] ?: 0) < qty) return@withLock UpgradeBuildingResult.InsufficientMaterials
         }

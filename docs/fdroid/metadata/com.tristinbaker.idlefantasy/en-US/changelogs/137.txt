@@ -1,0 +1,10 @@
+• Crafting quantity preview now includes XP boost, blessing, pet, and tool bonuses, matching the queue and what you actually receive
+• Bonuses tab rows no longer squeeze into unreadable columns on small screens
+• Session Active banner on the Skills page now translates activity names (courses, trade routes, trees, thieving targets)
+• Non-combat skill screens now show when the session queue is full instead of failing silently (thanks Michaelomh!)
+• The Profile screen now remembers which tab you were on when navigating away and back (thanks Michaelomh!)
+• Updated Italian and Russian translations (thanks to all translators!)
+• Equip Best now keeps your equipped item when an alternative only ties its stats (e.g. plateskirts vs greaves), instead of always swapping
+• The agility guild daily quick-add now queues as many sessions as the quest still needs (not just one), and always queues the quest's own course instead of your best unlocked one
+• New setting: choose the local hour when dailies, guild dailies, and weeklies reset (was fixed at 6 AM). Changing it never grants an extra reset
+• New character-switch button in the Home toolbar, shown once you have more than one character

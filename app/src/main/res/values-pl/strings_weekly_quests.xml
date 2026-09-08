@@ -46,7 +46,7 @@
     <string name="quest_weekly_demon_slayer_name">Pogromca Demonów</string>
     <string name="quest_weekly_demon_slayer_desc">Zabij 225 pomniejszych demonów w tym tygodniu.</string>
     <string name="quest_weekly_boss_hunter_name">Łowca Bossów</string>
-    <string name="quest_weekly_boss_hunter_desc">Pokonaj 10 bossów rajdowych w tym tygodniu.</string>
+    <string name="quest_weekly_boss_hunter_desc">Defeat 10 bosses this week.</string> <!-- untranslated -->
     <string name="quest_weekly_kbd_slayer_name">Zguba Smoka</string>
     <string name="quest_weekly_kbd_slayer_desc">Pokonaj Króla Czarnego Smoka 5 razy.</string>
     <string name="quest_weekly_void_champion_name">Czempion Pustki</string>

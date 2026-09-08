@@ -94,6 +94,7 @@
     <string name="equip_slot_weapon_str">武器 (筋力)</string>
     <string name="equip_slot_weapon_ranged">武器 (遠距離)</string>
     <string name="equip_slot_weapon_magic">武器 (魔法)</string>
+    <string name="equip_slot_weapon">Weapons</string> <!-- untranslated -->
     <string name="equip_slot_head">頭</string>
     <string name="equip_slot_body">胴</string>
     <string name="equip_slot_legs">脚</string>

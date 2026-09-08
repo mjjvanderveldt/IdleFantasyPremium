@@ -46,7 +46,7 @@
     <string name="quest_weekly_demon_slayer_name">Demonendoder</string>
     <string name="quest_weekly_demon_slayer_desc">Dood deze week 225 mindere demonen.</string>
     <string name="quest_weekly_boss_hunter_name">Bossjager</string>
-    <string name="quest_weekly_boss_hunter_desc">Versla deze week 10 raid-bazen.</string>
+    <string name="quest_weekly_boss_hunter_desc">Defeat 10 bosses this week.</string> <!-- untranslated -->
     <string name="quest_weekly_kbd_slayer_name">Drakenvloek</string>
     <string name="quest_weekly_kbd_slayer_desc">Versla de Koning der Zwarte Draken 5 keer.</string>
     <string name="quest_weekly_void_champion_name">Leegtekampioen</string>

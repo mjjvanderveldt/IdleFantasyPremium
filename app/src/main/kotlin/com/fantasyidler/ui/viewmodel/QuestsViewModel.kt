@@ -228,7 +228,7 @@ class QuestsViewModel @Inject constructor(
                     add(context.withAppLocale().getString(R.string.reward_part_combat_xp, totalFinalXp.formatXp()))
                 } else {
                     val b = breakdowns.getValue(quest.skill)
-                    val suffix = xpMultiplierBreakdown(b.baseXp, b.boostActive, b.blessingMult, b.prestigeXpPct)?.let { " $it" } ?: ""
+                    val suffix = xpMultiplierBreakdown(b.baseXp, b.boostFactor, b.blessingMult, b.prestigeXpPct)?.let { " $it" } ?: ""
                     add("+${b.finalXp.formatXp()} XP$suffix")
                 }
             }

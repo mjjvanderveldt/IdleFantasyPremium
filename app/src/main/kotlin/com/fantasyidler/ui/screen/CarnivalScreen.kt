@@ -86,7 +86,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
+import com.fantasyidler.data.json.EquipmentData
 import com.fantasyidler.simulator.CarnivalSimulator
+import com.fantasyidler.ui.viewmodel.AppraisalPair
 import com.fantasyidler.ui.viewmodel.CarnivalUiState
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -460,7 +462,7 @@ private fun RingTossCard(gameState: ActiveGameState, difficulty: Difficulty, vie
                             drawStopIndicator = {},
                             progress         = { position },
                             modifier         = Modifier.fillMaxWidth().height(24.dp).clip(RoundedCornerShape(4.dp)),
-                            color            = if (inZone) Color(0xFFF44336) else MaterialTheme.colorScheme.primary,
+                            color            = if (inZone) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
                             trackColor       = MaterialTheme.colorScheme.surfaceVariant,
                         )
                         // Drawn after the indicator so its opaque track doesn't hide this marker.
@@ -552,7 +554,7 @@ private fun HammerStrikeCard(gameState: ActiveGameState, difficulty: Difficulty,
                         progress   = { power },
                         modifier   = Modifier.fillMaxWidth().height(28.dp).clip(RoundedCornerShape(4.dp)),
                         color      = when {
-                            power >= perfectThreshold -> Color(0xFFF44336)
+                            power >= perfectThreshold -> MaterialTheme.colorScheme.error
                             power >= goodThreshold    -> MaterialTheme.colorScheme.primary
                             else                      -> MaterialTheme.colorScheme.primary
                         },
@@ -561,7 +563,7 @@ private fun HammerStrikeCard(gameState: ActiveGameState, difficulty: Difficulty,
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                         Text(stringResource(R.string.carnival_hammer_miss_zone), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text(stringResource(R.string.carnival_hammer_good_zone), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-                        Text(stringResource(R.string.carnival_hammer_perfect_zone), style = MaterialTheme.typography.bodySmall, color = Color(0xFFF44336))
+                        Text(stringResource(R.string.carnival_hammer_perfect_zone), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
                     }
                     Button(
                         onClick  = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); viewModel.submitHammerStrike(power) },
@@ -697,7 +699,7 @@ private fun ItemAppraisalCard(
     gameState: ActiveGameState,
     difficulty: Difficulty,
     quad: AppraisalQuad?,
-    pair: com.fantasyidler.ui.viewmodel.AppraisalPair?,
+    pair: AppraisalPair?,
     viewModel: CarnivalViewModel,
 ) {
     GameCard(R.string.carnival_item_appraisal, R.string.carnival_active_appraisal_desc) {
@@ -984,7 +986,7 @@ private fun HigherOrLowerCard(gameState: ActiveGameState, difficulty: Difficulty
 
 @Composable
 private fun PrizeShopTab(
-    state: com.fantasyidler.ui.viewmodel.CarnivalUiState,
+    state: CarnivalUiState,
     viewModel: CarnivalViewModel,
 ) {
     Column(
@@ -1012,7 +1014,7 @@ private fun PrizeRow(
     prize: CarnivalPrize,
     tickets: Int,
     alreadyOwned: Boolean,
-    equipData: com.fantasyidler.data.json.EquipmentData?,
+    equipData: EquipmentData?,
     onRedeem: () -> Unit,
 ) {
     val context = LocalContext.current

@@ -4,7 +4,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-from docs.gen.repo_docs import TEMPLATES, ASSETS, ROOT, METADATA_PATH, RESOURCES
+import yaml
+
+from docs.gen.repo_docs import TEMPLATES, ASSETS, ROOT, FASTLANE_META_PATH, RESOURCES, METADATA_FILE
 
 
 @dataclass
@@ -38,7 +40,8 @@ DOCUMENT_DIRECTORY: dict[str, DocInfo] = {}
 def add_static_docs():
     DOCUMENT_DIRECTORY.update({
         "readme": DocInfo("Readme", ROOT / "README.md", gen_readme),
-        "fastlane_desc": DocInfo("Fastlane Description", METADATA_PATH / "full_description.txt", gen_fastlane_desc)
+        "fastlane_desc": DocInfo("Fastlane Description", FASTLANE_META_PATH / "full_description.txt", gen_fastlane_desc),
+        "security": DocInfo("Security", ROOT / "SECURITY.md", gen_security),
     })
 
 # ---------------------------------------------------------------------------
@@ -119,6 +122,11 @@ def make_latex_safe(content: str, escape_levels: int = 1) -> str:
     return re.sub(r"\$([^$]+)\$", _escape_math, content)
 
 
+def get_current_version() -> str:
+    with open(METADATA_FILE) as f:
+        return yaml.safe_load(f)["CurrentVersion"]
+
+
 # ---------------------------------------------------------------------------
 # Page Creation
 # ---------------------------------------------------------------------------
@@ -141,6 +149,12 @@ def gen_fastlane_desc() -> str:
         dungeon_count=len([x for x in (ASSETS / "dungeons").glob("*.json")]),
         quest_count=len(load(ASSETS / "quests.json")),
         language_count=len([x for x in RESOURCES.glob("values*/")]),
+    )
+
+
+def gen_security() -> str:
+    return get_template("security.md").format(
+        version=get_current_version()
     )
 
 

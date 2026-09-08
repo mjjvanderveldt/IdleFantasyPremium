@@ -48,6 +48,13 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
     }
 }
 
+val MIGRATION_6_7 = object : Migration(6, 7) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE skill_sessions ADD COLUMN start_elapsed_ms INTEGER")
+        db.execSQL("ALTER TABLE skill_sessions ADD COLUMN start_boot_count INTEGER")
+    }
+}
+
 @Database(
     entities = [
         Player::class,
@@ -58,7 +65,7 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
         ArenaRecord::class,
         CustomTheme::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {

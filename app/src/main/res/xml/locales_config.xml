@@ -17,4 +17,7 @@
     <locale android:name="zh-CN"/>
     <locale android:name="pl"/>
     <locale android:name="lt"/>
+    <locale android:name="he"/>
+    <locale android:name="ar"/>
+    <locale android:name="ca"/>
 </locale-config>

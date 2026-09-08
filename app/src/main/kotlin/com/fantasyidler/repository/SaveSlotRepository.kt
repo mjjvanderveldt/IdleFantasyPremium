@@ -1,6 +1,7 @@
 package com.fantasyidler.repository
 
 import android.content.Context
+import android.os.SystemClock
 import com.fantasyidler.data.model.PlayerExport
 import com.fantasyidler.data.model.PlayerFlags
 import com.fantasyidler.data.model.SkillSessionExport
@@ -8,6 +9,8 @@ import com.fantasyidler.data.model.toExport
 import com.fantasyidler.data.model.toSkillSession
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -108,12 +111,16 @@ class SaveSlotRepository @Inject constructor(
         val now = System.currentTimeMillis()
         val exportedAt = export.exportedAt.takeIf { it > 0L } ?: now
         export.sessions.forEach { s ->
-            val session = if (s.completed || !freezeSessionTimers) {
+            val restored = if (s.completed || !freezeSessionTimers) {
                 s.toSkillSession()
             } else {
                 val remainingMs = (s.endsAt - exportedAt).coerceAtLeast(0L)
                 s.toSkillSession().copy(endsAt = now + remainingMs)
             }
+            val session = if (s.completed) restored else restored.copy(
+                startElapsedMs = SystemClock.elapsedRealtime() - (System.currentTimeMillis() - s.startedAt),
+                startBootCount = sessionRepo.currentBootCount(),
+            )
             try {
                 sessionRepo.insertSession(session)
             } catch (_: Exception) {
@@ -165,10 +172,24 @@ class SaveSlotRepository @Inject constructor(
      * the fresh flags have characterSetupDone=false, so the Home screen shows the setup sheet.
      * Returns true if the loaded slot held an edited ironman save that was demoted.
      */
+    /**
+     * Fires after every successful character switch. ViewModels caching per-character UI
+     * selections (active spell, arrow, potion, weapon style) must reset on it, or the old
+     * character's picks override the new character's saved loadout (issue: spell leaking
+     * across save slots).
+     */
+    private val _switchEvents = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val switchEvents: SharedFlow<Unit> = _switchEvents
+
     suspend fun switchTo(targetSlot: Int, createIronman: Boolean = false): Boolean = withContext(Dispatchers.IO) {
         require(targetSlot in 1..MAX_SLOTS) { "Invalid slot $targetSlot" }
         val current = globalStateRepo.getActiveSaveSlot()
         if (targetSlot == current) return@withContext false
+
+        // Back up the outgoing character to its own external file while it is still live,
+        // so an inactive character always has a fresh backup to restore from (issue #1640:
+        // a cleared app storage lost the character whose backup never fired while active).
+        backupScheduler.performBackup(playerRepo)
 
         snapshotCurrent(current)
 
@@ -185,6 +206,7 @@ class SaveSlotRepository @Inject constructor(
             rescheduleAlarmsFromFlags()
         }
         globalStateRepo.setActiveSaveSlot(targetSlot)
+        _switchEvents.tryEmit(Unit)
         ironmanDemoted
     }
 

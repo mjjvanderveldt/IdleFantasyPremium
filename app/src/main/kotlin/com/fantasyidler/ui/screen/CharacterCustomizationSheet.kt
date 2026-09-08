@@ -2,6 +2,7 @@ package com.fantasyidler.ui.screen
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -52,6 +53,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalContext
+import com.fantasyidler.util.formatDurationMs
 import com.fantasyidler.util.GameStrings
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -148,7 +150,7 @@ private fun SpriteThumbnail(
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable(onClick = onClick),
     ) {
-        androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
             // Hair/beard art is generic across races (unlike the body), so its crop
             // window never needs the race-specific yOff shift.
             bodyBmp?.let    { blitSprite(it, yOff = yOff) }
@@ -180,7 +182,7 @@ private fun EyeThumbnail(
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable(onClick = onClick),
     ) {
-        androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
             // Eye art is generic across races (unlike the body), so its crop window
             // never needs the race-specific yOff shift.
             bodyBmp?.let { blitSprite(it, yOff = yOff) }
@@ -248,6 +250,7 @@ fun CharacterCustomizationSheet(
     ironman:          Boolean = false,
     ironmanRaceLocked: Boolean = false,
     raceChangeTokens: Int = 0,
+    raceCooldownRemainingMs: Long = 0L,
     coins:            Long = 0L,
     raceProficiencies: Map<String, List<String>> = emptyMap(),
     initialSkin:      Int,
@@ -529,8 +532,9 @@ fun CharacterCustomizationSheet(
             }
 
             if (showRaceConfirm) {
-                val canToken = raceChangeTokens > 0
-                val canCoins = coins >= 10_000_000L
+                val onCooldown = !ironman && raceCooldownRemainingMs > 0
+                val canToken = raceChangeTokens > 0 && !onCooldown
+                val canCoins = coins >= 10_000_000L && !onCooldown
                 AlertDialog(
                     onDismissRequest = { showRaceConfirm = false },
                     title = { Text(stringResource(R.string.race_change_confirm_title)) },
@@ -542,6 +546,14 @@ fun CharacterCustomizationSheet(
                                 Text(
                                     text  = stringResource(R.string.race_change_ironman_once),
                                     color = MaterialTheme.colorScheme.tertiary,
+                                )
+                            } else if (onCooldown) {
+                                Spacer(Modifier.height(8.dp))
+                                Text(
+                                    text  = stringResource(
+                                        R.string.race_change_cooldown_wait,
+                                        raceCooldownRemainingMs.formatDurationMs(LocalContext.current)),
+                                    color = MaterialTheme.colorScheme.error,
                                 )
                             } else if (!canToken && !canCoins) {
                                 Spacer(Modifier.height(8.dp))

@@ -9,6 +9,7 @@ import com.fantasyidler.repository.GameDataRepository
 import com.fantasyidler.repository.PlayerRepository
 import com.fantasyidler.repository.QuestRepository
 import com.fantasyidler.repository.WeeklyQuestRepository
+import com.fantasyidler.simulator.PrestigeBoosts
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -53,10 +54,10 @@ class NavBadgeViewModel @Inject constructor(
         .map { player ->
             if (player == null) return@map emptySet()
             val flags: PlayerFlags = json.decodeFromString(player.flags)
-            if (flags.ironman) return@map emptySet()
             val levels: Map<String, Int> = json.decodeFromString(player.skillLevels)
             Skills.ALL.filterTo(mutableSetOf()) { skill ->
-                (levels[skill] ?: 1) >= 99 && (flags.skillPrestige[skill] ?: 0) < 3
+                (levels[skill] ?: 1) >= 99 &&
+                    PrestigeBoosts.prestigeHasReward(gameData.prestigeTrees, flags, skill)
             }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptySet())

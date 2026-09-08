@@ -46,19 +46,19 @@
     <string name="quest_weekly_demon_slayer_name">Dämonentöter</string>
     <string name="quest_weekly_demon_slayer_desc">Tötet diese Woche 225 Kleine Dämonen.</string>
     <string name="quest_weekly_boss_hunter_name">Jagd auf die Endgegner</string>
-    <string name="quest_weekly_boss_hunter_desc">Besiegt diese Woche 10 Endgegner.</string>
+    <string name="quest_weekly_boss_hunter_desc">Defeat 10 bosses this week.</string> <!-- untranslated -->
     <string name="quest_weekly_kbd_slayer_name">Drachenfluch</string>
     <string name="quest_weekly_kbd_slayer_desc">Besiegt den König der Schwarzdrachen 5-mal.</string>
     <string name="quest_weekly_void_champion_name">Leerenchampion</string>
     <string name="quest_weekly_void_champion_desc">Besiegt den Leerenherrscher 5-mal.</string>
     <string name="quest_weekly_slayer_novice_name">Auftragnehmer</string>
-    <string name="quest_weekly_slayer_novice_desc">Schließt diese Woche 15 Trophäensammler-Aufträge ab.</string>
+    <string name="quest_weekly_slayer_novice_desc">Schließt diese Woche 15 Trophäenjäger-Aufträge ab.</string>
     <string name="quest_weekly_slayer_master_name">Jäger-Champion</string>
-    <string name="quest_weekly_slayer_master_desc">Schließt diese Woche 30 Trophäensammler-Aufträge ab.</string>
+    <string name="quest_weekly_slayer_master_desc">Schließt diese Woche 30 Trophäenjäger-Aufträge ab.</string>
     <string name="quest_weekly_devout_name">Ergeben</string>
     <string name="quest_weekly_devout_desc">Vergrabt diese Woche 450 Knochen.</string>
     <string name="quest_weekly_farmer_name">Ernte der Saison</string>
-    <string name="quest_weekly_farmer_desc">Erntet diese Woche 30mal Feldfrüchte.</string>
+    <string name="quest_weekly_farmer_desc">Erntet diese Woche 30 Feldfrüchte.</string>
     <string name="quest_weekly_guild_supporter_name">Gildenförderer</string>
     <string name="quest_weekly_guild_supporter_desc">Schließt diese Woche 20 tägliche Gildenaufträge ab.</string>
 </resources>

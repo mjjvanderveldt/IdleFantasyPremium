@@ -50,6 +50,7 @@ class SessionAlarmReceiver : BroadcastReceiver() {
     internal suspend fun processSessionAlarm(sessionId: String, skillDisplayName: String) {
         val session = sessionRepository.getSession(sessionId)
         if (session == null || session.completed) return
+        if (!sessionRepository.hasTrustedClock(session)) return
 
         sessionRepository.markCompleted(sessionId)
         // The intent extra carries the English name baked in at scheduling time; resolve

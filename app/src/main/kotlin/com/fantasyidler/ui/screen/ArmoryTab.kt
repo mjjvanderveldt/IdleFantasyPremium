@@ -1,5 +1,6 @@
 package com.fantasyidler.ui.screen
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -45,6 +46,9 @@ import com.fantasyidler.ui.viewmodel.ArmoryFilter
 import com.fantasyidler.ui.viewmodel.ArmorySort
 import com.fantasyidler.ui.viewmodel.ArmoryViewModel
 import com.fantasyidler.ui.theme.ScaledSheetContent
+import com.fantasyidler.simulator.HeirloomStats
+import com.fantasyidler.simulator.XpTable
+import com.fantasyidler.ui.components.CompletionProgressBar
 import com.fantasyidler.util.GameStrings
 
 private val COMBAT_CAPE_SKILLS = setOf(
@@ -61,10 +65,10 @@ fun ArmoryTab(viewModel: ArmoryViewModel = hiltViewModel()) {
 
     Column(Modifier.fillMaxSize()) {
         if (!state.isLoading && state.totalCount > 0) {
-            CollectionProgressBar(
-                obtained = state.totalOwned,
-                total    = state.totalCount,
-                label    = stringResource(R.string.armory_progress_bar),
+            CompletionProgressBar(
+                completed = state.totalOwned,
+                total = state.totalCount,
+                label = stringResource(R.string.armory_progress_bar)
             )
         }
         Row(
@@ -96,7 +100,8 @@ fun ArmoryTab(viewModel: ArmoryViewModel = hiltViewModel()) {
             }
         }
 
-        val grouped = buildSlotGroups(state.entries)
+        val groupContext = LocalContext.current
+        val grouped = remember(state.entries) { buildSlotGroups(groupContext, state.entries) }
         val listState = rememberLazyListState()
         LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
             grouped.forEach { (groupName, entries) ->
@@ -124,7 +129,7 @@ fun ArmoryTab(viewModel: ArmoryViewModel = hiltViewModel()) {
             sheetState       = sheetState,
         ) {
             ScaledSheetContent {
-            ArmoryDetailContent(entry = entry)
+            ArmoryDetailContent(entry = entry, heirloomXp = state.heirloomXp)
             }
         }
     }
@@ -179,7 +184,7 @@ private fun ArmoryRow(entry: ArmoryEntry, onClick: () -> Unit) {
 // ---------------------------------------------------------------------------
 
 @Composable
-private fun ArmoryDetailContent(entry: ArmoryEntry) {
+private fun ArmoryDetailContent(entry: ArmoryEntry, heirloomXp: Map<String, Long>) {
     val context = LocalContext.current
     val item     = entry.item
     val dimmed   = !entry.owned
@@ -201,7 +206,7 @@ private fun ArmoryDetailContent(entry: ArmoryEntry) {
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                text  = slotLabel(item.slot),
+                text  = GameStrings.slotName(context, item.slot),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
@@ -221,6 +226,34 @@ private fun ArmoryDetailContent(entry: ArmoryEntry) {
                 )
             }
             Spacer(Modifier.height(16.dp))
+        }
+
+        if (item.heirloomSkill != null) {
+            item {
+                ArmorySectionHeader(stringResource(R.string.heirloom_section_title))
+                Spacer(Modifier.height(4.dp))
+                if (entry.owned) {
+                    val xp  = heirloomXp[item.name] ?: 0L
+                    val lvl = HeirloomStats.level(xp)
+                    Text(
+                        text       = stringResource(R.string.heirloom_level_label, lvl),
+                        style      = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium,
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    LinearProgressIndicator(
+                        progress = { XpTable.progressFraction(xp) },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
+                Text(
+                    text  = stringResource(R.string.heirloom_desc, GameStrings.skillName(context, item.heirloomSkill!!)),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(16.dp))
+            }
         }
 
         if (reqRows.isNotEmpty()) {
@@ -366,74 +399,15 @@ private fun armoryStatRows(item: EquipmentData): List<Pair<String, String>> {
     return rows
 }
 
-@Composable
-private fun buildSlotGroups(entries: List<ArmoryEntry>): List<Pair<String, List<ArmoryEntry>>> {
+private fun buildSlotGroups(context: Context, entries: List<ArmoryEntry>): List<Pair<String, List<ArmoryEntry>>> {
+    // Resolve each label once per distinct slot: a per-entry slotName lookup creates a
+    // configuration context every call, which froze the armory list (issue #1710).
+    val labels = entries.map { it.item.slot }.distinct().associateWith { GameStrings.slotName(context, it) }
     val grouped = linkedMapOf<String, MutableList<ArmoryEntry>>()
     entries.forEach { entry ->
-        val group = slotLabel(entry.item.slot)
-        grouped.getOrPut(group) { mutableListOf() }.add(entry)
+        grouped.getOrPut(labels.getValue(entry.item.slot)) { mutableListOf() }.add(entry)
     }
     return grouped.map { it.key to it.value }
-}
-
-@Composable
-private fun slotLabel(slot: String): String = when (slot) {
-    "weapon"      -> stringResource(R.string.profile_weapons)
-    "head"        -> stringResource(R.string.equip_slot_head)
-    "body"        -> stringResource(R.string.equip_slot_body)
-    "legs"        -> stringResource(R.string.equip_slot_legs)
-    "boots"       -> stringResource(R.string.equip_slot_boots)
-    "shield"      -> stringResource(R.string.equip_slot_shield)
-    "cape"        -> stringResource(R.string.equip_slot_cape)
-    "necklace"    -> stringResource(R.string.equip_slot_necklace)
-    "ring"        -> stringResource(R.string.equip_slot_ring)
-    "pickaxe"     -> stringResource(R.string.equip_slot_pickaxe)
-    "axe"         -> stringResource(R.string.equip_slot_axe)
-    "fishing_rod" -> stringResource(R.string.equip_slot_fishing_rod)
-    "hoe"         -> stringResource(R.string.equip_slot_hoe)
-    "frying_pan"  -> stringResource(R.string.equip_slot_frying_pan)
-    "grappling_hook" -> stringResource(R.string.equip_slot_grappling_hook)
-    "hammer"      -> stringResource(R.string.equip_slot_hammer)
-    "tinderbox"   -> stringResource(R.string.equip_slot_tinderbox)
-    "lockpick"    -> stringResource(R.string.equip_slot_lockpick)
-    else          -> slot.replaceFirstChar { it.uppercase() }
-}
-
-@Composable
-private fun CollectionProgressBar(obtained: Int, total: Int, label: String) {
-    val fraction = if (total > 0) obtained.toFloat() / total else 0f
-    val pct = (fraction * 100).toInt()
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(
-                text  = "$obtained / $total $label",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                text  = "$pct%",
-                style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
-        Spacer(Modifier.height(4.dp))
-        LinearProgressIndicator(
-            gapSize = 0.dp,
-            drawStopIndicator = {},
-            progress = { fraction },
-            modifier = Modifier.fillMaxWidth(),
-            color    = MaterialTheme.colorScheme.primary,
-            trackColor = MaterialTheme.colorScheme.surfaceVariant,
-        )
-    }
 }
 
 @Composable

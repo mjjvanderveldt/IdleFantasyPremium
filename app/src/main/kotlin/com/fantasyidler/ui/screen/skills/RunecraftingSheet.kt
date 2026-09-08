@@ -1,4 +1,4 @@
-package com.fantasyidler.ui.screen
+package com.fantasyidler.ui.screen.skills
 
 
 import androidx.compose.foundation.clickable
@@ -47,10 +47,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import com.fantasyidler.ui.viewmodel.SheetState
 import com.fantasyidler.simulator.XpTable
+import com.fantasyidler.ui.screen.QtyQuickButtons
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.formatDurationMs
 import com.fantasyidler.ui.viewmodel.QuestFillSuggestion
@@ -156,7 +158,7 @@ internal fun RunecraftingSheet(
                         ) {
                             Column(Modifier.weight(1f)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(GameStrings.itemName(context, key), style = MaterialTheme.typography.bodyLarge)
+                                    Text(GameStrings.itemName(context, key), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f, fill = false))
                                     val questIndicators = activeQuests["${Skills.RUNECRAFTING}:$key"] ?: emptyList()
                                     if (questIndicators.isNotEmpty()) {
                                         QuestIndicatorIcons(questIndicators)
@@ -205,7 +207,7 @@ internal fun RunecraftingSheet(
                 // ── Quantity picker ──────────────────────────────────────────
             val inventoryMax = sheet.essenceQty
             val maxQty = minOf(inventoryMax, tierMaxQty)
-            var qty by remember(selectedKey) { androidx.compose.runtime.mutableIntStateOf(maxQty.coerceAtLeast(1)) }
+            var qty by remember(selectedKey) { mutableIntStateOf(maxQty.coerceAtLeast(1)) }
             var textValue by remember(selectedKey) { mutableStateOf(maxQty.coerceAtLeast(1).toString()) }
 
             TextButton(

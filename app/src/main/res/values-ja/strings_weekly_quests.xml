@@ -46,7 +46,7 @@
     <string name="quest_weekly_demon_slayer_name">デーモンスレイヤー</string>
     <string name="quest_weekly_demon_slayer_desc">今週中に悪魔を225体倒す。</string>
     <string name="quest_weekly_boss_hunter_name">ボスハンター</string>
-    <string name="quest_weekly_boss_hunter_desc">今週中にレイドボスを10体倒す。</string>
+    <string name="quest_weekly_boss_hunter_desc">Defeat 10 bosses this week.</string> <!-- untranslated -->
     <string name="quest_weekly_kbd_slayer_name">ドラゴンの天敵</string>
     <string name="quest_weekly_kbd_slayer_desc">キングブラックドラゴンを5回倒す。</string>
     <string name="quest_weekly_void_champion_name">虚空の勇者</string>

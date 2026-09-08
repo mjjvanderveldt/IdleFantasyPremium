@@ -1,8 +1,11 @@
 package com.fantasyidler.ui.screen
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,7 +18,9 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -25,6 +30,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -36,11 +42,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,6 +68,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -63,6 +78,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
@@ -75,14 +91,18 @@ import androidx.compose.ui.input.pointer.positionChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fantasyidler.R
 import com.fantasyidler.data.json.HouseSpriteRect
 import com.fantasyidler.data.json.HouseTileDef
 import com.fantasyidler.data.model.HouseRoom
+import com.fantasyidler.repository.HouseBillLine
 import com.fantasyidler.repository.HouseDirection
 import com.fantasyidler.repository.HouseRepository
 import com.fantasyidler.ui.viewmodel.HouseEditMode
@@ -91,13 +111,19 @@ import com.fantasyidler.ui.viewmodel.HouseViewModel
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.drawableByName
 import com.fantasyidler.util.formatCoins
+import com.fantasyidler.util.formatXp
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.content.FileProvider
+import com.fantasyidler.data.json.HouseCostTier
+import com.fantasyidler.data.json.HouseTilesData
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.abs
 import kotlin.math.floor
 
 // ---------------------------------------------------------------------------
@@ -154,7 +180,7 @@ private fun residentSpot(state: HouseUiState, tileDef: (String) -> HouseTileDef?
             for (cx in room.x until room.x + room.w)
                 for (cy in room.y until room.y + room.h) add(cx to cy)
         }.sortedBy { (cx, cy) ->
-            kotlin.math.abs(cx + 0.5f - centerX) + kotlin.math.abs(cy + 0.5f - centerY)
+            abs(cx + 0.5f - centerX) + abs(cy + 0.5f - centerY)
         }
         for ((cx, cy) in cells) {
             val hx = cx * SUBC
@@ -210,7 +236,7 @@ private fun DrawScope.drawResident(context: Context, state: HouseUiState, cell: 
 private fun shareHouseImage(
     context: Context,
     state: HouseUiState,
-    tiles: com.fantasyidler.data.json.HouseTilesData,
+    tiles: HouseTilesData,
     atlas: ImageBitmap,
     tileDef: (String) -> HouseTileDef?,
 ) {
@@ -220,7 +246,7 @@ private fun shareHouseImage(
     val image = ImageBitmap(w, h)
     CanvasDrawScope().draw(
         Density(1f), LayoutDirection.Ltr,
-        androidx.compose.ui.graphics.Canvas(image),
+        Canvas(image),
         Size(w.toFloat(), h.toFloat()),
     ) {
         drawHouseWorld(state, tiles, atlas, context, tileDef,
@@ -230,15 +256,15 @@ private fun shareHouseImage(
     val dir = File(context.cacheDir, "images").apply { mkdirs() }
     val file = File(dir, "my_house.png")
     FileOutputStream(file).use {
-        image.asAndroidBitmap().compress(android.graphics.Bitmap.CompressFormat.PNG, 100, it)
+        image.asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it)
     }
     val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-    val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+    val intent = Intent(Intent.ACTION_SEND).apply {
         type = "image/png"
-        putExtra(android.content.Intent.EXTRA_STREAM, uri)
-        addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        putExtra(Intent.EXTRA_STREAM, uri)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
-    context.startActivity(android.content.Intent.createChooser(intent, null))
+    context.startActivity(Intent.createChooser(intent, null))
 }
 
 // ---------------------------------------------------------------------------
@@ -254,7 +280,7 @@ fun HouseScreen(
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     val atlas = remember { loadHouseAtlas(context) }
-    var editing by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+    val editing = state.editing
 
     AppBannerEffect(state.snackbarMessage, viewModel::snackbarConsumed)
 
@@ -272,8 +298,7 @@ fun HouseScreen(
                     if (atlas != null && !state.isLoading) {
                         if (editing) {
                             TextButton(onClick = {
-                                viewModel.cancelMode()
-                                editing = false
+                                viewModel.setEditing(false)
                             }) { Text(stringResource(R.string.house_done)) }
                         } else {
                             IconButton(onClick = {
@@ -283,7 +308,7 @@ fun HouseScreen(
                             }) {
                                 Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.house_share))
                             }
-                            TextButton(onClick = { editing = true }) {
+                            TextButton(onClick = { viewModel.setEditing(true) }) {
                                 Text(stringResource(R.string.house_edit))
                             }
                         }
@@ -299,19 +324,27 @@ fun HouseScreen(
             return@Scaffold
         }
 
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState()),
-        ) {
-            if (editing) HouseHeaderRow(state, viewModel)
-            HouseCanvas(state, viewModel, atlas, editing)
-            if (editing) {
-                ModeBanner(state, viewModel)
-                HousePalette(state, viewModel, atlas)
+        BoxWithConstraints(Modifier.fillMaxSize().padding(padding)) {
+            // Cap the canvas by the viewport height: width-driven sizing let it tower past
+            // the fold on landscape tablets, where its drag handlers covered the whole
+            // viewport and swallowed every scroll gesture (issue #1742).
+            val heightBoundWidth = maxHeight * GRID.toFloat() / CANVAS_ROWS
+            val canvasMaxWidth = if (maxWidth < heightBoundWidth) maxWidth else heightBoundWidth
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                if (editing) HouseHeaderRow(state, viewModel)
+                HouseCanvas(state, viewModel, atlas, editing, canvasMaxWidth)
+                if (editing) {
+                    ModeBanner(state, viewModel)
+                    BillBar(state, viewModel)
+                    HousePalette(state, viewModel, atlas)
+                }
+                Spacer(Modifier.height(24.dp))
             }
-            Spacer(Modifier.height(24.dp))
         }
     }
 
@@ -323,6 +356,29 @@ fun HouseScreen(
     }
     if (state.groundPickerOpen && atlas != null) {
         GroundSheet(state, viewModel, atlas)
+    }
+    if (state.billSheetOpen) {
+        BillSheet(state, viewModel)
+    }
+    if (state.blueprintSheetOpen) {
+        BlueprintSheet(state, viewModel)
+    }
+    if (state.discardConfirmOpen) {
+        AlertDialog(
+            onDismissRequest = { viewModel.setDiscardConfirmOpen(false) },
+            title = { Text(stringResource(R.string.house_discard_confirm_title)) },
+            text = { Text(stringResource(R.string.house_discard_confirm_message)) },
+            confirmButton = {
+                TextButton(onClick = viewModel::discardDraft) {
+                    Text(stringResource(R.string.house_discard_build), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.setDiscardConfirmOpen(false) }) {
+                    Text(stringResource(R.string.btn_cancel))
+                }
+            },
+        )
     }
 }
 
@@ -354,13 +410,11 @@ private fun HouseHeaderRow(state: HouseUiState, viewModel: HouseViewModel) {
         }
         if (nextRoom != null) {
             val cost = viewModel.discountedTier(nextRoom, 1, state)
-            OutlinedButton(
-                onClick = { viewModel.enterPlaceRoom() },
-                enabled = state.constructionLevel >= nextRoom.level,
-            ) {
+            OutlinedButton(onClick = { viewModel.enterPlaceRoom() }) {
                 Text(
                     if (state.constructionLevel >= nextRoom.level)
-                        stringResource(R.string.house_add_room, cost.coins.formatCoins())
+                        stringResource(R.string.house_add_room,
+                            stringResource(R.string.house_cost_coins, cost.coins.formatCoins()))
                     else stringResource(R.string.house_add_room_locked, nextRoom.level)
                 )
             }
@@ -378,7 +432,11 @@ private fun ModeBanner(state: HouseUiState, viewModel: HouseViewModel) {
         is HouseEditMode.MoveRoom -> stringResource(R.string.house_mode_move_room)
         HouseEditMode.Select -> return
     }
-    val costLine = (mode as? HouseEditMode.PlaceItem)?.let { viewModel.costSummary(it.key, state) }
+    val costLine = when (mode) {
+        is HouseEditMode.PlaceItem -> viewModel.costSummary(mode.key, state)
+        HouseEditMode.PlaceRoom -> viewModel.roomCostSummary(state)
+        else -> null
+    }
     Surface(
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.secondaryContainer,
@@ -408,11 +466,296 @@ private fun ModeBanner(state: HouseUiState, viewModel: HouseViewModel) {
 }
 
 // ---------------------------------------------------------------------------
+// Bill of sale + blueprints
+// ---------------------------------------------------------------------------
+
+@Composable
+private fun BillBar(state: HouseUiState, viewModel: HouseViewModel) {
+    val bill = state.bill ?: return
+    val affordable = viewModel.canAffordBill(bill, state)
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+    ) {
+        Row(
+            modifier = Modifier.padding(start = 12.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = when {
+                    !bill.isEmpty -> stringResource(R.string.house_bill_cost, bill.netCoins.formatCoins())
+                    state.hasDraftChanges -> stringResource(R.string.house_bill_changes_free)
+                    else -> stringResource(R.string.house_bill_no_changes)
+                },
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = if (!bill.isEmpty) FontWeight.Bold else null,
+                color = when {
+                    !bill.isEmpty && !affordable -> MaterialTheme.colorScheme.error
+                    !bill.isEmpty || state.hasDraftChanges -> MaterialTheme.colorScheme.onSurface
+                    else -> MaterialTheme.colorScheme.onSurfaceVariant
+                },
+                modifier = Modifier.weight(1f),
+            )
+            TextButton(
+                onClick = { viewModel.setBillSheetOpen(true) },
+                enabled = !bill.isEmpty || state.hasDraftChanges,
+            ) { Text(stringResource(R.string.house_bill_open)) }
+            TextButton(onClick = { viewModel.setBlueprintSheetOpen(true) }) {
+                Text(stringResource(R.string.house_blueprints))
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BillSheet(state: HouseUiState, viewModel: HouseViewModel) {
+    val bill = state.bill ?: return
+    val context = LocalContext.current
+    val affordable = viewModel.canAffordBill(bill, state)
+    ModalBottomSheet(onDismissRequest = { viewModel.setBillSheetOpen(false) }) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.house_bill_title),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            if (bill.lines.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.house_bill_changes_free),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            bill.lines.forEach { line ->
+                val credit = line.kind == HouseBillLine.Kind.SHRINK_CREDIT
+                val label = when (line.kind) {
+                    HouseBillLine.Kind.ITEM ->
+                        "${viewModel.itemDisplayName(line.itemKey ?: "")} x${line.units}"
+                    HouseBillLine.Kind.NEW_ROOM ->
+                        stringResource(R.string.house_bill_new_room, line.roomNumber)
+                    HouseBillLine.Kind.EXPAND ->
+                        stringResource(R.string.house_bill_expand_room, line.roomNumber, line.units)
+                    HouseBillLine.Kind.SHRINK_CREDIT ->
+                        stringResource(R.string.house_bill_shrink_credit, line.roomNumber, line.units)
+                }
+                val costParts = buildList {
+                    if (line.coins > 0) add(stringResource(R.string.house_cost_coins, line.coins.formatCoins()))
+                    line.materials.forEach { (k, v) -> add("$v ${GameStrings.itemName(context, k)}") }
+                }
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(label, style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
+                    Text(
+                        text = (if (credit) "+" else "") + costParts.joinToString(", "),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (credit) MaterialTheme.colorScheme.tertiary
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.weight(1.4f),
+                    )
+                }
+            }
+            val netMaterials = bill.netMaterials().filterValues { it > 0 }
+            if (bill.netCoins > 0 || netMaterials.isNotEmpty()) {
+                HorizontalDivider()
+                Text(
+                    text = stringResource(R.string.house_bill_materials_header),
+                    style = MaterialTheme.typography.titleSmall,
+                )
+                if (bill.netCoins > 0) {
+                    val enough = state.coins >= bill.netCoins
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(
+                            stringResource(R.string.house_bill_coins_total, bill.netCoins.formatCoins()),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (enough) MaterialTheme.colorScheme.onSurface
+                                    else MaterialTheme.colorScheme.error,
+                        )
+                        Text(
+                            state.coins.formatCoins(),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                netMaterials.entries.sortedBy { it.key }.forEach { (key, need) ->
+                    val have = state.inventory[key] ?: 0
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(
+                            GameStrings.itemName(context, key),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (have >= need) MaterialTheme.colorScheme.onSurface
+                                    else MaterialTheme.colorScheme.error,
+                        )
+                        Text(
+                            "$have / $need",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (have >= need) MaterialTheme.colorScheme.onSurfaceVariant
+                                    else MaterialTheme.colorScheme.error,
+                        )
+                    }
+                }
+            }
+            if (bill.xp > 0) {
+                Text(
+                    text = stringResource(R.string.house_bill_xp_total, bill.xp.formatXp()),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.tertiary,
+                )
+            }
+            if (state.constructionLevel < bill.requiredLevel) {
+                Text(
+                    text = stringResource(R.string.house_bill_level_required, bill.requiredLevel),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+            Spacer(Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                OutlinedButton(
+                    onClick = { viewModel.setDiscardConfirmOpen(true) },
+                    enabled = state.hasDraftChanges || !bill.isEmpty,
+                    modifier = Modifier.weight(1f),
+                ) { Text(stringResource(R.string.house_discard_build), color = MaterialTheme.colorScheme.error) }
+                Button(
+                    onClick = viewModel::purchaseBuild,
+                    enabled = affordable && (state.hasDraftChanges || !bill.isEmpty),
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(stringResource(
+                        if (bill.isEmpty) R.string.house_apply_changes else R.string.house_purchase_build))
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BlueprintSheet(state: HouseUiState, viewModel: HouseViewModel) {
+    var nameDialogSlot by remember { mutableStateOf<Int?>(null) }
+    var loadConfirmSlot by remember { mutableStateOf<Int?>(null) }
+    ModalBottomSheet(onDismissRequest = { viewModel.setBlueprintSheetOpen(false) }) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.house_blueprints),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            (0 until HouseRepository.BLUEPRINT_SLOTS).forEach { slot ->
+                val bp = state.blueprints.firstOrNull { it.slot == slot }
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Row(
+                        modifier = Modifier.padding(start = 12.dp, end = 4.dp, top = 2.dp, bottom = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = bp?.name ?: stringResource(R.string.house_blueprint_slot_empty),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (bp != null) MaterialTheme.colorScheme.onSurface
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f),
+                        )
+                        TextButton(onClick = { nameDialogSlot = slot }) {
+                            Text(stringResource(R.string.house_blueprint_save))
+                        }
+                        TextButton(onClick = { loadConfirmSlot = slot }, enabled = bp != null) {
+                            Text(stringResource(R.string.house_blueprint_load))
+                        }
+                        TextButton(onClick = { viewModel.deleteBlueprint(slot) }, enabled = bp != null) {
+                            Text(stringResource(R.string.house_blueprint_delete),
+                                color = if (bp != null) MaterialTheme.colorScheme.error
+                                        else MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    nameDialogSlot?.let { slot ->
+        var name by remember(slot) {
+            mutableStateOf(state.blueprints.firstOrNull { it.slot == slot }?.name ?: "")
+        }
+        AlertDialog(
+            onDismissRequest = { nameDialogSlot = null },
+            title = { Text(stringResource(R.string.house_blueprint_save)) },
+            text = {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it.take(24) },
+                    label = { Text(stringResource(R.string.house_blueprint_name_hint)) },
+                    singleLine = true,
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.saveBlueprint(slot, name.trim())
+                        nameDialogSlot = null
+                    },
+                    enabled = name.isNotBlank(),
+                ) { Text(stringResource(R.string.house_blueprint_save)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { nameDialogSlot = null }) {
+                    Text(stringResource(R.string.btn_cancel))
+                }
+            },
+        )
+    }
+    loadConfirmSlot?.let { slot ->
+        val bp = state.blueprints.firstOrNull { it.slot == slot } ?: return@let
+        AlertDialog(
+            onDismissRequest = { loadConfirmSlot = null },
+            title = { Text(stringResource(R.string.house_blueprint_load_title)) },
+            text = { Text(stringResource(R.string.house_blueprint_load_message, bp.name)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.loadBlueprint(slot)
+                    loadConfirmSlot = null
+                }) { Text(stringResource(R.string.house_blueprint_load)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { loadConfirmSlot = null }) {
+                    Text(stringResource(R.string.btn_cancel))
+                }
+            },
+        )
+    }
+}
+
+// ---------------------------------------------------------------------------
 // The grid canvas
 // ---------------------------------------------------------------------------
 
 @Composable
-private fun HouseCanvas(state: HouseUiState, viewModel: HouseViewModel, atlas: ImageBitmap, editing: Boolean) {
+private fun HouseCanvas(state: HouseUiState, viewModel: HouseViewModel, atlas: ImageBitmap, editing: Boolean, maxCanvasWidth: Dp) {
     val context = LocalContext.current
     val tiles = viewModel.gameData.houseTiles
     var ghostCell by remember { mutableStateOf<Pair<Int, Int>?>(null) }
@@ -421,7 +764,7 @@ private fun HouseCanvas(state: HouseUiState, viewModel: HouseViewModel, atlas: I
     val mode = state.mode
 
     // View transform: pinch to zoom, two-finger pan. One finger stays for editing.
-    var viewScale by remember { mutableStateOf(1f) }
+    var viewScale by remember { mutableFloatStateOf(1f) }
     var viewOffset by remember { mutableStateOf(Offset.Zero) }
 
     // Maps a screen-space touch point back into untransformed canvas space.
@@ -432,6 +775,7 @@ private fun HouseCanvas(state: HouseUiState, viewModel: HouseViewModel, atlas: I
 
     Box(
         modifier = Modifier
+            .widthIn(max = maxCanvasWidth)
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
             .aspectRatio(GRID.toFloat() / CANVAS_ROWS)
@@ -531,7 +875,7 @@ private fun HouseCanvas(state: HouseUiState, viewModel: HouseViewModel, atlas: I
                 }
             },
     ) {
-        androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxSize()) {
+        BoxWithConstraints(Modifier.fillMaxSize()) {
             val cellDp = maxWidth / GRID
             Box(
                 Modifier
@@ -546,13 +890,52 @@ private fun HouseCanvas(state: HouseUiState, viewModel: HouseViewModel, atlas: I
                 HouseCanvasContent(state, viewModel, atlas, context, tiles, ghostCell, movingIndex)
                 if (!editing) ResidentOverlay(state, viewModel, cellDp)
             }
+            // Outside the pan/zoom transform so it stays parked in the corner.
+            if (editing && state.nudgeIndex != null) {
+                NudgePad(
+                    onNudge  = viewModel::nudgeSelected,
+                    onDone   = viewModel::exitNudge,
+                    modifier = Modifier.align(Alignment.BottomEnd).padding(8.dp),
+                )
+            }
+        }
+    }
+}
+
+/** Corner arrow pad: one-unit nudges for the selected piece without a thumb covering it. */
+@Composable
+private fun NudgePad(onNudge: (Int, Int) -> Unit, onDone: () -> Unit, modifier: Modifier = Modifier) {
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+        tonalElevation = 2.dp,
+        modifier = modifier,
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(2.dp)) {
+            IconButton(onClick = { onNudge(0, -1) }, modifier = Modifier.size(36.dp)) {
+                Icon(Icons.Filled.KeyboardArrowUp, contentDescription = null)
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { onNudge(-1, 0) }, modifier = Modifier.size(36.dp)) {
+                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = null)
+                }
+                IconButton(onClick = onDone, modifier = Modifier.size(36.dp)) {
+                    Icon(Icons.Filled.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                }
+                IconButton(onClick = { onNudge(1, 0) }, modifier = Modifier.size(36.dp)) {
+                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                }
+            }
+            IconButton(onClick = { onNudge(0, 1) }, modifier = Modifier.size(36.dp)) {
+                Icon(Icons.Filled.KeyboardArrowDown, contentDescription = null)
+            }
         }
     }
 }
 
 /** The player's character standing on a free cell of their largest room (view mode). */
 @Composable
-private fun ResidentOverlay(state: HouseUiState, viewModel: HouseViewModel, cellDp: androidx.compose.ui.unit.Dp) {
+private fun ResidentOverlay(state: HouseUiState, viewModel: HouseViewModel, cellDp: Dp) {
     val spot = residentSpot(state) { viewModel.houseRepo.tileDef(it) } ?: return
     val spriteH = cellDp * 1.8f
     val spriteW = spriteH * (64f / 36f)
@@ -565,9 +948,11 @@ private fun ResidentOverlay(state: HouseUiState, viewModel: HouseViewModel, cell
         beardStyle = state.characterBeardStyle,
         beardColor = state.characterBeardColor,
         modifier   = Modifier
-            .padding(
-                start = cellDp * spot.first - spriteW / 2,
-                top = cellDp * (spot.second + TOP_MARGIN_CELLS) - spriteH,
+            // offset, not padding: the sprite is wider than a cell, so a spot in the two
+            // leftmost columns puts this x below zero (negative padding crashes, issue on 1.14.4).
+            .offset(
+                x = cellDp * spot.first - spriteW / 2,
+                y = cellDp * (spot.second + TOP_MARGIN_CELLS) - spriteH,
             )
             .height(spriteH)
             .aspectRatio(64f / 36f),
@@ -577,7 +962,7 @@ private fun ResidentOverlay(state: HouseUiState, viewModel: HouseViewModel, cell
 /** Draws the whole house world: ground, floors, walls, and every placement. */
 private fun DrawScope.drawHouseWorld(
     state: HouseUiState,
-    tiles: com.fantasyidler.data.json.HouseTilesData,
+    tiles: HouseTilesData,
     atlas: ImageBitmap,
     context: Context,
     tileDef: (String) -> HouseTileDef?,
@@ -594,6 +979,15 @@ private fun DrawScope.drawHouseWorld(
     }
     state.house.rooms.forEach { room -> drawFloor(room, cell, atlas, tiles.structural) }
     state.house.rooms.forEach { room -> drawWallFace(room, state.house.rooms, cell, atlas, tiles.structural) }
+
+    // Unpurchased draft area (new rooms, expansion strips) gets a translucent tint.
+    state.draftRoomTints.forEach { r ->
+        drawRect(
+            color = Color(0x40FFD54F),
+            topLeft = Offset(r.x * cell, (r.y + TOP_MARGIN_CELLS) * cell),
+            size = Size(r.w * cell, r.h * cell),
+        )
+    }
 
     val placements = state.house.placements.withIndex().sortedBy { (_, p) ->
         val def = tileDef(p.item)
@@ -618,7 +1012,8 @@ private fun DrawScope.drawHouseWorld(
             }
         } else {
             drawPlacement(def, p.x, p.y, room, cell, atlas,
-                highlight = index == selectedPlacement)
+                highlight = index == selectedPlacement,
+                alpha = if (index in state.ghostPlacements) 0.55f else 1f)
         }
     }
 }
@@ -629,7 +1024,7 @@ private fun HouseCanvasContent(
     viewModel: HouseViewModel,
     atlas: ImageBitmap,
     context: Context,
-    tiles: com.fantasyidler.data.json.HouseTilesData,
+    tiles: HouseTilesData,
     ghostCell: Pair<Int, Int>?,
     movingIndex: Int?,
 ) {
@@ -637,7 +1032,7 @@ private fun HouseCanvasContent(
     Canvas(modifier = Modifier.fillMaxSize()) {
         val cell = size.width / GRID
         drawHouseWorld(state, tiles, atlas, context, { viewModel.houseRepo.tileDef(it) },
-            state.selectedPlacement, movingIndex)
+            state.selectedPlacement ?: state.nudgeIndex, movingIndex)
 
         state.selectedRoom?.let { i ->
             state.house.rooms.getOrNull(i)?.let { room ->
@@ -1024,7 +1419,7 @@ private fun HousePalette(state: HouseUiState, viewModel: HouseViewModel, atlas: 
 
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(CATEGORY_ORDER, key = { it }) { cat ->
@@ -1047,7 +1442,7 @@ private fun HousePalette(state: HouseUiState, viewModel: HouseViewModel, atlas: 
         } else {
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(state.earnedBanners, key = { it.bannerIcon ?: it.eventId }) { banner ->
@@ -1081,7 +1476,7 @@ private fun HousePalette(state: HouseUiState, viewModel: HouseViewModel, atlas: 
     if (subSections.isNotEmpty()) {
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(subSections.size + 1, key = { it }) { i ->
@@ -1109,7 +1504,7 @@ private fun HousePalette(state: HouseUiState, viewModel: HouseViewModel, atlas: 
 
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(items, key = { it.key }) { (key, def) ->
@@ -1153,8 +1548,8 @@ private fun BannerPaletteCard(icon: String, state: HouseUiState, viewModel: Hous
             modifier = Modifier.padding(8.dp),
         ) {
             if (resId != null) {
-                androidx.compose.foundation.Image(
-                    painter = androidx.compose.ui.res.painterResource(resId),
+                Image(
+                    painter = painterResource(resId),
                     contentDescription = null,
                     modifier = Modifier.height(44.dp),
                 )
@@ -1164,7 +1559,9 @@ private fun BannerPaletteCard(icon: String, state: HouseUiState, viewModel: Hous
             Text(
                 text = viewModel.itemDisplayName(key),
                 style = MaterialTheme.typography.labelSmall,
-                maxLines = 1,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = if (placed) stringResource(R.string.house_banner_placed)
@@ -1231,7 +1628,9 @@ private fun PaletteCard(
             Text(
                 text = viewModel.itemDisplayName(key),
                 style = MaterialTheme.typography.labelSmall,
-                maxLines = 1,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
             val context = LocalContext.current
             val costColor = when {
@@ -1257,7 +1656,9 @@ private fun PaletteCard(
                     cost.materials.forEach { (k, v) ->
                         Text(
                             text = "$v ${GameStrings.itemName(context, k)}",
-                            style = MaterialTheme.typography.labelSmall, color = costColor, maxLines = 1,
+                            style = MaterialTheme.typography.labelSmall, color = costColor,
+                            textAlign = TextAlign.Center, maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }
@@ -1294,6 +1695,10 @@ private fun PlacementSheet(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(16.dp))
+            OutlinedButton(onClick = { viewModel.enterNudge() }, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.house_nudge_item))
+            }
+            Spacer(Modifier.height(8.dp))
             if (viewModel.houseRepo.tileDef(placement.item)?.rotatesTo != null) {
                 OutlinedButton(onClick = { viewModel.rotateSelected() }, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.house_rotate_item))
@@ -1317,7 +1722,7 @@ private fun RoomSheet(index: Int, state: HouseUiState, viewModel: HouseViewModel
     val perCell = viewModel.houseRepo.expansionCost(index)
     var showDemolishConfirm by remember { mutableStateOf(false) }
     if (showDemolishConfirm) {
-        androidx.compose.material3.AlertDialog(
+        AlertDialog(
             onDismissRequest = { showDemolishConfirm = false },
             title = { Text(stringResource(R.string.house_demolish_confirm_title)) },
             text = { Text(stringResource(R.string.house_demolish_confirm_message)) },
@@ -1467,7 +1872,7 @@ private fun ExpandButton(
     labelRes: Int,
     dir: HouseDirection,
     cells: Int,
-    perCell: com.fantasyidler.data.json.HouseCostTier,
+    perCell: HouseCostTier,
     state: HouseUiState,
     viewModel: HouseViewModel,
     shrink: Boolean,

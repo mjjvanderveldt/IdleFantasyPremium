@@ -6,7 +6,7 @@ If you want to make changes to the game itself, check out {game_contribution_lin
 
 If you find examples much easier to work with, there are pull request guides available [here](#pull-request-guides) where you can see an actual example of editing the wiki.
 
-{{table_of_contents}}
+{table_of_contents}
 
 ## How the wiki works
 
@@ -112,11 +112,12 @@ If you want to make a number of new pages or significant changes (especially dyn
 
 Additionally, you might notice a number of #Todo items in the wiki code. These are also great places to look for things that need doing that we maybe just haven't got around to sorting out yet.
 
-### Pull request guides
+### Pull request guides/examples
 
-The guides below will show you an example of editing the wiki which you might find helpful to wrap your head around how things work:
+The guides and examples below will show you an example of editing the wiki which you might find helpful to wrap your head around how things work:
 
-- {editing_a_page_link} - In this detailed guide, I go over editing a couple pages in the wiki. This is probably the most common level of detail you'll need to edit a page.
+- {editing_a_page_link} - In this detailed guide, we go over editing a couple pages in the wiki. This is probably the most common level of detail you'll need to edit a page.
+- {adding_quest_icons_page} - This pull request shows an example of adding a simple static page to the wiki
 
 ## Additional topics
 

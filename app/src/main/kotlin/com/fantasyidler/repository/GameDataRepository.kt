@@ -32,6 +32,8 @@ import com.fantasyidler.data.json.RuneData
 import com.fantasyidler.data.json.SkillData
 import com.fantasyidler.data.json.SmithingRecipe
 import com.fantasyidler.data.json.ConstructionRecipe
+import com.fantasyidler.data.json.HouseTilesData
+import com.fantasyidler.data.json.SeasonalEventData
 import com.fantasyidler.data.json.ThemeData
 import com.fantasyidler.data.json.ThievingNpcData
 import com.fantasyidler.data.json.SpellData
@@ -145,7 +147,7 @@ class GameDataRepository @Inject constructor(
 
     // ------------------------------------------------------------------ seasonal events
 
-    val seasonalEvents: Map<String, com.fantasyidler.data.json.SeasonalEventData> by lazy {
+    val seasonalEvents: Map<String, SeasonalEventData> by lazy {
         asset("data/seasonal_events.json")
     }
 
@@ -204,6 +206,16 @@ class GameDataRepository @Inject constructor(
         asset("data/recipes/cooking.json")
     }
 
+    /**
+     * Fishing level needed to catch the raw input of cooking recipe [target]; 1 when the
+     * input isn't a fish (farm meats). Cooking quests must not ask for fish the player
+     * can't catch yet (issue #1573).
+     */
+    fun fishingLevelForCooking(target: String): Int {
+        val raw = cookingRecipes[target]?.rawItem ?: return 1
+        return fish[raw]?.levelRequired ?: 1
+    }
+
     val fletchingRecipes: Map<String, FletchingRecipe> by lazy {
         asset("data/recipes/fletching.json")
     }
@@ -245,7 +257,7 @@ class GameDataRepository @Inject constructor(
         asset("data/buildings.json")
     }
 
-    val houseTiles: com.fantasyidler.data.json.HouseTilesData by lazy {
+    val houseTiles: HouseTilesData by lazy {
         asset("data/house_tiles.json")
     }
 
@@ -361,6 +373,7 @@ class GameDataRepository @Inject constructor(
             add("rune_essence")
             add("carnival_ticket")
             add("race_change_token")
+            add("ancient_treasure")
             addAll(runes.keys)
             // Quest collect targets should not be auto-sold
             quests.values.filter { it.type == "collect" }.forEach { add(it.target) }
@@ -372,23 +385,5 @@ class GameDataRepository @Inject constructor(
             // Marketplace items not in equipment.json
             addAll(marketplace.values.flatMap { it.items.keys })
         }
-    }
-
-    // ------------------------------------------------------------------ helpers
-
-    /**
-     * Resolves an item key (e.g. "iron_ore", "oak_log") to a human-readable display name.
-     * Checks all known item tables in order and falls back to title-casing the key.
-     */
-    fun itemDisplayName(key: String): String {
-        ores[key]?.let { return it.displayName }
-        gems[key]?.let { return it.displayName }
-        logs[key]?.let { return it.displayName }
-        runes[key]?.let { return it.displayName }
-        smithingRecipes[key]?.let { return it.displayName }
-        cookingRecipes.values.find { it.cookedItem == key }?.let { return it.displayName }
-        fletchingRecipes[key]?.let { return it.displayName }
-        craftingRecipes[key]?.let { return it.displayName }
-        return key.split('_').joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
     }
 }

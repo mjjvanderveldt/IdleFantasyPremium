@@ -27,8 +27,10 @@ import com.fantasyidler.repository.PlayerRepository
 import com.fantasyidler.repository.QueuedSessionStarter
 import com.fantasyidler.repository.QuestRepository
 import com.fantasyidler.repository.SessionRepository
+import com.fantasyidler.repository.SaveSlotRepository
 import com.fantasyidler.repository.SlayerRepository
 import com.fantasyidler.repository.TownRepository
+import com.fantasyidler.simulator.HeirloomStats
 import com.fantasyidler.simulator.CombatSimulator
 import com.fantasyidler.simulator.SkillSimulator
 import com.fantasyidler.simulator.TowerScaling
@@ -60,9 +62,10 @@ data class TowerUiState(
     val selectedWeaponSlot: String? = null,
     val equippedWeapons: Map<String, EquipmentData> = emptyMap(),
     val selectedArrowKey: String? = null,
-    val availableArrows: List<String> = emptyList(),
     val selectedSpell: SpellData? = null,
     val availableSpells: List<SpellData> = emptyList(),
+    val magicLevel: Int = 1,
+    val inventory: Map<String, Int> = emptyMap(),
     val selectedPotionKey: String? = null,
     val availablePotions: Map<String, Int> = emptyMap(),
     val isQueueFull: Boolean = false,
@@ -88,8 +91,26 @@ class TowerViewModel @Inject constructor(
     private val guildRepo: GuildRepository,
     private val slayerRepo: SlayerRepository,
     private val townRepo: TownRepository,
+    private val saveSlotRepo: SaveSlotRepository,
     private val json: Json,
 ) : ViewModel() {
+
+    init {
+        // Transient loadout picks belong to the character that made them; without this reset
+        // the cached values override the next character's saved loadout after a slot switch.
+        viewModelScope.launch {
+            saveSlotRepo.switchEvents.collect {
+                _extra.update {
+                    it.copy(
+                        selectedSpell      = null,
+                        selectedArrowKey   = null,
+                        selectedPotionKey  = null,
+                        selectedWeaponSlot = null,
+                    )
+                }
+            }
+        }
+    }
 
     init {
         // Tower Boots and Tower Plateskirt joined the floor 150 milestone after many players had already
@@ -169,9 +190,10 @@ class TowerViewModel @Inject constructor(
             val equipped: Map<String, String?> = try { json.decodeFromString(player.equipped) } catch (_: Exception) { emptyMap() }
             val levels: Map<String, Int> = try { json.decodeFromString(player.skillLevels) } catch (_: Exception) { emptyMap() }
             val inventory: Map<String, Int> = try { json.decodeFromString(player.inventory) } catch (_: Exception) { emptyMap() }
+            val equipMap = HeirloomStats.resolveAll(gameData.equipment, levels, flags.heirloomXp)
             val equippedWeapons = EquipSlot.WEAPON_SLOTS.mapNotNull { slot ->
                 val key = equipped[slot] ?: return@mapNotNull null
-                val data = gameData.equipment[key] ?: return@mapNotNull null
+                val data = equipMap[key] ?: return@mapNotNull null
                 slot to data
             }.toMap()
             val claimable = MILESTONES.map { it.floor }.filter { floor ->
@@ -197,9 +219,10 @@ class TowerViewModel @Inject constructor(
                 equippedWeapons     = equippedWeapons,
                 selectedWeaponSlot  = extra.selectedWeaponSlot ?: flags.activeWeaponSlot,
                 selectedArrowKey    = extra.selectedArrowKey ?: flags.equippedArrows,
-                availableArrows     = ARROW_TIERS.filter { (inventory[it] ?: 0) > 0 },
                 selectedSpell       = extra.selectedSpell ?: flags.activeSpell?.let { gameData.spells[it] },
                 availableSpells     = gameData.spells.values.filter { it.magicLevelRequired <= magicLevel }.sortedBy { it.magicLevelRequired },
+                magicLevel          = magicLevel,
+                inventory           = inventory,
                 selectedPotionKey   = extra.selectedPotionKey ?: flags.activePotionKey?.takeIf { (inventory[it] ?: 0) > 0 },
                 availablePotions    = inventory.filterKeys { it in gameData.potionEffects },
                 isQueueFull         = flags.sessionQueue.size >= playerRepo.maxQueueSize(flags),
@@ -268,6 +291,7 @@ class TowerViewModel @Inject constructor(
                 val equipped:  Map<String, String?>  = json.decodeFromString(player.equipped)
                 val inventory: Map<String, Int>      = json.decodeFromString(player.inventory)
                 val flags: PlayerFlags               = try { json.decodeFromString(player.flags) } catch (_: Exception) { PlayerFlags() }
+                val equipMap = HeirloomStats.resolveAll(gameData.equipment, levels, flags.heirloomXp)
 
                 val floor = flags.towerCurrentFloor + 1
 
@@ -276,7 +300,7 @@ class TowerViewModel @Inject constructor(
                     ?: EquipSlot.WEAPON_SLOTS.firstOrNull { equipped[it] != null }
                     ?: EquipSlot.WEAPON
                 val weaponKey = equipped[activeWeaponSlot]
-                val weapon    = weaponKey?.let { gameData.equipment[it] }
+                val weapon    = weaponKey?.let { equipMap[it] }
                 val combatStyle = when (weapon?.combatStyle) {
                     "ranged"   -> "ranged"
                     "magic"    -> "magic"
@@ -285,7 +309,7 @@ class TowerViewModel @Inject constructor(
                 }
 
                 val totalAttackBonus = EquipSlot.ARMOR_SLOTS.sumOf { slot ->
-                    val eq = gameData.equipment[equipped[slot]] ?: return@sumOf 0
+                    val eq = equipMap[equipped[slot]] ?: return@sumOf 0
                     eq.attackBonus + when (combatStyle) {
                         "ranged" -> eq.rangedAttackBonus ?: 0
                         "magic"  -> eq.magicAttackBonus  ?: 0
@@ -296,13 +320,13 @@ class TowerViewModel @Inject constructor(
                     "magic"  -> weapon?.magicAttackBonus  ?: 0
                     else     -> 0
                 }
-                val totalStrengthBonus = EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.strengthBonus ?: 0 } + (weapon?.strengthBonus ?: 0)
-                val totalDefenseBonus  = EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.defenseBonus  ?: 0 } + (weapon?.defenseBonus  ?: 0)
+                val totalStrengthBonus = EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.strengthBonus ?: 0 } + (weapon?.strengthBonus ?: 0)
+                val totalDefenseBonus  = EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.defenseBonus  ?: 0 } + (weapon?.defenseBonus  ?: 0)
                 val totalRangedStrBonus = if (combatStyle == "ranged") {
-                    EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.rangedStrengthBonus ?: 0 } + (weapon?.rangedStrengthBonus ?: 0)
+                    EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.rangedStrengthBonus ?: 0 } + (weapon?.rangedStrengthBonus ?: 0)
                 } else 0
                 val totalMagicDmgBonus = if (combatStyle == "magic") {
-                    EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.magicDamageBonus ?: 0 } + (weapon?.magicDamageBonus ?: 0)
+                    EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.magicDamageBonus ?: 0 } + (weapon?.magicDamageBonus ?: 0)
                 } else 0
 
                 val selectedSpell = _extra.value.selectedSpell ?: flags.activeSpell?.let { gameData.spells[it] }
@@ -343,16 +367,16 @@ class TowerViewModel @Inject constructor(
                 val result = CombatSimulator.simulateDungeon(
                     dungeon             = dungeon,
                     enemies             = enemies,
-                    playerAttack        = (levels[Skills.ATTACK]    ?: 1) + boostRepo.combatStatBonus(Skills.ATTACK, flags),
-                    playerStrength      = (levels[Skills.STRENGTH]  ?: 1) + boostRepo.combatStatBonus(Skills.STRENGTH, flags),
-                    playerDefence       = (levels[Skills.DEFENSE]   ?: 1) + totalDefenseBonus + boostRepo.combatStatBonus(Skills.DEFENSE, flags),
+                    playerAttack        = (levels[Skills.ATTACK]    ?: 1) + boostRepo.combatStatBonus(Skills.ATTACK, flags, levels[Skills.ATTACK] ?: 1),
+                    playerStrength      = (levels[Skills.STRENGTH]  ?: 1) + boostRepo.combatStatBonus(Skills.STRENGTH, flags, levels[Skills.STRENGTH] ?: 1),
+                    playerDefence       = (levels[Skills.DEFENSE]   ?: 1) + totalDefenseBonus + boostRepo.combatStatBonus(Skills.DEFENSE, flags, levels[Skills.DEFENSE] ?: 1),
                     blessingDefBonus    = ChurchRepository.defBonus(flags, blessingPrayerCapeMult(flags, equipped, inventory.keys, gameData)),
-                    playerHp            = (levels[Skills.HITPOINTS] ?: 1) + boostRepo.combatStatBonus(Skills.HITPOINTS, flags) + towerHpBonus,
+                    playerHp            = (levels[Skills.HITPOINTS] ?: 1) + boostRepo.combatStatBonus(Skills.HITPOINTS, flags, levels[Skills.HITPOINTS] ?: 1) + towerHpBonus,
                     weaponAttackBonus   = totalAttackBonus,
                     weaponStrengthBonus = totalStrengthBonus,
                     combatStyle         = combatStyle,
-                    playerRanged        = (levels[Skills.RANGED] ?: 1) + boostRepo.combatStatBonus(Skills.RANGED, flags),
-                    playerMagic         = (levels[Skills.MAGIC]  ?: 1) + boostRepo.combatStatBonus(Skills.MAGIC, flags),
+                    playerRanged        = (levels[Skills.RANGED] ?: 1) + boostRepo.combatStatBonus(Skills.RANGED, flags, levels[Skills.RANGED] ?: 1),
+                    playerMagic         = (levels[Skills.MAGIC]  ?: 1) + boostRepo.combatStatBonus(Skills.MAGIC, flags, levels[Skills.MAGIC] ?: 1),
                     rangedGearStrengthBonus = totalRangedStrBonus,
                     spellMaxHit         = (selectedSpell?.maxHit ?: 0) + totalMagicDmgBonus,
                     agilityLevel        = levels[Skills.AGILITY] ?: 1,
@@ -367,6 +391,7 @@ class TowerViewModel @Inject constructor(
                     runeCostPerAttack   = runeCost,
                     attackSpeedSec      = weaponAttackSpeed,
                     eatThresholdPct     = flags.foodEatThresholdPct,
+                    foodEatOrder        = flags.foodEatOrder,
                     chronosMultiplier   = townRepo.playerSessionDurationMultiplier(flags),
                     doubleHitChance     = boostRepo.doubleHitChance(flags),
                     secondChance        = boostRepo.secondChanceActive(flags),
@@ -386,6 +411,7 @@ class TowerViewModel @Inject constructor(
                     durationMs       = result.durationMs,
                     skillDisplayName = "Infinite Tower: Floor $floor",
                     alarmOffsetMs    = alarmOffsetMs,
+                    weaponSlot       = activeWeaponSlot,
                 )
             } catch (e: Exception) {
                 _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.skill_session_start_failed, e.message ?: "")) }
@@ -443,7 +469,7 @@ class TowerViewModel @Inject constructor(
     fun collectFloor() {
         viewModelScope.launch {
             val latest = sessionRepo.getActiveSession()
-            if (latest != null && !latest.completed && System.currentTimeMillis() >= latest.endsAt) {
+            if (latest != null && !latest.completed && System.currentTimeMillis() >= latest.endsAt && sessionRepo.hasTrustedClock(latest)) {
                 sessionRepo.markCompleted(latest.sessionId)
             }
             var session: SkillSession? =
@@ -510,7 +536,7 @@ class TowerViewModel @Inject constructor(
             val xpForRepo = if (grantXp) totalXpPerSkill.mapValues { (_, xp) -> (xp * towerXpMult).toLong() } else emptyMap()
             coinsGained   = (coinsGained * towerCoinMult).toLong()
 
-            playerRepo.applyMultiSkillResults(xpForRepo, allItems, coinsGained)
+            playerRepo.applyMultiSkillResults(xpForRepo, allItems, coinsGained, sessionId = session.sessionId)
 
             val skillLevels = json.decodeFromString<Map<String, Int>>(playerRepo.getOrCreatePlayer().skillLevels)
             val rangedLevel = skillLevels[Skills.RANGED] ?: 1

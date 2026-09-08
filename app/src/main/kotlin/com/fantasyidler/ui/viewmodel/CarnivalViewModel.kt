@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fantasyidler.R
 import com.fantasyidler.data.json.CarnivalPrize
+import com.fantasyidler.data.model.OwnedPet
 import com.fantasyidler.data.model.PlayerFlags
 import com.fantasyidler.data.model.QueuedAction
 import com.fantasyidler.data.model.Skills
@@ -169,7 +170,7 @@ class CarnivalViewModel @Inject constructor(
             val flags: PlayerFlags = json.decodeFromString(player.flags)
             val levels: Map<String, Int> = json.decodeFromString(player.skillLevels)
             val xpMap: Map<String, Long> = json.decodeFromString(player.skillXp)
-            val pets: List<com.fantasyidler.data.model.OwnedPet> = try { json.decodeFromString(player.pets) } catch (_: Exception) { emptyList() }
+            val pets: List<OwnedPet> = try { json.decodeFromString(player.pets) } catch (_: Exception) { emptyList() }
             val ownedPetIds = pets.map { it.id }.toSet()
             val ownedPrizeKeys = prizes
                 .filter { it.type == "equipment" || it.type == "pet" }
@@ -633,7 +634,7 @@ class CarnivalViewModel @Inject constructor(
                 it.copy(snackbarMessage = if (result.success) {
                     val b = result.breakdown!!
                     val skillDisplay = GameStrings.skillName(context, skillKey)
-                    val suffix = xpMultiplierBreakdown(b.baseXp, b.boostActive, b.blessingMult, b.prestigeXpPct)?.let { s -> " $s" } ?: ""
+                    val suffix = xpMultiplierBreakdown(b.baseXp, b.boostFactor, b.blessingMult, b.prestigeXpPct)?.let { s -> " $s" } ?: ""
                     context.withAppLocale().getString(R.string.carnival_lamp_redeemed, b.finalXp.formatXp(), skillDisplay) + suffix
                 } else
                     context.withAppLocale().getString(R.string.carnival_not_enough_tickets))

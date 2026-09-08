@@ -30,6 +30,12 @@ data class PlayerFlags(
     @SerialName("magic_loadout_spell_name") val magicLoadoutSpellName: String? = null,
     /** Global "start eating" threshold as % of max HP. Default 50 preserves the prior hardcoded behavior. */
     @SerialName("food_eat_threshold_pct") val foodEatThresholdPct: Int = 50,
+    @SerialName("food_eat_order") val foodEatOrder: String = "descending",
+    /** Heirloom item key -> accumulated item XP (capped at the level-99 threshold). Never reset by prestige. */
+    @SerialName("heirloom_xp") val heirloomXp: Map<String, Long> = emptyMap(),
+    /** Session id -> (skill -> heirloom item key) captured at session start, so heirloom XP goes
+     * to the gear that actually ran the session rather than whatever is equipped at collection. */
+    @SerialName("heirloom_mirror_targets") val heirloomMirrorTargets: Map<String, Map<String, String>> = emptyMap(),
     @SerialName("battery_prompt_shown") val batteryPromptShown: Boolean = false,
     /** Epoch ms when the 2× XP boost expires; 0 = not active. */
     @SerialName("xp_boost_expires_at") val xpBoostExpiresAt: Long = 0L,
@@ -139,6 +145,9 @@ data class PlayerFlags(
     @SerialName("backup_folder_uri") val backupFolderUri: String = "",
     /** Automatic backup frequency: ""|"hourly"|"daily"|"weekly". */
     @SerialName("backup_frequency") val backupFrequency: String = "",
+    @SerialName("last_backup_at") val lastBackupAt: Long = 0L,
+    @SerialName("last_backup_ok") val lastBackupOk: Boolean = true,
+    @SerialName("last_backup_error") val lastBackupError: String = "",
     /** Currently assigned Slayer task, or null if none. */
     @SerialName("active_slayer_task") val activeSlayerTask: SlayerTask? = null,
     /** Accumulated Slayer points, spent in the Slayer Master shop. */
@@ -153,6 +162,8 @@ data class PlayerFlags(
     @SerialName("show_journal_button") val showJournalButton: Boolean = true,
     /** Whether to show the active Seasonal Event banner/card on the home screen. */
     @SerialName("show_seasonal_events") val showSeasonalEvents: Boolean = true,
+    /** Event id that already forced the banner back on, so each new event re-shows it once. */
+    @SerialName("seasonal_banner_reshown_event_id") val seasonalBannerReshownEventId: String = "",
     /** Whether to show the character sprite viewer on the home screen. */
     @SerialName("show_character_viewer") val showCharacterViewer: Boolean = true,
     /** Whether to show the stats bar (Combat Level, Total Level, Coins) on the home screen. */
@@ -173,6 +184,8 @@ data class PlayerFlags(
     @SerialName("show_prestige_notifications") val showPrestigeNotifications: Boolean = true,
     /** Shop: bulk and manual sells always leave one of each item for collectors. */
     @SerialName("shop_keep_one_of_each") val shopKeepOneOfEach: Boolean = false,
+    /** Newest-first record of recent bulk sells, so "item X vanished" reports can be checked against facts (issue #1630). */
+    @SerialName("bulk_sell_receipts") val bulkSellReceipts: List<BulkSellReceipt> = emptyList(),
     /** Epoch ms when this character was created; 0 for pre-existing characters until backfilled
      *  from their oldest quest completion (sessions are deleted on collect, so quest timestamps
      *  are the oldest surviving record). */
@@ -239,6 +252,10 @@ data class PlayerFlags(
     @SerialName("tower_coin_bonus_pct") val towerCoinBonusPct: Int = 0,
     /** Seasonal Events: tokens earned so far per event id, toward that event's token_goal. */
     @SerialName("seasonal_tokens_by_event") val seasonalTokensByEvent: Map<String, Int> = emptyMap(),
+    /** Game-day stamp (rolls at the daily reset hour) [seasonalBossTokensToday] counts for. */
+    @SerialName("seasonal_boss_token_day") val seasonalBossTokenDay: Int = 0,
+    /** Event boss tokens earned on [seasonalBossTokenDay], capped per day. */
+    @SerialName("seasonal_boss_tokens_today") val seasonalBossTokensToday: Int = 0,
     /** Seasonal Events: progress map taskId -> count accumulated since that slot last rotated. */
     @SerialName("seasonal_bounty_progress") val seasonalBountyProgress: Map<String, Int> = emptyMap(),
     /** Seasonal Events: id of the event the current Bounty Board slots were seeded for; reseeded when this changes. */
@@ -284,6 +301,19 @@ data class PlayerFlags(
     @SerialName("ironman") val ironman: Boolean = false,
     /** Player housing: rooms, placed furnishings, and stored (built but unplaced) furnishings. */
     @SerialName("house") val house: HouseData? = null,
+    /** Unpurchased editor draft of the house, or null when the editor is clean. */
+    @SerialName("house_draft") val houseDraft: HouseDraft? = null,
+    /** Saved house layouts, at most one per slot (slots 0..2). */
+    @SerialName("house_blueprints") val houseBlueprints: List<HouseBlueprint> = emptyList(),
+)
+
+/** One completed bulk sell: what was sold and what it paid. */
+@Serializable
+data class BulkSellReceipt(
+    @SerialName("at_ms") val atMs: Long = 0L,
+    /** Item key -> quantity actually sold. */
+    @SerialName("items") val items: Map<String, Int> = emptyMap(),
+    @SerialName("coins") val coins: Long = 0L,
 )
 
 /** The player's house: a set of room rectangles on one shared cell grid. */
@@ -300,6 +330,25 @@ data class HouseData(
      * 2 = half-cell placement. Migrated up on load; never written back down.
      */
     @SerialName("coord_scale") val coordScale: Int = 1,
+)
+
+/**
+ * Speculative house layout being drafted in the editor. Nothing is paid until the player
+ * purchases the build, at which point the layout replaces [PlayerFlags.house] wholesale.
+ */
+@Serializable
+data class HouseDraft(
+    @SerialName("layout") val layout: HouseData,
+    /** Parallel to layout.rooms: index of the built room each draft room came from, null = new. */
+    @SerialName("built_room_index") val builtRoomIndex: List<Int?> = emptyList(),
+)
+
+/** A saved house layout snapshot, loadable back into the editor draft. */
+@Serializable
+data class HouseBlueprint(
+    @SerialName("slot") val slot: Int,
+    @SerialName("name") val name: String,
+    @SerialName("layout") val layout: HouseData,
 )
 
 /** One rectangular room, in house-grid cells. Rooms never overlap and attach edge-to-edge. */
@@ -373,6 +422,12 @@ data class QueuedAction(
     @SerialName("output_qty") val outputQty: Int = 0,
     /** Estimated XP this session will grant. 0 = unknown (combat, boss, expedition). */
     @SerialName("estimated_xp_gain") val estimatedXpGain: Long = 0L,
+    /**
+     * Relevant level when the action was queued (0 = legacy entry). Carried into the
+     * session's levelAtStart floor so a prestige between queueing and collection still
+     * voids the pre-prestige XP instead of paying it out at level 1.
+     */
+    @SerialName("level_at_queue") val levelAtQueue: Int = 0,
     /** Pre-computed session duration in ms, used to display accurate queue end time. */
     @SerialName("estimated_duration_ms") val estimatedDurationMs: Long = 0L,
     /** Coins to refund if this action is cancelled (mercantile trade route cost). */
@@ -623,4 +678,18 @@ object Skills {
 
     val DEFAULT_LEVELS: Map<String, Int> = ALL.associateWith { 1 }
     val DEFAULT_XP: Map<String, Long> = ALL.associateWith { 0L }
+}
+
+object CombatGuilds {
+    const val WARRIORS = "warriors"
+    const val ARCHERS   = "archers"
+    const val MAGES     = "mages"
+
+    val ALL = listOf(WARRIORS, ARCHERS, MAGES)
+
+    fun guildFor(combatStyle: String): String = when (combatStyle) {
+        "ranged" -> ARCHERS
+        "magic"  -> MAGES
+        else     -> WARRIORS
+    }
 }

@@ -128,18 +128,18 @@
     <string name="boss_balrog_desc">火焰与暗影的远古恶魔，从地底深处苏醒。</string>
     <string name="boss_void_sovereign_name">虚空君主</string>
     <string name="boss_void_sovereign_desc">虚空裂隙背后的原初实体，古老得无法估量，以蔑视的眼光看待凡间的挑战者。</string>
-    <string name="boss_sol_invictus_name">不败之日·索尔·因维克图斯</string>
+    <string name="boss_sol_invictus_name">索尔·因维克图斯，碎裂之焰</string>
     <string name="boss_sol_invictus_desc">太阳的碎片，从太阳尖塔废墟中脱落。只有最勇敢的战士才敢靠近。</string>
     <string name="boss_the_hollow_king_name">虚无之王</string>
     <string name="boss_the_hollow_king_desc">暗潮收割的无头君主，从枯萎之森骑出，收割活人所种之物。</string>
     <string name="boss_the_vault_guardian_name">宝库守卫</string>
     <string name="boss_the_vault_guardian_desc">由活金铸造的巨像，被永恒之火点燃而苏醒。只有大纪念碑的赞助者才能面对它。</string>
-    <string name="boss_obsidian_colossus_name">Obsidian Colossus</string> <!-- untranslated -->
-    <string name="boss_obsidian_colossus_desc">A mountain given wrath. No lone hero has ever chipped more than a scar into it. Bring a party.</string> <!-- untranslated -->
-    <string name="boss_brood_empress_name">Brood Empress</string> <!-- untranslated -->
-    <string name="boss_brood_empress_desc">Mother of the swarm between the stars. Her brood has ended armies; yours had better be paid well.</string> <!-- untranslated -->
-    <string name="boss_the_world_ender_name">The World Ender</string> <!-- untranslated -->
-    <string name="boss_the_world_ender_desc">When it stirs, kingdoms write their wills. Four names on the contract or none return.</string> <!-- untranslated -->
+    <string name="boss_obsidian_colossus_name">黑曜石巨像</string>
+    <string name="boss_obsidian_colossus_desc">一座迸发狂怒的大山。没有哪位孤胆英雄，能在它身上凿出超越一道伤痕的印记。组队来挑战。</string>
+    <string name="boss_brood_empress_name">虫巢女皇</string>
+    <string name="boss_brood_empress_desc">群星之间的虫群之母。她的子嗣曾覆灭万千大军，你会为此付足代价。</string>
+    <string name="boss_the_world_ender_name">噬世者</string>
+    <string name="boss_the_world_ender_desc">此物一动，诸国便要写下遗书。契约之上需刻下四个名字，否则将无人生还。</string>
 
     <!-- ===== Expedition-unlocked dungeon names ===== -->
     <string name="dungeon_collapsed_mine_name">坍塌矿井</string>

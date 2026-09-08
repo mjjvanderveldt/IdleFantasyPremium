@@ -1,5 +1,6 @@
 package com.fantasyidler.ui.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -52,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -63,17 +65,13 @@ import com.fantasyidler.repository.PrestigeActionResult
 import com.fantasyidler.ui.viewmodel.PrestigeDetailViewModel
 import com.fantasyidler.ui.viewmodel.PrestigeNodeUi
 import com.fantasyidler.ui.viewmodel.PrestigePathUi
-import androidx.compose.ui.graphics.Color
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.formatDurationMs
 
-private val TIER_NUMERALS = listOf("I", "II", "III", "IV", "V")
-
-// Same success green as the quest/guild checkmarks; "your race" on race locks.
-private val RaceLockGreen = Color(0xFF4CAF50)
+private val TIER_NUMERALS = listOf("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X")
 
 private fun nodeDisplayName(context: Context, skill: String, pathKey: String, tier: Int): String =
-    "${GameStrings.prestigePathDisplayName(context, skill, pathKey)} ${TIER_NUMERALS.getOrElse(tier - 1) { "$tier" }}"
+    "${GameStrings.prestigePathName(context, skill, pathKey)} ${TIER_NUMERALS.getOrElse(tier - 1) { "$tier" }}"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -97,7 +95,11 @@ fun PrestigeDetailScreen(
         AlertDialog(
             onDismissRequest = { showPrestigeConfirm = false },
             title = { Text(stringResource(R.string.prestige_confirm_title, skillName)) },
-            text  = { Text(stringResource(R.string.prestige_confirm_message_points, skillName, state.pointsOnPrestige)) },
+            text  = { Text(
+                if (state.pointsOnPrestige > 0)
+                    stringResource(R.string.prestige_confirm_message_points, skillName, state.pointsOnPrestige)
+                else stringResource(R.string.prestige_confirm_message_xp_only, skillName)
+            ) },
             confirmButton = {
                 TextButton(onClick = {
                     showPrestigeConfirm = false
@@ -153,7 +155,7 @@ fun PrestigeDetailScreen(
                             Icons.Filled.Lock,
                             contentDescription = null,
                             modifier = Modifier.size(14.dp),
-                            tint = if (node.raceLocked) MaterialTheme.colorScheme.error else RaceLockGreen,
+                            tint = if (node.raceLocked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.tertiary,
                         )
                         Spacer(Modifier.width(4.dp))
                         Text(
@@ -164,21 +166,29 @@ fun PrestigeDetailScreen(
                     }
                 }
                 Spacer(Modifier.height(8.dp))
-                // Other races see "???" so race-locked effects stay a surprise (debug shows all).
-                val effectHidden = node.raceLocked && !node.owned && !BuildConfig.DEBUG
+                // Race-locked effects stay visible to other races so players can judge
+                // whether a race change is worth it.
                 Text(
-                    text  = if (effectHidden) "???"
-                            else GameStrings.prestigeEffectDesc(context, node.effect, node.value, node.unlock),
+                    text  = GameStrings.prestigeEffectDesc(context, node.effect, node.value, node.unlock),
                     style = MaterialTheme.typography.bodyLarge,
                 )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text  = stringResource(R.string.prestige_node_cost, node.cost),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                if (!node.auto) {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text  = stringResource(R.string.prestige_node_cost, node.cost),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
                 Spacer(Modifier.height(16.dp))
                 when {
+                    node.auto -> Text(
+                        text  = if (node.owned) stringResource(R.string.prestige_node_auto_earned, node.tier)
+                                else stringResource(R.string.prestige_node_auto_pending, node.tier),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (node.owned) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                     node.owned -> Text(
                         text  = stringResource(R.string.prestige_node_owned),
                         style = MaterialTheme.typography.bodyMedium,
@@ -228,7 +238,22 @@ fun PrestigeDetailScreen(
         contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top),
         topBar = {
             TopAppBar(
-                title = { Text("${GameStrings.skillEmoji(skill)} $skillName") },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        val iconRes = GameStrings.skillIconRes(skill)
+                        if (iconRes != null) {
+                            Image(
+                                painter            = painterResource(iconRes),
+                                contentDescription = null,
+                                modifier           = Modifier.size(28.dp),
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(skillName)
+                        } else {
+                            Text("${GameStrings.skillEmoji(skill)} $skillName")
+                        }
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
@@ -325,13 +350,17 @@ private fun PrestigeHeaderCard(
             }
             Spacer(Modifier.height(12.dp))
             when {
-                state.atPointCap -> Text(
+                !state.canPrestigeMore -> Text(
                     text  = stringResource(R.string.prestige_maxed_cap),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
                 state.level >= 99 -> Button(onClick = onPrestige, modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.prestige_button_with_points, state.pointsOnPrestige))
+                    Text(
+                        if (state.pointsOnPrestige > 0)
+                            stringResource(R.string.prestige_button_with_points, state.pointsOnPrestige)
+                        else stringResource(R.string.prestige_button_xp_only)
+                    )
                 }
                 else -> Text(
                     text  = stringResource(R.string.prestige_requires_99, state.level),
@@ -382,13 +411,21 @@ private fun PathBranch(
             )
             Spacer(Modifier.width(6.dp))
             Text(
-                text  = GameStrings.prestigePathDisplayName(context, skill, path.key),
+                text  = GameStrings.prestigePathName(context, skill, path.key),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 color = if (racesLock != null && playerRace !in racesLock)
                     MaterialTheme.colorScheme.onSurfaceVariant
                 else MaterialTheme.colorScheme.onSurface,
             )
+            if (path.auto) {
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    text  = stringResource(R.string.prestige_path_auto_label),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.tertiary,
+                )
+            }
             if (racesLock != null) {
                 Spacer(Modifier.width(6.dp))
                 // Green lock: your race can use this path. Red lock: another race's exclusive.
@@ -396,7 +433,7 @@ private fun PathBranch(
                     Icons.Filled.Lock,
                     contentDescription = null,
                     modifier = Modifier.size(14.dp),
-                    tint = if (playerRace in racesLock) RaceLockGreen else MaterialTheme.colorScheme.error,
+                    tint = if (playerRace in racesLock) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.error,
                 )
                 Spacer(Modifier.width(2.dp))
                 Text(
@@ -408,15 +445,14 @@ private fun PathBranch(
             } else {
                 // Mixed paths (race-locked tiers appended to an open path) still surface
                 // their races here, so e.g. the Gnome farming bonus is findable in the tree.
-                // Human is skipped to match raceProficiencies (XP mastery everywhere).
                 path.nodes.mapNotNull { it.races }
-                    .flatMap { it.filter { race -> race != "human" } }.distinct().forEach { race ->
+                    .flatten().distinct().forEach { race ->
                         Spacer(Modifier.width(6.dp))
                         Icon(
                             Icons.Filled.Lock,
                             contentDescription = null,
                             modifier = Modifier.size(12.dp),
-                            tint = if (playerRace == race) RaceLockGreen else MaterialTheme.colorScheme.error,
+                            tint = if (playerRace == race) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.error,
                         )
                         Spacer(Modifier.width(2.dp))
                         Text(
@@ -498,7 +534,7 @@ private fun NodeCircle(node: PrestigeNodeUi, onTap: () -> Unit) {
             }
         }
         Text(
-            text  = "${node.cost}◆",
+            text  = if (node.auto) "★" else "${node.cost}◆",
             style = MaterialTheme.typography.labelSmall,
             color = if (node.owned) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 2.dp),

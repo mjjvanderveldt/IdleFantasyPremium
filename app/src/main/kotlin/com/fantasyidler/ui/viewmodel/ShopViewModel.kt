@@ -3,6 +3,7 @@ package com.fantasyidler.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fantasyidler.data.json.MarketplaceItem
+import com.fantasyidler.data.model.BulkSellReceipt
 import com.fantasyidler.data.model.EquipSlot
 import com.fantasyidler.data.model.PlayerFlags
 import com.fantasyidler.data.model.QueuedAction
@@ -13,6 +14,7 @@ import com.fantasyidler.repository.PlayerRepository
 import com.fantasyidler.repository.WeeklyQuestRepository
 import com.fantasyidler.repository.XpBoostPurchaseResult
 import com.fantasyidler.repository.resolveCapeMultiplier
+import com.fantasyidler.simulator.MercantilePerks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,6 +27,7 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import android.content.Context
 import com.fantasyidler.R
+import com.fantasyidler.data.json.EquipmentData
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.withAppLocale
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -86,6 +89,8 @@ data class ShopUiState(
     val isLoading: Boolean = true,
     /** Items reserved by queued actions — cannot be sold. */
     val reservedItems: Map<String, Int> = emptyMap(),
+    /** Per-style remembered armor loadouts; their gear counts as equipped for selling. */
+    val armorLoadouts: Map<String, Map<String, String?>> = emptyMap(),
     /** Items the player locked against selling. */
     val lockedItems: Set<String> = emptySet(),
     val mercantileLevel: Int = 0,
@@ -98,6 +103,7 @@ data class ShopUiState(
     val compactNumbers: Boolean = false,
     /** Bulk and manual sells always leave one of each item (collector safety). */
     val keepOneOfEach: Boolean = false,
+    val bulkSellReceipts: List<BulkSellReceipt> = emptyList(),
 ) {
     val xpBoostActive: Boolean get() = xpBoostExpiresAt > System.currentTimeMillis()
 }
@@ -135,6 +141,7 @@ class ShopViewModel @Inject constructor(
                 dailyResetHour   = flags.dailyResetHour,
                 isLoading        = false,
                 reservedItems    = computeReserved(flags.sessionQueue),
+                armorLoadouts    = flags.armorLoadouts,
                 lockedItems      = flags.lockedItems.toSet(),
                 mercantileLevel  = levels[Skills.MERCANTILE] ?: 0,
                 townBuildingTiers = flags.townBuildingTiers,
@@ -144,6 +151,7 @@ class ShopViewModel @Inject constructor(
                 ironman           = flags.ironman,
                 compactNumbers    = flags.compactNumbers,
                 keepOneOfEach     = flags.shopKeepOneOfEach,
+                bulkSellReceipts  = flags.bulkSellReceipts,
             )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ShopUiState())
@@ -323,29 +331,13 @@ class ShopViewModel @Inject constructor(
         (entry.price * mercantileBuyDiscount()).toInt().coerceAtLeast(1)
 
     fun mercantileBuyDiscount(mercantileLevel: Int = uiState.value.mercantileLevel): Float {
-        val base = when {
-            mercantileLevel >= 99 -> 0.75f
-            mercantileLevel >= 80 -> 0.80f
-            mercantileLevel >= 60 -> 0.85f
-            mercantileLevel >= 40 -> 0.90f
-            mercantileLevel >= 20 -> 0.95f
-            else                  -> 1.00f
-        }
+        val base = 1f - MercantilePerks.tradePct(mercantileLevel) / 100f
         val capeBonus = mercantileCapeBonusFromState()
         return (base - capeBonus).coerceAtLeast(0.50f)
     }
 
-    private fun mercantileSellBonus(level: Int): Float {
-        val base = when {
-            level >= 99 -> 1.25f
-            level >= 80 -> 1.20f
-            level >= 60 -> 1.15f
-            level >= 40 -> 1.10f
-            level >= 20 -> 1.05f
-            else        -> 1.00f
-        }
-        return base + mercantileCapeBonusFromState()
-    }
+    private fun mercantileSellBonus(level: Int): Float =
+        1f + MercantilePerks.tradePct(level) / 100f + mercantileCapeBonusFromState()
 
     private fun mercantileCapeBonusFromState(): Float {
         val equippedCape = uiState.value.equipped[EquipSlot.CAPE]?.let { gameData.equipment[it] }
@@ -390,9 +382,18 @@ class ShopViewModel @Inject constructor(
             val inventory = state.inventory
             val allEquip  = gameData.equipment
 
-            val toSell = computeOldEquipmentToSell(equipped, inventory, allEquip)
+            // Gear referenced only by a queued action's start-of-session snapshot is still
+            // in use once that session fires; never sell its last copy (issue #1630).
+            val queuedGearKeys = playerRepo.getFlags().sessionQueue.flatMapTo(mutableSetOf()) { action ->
+                action.equippedSnapshot?.let {
+                    try { json.decodeFromString<Map<String, String?>>(it).values.filterNotNull() }
+                    catch (_: Exception) { emptyList() }
+                } ?: emptyList()
+            }
+            val toSell = computeOldEquipmentToSell(
+                equipped, inventory, allEquip, state.keepOneOfEach, state.reservedItems, state.armorLoadouts, queuedGearKeys)
                 .filterKeys { it !in state.lockedItems }
-                .let { if (state.keepOneOfEach) it.mapValues { (_, qty) -> qty - 1 }.filterValues { qty -> qty > 0 } else it }
+                .filterKeys { allEquip[it]?.heirloomSkill == null }
 
             if (toSell.isEmpty()) {
                 _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.shop_no_old_equipment)) }
@@ -425,15 +426,64 @@ class ShopViewModel @Inject constructor(
 
     fun confirmBulkSell() {
         val preview = _extra.value.pendingBulkSell ?: return
+        // Close the dialog before the sale, not after: a large sale takes seconds, and
+        // every extra tap on the still-open dialog launched a duplicate run whose lines
+        // re-capped to zero and posted a spurious "sold for 0 gold" snackbar (issue #1718).
+        _extra.update { it.copy(pendingBulkSell = null) }
         viewModelScope.launch {
+            // The dialog can sit open while the world changes (a queued session starting
+            // swaps gear, issue #1630), so previewed quantities are only an upper bound:
+            // each line is re-capped against the live player state before selling.
+            val sold = mutableMapOf<String, Int>()
+            var coins = 0L
             for (item in preview.items) {
-                playerRepo.sellItem(item.key, item.qty, item.priceEach)
+                val qty = minOf(item.qty, currentSellableCap(item.key))
+                if (qty <= 0) continue
+                if (playerRepo.sellItem(item.key, qty, item.priceEach, protectEquipped = true)) {
+                    sold[item.key] = qty
+                    coins += item.priceEach.toLong() * qty
+                }
+            }
+            if (sold.isNotEmpty()) {
+                val flags = playerRepo.getFlags()
+                val receipt = BulkSellReceipt(atMs = System.currentTimeMillis(), items = sold, coins = coins)
+                playerRepo.updateFlags(flags.copy(
+                    bulkSellReceipts = (listOf(receipt) + flags.bulkSellReceipts).take(MAX_BULK_SELL_RECEIPTS)))
             }
             _extra.update { it.copy(
-                pendingBulkSell = null,
-                snackbarMessage = context.withAppLocale().getString(preview.soldMsgRes, preview.totalCoins.toCoinsString()),
+                snackbarMessage = context.withAppLocale().getString(preview.soldMsgRes, coins.toCoinsString()),
             )}
         }
+    }
+
+    /**
+     * How many copies of [itemKey] may be sold RIGHT NOW, applying every protection the
+     * previews apply (locks, heirlooms, capes, equipped and loadout copies, queue
+     * reservations and snapshots, the keep-one keeper) against the live player state.
+     */
+    private suspend fun currentSellableCap(itemKey: String): Int {
+        val player = playerRepo.getOrCreatePlayer()
+        val flags: PlayerFlags = json.decodeFromString(player.flags)
+        if (itemKey in flags.lockedItems) return 0
+        val equipData = gameData.equipment[itemKey]
+        if (equipData?.heirloomSkill != null) return 0
+        if (equipData?.capeSkill != null) return 0
+        val inventory: Map<String, Int> = json.decodeFromString(player.inventory)
+        val have = inventory[itemKey] ?: 0
+        val equippedCount = if (equipData != null) {
+            val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
+            val queuedGearKeys = flags.sessionQueue.flatMapTo(mutableSetOf()) { action ->
+                action.equippedSnapshot?.let {
+                    try { json.decodeFromString<Map<String, String?>>(it).values.filterNotNull() }
+                    catch (_: Exception) { emptyList() }
+                } ?: emptyList()
+            }
+            val loadoutKeys = flags.armorLoadouts.values.flatMapTo(mutableSetOf()) { it.values.filterNotNull() } + queuedGearKeys
+            maxOf(equipped.values.count { it == itemKey }, if (itemKey in loadoutKeys) 1 else 0)
+        } else 0
+        val reserved = computeReserved(flags.sessionQueue)[itemKey] ?: 0
+        val keeper = if (flags.shopKeepOneOfEach && equippedCount == 0) 1 else 0
+        return (have - equippedCount - reserved - keeper).coerceAtLeast(0)
     }
 
     fun dismissBulkSell() = _extra.update { it.copy(pendingBulkSell = null) }
@@ -484,8 +534,16 @@ class ShopViewModel @Inject constructor(
             _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.shop_item_locked, displayName)) }
             return
         }
+        if (gameData.equipment[itemKey]?.heirloomSkill != null) {
+            _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.shop_sell_blocked_heirloom, displayName)) }
+            return
+        }
         val have          = state.inventory[itemKey] ?: 0
-        val equippedCount = state.equipped.values.count { it == itemKey }
+        // Gear remembered in a non-active style's loadout counts as equipped (issue #1597).
+        val equippedCount = maxOf(
+            state.equipped.values.count { it == itemKey },
+            if (state.armorLoadouts.values.any { itemKey in it.values }) 1 else 0,
+        )
         val reserved      = state.reservedItems[itemKey] ?: 0
         // The equipped copy already serves as the collection keeper (issue #1419)
         val keptForCollection = if (state.keepOneOfEach && equippedCount == 0) 1 else 0
@@ -600,6 +658,7 @@ class ShopViewModel @Inject constructor(
 
     companion object {
         const val XP_BOOST_KEY = "xp_boost_48h"
+        const val MAX_BULK_SELL_RECEIPTS = 5
 
         /**
          * Construction furniture otherwise falls to the generic 5-coin fallback (issue #1337).
@@ -623,12 +682,6 @@ class ShopViewModel @Inject constructor(
             "redwood_grand_bed" to 1800,
         )
 
-        private val TOOL_SLOTS = setOf(
-            EquipSlot.PICKAXE, EquipSlot.AXE, EquipSlot.FISHING_ROD, EquipSlot.HOE,
-            EquipSlot.HAMMER, EquipSlot.TINDERBOX, EquipSlot.GRAPPLING_HOOK, EquipSlot.FRYING_PAN,
-            EquipSlot.LOCKPICK,
-        )
-
         /**
          * Pure logic for computing which old equipment items to suggest selling.
          * Extracted from [previewSellOldEquipment] for testability.
@@ -638,77 +691,40 @@ class ShopViewModel @Inject constructor(
          * @param allEquip  all equipment data: item key → [EquipmentData]
          * @return map of item key → quantity to sell
          */
+        /**
+         * Every equippable in the inventory is sellable except: copies currently equipped,
+         * copies remembered in any combat style's armor loadout (only one style's gear is in
+         * [equipped] at a time, so loadout gear would otherwise be sold, issue #1597),
+         * copies reserved by queued actions, skill capes (rare level-99 rewards, issue #821),
+         * and one keeper per item when [keepOneOfEach] is on and none is equipped (the
+         * equipped copy already serves as the collection keeper, issue #1419). Selling gear
+         * that is not strictly outclassed is intentional since the keep-one toggle exists.
+         */
         fun computeOldEquipmentToSell(
             equipped: Map<String, String?>,
             inventory: Map<String, Int>,
-            allEquip: Map<String, com.fantasyidler.data.json.EquipmentData>,
+            allEquip: Map<String, EquipmentData>,
+            keepOneOfEach: Boolean = false,
+            reserved: Map<String, Int> = emptyMap(),
+            armorLoadouts: Map<String, Map<String, String?>> = emptyMap(),
+            queuedGearKeys: Set<String> = emptySet(),
         ): Map<String, Int> {
+            val loadoutKeys = armorLoadouts.values.flatMapTo(mutableSetOf()) { it.values.filterNotNull() } + queuedGearKeys
             val toSell = mutableMapOf<String, Int>()
-            for (slot in EquipSlot.ALL) {
-                val equippedKey  = equipped[slot] ?: continue
-                val equippedItem = allEquip[equippedKey] ?: continue
-
-                val allKeysInSlot = buildList {
-                    add(equippedKey)
-                    inventory.keys
-                        .filter { k -> k != equippedKey && allEquip[k]?.slot == slot }
-                        .forEach { add(it) }
-                }
-
-                for ((itemKey, qty) in inventory) {
-                    if (itemKey == equippedKey) continue
-                    val item = allEquip[itemKey] ?: continue
-                    if (item.slot != slot) continue
-
-                    // Skill capes are rare level-99 rewards — never auto-sell them (issue #821)
-                    if (item.capeSkill != null) continue
-
-                    val shouldSell = if (slot in TOOL_SLOTS) {
-                        scoreForItem(item, slot) < scoreForItem(equippedItem, slot)
-                    } else {
-                        allKeysInSlot
-                            .filter { it != itemKey }
-                            .any { k -> allEquip[k]?.let { o -> combatDominatesStatic(o, item) } == true }
-                    }
-                    if (shouldSell) toSell[itemKey] = (toSell[itemKey] ?: 0) + qty
-                }
+            for ((itemKey, qty) in inventory) {
+                val item = allEquip[itemKey] ?: continue
+                if (item.capeSkill != null) continue
+                // A loadout reference protects at most one copy: styles swap over the same
+                // physical item, so one kept copy serves every loadout that remembers it.
+                val equippedCount = maxOf(
+                    equipped.values.count { it == itemKey },
+                    if (itemKey in loadoutKeys) 1 else 0,
+                )
+                val keeper = if (keepOneOfEach && equippedCount == 0) 1 else 0
+                val extras = qty - equippedCount - (reserved[itemKey] ?: 0) - keeper
+                if (extras > 0) toSell[itemKey] = extras
             }
-
-            // Suggest selling extra copies of equipped items (you only need 1)
-            for ((itemKey, inInv) in inventory) {
-                val equippedCount = equipped.values.count { it == itemKey }
-                if (equippedCount == 0) continue
-                val extras = inInv - equippedCount
-                if (extras > 0) toSell[itemKey] = (toSell[itemKey] ?: 0) + extras
-            }
-
             return toSell
-        }
-
-        private fun scoreForItem(item: com.fantasyidler.data.json.EquipmentData, slot: String): Float = when (slot) {
-            EquipSlot.PICKAXE     -> item.miningEfficiency ?: 0f
-            EquipSlot.AXE         -> item.woodcuttingEfficiency ?: 0f
-            EquipSlot.FISHING_ROD -> item.fishingEfficiency ?: 0f
-            EquipSlot.HOE         -> item.farmingEfficiency ?: 0f
-            EquipSlot.LOCKPICK    -> item.thievingEfficiency ?: 0f
-            else                  -> (item.attackBonus + item.strengthBonus + item.defenseBonus).toFloat()
-        }
-
-        private fun combatDominatesStatic(a: com.fantasyidler.data.json.EquipmentData, b: com.fantasyidler.data.json.EquipmentData): Boolean {
-            if (a.attackBonus          < b.attackBonus)                       return false
-            if (a.strengthBonus        < b.strengthBonus)                     return false
-            if (a.defenseBonus         < b.defenseBonus)                      return false
-            if ((a.rangedAttackBonus   ?: 0) < (b.rangedAttackBonus   ?: 0)) return false
-            if ((a.rangedStrengthBonus ?: 0) < (b.rangedStrengthBonus ?: 0)) return false
-            if ((a.magicAttackBonus    ?: 0) < (b.magicAttackBonus    ?: 0)) return false
-            if ((a.magicDamageBonus    ?: 0) < (b.magicDamageBonus    ?: 0)) return false
-            return a.attackBonus > b.attackBonus ||
-                   a.strengthBonus > b.strengthBonus ||
-                   a.defenseBonus > b.defenseBonus ||
-                   (a.rangedAttackBonus   ?: 0) > (b.rangedAttackBonus   ?: 0) ||
-                   (a.rangedStrengthBonus ?: 0) > (b.rangedStrengthBonus ?: 0) ||
-                   (a.magicAttackBonus    ?: 0) > (b.magicAttackBonus    ?: 0) ||
-                   (a.magicDamageBonus    ?: 0) > (b.magicDamageBonus    ?: 0)
         }
 
         private val FISH_KEYS = setOf(

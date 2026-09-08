@@ -1,0 +1,28 @@
+New Features:
+
+Prestige Overhaul
+• Prestiging a level 99 skill now awards points to spend in that skill's upgrade tree, with race-specific branches, hidden tiers to discover, a point respec, and a one-time conversion of your existing prestige stars
+• New paths to unlock across the skills, including Double Hit, Second Chance, Foresight, and Better Bows, plus a 48 hour 2x XP boost in a skill after prestiging it
+• Prestige achievements now follow the tree: buy your first upgrade, complete a full path, and master an entire skill tree
+
+Raid Bosses and Mercenaries
+• A new raid tier: three bosses (Obsidian Colossus, Brood Empress, The World Ender) that no lone hero can defeat, even in the best gear
+• Hire up to three mercenaries from a daily rotating pool, from budget sellswords to near-max champions. The raid boss spreads its attacks across your whole party
+
+Player Housing
+• Build your own house: buy, expand, and rearrange rooms with coins and materials as your Construction level grows, then furnish them with everything from beds and bookshelves to piles of gold, crafted from your own materials
+• Make it yours: half-tile placement, interior walls, floor and outdoor ground styles, seasonal event banners on the wall, your character at home in the middle of it, and one-tap sharing of a picture of your house
+
+Bug Fixes:
+• Guild Hall rows no longer squeeze the guild name and level badge when translations run long; the daily counter now wraps neatly on the right (thanks Michaelomh!)
+• The prayer skill cape now strengthens all church blessings (XP, defense, and coin blessings alike) instead of only a subset, and blessing strength shown in the church and stats bar reflects it (thanks lucasmdjl!)
+• The Coin Drake now actually drops from trade routes, and crafting and agility pets now drop from directly started sessions instead of only queued ones. All of these pets have a roughly 6% chance per session (thanks ben-dev-su!)
+• Screens animating out during navigation no longer accept taps, so you can't accidentally buy a carnival prize (or anything else) by tapping too early after leaving a screen
+• Skill menus no longer close mid-scroll: a fast downward fling that reached the top of the list could spill over into the pull-down-to-close gesture. Now only an actual finger pull can dismiss a menu
+• Guild daily requests now prefer a variety of items instead of repeating the same one; previously a guild rank whose only skill-reachable recipe was a single item (like the crafting guild's platinum diamond ring at rank 7) served that item four times a day, every day
+• The live combat log on Tower floors above 100 now uses the enemy's scaled stats, fixing the kill counter that crept up and dropped back every minute and showing the enemy's true HP bar and attack values
+• On Android 13+ the predictive back gesture no longer closes an entire skill menu from an inner page; back now steps to the recipe list first, and closes the menu only from the top level (thanks xRahul!)
+
+Translations:
+• Updated French, German, and Italian translations
+• Completed Simplified Chinese translations (thanks LawrenZzz!)

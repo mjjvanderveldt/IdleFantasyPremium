@@ -102,6 +102,9 @@ class WeeklyQuestRepository @Inject constructor(
                 skillLevels[quest.skill] ?: 1
             }
             if (playerLevel < quest.levelRequired) return@filter false
+            if (quest.skill == "cooking" &&
+                (skillLevels["fishing"] ?: 1) < gameData.fishingLevelForCooking(quest.target)
+            ) return@filter false
             val deps = craftDependencies[quest.target]
             deps == null || deps.all { (skill, minLevel) -> (skillLevels[skill] ?: 1) >= minLevel }
         }.shuffled(rng).take(5).toMutableList()

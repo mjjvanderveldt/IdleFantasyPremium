@@ -1,0 +1,29 @@
+Improvements
+• The combat arrow dropdown now shows each arrow's ranged strength, and the spell dropdown shows every spell with its Magic level requirement, including ones you haven't unlocked yet
+• Dangerous session actions are now red with bigger buttons to help avoid misclicks
+• Collection progress bars in the profile tabs now share one design, and Achievements gained a real progress bar
+• Active boosts now have a distinct icon per type, consistent formatting, and a larger tap area
+• Daily and Weekly quests now sit directly in the main quest tab bar instead of behind the Timed tab
+• Prestige tier numerals now go up to X, so tier 6 no longer shows as 'Precision 6'
+• The Infinite Tower now uses the same arrow and spell dropdowns as the Combat screen, showing arrow strength, rune stock, and spell requirements
+• Combat skill dialogs now have a Skill Tree button in the title row for quick access to that skill's tree
+• Very long durations now show years instead of piling up months (250mo reads as 20y 10mo)
+
+Bug Fixes
+• The notification icon in the status bar is now a clean shield silhouette instead of a distorted white blob
+• Changing the loadout when starting a slayer task is now remembered app-wide like the Combat screen's picker, instead of resetting for every task (thanks for the report)
+• Queued boss fights in Up Next now show the boss's own icon instead of a generic gamepad when the boss has no portrait art yet (thanks for the report)
+• The enemy panel in the combat log no longer shows the old emoji next to the enemy name; the portrait at the top of the page already covers it (thanks for the report)
+• The seasonal event screen now calls its boss a Boss instead of a Raid Boss, since raid bosses are their own thing now (thanks for the report)
+• The Ancient Guardian in the Ancient Temple hit much harder than everything else in the dungeon, which made the no-food challenge there mathematically hopeless even at max stats; its damage is now in line with its dungeon-mates, so the challenge is brutal but beatable with full HP boosts (thanks for the reports)
+• Queued boss sessions can no longer each roll the same unique heirloom drop; a rare drop sitting in an uncollected session now counts as owned when later sessions roll theirs, so the duplicate roll goes to something you don't have (thanks for the report)
+• The Mercenary Camp now shows your hired party with each contract's remaining time, so mercenaries can be dismissed even after the daily pool rolls over and they no longer appear in it (thanks for the report)
+• Heirlooms now gain XP based on the gear you actually started the session with, so swapping to an heirloom right before collecting no longer levels it for work it never did, and heirloom weapons only gain XP from fights in their own combat style (thanks for the report)
+• The armory now shows when an item's recipe is locked behind a prestige perk and a race, so the elven bows no longer look craftable by everyone (thanks for the report)
+• Sell Old Gear can no longer sell the last copy of gear referenced by a session waiting in your queue (thanks for the report)
+• The Recent Activity list now shows each boss's own icon instead of the generic gamepad (thanks for the report)
+• The Boss Hunter weekly quest now says 'Defeat 10 bosses' since solo bosses always counted, and the Grand Monument's stage 5 reward no longer calls the Vault Guardian a raid boss (thanks for the report)
+• The Gothic Ember now counts as a demon for kill quests, matching its description (thanks for the report)
+
+Translations
+• Updated Russian, Italian, Polish, and Chinese translations (thanks to the community translators)

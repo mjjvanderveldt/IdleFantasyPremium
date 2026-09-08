@@ -13,6 +13,7 @@ import com.fantasyidler.data.model.PlayerFlags
 import com.fantasyidler.data.model.QueuedAction
 import com.fantasyidler.data.model.SessionFrame
 import com.fantasyidler.data.model.Skills
+import com.fantasyidler.simulator.HeirloomStats
 import com.fantasyidler.simulator.CarnivalSimulator
 import com.fantasyidler.simulator.CombatSimulator
 import com.fantasyidler.simulator.MercantileSimulator
@@ -21,6 +22,7 @@ import com.fantasyidler.simulator.SkillSimulator
 import com.fantasyidler.simulator.ThievingSimulator
 import com.fantasyidler.simulator.TowerScaling
 import com.fantasyidler.simulator.XpTable
+import com.fantasyidler.ui.screen.UNLOCK_TOLERANCE
 import com.fantasyidler.ui.viewmodel.combatLevelFrom
 import com.fantasyidler.util.toolEfficiency
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -34,6 +36,39 @@ import javax.inject.Singleton
 
 /** Thrown when a Tower floor can't start yet because an earlier floor is pending collection. */
 private class TowerPendingCollectionException : Exception()
+
+/** Thrown when the player no longer meets a queued activity's level gate (post-prestige). */
+internal class ActionNoLongerQualifiesException : Exception()
+
+/**
+ * The level the player must currently have to start [action]'s activity manually, or null
+ * when the activity has no known level gate (callers then keep the stricter legacy
+ * XP-zeroing rule). Mirrors the manual-start gates: dungeons allow [UNLOCK_TOLERANCE] under
+ * their recommended level, lore-unlocked dungeons and raid bosses have no level gate
+ * (issue #1542), and Tower floors gate on contiguity, not level.
+ */
+internal fun queuedActionRequiredLevel(action: QueuedAction, gameData: GameDataRepository): Int? = when (action.skillName) {
+    "boss"             -> gameData.bosses[action.activityKey]?.takeIf { !it.raid }?.combatLevelRequired ?: 0
+    "combat"           -> gameData.dungeons[action.activityKey]?.takeIf { !it.loreUnlockOnly }?.let { it.recommendedLevel - UNLOCK_TOLERANCE } ?: 0
+    "tower"            -> 0
+    "expedition"       -> gameData.skillingDungeons[action.activityKey]?.levelRequired ?: 0
+    Skills.MINING      -> gameData.ores[action.activityKey]?.levelRequired
+    Skills.WOODCUTTING -> gameData.trees[action.activityKey]?.levelRequired
+    Skills.FISHING     -> gameData.fish[action.activityKey]?.levelRequired
+    Skills.AGILITY     -> gameData.agilityCourses[action.activityKey]?.levelRequired
+    Skills.THIEVING    -> gameData.thievingNpcs[action.activityKey]?.levelRequired
+    Skills.FIREMAKING  -> gameData.logs[action.activityKey]?.levelRequired
+    Skills.RUNECRAFTING -> gameData.runes[action.activityKey]?.levelRequired
+    Skills.PRAYER      -> 0
+    Skills.SMITHING    -> gameData.smithingRecipes[action.activityKey]?.levelRequired
+    Skills.COOKING     -> gameData.cookingRecipes[action.activityKey]?.levelRequired
+    Skills.FLETCHING   -> gameData.fletchingRecipes[action.activityKey]?.levelRequired
+    Skills.CRAFTING    -> gameData.craftingRecipes[action.activityKey]?.levelRequired
+    Skills.CONSTRUCTION -> gameData.constructionRecipes[action.activityKey]?.levelRequired
+    Skills.HERBLORE    -> gameData.herbloreRecipes[action.activityKey]?.levelRequired
+    Skills.MERCANTILE  -> gameData.tradeRoutes.firstOrNull { it.id == action.activityKey }?.levelRequired
+    else               -> null
+}
 
 /**
  * Starts the next queued session using current player state.
@@ -124,6 +159,7 @@ class QueuedSessionStarter @Inject constructor(
                 val originalQueue = playerRepo.getFlagsUnlocked().sessionQueue
                 var remaining = originalQueue
                 val skippedTowerActions = mutableListOf<QueuedAction>()
+                var droppedAny = false
                 var maxAttempts = originalQueue.size
                 while (maxAttempts-- >= 0) {
                     val next = remaining.firstOrNull() ?: break
@@ -137,11 +173,19 @@ class QueuedSessionStarter @Inject constructor(
                         return@withLock true
                     } catch (_: TowerPendingCollectionException) {
                         skippedTowerActions += next
+                    } catch (_: ActionNoLongerQualifiesException) {
+                        // The player no longer meets the activity's level gate (a prestige
+                        // dropped their level): discard the action and move on (issue #1605).
+                        droppedAny = true
                     } catch (_: Exception) {
                         // Nothing was ever written to the DB, so the queue is still exactly
                         // originalQueue -- no requeue needed.
                         return@withLock false
                     }
+                }
+                if (droppedAny) {
+                    playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(
+                        sessionQueue = skippedTowerActions + remaining))
                 }
                 false
             }
@@ -169,6 +213,21 @@ class QueuedSessionStarter @Inject constructor(
     }
 
     /**
+     * Catch-up budget charge for a just-inserted offline session: the ACTUAL length read
+     * back from the inserted row, not the nominal estimate. Billing a boss fight its whole
+     * durationMinutes starved overnight repeat chains (issue #1664), and billing a
+     * tool-boosted craft session its unboosted duration (the estimate ignores frying pan,
+     * tinderbox, and hammer efficiency) pushed the rest of the queue hours late after
+     * offline catch-up (issue #1737). Clamped to the estimate so the accounting never
+     * exceeds what the entry gate approved.
+     */
+    private suspend fun actualChargeMs(estimateMs: Long): Long {
+        val session = sessionRepo.getActiveSession() ?: return estimateMs
+        val endMs = if (session.skillName == "boss") sessionRepo.bossFightEndMs(session) else session.endsAt
+        return (endMs - session.startedAt).coerceIn(1L, estimateMs)
+    }
+
+    /**
      * Pops the next queued action and inserts it as an already-completed session,
      * provided its estimated duration fits within [remainingMs]. A Tower floor blocked
      * on pending collection is skipped and stashed rather than parked at the front,
@@ -189,90 +248,131 @@ class QueuedSessionStarter @Inject constructor(
      * Called from [SessionRepository.recoverActiveSession] to reconstruct offline progress.
      */
     suspend fun insertNextQueuedAsOffline(remainingMs: Long): Long {
-        mutex.withLock {
-            val player = playerRepo.getOrCreatePlayer()
-            val levels: Map<String, Int> = json.decodeFromString(player.skillLevels)
-            val flags: PlayerFlags       = json.decodeFromString(player.flags)
-            val agilityLevel    = levels[Skills.AGILITY] ?: 1
-            val floorReductionMin = boostRepo.sessionFloorReductionMin(flags)
-            val chronosMult     = townRepo.playerSessionDurationMultiplier(flags)
-            // A boss repeat run (queued as one entry, tracked via PlayerFlags rather than N
-            // separate queue entries) is advanced here one fight at a time, same as the live
-            // (non-offline) chain in startNextQueued() -- returning before ever reaching the
-            // sessionQueue scan below preserves the "don't let another queue item jump an
-            // in-progress chain" guarantee from issue #1167.
-            if (flags.activeBossRepeatSnapshot != null && flags.activeBossRepeatIndex < flags.activeBossRepeatTotal) {
-                val current = sessionRepo.getActiveSession()
-                if (current == null || !current.completed || current.skillName != "boss") return 0L
-                val won = (json.decodeFromString<List<SessionFrame>>(current.frames).lastOrNull()?.kills ?: 0) > 0
-                if (!won) {
-                    playerRepo.clearActiveBossRepeatUnlocked()
-                    return 0L
+        return playerRepo.playerMutex.withLock {
+            mutex.withLock {
+                val player = playerRepo.getOrCreatePlayer()
+                val levels: Map<String, Int> = json.decodeFromString(player.skillLevels)
+                val flags: PlayerFlags       = json.decodeFromString(player.flags)
+                val agilityLevel    = levels[Skills.AGILITY] ?: 1
+                val floorReductionMin = boostRepo.sessionFloorReductionMin(flags)
+                val chronosMult     = townRepo.playerSessionDurationMultiplier(flags)
+                // A boss repeat run (queued as one entry, tracked via PlayerFlags rather than N
+                // separate queue entries) is advanced here one fight at a time, same as the live
+                // (non-offline) chain in startNextQueued() -- returning before ever reaching the
+                // sessionQueue scan below preserves the "don't let another queue item jump an
+                // in-progress chain" guarantee from issue #1167.
+                if (flags.activeBossRepeatSnapshot != null && flags.activeBossRepeatIndex < flags.activeBossRepeatTotal) {
+                    val current = sessionRepo.getActiveSession()
+                    if (current == null || !current.completed || current.skillName != "boss") return@withLock 0L
+                    val won = (json.decodeFromString<List<SessionFrame>>(current.frames).lastOrNull()?.kills ?: 0) > 0
+                    if (!won) {
+                        playerRepo.clearActiveBossRepeatUnlocked()
+                        return@withLock 0L
+                    }
+                    val snapshot = flags.activeBossRepeatSnapshot!!
+                    val duration = estimateDuration(snapshot, agilityLevel, floorReductionMin, chronosMult)
+                    if (duration > remainingMs) return@withLock 0L
+                    return@withLock try {
+                        startQueuedAction(snapshot, offline = true, backdateMs = remainingMs)
+                        playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(activeBossRepeatIndex = flags.activeBossRepeatIndex + 1))
+                        actualChargeMs(duration)
+                    } catch (_: Exception) {
+                        playerRepo.clearActiveBossRepeatUnlocked()
+                        0L
+                    }
                 }
-                val snapshot = flags.activeBossRepeatSnapshot!!
-                val duration = estimateDuration(snapshot, agilityLevel, floorReductionMin, chronosMult)
-                if (duration > remainingMs) return 0L
-                return try {
-                    startQueuedAction(snapshot, offline = true, backdateMs = remainingMs)
-                    playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(activeBossRepeatIndex = flags.activeBossRepeatIndex + 1))
-                    duration
-                } catch (_: Exception) {
-                    playerRepo.clearActiveBossRepeatUnlocked()
-                    0L
+                // Same idea as the boss repeat chain above, but for dungeon runs (issue #1167 / #1189).
+                if (flags.activeDungeonRepeatSnapshot != null && flags.activeDungeonRepeatIndex < flags.activeDungeonRepeatTotal) {
+                    val current = sessionRepo.getActiveSession()
+                    if (current == null || !current.completed || current.skillName != "combat") return@withLock 0L
+                    val survived = json.decodeFromString<List<SessionFrame>>(current.frames).lastOrNull()?.died != true
+                    if (!survived) {
+                        playerRepo.clearActiveDungeonRepeatUnlocked()
+                        return@withLock 0L
+                    }
+                    val snapshot = flags.activeDungeonRepeatSnapshot!!
+                    val duration = estimateDuration(snapshot, agilityLevel, floorReductionMin, chronosMult)
+                    if (duration > remainingMs) return@withLock 0L
+                    return@withLock try {
+                        startQueuedAction(snapshot, offline = true, backdateMs = remainingMs)
+                        playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(activeDungeonRepeatIndex = flags.activeDungeonRepeatIndex + 1))
+                        duration
+                    } catch (_: Exception) {
+                        playerRepo.clearActiveDungeonRepeatUnlocked()
+                        0L
+                    }
                 }
+                // Same reasoning as startNextQueued(): scan a local copy of the queue and persist
+                // at most once, only when something actually starts (issue #1183).
+                val originalQueue = flags.sessionQueue
+                var remaining = originalQueue
+                val skippedTowerActions = mutableListOf<QueuedAction>()
+                var droppedAny = false
+                var maxAttempts = originalQueue.size
+                while (maxAttempts-- >= 0) {
+                    val next = remaining.firstOrNull() ?: break
+                    remaining = remaining.drop(1)
+                    val duration = estimateDuration(next, agilityLevel, floorReductionMin, chronosMult)
+                    if (duration > remainingMs) return@withLock 0L
+                    try {
+                        // backdateMs = remainingMs so each fast-forwarded session in the same
+                        // catch-up burst gets a distinct startedAt (now - remainingMs), staying
+                        // strictly ordered by queue position instead of all colliding on "now".
+                        startQueuedAction(next, offline = true, backdateMs = remainingMs)
+                        if (next.skillName == "boss") playerRepo.stampBossRepeatStartUnlocked(next)
+                        if (next.skillName == "combat") playerRepo.stampDungeonRepeatStartUnlocked(next)
+                        val finalQueue = skippedTowerActions + remaining
+                        playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(sessionQueue = finalQueue))
+                        return@withLock actualChargeMs(duration)
+                    } catch (_: TowerPendingCollectionException) {
+                        skippedTowerActions += next
+                    } catch (_: ActionNoLongerQualifiesException) {
+                        // Same as startNextQueued(): the player no longer meets the activity's
+                        // level gate (a prestige dropped their level) — discard and move on
+                        // (issue #1605).
+                        droppedAny = true
+                    } catch (_: Exception) {
+                        // Nothing was ever written to the DB, so the queue is still exactly
+                        // originalQueue -- no requeue needed.
+                        return@withLock 0L
+                    }
+                }
+                if (droppedAny) {
+                    playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(
+                        sessionQueue = skippedTowerActions + remaining))
+                }
+                0L
             }
-            // Same idea as the boss repeat chain above, but for dungeon runs (issue #1167 / #1189).
-            if (flags.activeDungeonRepeatSnapshot != null && flags.activeDungeonRepeatIndex < flags.activeDungeonRepeatTotal) {
-                val current = sessionRepo.getActiveSession()
-                if (current == null || !current.completed || current.skillName != "combat") return 0L
-                val survived = json.decodeFromString<List<SessionFrame>>(current.frames).lastOrNull()?.died != true
-                if (!survived) {
-                    playerRepo.clearActiveDungeonRepeatUnlocked()
-                    return 0L
-                }
-                val snapshot = flags.activeDungeonRepeatSnapshot!!
-                val duration = estimateDuration(snapshot, agilityLevel, floorReductionMin, chronosMult)
-                if (duration > remainingMs) return 0L
-                return try {
-                    startQueuedAction(snapshot, offline = true, backdateMs = remainingMs)
-                    playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(activeDungeonRepeatIndex = flags.activeDungeonRepeatIndex + 1))
-                    duration
-                } catch (_: Exception) {
-                    playerRepo.clearActiveDungeonRepeatUnlocked()
-                    0L
-                }
-            }
-            // Same reasoning as startNextQueued(): scan a local copy of the queue and persist
-            // at most once, only when something actually starts (issue #1183).
-            val originalQueue = flags.sessionQueue
-            var remaining = originalQueue
-            val skippedTowerActions = mutableListOf<QueuedAction>()
-            var maxAttempts = originalQueue.size
-            while (maxAttempts-- >= 0) {
-                val next = remaining.firstOrNull() ?: break
-                remaining = remaining.drop(1)
-                val duration = estimateDuration(next, agilityLevel, floorReductionMin, chronosMult)
-                if (duration > remainingMs) return 0L
-                try {
-                    // backdateMs = remainingMs so each fast-forwarded session in the same
-                    // catch-up burst gets a distinct startedAt (now - remainingMs), staying
-                    // strictly ordered by queue position instead of all colliding on "now".
-                    startQueuedAction(next, offline = true, backdateMs = remainingMs)
-                    if (next.skillName == "boss") playerRepo.stampBossRepeatStartUnlocked(next)
-                    if (next.skillName == "combat") playerRepo.stampDungeonRepeatStartUnlocked(next)
-                    val finalQueue = skippedTowerActions + remaining
-                    playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(sessionQueue = finalQueue))
-                    return duration
-                } catch (_: TowerPendingCollectionException) {
-                    skippedTowerActions += next
-                } catch (_: Exception) {
-                    // Nothing was ever written to the DB, so the queue is still exactly
-                    // originalQueue -- no requeue needed.
-                    return 0L
+        }
+    }
+
+    /**
+     * Debug helper: completes the active session and fast-forwards any remaining
+     * boss/dungeon repeat runs as completed sessions so Collect gathers all of them.
+     */
+    suspend fun debugFinishActiveSessionWithRepeats() {
+        playerRepo.playerMutex.withLock {
+            mutex.withLock {
+                sessionRepo.getActiveSession()?.let { if (!it.completed) sessionRepo.markCompleted(it.sessionId) }
+
+                var flags = playerRepo.getFlagsUnlocked()
+                val snapshot = flags.activeBossRepeatSnapshot ?: flags.activeDungeonRepeatSnapshot ?: return@withLock
+                val isBoss = flags.activeBossRepeatSnapshot != null
+                val remaining = (if (isBoss) flags.activeBossRepeatTotal - flags.activeBossRepeatIndex
+                                 else flags.activeDungeonRepeatTotal - flags.activeDungeonRepeatIndex).coerceAtLeast(0)
+
+                repeat(remaining.coerceAtMost(250)) { i ->
+                    try {
+                        startQueuedAction(snapshot, offline = true, backdateMs = (remaining - i).toLong() * 86_400_000L)
+                        flags = if (isBoss) flags.copy(activeBossRepeatIndex = flags.activeBossRepeatIndex + 1)
+                                else flags.copy(activeDungeonRepeatIndex = flags.activeDungeonRepeatIndex + 1)
+                        playerRepo.updateFlagsUnlocked(flags)
+                    } catch (_: Exception) {
+                        return@withLock
+                    }
                 }
             }
         }
-        return 0L
     }
 
     private suspend fun startQueuedAction(action: QueuedAction, offline: Boolean = false, backdateMs: Long = 0L) {
@@ -282,6 +382,7 @@ class QueuedSessionStarter @Inject constructor(
         val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
         val inventory: Map<String, Int>    = json.decodeFromString(player.inventory)
         val flags: PlayerFlags             = json.decodeFromString(player.flags)
+        val equipMap = HeirloomStats.resolveAll(gameData.equipment, levels, flags.heirloomXp)
         val agilityLevel    = levels[Skills.AGILITY] ?: 1
         val floorReductionMin = boostRepo.sessionFloorReductionMin(flags)
         val chronosMult     = townRepo.playerSessionDurationMultiplier(flags)
@@ -294,10 +395,21 @@ class QueuedSessionStarter @Inject constructor(
         val prayerCapeMult   = resolveCapeMultiplier("prayer", equippedCapeData, inventory.keys, flags.townBuildingTiers, boostRepo.capeScalingBySkill(flags), gameData.equipment, flags.ironman)
         // Recorded on the session so collection can detect a mid-session prestige reset
         // (isSkillSessionStillEligible) instead of gating on an unrelated difficulty formula.
-        val levelAtStart = when (action.skillName) {
+        // A prestige between queueing and starting is gated like a manual start (issue #1605):
+        // still qualifying at the current level means the session runs and pays out at that
+        // level (it simulates with post-prestige stats, so nothing is laundered); no longer
+        // qualifying drops the action. Activities without a known level gate keep the
+        // queue-time floor, so their pre-prestige plans still pay out with XP zeroed.
+        val currentLevel = when (action.skillName) {
             "boss", "combat", "tower" -> combatLevelFrom(levels)
             "expedition" -> gameData.skillingDungeons[action.activityKey]?.skill?.let { levels[it] } ?: 1
             else -> levels[action.skillName] ?: 1
+        }
+        val requiredLevel = queuedActionRequiredLevel(action, gameData)
+        val levelAtStart = when {
+            requiredLevel == null        -> maxOf(currentLevel, action.levelAtQueue)
+            currentLevel < requiredLevel -> throw ActionNoLongerQualifiesException()
+            else                         -> currentLevel
         }
 
         when (action.skillName) {
@@ -312,7 +424,7 @@ class QueuedSessionStarter @Inject constructor(
                     agilityLevel    = agilityLevel,
                     floorReductionMin = floorReductionMin,
                     petBoostPct     = boostRepo.boostedPetPct(Skills.MINING, flags, gatheringPetBoost(player.pets, Skills.MINING, flags.ironman)),
-                    toolEfficiency  = gameData.toolEfficiency(equipped[EquipSlot.PICKAXE], EquipSlot.PICKAXE, oreData.levelRequired) * boostRepo.toolEffMultiplier(Skills.MINING, flags),
+                    toolEfficiency  = gameData.toolEfficiency(equipped[EquipSlot.PICKAXE], EquipSlot.PICKAXE, oreData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.MINING, flags, levels[Skills.MINING] ?: 1),
                     petDropKey      = petDropKey(Skills.MINING),
                     petDropChance   = petDropChance(Skills.MINING),
                     chronosMultiplier = chronosMult,
@@ -329,7 +441,7 @@ class QueuedSessionStarter @Inject constructor(
                     agilityLevel    = agilityLevel,
                     floorReductionMin = floorReductionMin,
                     petBoostPct     = boostRepo.boostedPetPct(Skills.WOODCUTTING, flags, gatheringPetBoost(player.pets, Skills.WOODCUTTING, flags.ironman)),
-                    toolEfficiency  = gameData.toolEfficiency(equipped[EquipSlot.AXE], EquipSlot.AXE, treeData.levelRequired) * boostRepo.toolEffMultiplier(Skills.WOODCUTTING, flags),
+                    toolEfficiency  = gameData.toolEfficiency(equipped[EquipSlot.AXE], EquipSlot.AXE, treeData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.WOODCUTTING, flags, levels[Skills.WOODCUTTING] ?: 1),
                     petDropKey      = petDropKey(Skills.WOODCUTTING),
                     petDropChance   = petDropChance(Skills.WOODCUTTING),
                     chronosMultiplier = chronosMult,
@@ -346,7 +458,7 @@ class QueuedSessionStarter @Inject constructor(
                     agilityLevel     = agilityLevel,
                     floorReductionMin  = floorReductionMin,
                     petBoostPct      = boostRepo.boostedPetPct(Skills.FISHING, flags, gatheringPetBoost(player.pets, Skills.FISHING, flags.ironman)),
-                    rodEfficiency    = gameData.toolEfficiency(equipped[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD, fishData.levelRequired) * boostRepo.toolEffMultiplier(Skills.FISHING, flags),
+                    rodEfficiency    = gameData.toolEfficiency(equipped[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD, fishData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.FISHING, flags, levels[Skills.FISHING] ?: 1),
                     petDropKey       = petDropKey(Skills.FISHING),
                     petDropChance    = petDropChance(Skills.FISHING),
                     fishingSkillData = gameData.fishingSkillData,
@@ -363,7 +475,7 @@ class QueuedSessionStarter @Inject constructor(
                     agilityLevel    = agilityLevel,
                     floorReductionMin = floorReductionMin,
                     petBoostPct  = boostRepo.boostedPetPct(Skills.AGILITY, flags, gatheringPetBoost(player.pets, Skills.AGILITY, flags.ironman)),
-                    toolEfficiency = gameData.toolEfficiency(equipped[EquipSlot.GRAPPLING_HOOK], EquipSlot.GRAPPLING_HOOK, courseData.levelRequired),
+                    toolEfficiency = gameData.toolEfficiency(equipped[EquipSlot.GRAPPLING_HOOK], EquipSlot.GRAPPLING_HOOK, courseData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp),
                     petDropKey   = petDropKey(Skills.AGILITY),
                     petDropChance = petDropChance(Skills.AGILITY),
                     chronosMultiplier = chronosMult,
@@ -383,7 +495,7 @@ class QueuedSessionStarter @Inject constructor(
                     petBoostPct   = boostRepo.boostedPetPct(Skills.THIEVING, flags, gatheringPetBoost(player.pets, Skills.THIEVING, flags.ironman)),
                     petDropKey    = petDropKey(Skills.THIEVING),
                     petDropChance = petDropChance(Skills.THIEVING),
-                    toolEfficiency = gameData.toolEfficiency(equipped[EquipSlot.LOCKPICK], EquipSlot.LOCKPICK, npc.levelRequired),
+                    toolEfficiency = gameData.toolEfficiency(equipped[EquipSlot.LOCKPICK], EquipSlot.LOCKPICK, npc.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp),
                     chronosMultiplier = chronosMult,
                     successBonus = boostRepo.thievingSuccessBonus(flags),
                 )
@@ -396,14 +508,14 @@ class QueuedSessionStarter @Inject constructor(
                     insertAsCompleted = offline,
                     backdateMs        = backdateMs,
                     levelAtStart      = levelAtStart,
-                )
+                 playerMutexHeld = true,)
             }
             Skills.FIREMAKING -> {
                 val logKey  = action.activityKey
                 val logData = gameData.logs[logKey] ?: return
                 val qty     = action.qty.takeIf { it > 0 } ?: return
                 val ashKey  = ashForLog(logKey)
-                val efficiency = gameData.toolEfficiency(equipped[EquipSlot.TINDERBOX], EquipSlot.TINDERBOX, logData.levelRequired)
+                val efficiency = gameData.toolEfficiency(equipped[EquipSlot.TINDERBOX], EquipSlot.TINDERBOX, logData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp)
                 val frames  = buildCraftFrames(xpMap[Skills.FIREMAKING] ?: 0L, qty, logData.xpPerLog.toDouble(), 1, ashKey,
                     efficiency = efficiency,
                     petDropKey = petDropKey(Skills.FIREMAKING), petDropChance = petDropChance(Skills.FIREMAKING))
@@ -417,7 +529,7 @@ class QueuedSessionStarter @Inject constructor(
                     insertAsCompleted = offline,
                     backdateMs        = backdateMs,
                     levelAtStart      = levelAtStart,
-                )
+                 playerMutexHeld = true,)
             }
             Skills.RUNECRAFTING -> {
                 val runeKey  = action.activityKey
@@ -473,7 +585,7 @@ class QueuedSessionStarter @Inject constructor(
                 }
                 val perEssenceMs = SkillSimulator.sessionDurationMs(agilityLevel, floorReductionMin, chronosMult) / 60
                 sessionRepo.startSession(Skills.RUNECRAFTING, runeKey, encodeFrames(frames), qty.toLong() * perEssenceMs, action.skillDisplayName, insertAsCompleted = offline, backdateMs = backdateMs,
-                    catalystKey = action.catalystKey, catalystQty = ashCost, levelAtStart = levelAtStart)
+                    catalystKey = action.catalystKey, catalystQty = ashCost, levelAtStart = levelAtStart, playerMutexHeld = true)
             }
             Skills.PRAYER -> {
                 val boneKey = action.activityKey
@@ -509,26 +621,26 @@ class QueuedSessionStarter @Inject constructor(
                     insertAsCompleted = offline,
                     backdateMs        = backdateMs,
                     levelAtStart      = levelAtStart,
-                )
+                 playerMutexHeld = true,)
             }
             Skills.SMITHING -> {
                 val r   = gameData.smithingRecipes[action.activityKey] ?: return
                 val qty = action.qty.takeIf { it > 0 } ?: return
-                val efficiency = gameData.toolEfficiency(equipped[EquipSlot.HAMMER], EquipSlot.HAMMER, r.levelRequired)
+                val efficiency = gameData.toolEfficiency(equipped[EquipSlot.HAMMER], EquipSlot.HAMMER, r.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp)
                 val frames = buildCraftFrames(xpMap[Skills.SMITHING] ?: 0L, qty, r.xpPerItem, r.outputQuantity, action.activityKey,
                     efficiency = efficiency, petBoostPct = boostRepo.boostedPetPct(Skills.SMITHING, flags, gatheringPetBoost(player.pets, Skills.SMITHING, flags.ironman)),
                     petDropKey = petDropKey(Skills.SMITHING), petDropChance = petDropChance(Skills.SMITHING))
                 val perItemMs = (SkillSimulator.sessionDurationMs(agilityLevel, floorReductionMin, chronosMult) / 60 / efficiency).toLong()
-                sessionRepo.startSession(Skills.SMITHING, action.activityKey, encodeFrames(frames), qty * perItemMs, action.skillDisplayName, insertAsCompleted = offline, backdateMs = backdateMs, levelAtStart = levelAtStart)
+                sessionRepo.startSession(Skills.SMITHING, action.activityKey, encodeFrames(frames), qty * perItemMs, action.skillDisplayName, insertAsCompleted = offline, backdateMs = backdateMs, levelAtStart = levelAtStart, playerMutexHeld = true)
             }
             Skills.COOKING -> {
                 val r: CookingRecipe = gameData.cookingRecipes[action.activityKey] ?: return
                 val qty = action.qty.takeIf { it > 0 } ?: return
-                val efficiency = gameData.toolEfficiency(equipped[EquipSlot.FRYING_PAN], EquipSlot.FRYING_PAN, r.levelRequired)
+                val efficiency = gameData.toolEfficiency(equipped[EquipSlot.FRYING_PAN], EquipSlot.FRYING_PAN, r.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp)
                 val frames = buildCraftFrames(xpMap[Skills.COOKING] ?: 0L, qty, r.xpPerItem, 1, r.cookedItem,
                     efficiency = efficiency, petBoostPct = boostRepo.boostedPetPct(Skills.COOKING, flags, gatheringPetBoost(player.pets, Skills.COOKING, flags.ironman)))
                 val perItemMs = (SkillSimulator.sessionDurationMs(agilityLevel, floorReductionMin, chronosMult) / 60 / efficiency).toLong()
-                sessionRepo.startSession(Skills.COOKING, action.activityKey, encodeFrames(frames), qty * perItemMs, action.skillDisplayName, insertAsCompleted = offline, backdateMs = backdateMs, levelAtStart = levelAtStart)
+                sessionRepo.startSession(Skills.COOKING, action.activityKey, encodeFrames(frames), qty * perItemMs, action.skillDisplayName, insertAsCompleted = offline, backdateMs = backdateMs, levelAtStart = levelAtStart, playerMutexHeld = true)
             }
             Skills.FLETCHING -> {
                 val r   = gameData.fletchingRecipes[action.activityKey] ?: return
@@ -537,7 +649,7 @@ class QueuedSessionStarter @Inject constructor(
                     petBoostPct = boostRepo.boostedPetPct(Skills.FLETCHING, flags, gatheringPetBoost(player.pets, Skills.FLETCHING, flags.ironman)),
                     petDropKey = petDropKey(Skills.FLETCHING), petDropChance = petDropChance(Skills.FLETCHING))
                 val perItemMs = SkillSimulator.sessionDurationMs(agilityLevel, floorReductionMin, chronosMult) / 60
-                sessionRepo.startSession(Skills.FLETCHING, action.activityKey, encodeFrames(frames), qty * perItemMs, action.skillDisplayName, insertAsCompleted = offline, backdateMs = backdateMs, levelAtStart = levelAtStart)
+                sessionRepo.startSession(Skills.FLETCHING, action.activityKey, encodeFrames(frames), qty * perItemMs, action.skillDisplayName, insertAsCompleted = offline, backdateMs = backdateMs, levelAtStart = levelAtStart, playerMutexHeld = true)
             }
             Skills.CRAFTING -> {
                 val r   = gameData.craftingRecipes[action.activityKey] ?: return
@@ -546,7 +658,7 @@ class QueuedSessionStarter @Inject constructor(
                     petBoostPct = boostRepo.boostedPetPct(Skills.CRAFTING, flags, gatheringPetBoost(player.pets, Skills.CRAFTING, flags.ironman)),
                     petDropKey = petDropKey(Skills.CRAFTING), petDropChance = petDropChance(Skills.CRAFTING))
                 val perItemMs = SkillSimulator.sessionDurationMs(agilityLevel, floorReductionMin, chronosMult) / 60
-                sessionRepo.startSession(Skills.CRAFTING, action.activityKey, encodeFrames(frames), qty * perItemMs, action.skillDisplayName, insertAsCompleted = offline, backdateMs = backdateMs, levelAtStart = levelAtStart)
+                sessionRepo.startSession(Skills.CRAFTING, action.activityKey, encodeFrames(frames), qty * perItemMs, action.skillDisplayName, insertAsCompleted = offline, backdateMs = backdateMs, levelAtStart = levelAtStart, playerMutexHeld = true)
             }
             Skills.CONSTRUCTION -> {
                 val r   = gameData.constructionRecipes[action.activityKey] ?: return
@@ -555,7 +667,7 @@ class QueuedSessionStarter @Inject constructor(
                     petBoostPct = boostRepo.boostedPetPct(Skills.CONSTRUCTION, flags, gatheringPetBoost(player.pets, Skills.CONSTRUCTION, flags.ironman)),
                     petDropKey = petDropKey(Skills.CONSTRUCTION), petDropChance = petDropChance(Skills.CONSTRUCTION))
                 val perItemMs = SkillSimulator.sessionDurationMs(agilityLevel, floorReductionMin, chronosMult) / 60
-                sessionRepo.startSession(Skills.CONSTRUCTION, action.activityKey, encodeFrames(frames), qty * perItemMs, action.skillDisplayName, insertAsCompleted = offline, backdateMs = backdateMs, levelAtStart = levelAtStart)
+                sessionRepo.startSession(Skills.CONSTRUCTION, action.activityKey, encodeFrames(frames), qty * perItemMs, action.skillDisplayName, insertAsCompleted = offline, backdateMs = backdateMs, levelAtStart = levelAtStart, playerMutexHeld = true)
             }
             Skills.HERBLORE -> {
                 val r   = gameData.herbloreRecipes[action.activityKey] ?: return
@@ -570,7 +682,7 @@ class QueuedSessionStarter @Inject constructor(
                     petDropKey = petDropKey(Skills.HERBLORE), petDropChance = petDropChance(Skills.HERBLORE))
                 val perItemMs = SkillSimulator.sessionDurationMs(agilityLevel, floorReductionMin, chronosMult) / 60
                 sessionRepo.startSession(Skills.HERBLORE, action.activityKey, encodeFrames(frames), qty * perItemMs, action.skillDisplayName, insertAsCompleted = offline, backdateMs = backdateMs,
-                    catalystKey = catalystKey, catalystQty = ashCost, levelAtStart = levelAtStart)
+                    catalystKey = catalystKey, catalystQty = ashCost, levelAtStart = levelAtStart, playerMutexHeld = true)
             }
             Skills.MERCANTILE -> {
                 val route = gameData.tradeRoutes.firstOrNull { it.id == action.activityKey } ?: return
@@ -592,7 +704,7 @@ class QueuedSessionStarter @Inject constructor(
                     insertAsCompleted = offline,
                     backdateMs        = backdateMs,
                     levelAtStart      = levelAtStart,
-                )
+                 playerMutexHeld = true,)
             }
             "boss" -> {
                 val bossKey = action.activityKey
@@ -610,7 +722,7 @@ class QueuedSessionStarter @Inject constructor(
                 val bossWeaponSlot = action.weaponSlot
                     ?: EquipSlot.WEAPON_SLOTS.firstOrNull { bossEquipped[it] != null }
                     ?: EquipSlot.WEAPON
-                val bossWeapon = bossEquipped[bossWeaponSlot]?.let { gameData.equipment[it] }
+                val bossWeapon = bossEquipped[bossWeaponSlot]?.let { equipMap[it] }
                 val combatStyle = when (bossWeapon?.combatStyle) {
                     "ranged"   -> "ranged"
                     "magic"    -> "magic"
@@ -618,14 +730,14 @@ class QueuedSessionStarter @Inject constructor(
                     else       -> "melee"
                 }
                 val totalAtkBonus    = EquipSlot.ARMOR_SLOTS.sumOf { slot ->
-                    val eq = gameData.equipment[bossEquipped[slot]]
+                    val eq = equipMap[bossEquipped[slot]]
                     when (combatStyle) { "ranged" -> eq?.rangedAttackBonus ?: 0; "magic" -> eq?.magicAttackBonus ?: 0; else -> eq?.attackBonus ?: 0 }
                 } + when (combatStyle) { "ranged" -> bossWeapon?.rangedAttackBonus ?: bossWeapon?.attackBonus ?: 0; "magic" -> bossWeapon?.magicAttackBonus ?: 0; else -> bossWeapon?.attackBonus ?: 0 }
-                val totalStrBonus    = EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[bossEquipped[it]]?.strengthBonus ?: 0 } + (bossWeapon?.strengthBonus ?: 0)
-                val totalDefBonus    = EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[bossEquipped[it]]?.defenseBonus  ?: 0 } + (bossWeapon?.defenseBonus  ?: 0)
-                val totalMagicDmgBonus = if (combatStyle == "magic") EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[bossEquipped[it]]?.magicDamageBonus ?: 0 } + (bossWeapon?.magicDamageBonus ?: 0) else 0
+                val totalStrBonus    = EquipSlot.ARMOR_SLOTS.sumOf { equipMap[bossEquipped[it]]?.strengthBonus ?: 0 } + (bossWeapon?.strengthBonus ?: 0)
+                val totalDefBonus    = EquipSlot.ARMOR_SLOTS.sumOf { equipMap[bossEquipped[it]]?.defenseBonus  ?: 0 } + (bossWeapon?.defenseBonus  ?: 0)
+                val totalMagicDmgBonus = if (combatStyle == "magic") EquipSlot.ARMOR_SLOTS.sumOf { equipMap[bossEquipped[it]]?.magicDamageBonus ?: 0 } + (bossWeapon?.magicDamageBonus ?: 0) else 0
                 val totalRangedStrBonus = if (combatStyle == "ranged") {
-                    EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[bossEquipped[it]]?.rangedStrengthBonus ?: 0 } + (bossWeapon?.rangedStrengthBonus ?: 0)
+                    EquipSlot.ARMOR_SLOTS.sumOf { equipMap[bossEquipped[it]]?.rangedStrengthBonus ?: 0 } + (bossWeapon?.rangedStrengthBonus ?: 0)
                 } else 0
                 val equippedFoodKeys  = flags.equippedFood.keys
                 val prevFoodConsumed  = pendingFoodConsumed()
@@ -641,15 +753,15 @@ class QueuedSessionStarter @Inject constructor(
                                 val bossFrames = CombatSimulator.simulateBoss(
                     boss               = boss,
                     bossKey            = bossKey,
-                    playerAttack       = ((levels[Skills.ATTACK]   ?: 1) * attackCapeMult).toInt() + boostRepo.combatStatBonus(Skills.ATTACK, flags) + (bossPotionBonuses["attack"]   ?: 0),
-                    playerStrength     = ((levels[Skills.STRENGTH] ?: 1) * strengthCapeMult).toInt() + boostRepo.combatStatBonus(Skills.STRENGTH, flags) + (bossPotionBonuses["strength"] ?: 0),
-                    playerDefence      = ((levels[Skills.DEFENSE]  ?: 1) * defenseCapeMult).toInt() + totalDefBonus + boostRepo.combatStatBonus(Skills.DEFENSE, flags) + (bossPotionBonuses["defense"] ?: 0),
-                    playerHp           = (levels[Skills.HITPOINTS] ?: 1) + boostRepo.combatStatBonus(Skills.HITPOINTS, flags) + flags.towerHpBonus,
+                    playerAttack       = ((levels[Skills.ATTACK]   ?: 1) * attackCapeMult).toInt() + boostRepo.combatStatBonus(Skills.ATTACK, flags, levels[Skills.ATTACK] ?: 1) + (bossPotionBonuses["attack"]   ?: 0),
+                    playerStrength     = ((levels[Skills.STRENGTH] ?: 1) * strengthCapeMult).toInt() + boostRepo.combatStatBonus(Skills.STRENGTH, flags, levels[Skills.STRENGTH] ?: 1) + (bossPotionBonuses["strength"] ?: 0),
+                    playerDefence      = ((levels[Skills.DEFENSE]  ?: 1) * defenseCapeMult).toInt() + totalDefBonus + boostRepo.combatStatBonus(Skills.DEFENSE, flags, levels[Skills.DEFENSE] ?: 1) + (bossPotionBonuses["defense"] ?: 0),
+                    playerHp           = (levels[Skills.HITPOINTS] ?: 1) + boostRepo.combatStatBonus(Skills.HITPOINTS, flags, levels[Skills.HITPOINTS] ?: 1) + flags.towerHpBonus,
                     weaponAttackBonus  = totalAtkBonus,
                     weaponStrBonus     = totalStrBonus,
                     combatStyle        = combatStyle,
-                    playerRanged       = ((levels[Skills.RANGED] ?: 1) * rangedCapeMult).toInt() + boostRepo.combatStatBonus(Skills.RANGED, flags) + (bossPotionBonuses["ranged"] ?: 0),
-                    playerMagic        = ((levels[Skills.MAGIC]  ?: 1) * magicCapeMult).toInt() + boostRepo.combatStatBonus(Skills.MAGIC, flags) + (bossPotionBonuses["magic"]  ?: 0),
+                    playerRanged       = ((levels[Skills.RANGED] ?: 1) * rangedCapeMult).toInt() + boostRepo.combatStatBonus(Skills.RANGED, flags, levels[Skills.RANGED] ?: 1) + (bossPotionBonuses["ranged"] ?: 0),
+                    playerMagic        = ((levels[Skills.MAGIC]  ?: 1) * magicCapeMult).toInt() + boostRepo.combatStatBonus(Skills.MAGIC, flags, levels[Skills.MAGIC] ?: 1) + (bossPotionBonuses["magic"]  ?: 0),
                     rangedGearStrengthBonus = totalRangedStrBonus,
                     spellMaxHit        = (spell?.maxHit ?: 0) + totalMagicDmgBonus,
                     availableArrows    = availableArrows,
@@ -659,11 +771,13 @@ class QueuedSessionStarter @Inject constructor(
                     blessingDefBonus   = ChurchRepository.defBonus(flags, prayerCapeMult),
                     attackSpeedSec     = bossWeapon?.attackSpeed ?: CombatSimulator.BASE_ATTACK_SPEED_SEC,
                     eatThresholdPct    = flags.foodEatThresholdPct,
+                    foodEatOrder       = flags.foodEatOrder,
                     doubleHitChance     = boostRepo.doubleHitChance(flags),
                     secondChance        = boostRepo.secondChanceActive(flags),
                     // Queued raids use the contracts valid when the session actually starts,
                     // matching how queued sessions already use the current armor.
                     mercenaries         = if (boss.raid) mercRepo.combatants(flags) else emptyList(),
+                    blockedRareDrops    = HeirloomStats.ownedHeirloomKeys(gameData.equipment, inventory) + sessionRepo.pendingHeirloomKeys(),
                 )
                 val frameMs        = SkillSimulator.sessionDurationMs(agilityLevel, floorReductionMin, chronosMult) / 60L
                 val bossDurationMs = boss.durationMinutes * frameMs
@@ -679,15 +793,16 @@ class QueuedSessionStarter @Inject constructor(
                     insertAsCompleted = offline,
                     backdateMs        = backdateMs,
                     levelAtStart      = levelAtStart,
-                )
+                    weaponSlot        = bossWeaponSlot,
+                 playerMutexHeld = true,)
             }
             "expedition" -> {
                 val dungeonKey = action.activityKey
                 val dungeon    = gameData.skillingDungeons[dungeonKey] ?: return
                 val toolEfficiency: Float = when (dungeon.skill) {
-                    Skills.MINING      -> gameData.toolEfficiency(equipped[EquipSlot.PICKAXE],     EquipSlot.PICKAXE,     dungeon.levelRequired)
-                    Skills.WOODCUTTING -> gameData.toolEfficiency(equipped[EquipSlot.AXE],         EquipSlot.AXE,         dungeon.levelRequired)
-                    Skills.FISHING     -> gameData.toolEfficiency(equipped[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD, dungeon.levelRequired)
+                    Skills.MINING      -> gameData.toolEfficiency(equipped[EquipSlot.PICKAXE],     EquipSlot.PICKAXE,     dungeon.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp)
+                    Skills.WOODCUTTING -> gameData.toolEfficiency(equipped[EquipSlot.AXE],         EquipSlot.AXE,         dungeon.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp)
+                    Skills.FISHING     -> gameData.toolEfficiency(equipped[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD, dungeon.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp)
                     else               -> 1.0f
                 }
                 val result = SkillingDungeonSimulator.simulate(
@@ -716,7 +831,7 @@ class QueuedSessionStarter @Inject constructor(
                     ?: EquipSlot.WEAPON_SLOTS.firstOrNull { combatEquipped[it] != null }
                     ?: EquipSlot.WEAPON
                 val weaponKey  = combatEquipped[activeWeaponSlot]
-                val weapon     = weaponKey?.let { gameData.equipment[it] }
+                val weapon     = weaponKey?.let { equipMap[it] }
                 val combatStyle = when (weapon?.combatStyle) {
                     "ranged"   -> "ranged"
                     "magic"    -> "magic"
@@ -735,14 +850,14 @@ class QueuedSessionStarter @Inject constructor(
                     .filterValues { it > 0 }
                 val spell = gameData.spells[combatSpellName]
                 val totalAtkBonus = EquipSlot.ARMOR_SLOTS.sumOf { slot ->
-                    val eq = gameData.equipment[combatEquipped[slot]]
+                    val eq = equipMap[combatEquipped[slot]]
                     when (combatStyle) { "ranged" -> eq?.rangedAttackBonus ?: 0; "magic" -> eq?.magicAttackBonus ?: 0; else -> eq?.attackBonus ?: 0 }
                 } + when (combatStyle) { "ranged" -> weapon?.rangedAttackBonus ?: weapon?.attackBonus ?: 0; "magic" -> weapon?.magicAttackBonus ?: 0; else -> weapon?.attackBonus ?: 0 }
-                val totalStrBonus = EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[combatEquipped[it]]?.strengthBonus ?: 0 } + (weapon?.strengthBonus ?: 0)
-                val totalDefBonus = EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[combatEquipped[it]]?.defenseBonus  ?: 0 } + (weapon?.defenseBonus  ?: 0)
-                val totalMagicDmgBonus = if (combatStyle == "magic") EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[combatEquipped[it]]?.magicDamageBonus ?: 0 } + (weapon?.magicDamageBonus ?: 0) else 0
+                val totalStrBonus = EquipSlot.ARMOR_SLOTS.sumOf { equipMap[combatEquipped[it]]?.strengthBonus ?: 0 } + (weapon?.strengthBonus ?: 0)
+                val totalDefBonus = EquipSlot.ARMOR_SLOTS.sumOf { equipMap[combatEquipped[it]]?.defenseBonus  ?: 0 } + (weapon?.defenseBonus  ?: 0)
+                val totalMagicDmgBonus = if (combatStyle == "magic") EquipSlot.ARMOR_SLOTS.sumOf { equipMap[combatEquipped[it]]?.magicDamageBonus ?: 0 } + (weapon?.magicDamageBonus ?: 0) else 0
                 val totalRangedStrBonus = if (combatStyle == "ranged") {
-                    EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[combatEquipped[it]]?.rangedStrengthBonus ?: 0 } + (weapon?.rangedStrengthBonus ?: 0)
+                    EquipSlot.ARMOR_SLOTS.sumOf { equipMap[combatEquipped[it]]?.rangedStrengthBonus ?: 0 } + (weapon?.rangedStrengthBonus ?: 0)
                 } else 0
                 val staffCoversRune = combatStyle == "magic" && spell != null && (weapon?.infiniteRunes == "all" || weapon?.infiniteRunes == spell.runeType)
                 val queueRuneKey  = if (combatStyle == "magic" && spell != null && !staffCoversRune) spell.runeType else null
@@ -750,16 +865,16 @@ class QueuedSessionStarter @Inject constructor(
                                 val result = CombatSimulator.simulateDungeon(
                     dungeon             = dungeon,
                     enemies             = gameData.enemies,
-                    playerAttack        = ((levels[Skills.ATTACK]   ?: 1) * attackCapeMult).toInt() + boostRepo.combatStatBonus(Skills.ATTACK, flags) + (combatPotBonuses["attack"]   ?: 0),
-                    playerStrength      = ((levels[Skills.STRENGTH] ?: 1) * strengthCapeMult).toInt() + boostRepo.combatStatBonus(Skills.STRENGTH, flags) + (combatPotBonuses["strength"] ?: 0),
-                    playerDefence       = ((levels[Skills.DEFENSE]  ?: 1) * defenseCapeMult).toInt() + totalDefBonus + boostRepo.combatStatBonus(Skills.DEFENSE, flags) + (combatPotBonuses["defense"] ?: 0),
-                    playerHp            = (levels[Skills.HITPOINTS] ?: 1) + boostRepo.combatStatBonus(Skills.HITPOINTS, flags) + flags.towerHpBonus,
+                    playerAttack        = ((levels[Skills.ATTACK]   ?: 1) * attackCapeMult).toInt() + boostRepo.combatStatBonus(Skills.ATTACK, flags, levels[Skills.ATTACK] ?: 1) + (combatPotBonuses["attack"]   ?: 0),
+                    playerStrength      = ((levels[Skills.STRENGTH] ?: 1) * strengthCapeMult).toInt() + boostRepo.combatStatBonus(Skills.STRENGTH, flags, levels[Skills.STRENGTH] ?: 1) + (combatPotBonuses["strength"] ?: 0),
+                    playerDefence       = ((levels[Skills.DEFENSE]  ?: 1) * defenseCapeMult).toInt() + totalDefBonus + boostRepo.combatStatBonus(Skills.DEFENSE, flags, levels[Skills.DEFENSE] ?: 1) + (combatPotBonuses["defense"] ?: 0),
+                    playerHp            = (levels[Skills.HITPOINTS] ?: 1) + boostRepo.combatStatBonus(Skills.HITPOINTS, flags, levels[Skills.HITPOINTS] ?: 1) + flags.towerHpBonus,
                     blessingDefBonus    = ChurchRepository.defBonus(flags, prayerCapeMult),
                     weaponAttackBonus   = totalAtkBonus,
                     weaponStrengthBonus = totalStrBonus,
                     combatStyle         = combatStyle,
-                    playerRanged        = ((levels[Skills.RANGED] ?: 1) * rangedCapeMult).toInt() + boostRepo.combatStatBonus(Skills.RANGED, flags) + (combatPotBonuses["ranged"] ?: 0),
-                    playerMagic         = ((levels[Skills.MAGIC]  ?: 1) * magicCapeMult).toInt() + boostRepo.combatStatBonus(Skills.MAGIC, flags) + (combatPotBonuses["magic"]  ?: 0),
+                    playerRanged        = ((levels[Skills.RANGED] ?: 1) * rangedCapeMult).toInt() + boostRepo.combatStatBonus(Skills.RANGED, flags, levels[Skills.RANGED] ?: 1) + (combatPotBonuses["ranged"] ?: 0),
+                    playerMagic         = ((levels[Skills.MAGIC]  ?: 1) * magicCapeMult).toInt() + boostRepo.combatStatBonus(Skills.MAGIC, flags, levels[Skills.MAGIC] ?: 1) + (combatPotBonuses["magic"]  ?: 0),
                     rangedGearStrengthBonus = totalRangedStrBonus,
                     spellMaxHit         = (spell?.maxHit ?: 0) + totalMagicDmgBonus,
                     agilityLevel        = agilityLevel,
@@ -774,6 +889,7 @@ class QueuedSessionStarter @Inject constructor(
                     availableRunes      = if (queueRuneKey != null) inventory[queueRuneKey] ?: 0 else Int.MAX_VALUE,
                     attackSpeedSec      = weapon?.attackSpeed ?: CombatSimulator.BASE_ATTACK_SPEED_SEC,
                     eatThresholdPct     = flags.foodEatThresholdPct,
+                    foodEatOrder        = flags.foodEatOrder,
                     chronosMultiplier   = chronosMult,
                     doubleHitChance     = boostRepo.doubleHitChance(flags),
                     secondChance        = boostRepo.secondChanceActive(flags),
@@ -802,7 +918,7 @@ class QueuedSessionStarter @Inject constructor(
                     ?: EquipSlot.WEAPON_SLOTS.firstOrNull { equipped[it] != null }
                     ?: EquipSlot.WEAPON
                 val weaponKey   = equipped[activeWeaponSlot]
-                val weapon      = weaponKey?.let { gameData.equipment[it] }
+                val weapon      = weaponKey?.let { equipMap[it] }
                 val combatStyle = when (weapon?.combatStyle) {
                     "ranged"   -> "ranged"
                     "magic"    -> "magic"
@@ -810,14 +926,14 @@ class QueuedSessionStarter @Inject constructor(
                     else       -> "attack"
                 }
                 val totalAtkBonus = EquipSlot.ARMOR_SLOTS.sumOf { slot ->
-                    val eq = gameData.equipment[equipped[slot]]
+                    val eq = equipMap[equipped[slot]]
                     when (combatStyle) { "ranged" -> eq?.rangedAttackBonus ?: 0; "magic" -> eq?.magicAttackBonus ?: 0; else -> eq?.attackBonus ?: 0 }
                 } + when (combatStyle) { "ranged" -> weapon?.rangedAttackBonus ?: weapon?.attackBonus ?: 0; "magic" -> weapon?.magicAttackBonus ?: 0; else -> weapon?.attackBonus ?: 0 }
-                val totalStrBonus     = EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.strengthBonus ?: 0 } + (weapon?.strengthBonus ?: 0)
-                val totalDefBonus     = EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.defenseBonus  ?: 0 } + (weapon?.defenseBonus  ?: 0)
-                val totalMagicDmgBonus = if (combatStyle == "magic") EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.magicDamageBonus ?: 0 } + (weapon?.magicDamageBonus ?: 0) else 0
+                val totalStrBonus     = EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.strengthBonus ?: 0 } + (weapon?.strengthBonus ?: 0)
+                val totalDefBonus     = EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.defenseBonus  ?: 0 } + (weapon?.defenseBonus  ?: 0)
+                val totalMagicDmgBonus = if (combatStyle == "magic") EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.magicDamageBonus ?: 0 } + (weapon?.magicDamageBonus ?: 0) else 0
                 val totalRangedStrBonus = if (combatStyle == "ranged") {
-                    EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.rangedStrengthBonus ?: 0 } + (weapon?.rangedStrengthBonus ?: 0)
+                    EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.rangedStrengthBonus ?: 0 } + (weapon?.rangedStrengthBonus ?: 0)
                 } else 0
                 val preferredArrow  = flags.equippedArrows?.takeIf { (inventory[it] ?: 0) > 0 }
                 val orderedTowerArrowKeys = if (preferredArrow != null)
@@ -836,16 +952,16 @@ class QueuedSessionStarter @Inject constructor(
                                 val result = CombatSimulator.simulateDungeon(
                     dungeon             = dungeon,
                     enemies             = scaledTowerEnemies(floor),
-                    playerAttack        = ((levels[Skills.ATTACK]   ?: 1) * attackCapeMult).toInt() + boostRepo.combatStatBonus(Skills.ATTACK, flags),
-                    playerStrength      = ((levels[Skills.STRENGTH] ?: 1) * strengthCapeMult).toInt() + boostRepo.combatStatBonus(Skills.STRENGTH, flags),
-                    playerDefence       = ((levels[Skills.DEFENSE]  ?: 1) * defenseCapeMult).toInt() + totalDefBonus + boostRepo.combatStatBonus(Skills.DEFENSE, flags),
-                    playerHp            = (levels[Skills.HITPOINTS] ?: 1) + boostRepo.combatStatBonus(Skills.HITPOINTS, flags) + flags.towerHpBonus,
+                    playerAttack        = ((levels[Skills.ATTACK]   ?: 1) * attackCapeMult).toInt() + boostRepo.combatStatBonus(Skills.ATTACK, flags, levels[Skills.ATTACK] ?: 1),
+                    playerStrength      = ((levels[Skills.STRENGTH] ?: 1) * strengthCapeMult).toInt() + boostRepo.combatStatBonus(Skills.STRENGTH, flags, levels[Skills.STRENGTH] ?: 1),
+                    playerDefence       = ((levels[Skills.DEFENSE]  ?: 1) * defenseCapeMult).toInt() + totalDefBonus + boostRepo.combatStatBonus(Skills.DEFENSE, flags, levels[Skills.DEFENSE] ?: 1),
+                    playerHp            = (levels[Skills.HITPOINTS] ?: 1) + boostRepo.combatStatBonus(Skills.HITPOINTS, flags, levels[Skills.HITPOINTS] ?: 1) + flags.towerHpBonus,
                     blessingDefBonus    = ChurchRepository.defBonus(flags, prayerCapeMult),
                     weaponAttackBonus   = totalAtkBonus,
                     weaponStrengthBonus = totalStrBonus,
                     combatStyle         = combatStyle,
-                    playerRanged        = ((levels[Skills.RANGED] ?: 1) * rangedCapeMult).toInt() + boostRepo.combatStatBonus(Skills.RANGED, flags),
-                    playerMagic         = ((levels[Skills.MAGIC]  ?: 1) * magicCapeMult).toInt() + boostRepo.combatStatBonus(Skills.MAGIC, flags),
+                    playerRanged        = ((levels[Skills.RANGED] ?: 1) * rangedCapeMult).toInt() + boostRepo.combatStatBonus(Skills.RANGED, flags, levels[Skills.RANGED] ?: 1),
+                    playerMagic         = ((levels[Skills.MAGIC]  ?: 1) * magicCapeMult).toInt() + boostRepo.combatStatBonus(Skills.MAGIC, flags, levels[Skills.MAGIC] ?: 1),
                     rangedGearStrengthBonus = totalRangedStrBonus,
                     spellMaxHit         = (spell?.maxHit ?: 0) + totalMagicDmgBonus,
                     agilityLevel        = agilityLevel,
@@ -860,6 +976,7 @@ class QueuedSessionStarter @Inject constructor(
                     availableRunes      = if (towerRuneKey != null) inventory[towerRuneKey] ?: 0 else Int.MAX_VALUE,
                     attackSpeedSec      = weapon?.attackSpeed ?: CombatSimulator.BASE_ATTACK_SPEED_SEC,
                     eatThresholdPct     = flags.foodEatThresholdPct,
+                    foodEatOrder        = flags.foodEatOrder,
                     chronosMultiplier   = chronosMult,
                     doubleHitChance     = boostRepo.doubleHitChance(flags),
                     secondChance        = boostRepo.secondChanceActive(flags),
@@ -873,7 +990,8 @@ class QueuedSessionStarter @Inject constructor(
                     insertAsCompleted = offline,
                     backdateMs        = backdateMs,
                     levelAtStart      = levelAtStart,
-                )
+                    weaponSlot        = activeWeaponSlot,
+                 playerMutexHeld = true,)
             }
             "carnival" -> {
                 val relevantSkillLevel = when (action.activityKey) {
@@ -911,7 +1029,8 @@ class QueuedSessionStarter @Inject constructor(
             insertAsCompleted = offline,
             backdateMs        = backdateMs,
             levelAtStart      = levelAtStart,
-        )
+            weaponSlot        = action.weaponSlot,
+         playerMutexHeld = true,)
     }
 
     private fun encodeFrames(frames: List<SessionFrame>): String =

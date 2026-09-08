@@ -36,8 +36,8 @@
     <string name="game_farming_planted">已种植 %1$s。</string>
     <!-- Translator note: %1$s = crop display name, %2$d = yield quantity -->
     <string name="game_farming_harvested">收获了 %2$d 个 %1$s。</string>
-    <string name="game_farming_all_harvested">所有成熟的地块已收获完毕。</string>
-    <string name="game_farming_patch_cleared">地块已清理。</string>
+    <string name="game_farming_all_harvested">所有成熟的田地已收获完毕。</string>
+    <string name="game_farming_patch_cleared">田地已清理。</string>
     <string name="game_farming_not_ready">这株作物还未成熟。</string>
     <!-- Translator note: %1$s = crop display name, %2$s = time remaining -->
     <string name="game_farming_ready_in">%1$s 将在 %2$s 后成熟。</string>
@@ -94,6 +94,7 @@
     <string name="equip_slot_weapon_str">武器（力量）</string>
     <string name="equip_slot_weapon_ranged">武器（远程）</string>
     <string name="equip_slot_weapon_magic">武器（魔法）</string>
+    <string name="equip_slot_weapon">Weapons</string> <!-- untranslated -->
     <string name="equip_slot_head">头部</string>
     <string name="equip_slot_body">身体</string>
     <string name="equip_slot_legs">腿部</string>

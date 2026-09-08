@@ -4,6 +4,7 @@ import com.fantasyidler.data.db.dao.QuestProgressDao
 import com.fantasyidler.data.json.GuildDailyTemplate
 import com.fantasyidler.data.json.GuildQuestData
 import com.fantasyidler.data.json.GuildQuestRewards
+import com.fantasyidler.data.model.CombatGuilds
 import com.fantasyidler.data.model.PlayerFlags
 import com.fantasyidler.data.model.QuestProgress
 import java.util.Calendar
@@ -13,7 +14,6 @@ import javax.inject.Singleton
 import kotlin.random.Random
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.sync.withLock
-import kotlin.random.nextLong
 
 data class GuildQuestWithProgress(
     val quest: GuildQuestData,
@@ -109,12 +109,6 @@ class GuildRepository @Inject constructor(
             "warriors", "archers", "mages", "slayer", "prayer", "mercantile",
         )
 
-        fun combatStyleToGuild(combatStyle: String): String = when (combatStyle) {
-            "ranged" -> "archers"
-            "magic"  -> "mages"
-            else     -> "warriors"
-        }
-
         val POTION_SUBSTITUTES: Map<String, List<String>> = mapOf(
             "strength_potion"       to listOf("super_strength_potion", "overload_potion"),
             "attack_potion"         to listOf("super_attack_potion",   "overload_potion"),
@@ -193,7 +187,7 @@ class GuildRepository @Inject constructor(
 
     /** Called when a combat session is collected. */
     suspend fun recordGuildCombat(killsByEnemy: Map<String, Int>, combatStyle: String) = playerRepo.playerMutex.withLock {
-        val guild = combatStyleToGuild(combatStyle)
+        val guild = CombatGuilds.guildFor(combatStyle)
         val totalKills = killsByEnemy.values.sum()
         var flags = ensureGuildDailiesRefreshedUnlocked()
         if (totalKills > 0) {
@@ -447,8 +441,10 @@ class GuildRepository @Inject constructor(
                 level("herblore") >= (gameData.herbloreRecipes[template.target]?.levelRequired ?: 1)
             template.guild == "smithing" && template.type == "craft" ->
                 level("smithing") >= (gameData.smithingRecipes[template.target]?.levelRequired ?: 1)
-            template.guild == "cooking" && template.type == "craft" ->
-                level("cooking") >= (gameData.cookingRecipes[template.target]?.levelRequired ?: 1)
+            template.guild == "cooking" && template.type == "craft" -> {
+                if (level("cooking") < (gameData.cookingRecipes[template.target]?.levelRequired ?: 1)) return false
+                level("fishing") >= gameData.fishingLevelForCooking(template.target)
+            }
             template.guild == "crafting" && template.type == "craft" ->
                 level("crafting") >= (gameData.craftingRecipes[template.target]?.levelRequired ?: 1)
             template.guild == "runecrafting" && template.type == "craft" ->
@@ -584,24 +580,33 @@ class GuildRepository @Inject constructor(
             val chosen = mutableListOf<GuildDailyTemplate>()
             val chosenIds = mutableSetOf<String>()
             val chosenTargets = mutableSetOf<String>()
-            val stages = listOf(reachableInBracket.shuffled(rng), reachableBestFirst, guildPool.shuffled(rng))
-            // Distinct target items first: a thin bracket must not fill the whole day with
-            // one item (issue #1500 -- four "craft platinum diamond ring" dailies). Only when
-            // the guild runs out of distinct items do duplicates fill the remaining slots.
-            for (allowDuplicateTargets in listOf(false, true)) {
-                for (candidates in stages) {
-                    if (chosen.size >= 4) break
-                    candidates
-                        .filter { it.id !in chosenIds }
-                        .filter { allowDuplicateTargets || it.target.isBlank() || it.target !in chosenTargets }
-                        .forEach {
-                            if (chosen.size < 4) {
-                                chosen.add(it)
-                                chosenIds.add(it.id)
-                                chosenTargets.add(it.target)
-                            }
+            val reachableStages = listOf(reachableInBracket.shuffled(rng), reachableBestFirst)
+            // Last resort when the guild has fewer than 4 skill-reachable templates: deal the
+            // lowest tiers first so the top-up quests become completable soonest while the
+            // player relevels (a freshly prestiged construction player was dealt a level-65
+            // yew wardrobe daily from a random draw here).
+            val unreachableLowestFirst = guildPool.shuffled(rng).sortedBy { it.guildLevelMin }
+            fun fill(candidates: List<GuildDailyTemplate>, allowDuplicateTargets: Boolean) {
+                candidates
+                    .filter { it.id !in chosenIds }
+                    .filter { allowDuplicateTargets || it.target.isBlank() || it.target !in chosenTargets }
+                    .forEach {
+                        if (chosen.size < 4) {
+                            chosen.add(it)
+                            chosenIds.add(it.id)
+                            chosenTargets.add(it.target)
                         }
-                }
+                    }
+            }
+            // Distinct target items first: a thin bracket must not fill the whole day with
+            // one item (issue #1500 -- four "craft platinum diamond ring" dailies). Every
+            // reachable template, even with a duplicate target, ranks ahead of anything the
+            // player's skill level cannot do yet.
+            for (allowDuplicateTargets in listOf(false, true)) {
+                reachableStages.forEach { fill(it, allowDuplicateTargets) }
+            }
+            for (allowDuplicateTargets in listOf(false, true)) {
+                fill(unreachableLowestFirst, allowDuplicateTargets)
             }
             selectedIds.addAll(chosen.map { it.id })
         }

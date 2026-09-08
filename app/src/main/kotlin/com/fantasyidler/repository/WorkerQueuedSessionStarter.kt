@@ -6,6 +6,7 @@ import com.fantasyidler.data.model.PlayerFlags
 import com.fantasyidler.data.model.QueuedAction
 import com.fantasyidler.data.model.SessionFrame
 import com.fantasyidler.data.model.Skills
+import com.fantasyidler.simulator.HeirloomStats
 import com.fantasyidler.simulator.CombatSimulator
 import com.fantasyidler.simulator.SkillSimulator
 import com.fantasyidler.simulator.ThievingSimulator
@@ -44,14 +45,21 @@ class WorkerQueuedSessionStarter @Inject constructor(
             mutex.withLock {
                 val current = sessionRepo.getActiveWorkerSession(slot)
                 if (current != null && !current.completed) return@withLock false
-                val next = playerRepo.dequeueNextWorkerActionUnlocked(slot) ?: return@withLock false
-                try {
-                    startQueuedAction(slot, next)
-                    true
-                } catch (_: Exception) {
-                    playerRepo.requeueWorkerActionAtFrontUnlocked(slot, next)
-                    false
+                var next = playerRepo.dequeueNextWorkerActionUnlocked(slot)
+                while (next != null) {
+                    try {
+                        startQueuedAction(slot, next)
+                        return@withLock true
+                    } catch (_: ActionNoLongerQualifiesException) {
+                        // Level gate no longer met (post-prestige): discard and try the next
+                        // action instead of requeueing it to block the worker (issue #1605).
+                        next = playerRepo.dequeueNextWorkerActionUnlocked(slot)
+                    } catch (_: Exception) {
+                        playerRepo.requeueWorkerActionAtFrontUnlocked(slot, next)
+                        return@withLock false
+                    }
                 }
+                false
             }
         }
     }
@@ -63,6 +71,7 @@ class WorkerQueuedSessionStarter @Inject constructor(
         val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
         val inventory: Map<String, Int>    = json.decodeFromString(player.inventory)
         val flags: PlayerFlags             = json.decodeFromString(player.flags)
+        val equipMap = HeirloomStats.resolveAll(gameData.equipment, levels, flags.heirloomXp)
         val worker = (if (slot == 2) flags.hiredWorker2 else flags.hiredWorker) ?: return
         val tier = worker.tier
         val agilityLevel = levels[Skills.AGILITY] ?: 1
@@ -73,9 +82,18 @@ class WorkerQueuedSessionStarter @Inject constructor(
         val rangedCapeMult   = resolveCapeMultiplier("ranged", equippedCapeData, inventory.keys, flags.townBuildingTiers, boostRepo.capeScalingBySkill(flags), gameData.equipment, flags.ironman)
         val magicCapeMult    = resolveCapeMultiplier("magic", equippedCapeData, inventory.keys, flags.townBuildingTiers, boostRepo.capeScalingBySkill(flags), gameData.equipment, flags.ironman)
         val prayerCapeMult   = resolveCapeMultiplier("prayer", equippedCapeData, inventory.keys, flags.townBuildingTiers, boostRepo.capeScalingBySkill(flags), gameData.equipment, flags.ironman)
-        val levelAtStart = when (action.skillName) {
+        // Same post-prestige rule as QueuedSessionStarter (issue #1605): still qualifying at
+        // the current level runs and pays at that level, no longer qualifying drops the
+        // action, and gate-less activities keep the queue-time floor (XP zeroed).
+        val currentLevel = when (action.skillName) {
             "boss", "combat" -> combatLevelFrom(levels)
             else -> levels[action.skillName] ?: 1
+        }
+        val requiredLevel = queuedActionRequiredLevel(action, gameData)
+        val levelAtStart = when {
+            requiredLevel == null        -> maxOf(currentLevel, action.levelAtQueue)
+            currentLevel < requiredLevel -> throw ActionNoLongerQualifiesException()
+            else                         -> currentLevel
         }
 
         val isGathering = action.skillName in GATHERING_SKILLS
@@ -94,7 +112,7 @@ class WorkerQueuedSessionStarter @Inject constructor(
                     startXp        = xpMap[Skills.MINING] ?: 0L,
                     agilityLevel   = agilityLevel,
                     petBoostPct    = 0,
-                    toolEfficiency = gameData.toolEfficiency(equipped[EquipSlot.PICKAXE], EquipSlot.PICKAXE, oreData.levelRequired) * boostRepo.toolEffMultiplier(Skills.MINING, flags),
+                    toolEfficiency = gameData.toolEfficiency(equipped[EquipSlot.PICKAXE], EquipSlot.PICKAXE, oreData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.MINING, flags, levels[Skills.MINING] ?: 1),
                     petDropKey     = null,
                     petDropChance  = 0.0,
                     gemChanceMult  = boostRepo.bonusRollMultiplier(Skills.MINING, flags),
@@ -109,7 +127,7 @@ class WorkerQueuedSessionStarter @Inject constructor(
                     startXp        = xpMap[Skills.WOODCUTTING] ?: 0L,
                     agilityLevel   = agilityLevel,
                     petBoostPct    = 0,
-                    toolEfficiency = gameData.toolEfficiency(equipped[EquipSlot.AXE], EquipSlot.AXE, treeData.levelRequired) * boostRepo.toolEffMultiplier(Skills.WOODCUTTING, flags),
+                    toolEfficiency = gameData.toolEfficiency(equipped[EquipSlot.AXE], EquipSlot.AXE, treeData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.WOODCUTTING, flags, levels[Skills.WOODCUTTING] ?: 1),
                     petDropKey     = null,
                     petDropChance  = 0.0,
                 )
@@ -124,7 +142,7 @@ class WorkerQueuedSessionStarter @Inject constructor(
                     startXp        = xpMap[Skills.FISHING] ?: 0L,
                     agilityLevel   = agilityLevel,
                     petBoostPct    = 0,
-                    rodEfficiency  = gameData.toolEfficiency(equipped[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD, fishData.levelRequired) * boostRepo.toolEffMultiplier(Skills.FISHING, flags),
+                    rodEfficiency  = gameData.toolEfficiency(equipped[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD, fishData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.FISHING, flags, levels[Skills.FISHING] ?: 1),
                     petDropKey     = null,
                     petDropChance  = 0.0,
                 )
@@ -138,7 +156,7 @@ class WorkerQueuedSessionStarter @Inject constructor(
                     startXp        = xpMap[Skills.AGILITY] ?: 0L,
                     agilityLevel   = agilityLevel,
                     petBoostPct    = 0,
-                    toolEfficiency = gameData.toolEfficiency(equipped[EquipSlot.GRAPPLING_HOOK], EquipSlot.GRAPPLING_HOOK, courseData.levelRequired),
+                    toolEfficiency = gameData.toolEfficiency(equipped[EquipSlot.GRAPPLING_HOOK], EquipSlot.GRAPPLING_HOOK, courseData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp),
                 )
                 startSession(slot, action, result.frames, durationMs, efficiencyMultiplier, levelAtStart)
             }
@@ -148,7 +166,7 @@ class WorkerQueuedSessionStarter @Inject constructor(
                 val logData = gameData.logs[logKey] ?: return
                 val ashKey  = ashForLog(logKey)
                 val frames  = buildCraftFrames(xpMap[Skills.FIREMAKING] ?: 0L, qty, logData.xpPerLog.toDouble(), 1, ashKey,
-                    efficiency = gameData.toolEfficiency(equipped[EquipSlot.TINDERBOX], EquipSlot.TINDERBOX, logData.levelRequired))
+                    efficiency = gameData.toolEfficiency(equipped[EquipSlot.TINDERBOX], EquipSlot.TINDERBOX, logData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp))
                 startSession(slot, action, frames, durationMs, efficiencyMultiplier, levelAtStart)
             }
             Skills.RUNECRAFTING -> {
@@ -198,14 +216,14 @@ class WorkerQueuedSessionStarter @Inject constructor(
                 val r   = gameData.smithingRecipes[action.activityKey] ?: return
                 val qty = action.qty.takeIf { it > 0 } ?: return
                 val frames = buildCraftFrames(xpMap[Skills.SMITHING] ?: 0L, qty, r.xpPerItem, r.outputQuantity, action.activityKey,
-                    efficiency = gameData.toolEfficiency(equipped[EquipSlot.HAMMER], EquipSlot.HAMMER, r.levelRequired))
+                    efficiency = gameData.toolEfficiency(equipped[EquipSlot.HAMMER], EquipSlot.HAMMER, r.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp))
                 startSession(slot, action, frames, durationMs, efficiencyMultiplier, levelAtStart)
             }
             Skills.COOKING -> {
                 val r: CookingRecipe = gameData.cookingRecipes[action.activityKey] ?: return
                 val qty = action.qty.takeIf { it > 0 } ?: return
                 val frames = buildCraftFrames(xpMap[Skills.COOKING] ?: 0L, qty, r.xpPerItem, 1, r.cookedItem,
-                    efficiency = gameData.toolEfficiency(equipped[EquipSlot.FRYING_PAN], EquipSlot.FRYING_PAN, r.levelRequired))
+                    efficiency = gameData.toolEfficiency(equipped[EquipSlot.FRYING_PAN], EquipSlot.FRYING_PAN, r.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp))
                 startSession(slot, action, frames, durationMs, efficiencyMultiplier, levelAtStart)
             }
             Skills.FLETCHING -> {
@@ -244,7 +262,7 @@ class WorkerQueuedSessionStarter @Inject constructor(
                     startXp        = xpMap[Skills.THIEVING] ?: 0L,
                     thievingLevel  = levels[Skills.THIEVING] ?: 1,
                     agilityLevel   = agilityLevel,
-                    toolEfficiency = gameData.toolEfficiency(equipped[EquipSlot.LOCKPICK], EquipSlot.LOCKPICK, npc.levelRequired),
+                    toolEfficiency = gameData.toolEfficiency(equipped[EquipSlot.LOCKPICK], EquipSlot.LOCKPICK, npc.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp),
                     successBonus = boostRepo.thievingSuccessBonus(flags),
                 )
                 startSession(slot, action, result.frames, durationMs, efficiencyMultiplier, levelAtStart)
@@ -254,7 +272,7 @@ class WorkerQueuedSessionStarter @Inject constructor(
                 val boss    = gameData.bosses[bossKey] ?: return
                 val bossWeapon = (flags.activeWeaponSlot
                     ?: EquipSlot.WEAPON_SLOTS.firstOrNull { equipped[it] != null }
-                    ?: EquipSlot.WEAPON).let { equipped[it] }.let { gameData.equipment[it] }
+                    ?: EquipSlot.WEAPON).let { equipped[it] }.let { equipMap[it] }
                 val combatStyle = when (bossWeapon?.combatStyle) {
                     "ranged"   -> "ranged"
                     "magic"    -> "magic"
@@ -262,12 +280,12 @@ class WorkerQueuedSessionStarter @Inject constructor(
                     else       -> "melee"
                 }
                 val totalAtkBonus = EquipSlot.ARMOR_SLOTS.sumOf { slot ->
-                    val eq = gameData.equipment[equipped[slot]]
+                    val eq = equipMap[equipped[slot]]
                     when (combatStyle) { "ranged" -> eq?.rangedAttackBonus ?: 0; "magic" -> eq?.magicAttackBonus ?: 0; else -> eq?.attackBonus ?: 0 }
                 } + when (combatStyle) { "ranged" -> bossWeapon?.rangedAttackBonus ?: bossWeapon?.attackBonus ?: 0; "magic" -> bossWeapon?.magicAttackBonus ?: 0; else -> bossWeapon?.attackBonus ?: 0 }
-                val totalStrBonus = EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.strengthBonus ?: 0 } + (bossWeapon?.strengthBonus ?: 0)
-                val totalDefBonus = EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.defenseBonus  ?: 0 } + (bossWeapon?.defenseBonus  ?: 0)
-                val totalMagicDmgBonus = if (combatStyle == "magic") EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.magicDamageBonus ?: 0 } + (bossWeapon?.magicDamageBonus ?: 0) else 0
+                val totalStrBonus = EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.strengthBonus ?: 0 } + (bossWeapon?.strengthBonus ?: 0)
+                val totalDefBonus = EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.defenseBonus  ?: 0 } + (bossWeapon?.defenseBonus  ?: 0)
+                val totalMagicDmgBonus = if (combatStyle == "magic") EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.magicDamageBonus ?: 0 } + (bossWeapon?.magicDamageBonus ?: 0) else 0
                 val equippedFoodKeys = flags.equippedFood.keys
                 val availableFood    = inventory.filterKeys { it in equippedFoodKeys }
                 val spell = gameData.spells[flags.activeSpell]
@@ -296,6 +314,8 @@ class WorkerQueuedSessionStarter @Inject constructor(
                     blessingDefBonus   = ChurchRepository.defBonus(flags, prayerCapeMult),
                     attackSpeedSec     = bossWeapon?.attackSpeed ?: CombatSimulator.BASE_ATTACK_SPEED_SEC,
                     eatThresholdPct    = flags.foodEatThresholdPct,
+                    foodEatOrder       = flags.foodEatOrder,
+                    blockedRareDrops   = HeirloomStats.ownedHeirloomKeys(gameData.equipment, inventory) + sessionRepo.pendingHeirloomKeys(),
                 )
                 startSession(slot, action, bossFrames, durationMs, efficiencyMultiplier, levelAtStart)
             }
@@ -306,7 +326,7 @@ class WorkerQueuedSessionStarter @Inject constructor(
                     ?: EquipSlot.WEAPON_SLOTS.firstOrNull { equipped[it] != null }
                     ?: EquipSlot.WEAPON
                 val weaponKey  = equipped[activeWeaponSlot]
-                val weapon     = weaponKey?.let { gameData.equipment[it] }
+                val weapon     = weaponKey?.let { equipMap[it] }
                 val combatStyle = when (weapon?.combatStyle) {
                     "ranged"   -> "ranged"
                     "magic"    -> "magic"
@@ -314,12 +334,12 @@ class WorkerQueuedSessionStarter @Inject constructor(
                     else       -> "attack"
                 }
                 val totalAtkBonus = EquipSlot.ARMOR_SLOTS.sumOf { slot ->
-                    val eq = gameData.equipment[equipped[slot]]
+                    val eq = equipMap[equipped[slot]]
                     when (combatStyle) { "ranged" -> eq?.rangedAttackBonus ?: 0; "magic" -> eq?.magicAttackBonus ?: 0; else -> eq?.attackBonus ?: 0 }
                 } + when (combatStyle) { "ranged" -> weapon?.rangedAttackBonus ?: weapon?.attackBonus ?: 0; "magic" -> weapon?.magicAttackBonus ?: 0; else -> weapon?.attackBonus ?: 0 }
-                val totalStrBonus = EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.strengthBonus ?: 0 } + (weapon?.strengthBonus ?: 0)
-                val totalDefBonus = EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.defenseBonus  ?: 0 } + (weapon?.defenseBonus  ?: 0)
-                val totalMagicDmgBonus = if (combatStyle == "magic") EquipSlot.ARMOR_SLOTS.sumOf { gameData.equipment[equipped[it]]?.magicDamageBonus ?: 0 } + (weapon?.magicDamageBonus ?: 0) else 0
+                val totalStrBonus = EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.strengthBonus ?: 0 } + (weapon?.strengthBonus ?: 0)
+                val totalDefBonus = EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.defenseBonus  ?: 0 } + (weapon?.defenseBonus  ?: 0)
+                val totalMagicDmgBonus = if (combatStyle == "magic") EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.magicDamageBonus ?: 0 } + (weapon?.magicDamageBonus ?: 0) else 0
                 val equippedFoodKeys = flags.equippedFood.keys
                 val availableFood    = inventory.filterKeys { it in equippedFoodKeys }
                 val spell = gameData.spells[flags.activeSpell]
@@ -351,6 +371,7 @@ class WorkerQueuedSessionStarter @Inject constructor(
                     availableArrows     = availableArrows,
                     attackSpeedSec      = weapon?.attackSpeed ?: CombatSimulator.BASE_ATTACK_SPEED_SEC,
                     eatThresholdPct     = flags.foodEatThresholdPct,
+                    foodEatOrder        = flags.foodEatOrder,
                 )
                 startSession(slot, action, result.frames, durationMs, efficiencyMultiplier, levelAtStart)
             }
@@ -374,7 +395,8 @@ class WorkerQueuedSessionStarter @Inject constructor(
             skillDisplayName     = action.skillDisplayName,
             efficiencyMultiplier = efficiencyMultiplier,
             levelAtStart         = levelAtStart,
-        )
+            weaponSlot           = action.weaponSlot,
+         playerMutexHeld = true,)
     }
 
     private fun encodeFrames(frames: List<SessionFrame>): String =

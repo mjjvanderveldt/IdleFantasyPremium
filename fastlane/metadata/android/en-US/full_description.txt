@@ -24,7 +24,7 @@ Idle Fantasy is a free and open source offline idle RPG inspired by classic MMOR
 
 • <b>No ads. No accounts. No internet required.</b> Your save data stays on your device.
 
-• <b>Translations</b>: Partial and full translations available for 18 languages.
+• <b>Translations</b>: Partial and full translations available for 20 languages.
 
 Idle Fantasy is free software released under the GPL-3.0 licence. Source code is available on the project repository.
 

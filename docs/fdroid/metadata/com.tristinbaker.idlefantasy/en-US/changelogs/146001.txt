@@ -1,0 +1,2 @@
+• The What's New dialog now correctly lists the recent updates; the 1.14.6 hotfix entry was missing from it
+• Re-release of the 1.14.6 hotfix: collecting sessions and starting queued sessions froze the game indefinitely in 1.14.5; nothing was lost, and stuck sessions collect normally after updating

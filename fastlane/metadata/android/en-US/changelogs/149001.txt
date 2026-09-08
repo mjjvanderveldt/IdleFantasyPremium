@@ -1,0 +1,7 @@
+• The daily bounty refresh no longer replaces a Tithe you have fully stocked up for: holding the asked amount now counts as in-progress work, so the donation can't vanish overnight
+• The Combat screen's Gear tab now has its own translatable label, separate from the Profile Gear tab, so languages can translate each context correctly
+• The live combat log and kill tally now track exactly which enemy is being fought as types change mid-minute: kill counts no longer jump between enemy types or go down, and the enemy card and log name the right enemy
+• Notification bubbles no longer get stuck on screen when the same message arrives several times in a row (like rapidly queueing the same session); repeats now fold into the bubble already showing
+• Guild quests and daily requests now have a Go to Skill button that jumps straight to the matching skill, dungeon list, or Slayer master
+• The Monument's daily touch is far more generous: late-game boons (dragon bones, runite and platinum ore, magic logs, gems, rune essence, sharks) that grow with your monument stage, a 1 in 10 Ancient Treasure jackpot, and its blessing now lasts 2 hours or extends the blessing you already have
+• The Vault Guardian guards a new 1 in 1000 treasure: the Midas Band, a ring that grows stronger with every battle you survive

@@ -1,46 +1,47 @@
 package com.fantasyidler.ui.viewmodel
 
-import com.fantasyidler.util.withAppLocale
-
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fantasyidler.R
 import com.fantasyidler.data.model.EquipSlot
+import com.fantasyidler.data.model.OwnedPet
 import com.fantasyidler.data.model.PlayerFlags
-import com.fantasyidler.repository.BoostRepository
-import com.fantasyidler.repository.ChurchRepository
-import com.fantasyidler.repository.blessingPrayerCapeMult
+import com.fantasyidler.data.model.QuestProgress
 import com.fantasyidler.data.model.QueuedAction
 import com.fantasyidler.data.model.SessionFrame
 import com.fantasyidler.data.model.Skills
-import com.fantasyidler.data.json.HerbloreRecipe
-import com.fantasyidler.data.model.QuestProgress
+import com.fantasyidler.repository.BoostRepository
+import com.fantasyidler.repository.ChurchRepository
 import com.fantasyidler.repository.DailyQuestRepository
 import com.fantasyidler.repository.GameDataRepository
 import com.fantasyidler.repository.GuildRepository
 import com.fantasyidler.repository.PlayerRepository
 import com.fantasyidler.repository.QuestRepository
+import com.fantasyidler.data.json.SeasonalBountyTaskData
 import com.fantasyidler.repository.SeasonalEventRepository
 import com.fantasyidler.repository.SessionRepository
 import com.fantasyidler.repository.TownRepository
 import com.fantasyidler.repository.WeeklyQuestRepository
+import com.fantasyidler.repository.blessingPrayerCapeMult
 import com.fantasyidler.simulator.SkillSimulator
 import com.fantasyidler.simulator.XpTable
+import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.craftDurationEfficiency
-import kotlinx.serialization.serializer
+import com.fantasyidler.util.withAppLocale
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import com.fantasyidler.util.GameStrings
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
+import kotlin.random.Random
 import javax.inject.Inject
-import android.content.Context
-import com.fantasyidler.R
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 // ---------------------------------------------------------------------------
 // Quest fill suggestion (shown in CraftSheet when quests match the recipe)
@@ -52,6 +53,7 @@ data class QuestFillSuggestion(val label: String, val qty: Int)
 enum class QuestCategory(val emoji: String) {
     DAILY("⏰"),
     WEEKLY("📅"),
+    SEASONAL("🎯"),
     GUILD_DAILY("⚒️"),
     GUILD("🏰"),
     MAIN("📜"),
@@ -62,7 +64,11 @@ data class QuestIndicator(
     val isCompletable: Boolean,
     /** Source quest id, used to dedupe skill-row counts when one quest spans many activities. */
     val questId: String = "",
-)
+    /** Custom emoji override (e.g. seasonal event's iconEmoji), falling back to category.emoji. */
+    val customEmoji: String? = null,
+) {
+    val emoji: String get() = customEmoji ?: category.emoji
+}
 
 // ---------------------------------------------------------------------------
 // Unified recipe model (normalises all 4 recipe types for display + crafting)
@@ -197,7 +203,7 @@ class CraftingViewModel @Inject constructor(
             val flags: PlayerFlags = json.decodeFromString(player.flags)
             val effInv = computeEffectiveInventory(inventory)
             val selectedRecipe = extra.selectedRecipe
-            val selectedEff = if (selectedRecipe != null) craftToolEfficiency(selectedRecipe, equipped) else 1.0f
+            val selectedEff = if (selectedRecipe != null) craftToolEfficiency(selectedRecipe, equipped, levels, flags) else 1.0f
             val perItemMs = if (selectedRecipe != null) {
                 val agility = levels[Skills.AGILITY] ?: 1
                 (SkillSimulator.sessionDurationMs(agility, boostRepo.sessionFloorReductionMin(flags), townRepo.playerSessionDurationMultiplier(flags)) / 60 / selectedEff).toLong()
@@ -385,13 +391,18 @@ class CraftingViewModel @Inject constructor(
 
     fun setHerbloreAsh(key: String?) = _extra.update { it.copy(herbloreAshKey = key) }
 
-    private fun craftToolEfficiency(recipe: CraftableRecipe, equipped: Map<String, String?>): Float =
-        gameData.craftDurationEfficiency(recipe.skillName, recipe.key, equipped)
+    private fun craftToolEfficiency(
+        recipe: CraftableRecipe,
+        equipped: Map<String, String?>,
+        skillLevels: Map<String, Int>,
+        flags: PlayerFlags,
+    ): Float =
+        gameData.craftDurationEfficiency(recipe.skillName, recipe.key, equipped, skillLevels, flags.heirloomXp)
 
     private fun petBoostFor(petsJson: String, skillKey: String, ironman: Boolean = false): Int {
         if (ironman) return 0
         val pets = try {
-            json.decodeFromString<List<com.fantasyidler.data.model.OwnedPet>>(petsJson)
+            json.decodeFromString<List<OwnedPet>>(petsJson)
         } catch (_: Exception) {
             return 0
         }
@@ -433,7 +444,7 @@ class CraftingViewModel @Inject constructor(
             // Enqueue if a session is already running
             if (sessionRepo.getActiveSession() != null) {
                 val agility   = state.skillLevels[Skills.AGILITY] ?: 1
-                val toolEff   = craftToolEfficiency(recipe, json.decodeFromString(player.equipped))
+                val toolEff   = craftToolEfficiency(recipe, json.decodeFromString(player.equipped), state.skillLevels, flags)
                 val perItemMs = (SkillSimulator.sessionDurationMs(agility, boostRepo.sessionFloorReductionMin(flags), townRepo.playerSessionDurationMultiplier(flags)) / 60 / toolEff).toLong()
                 val totalOutput = qty * recipe.outputQty
                 val xpQueueMult = if (flags.ironman) 1.0 else (if (flags.xpBoostExpiresAt > System.currentTimeMillis()) 2.0 else 1.0) * ChurchRepository.xpMultiplier(flags, blessingPrayerCapeMult(player, flags, gameData))
@@ -474,7 +485,7 @@ class CraftingViewModel @Inject constructor(
             val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
             val startXp     = xpMap[recipe.skillName] ?: 0L
             val levelBefore = XpTable.levelForXp(startXp)
-            val efficiency = craftToolEfficiency(recipe, equipped)
+            val efficiency = craftToolEfficiency(recipe, equipped, state.skillLevels, flags)
             val petPct = petBoostFor(player.pets, recipe.skillName, flags.ironman)
             val totalXpGain = (qty * recipe.xpPerItem * efficiency * (1.0 + petPct / 100.0)).toInt()
             val xpAfter     = startXp + totalXpGain
@@ -486,7 +497,7 @@ class CraftingViewModel @Inject constructor(
             val petDropKey = if (recipe.skillName == Skills.COOKING) null
                 else gameData.pets.values.firstOrNull { it.boostedSkill == recipe.skillName }?.id
             val petDropped = petDropKey != null &&
-                (0 until 60).any { kotlin.random.Random.nextDouble() < 1.0 / 1000.0 }
+                (0 until 60).any { Random.nextDouble() < 1.0 / 1000.0 }
             val craftedItems = mutableMapOf(outputKey to recipe.outputQty * qty)
             if (petDropped) craftedItems[petDropKey!!] = 1
             val frames = listOf(
@@ -635,11 +646,10 @@ class CraftingViewModel @Inject constructor(
 
         // Seasonal Event Bounty Board
         seasonalEventRepo.activeEvent()?.let { event ->
-            for (taskProgress in seasonalEventRepo.bountyTasksWithProgress(event, flags)) {
-                if (taskProgress.cooldownUntilMs != null) continue
-                val task = taskProgress.task
+            for (bounty in seasonalEventRepo.getActiveBounties(flags)) {
+                val task = bounty.task
                 if (task.type != "craft" || task.target != recipe.outputKey) continue
-                val remaining = task.amount - taskProgress.progress
+                val remaining = task.amount - bounty.progress
                 if (remaining > 0)
                     fills += QuestFillSuggestion(GameStrings.seasonalEventName(context, event.id, event.displayName), ceilDiv(remaining, recipe.outputQty))
             }
@@ -666,6 +676,12 @@ class CraftingViewModel @Inject constructor(
         val guildPool = gameData.guildDailyPool.associateBy { it.id }
         val activeGuildDailyIds = flags.guildDailyIds.filter { it !in flags.guildDailyClaimed }
         val completedIds = progressById.entries.filter { it.value.completed }.map { it.key }.toSet()
+
+        // 6. Seasonal Event Bounties (pre-computed before loop for performance)
+        val seasonalEmoji = seasonalEventRepo.activeEvent()?.iconEmoji ?: QuestCategory.SEASONAL.emoji
+        val activeSeasonalBounties = seasonalEventRepo.getActiveBounties(flags)
+            .filter { it.task.type == "craft" && it.progress < it.task.amount }
+            .map { it.task to (it.task.amount - it.progress) }
 
         for (recipe in allRecipes) {
             val key = recipe.outputKey
@@ -771,6 +787,14 @@ class CraftingViewModel @Inject constructor(
                 }
             }
 
+            // 6. Seasonal Event Bounties
+            for ((task, remaining) in activeSeasonalBounties) {
+                if (task.target == key) {
+                    val neededCrafts = ceilDiv(remaining, recipe.outputQty)
+                    indicators.add(QuestIndicator(QuestCategory.SEASONAL, max >= neededCrafts, task.id, seasonalEmoji))
+                }
+            }
+
             if (indicators.isNotEmpty()) {
                 result[key] = indicators
             }
@@ -795,7 +819,7 @@ class CraftingViewModel @Inject constructor(
             val (item, totalQty) = entries[i]
             var toConsume = 0
             for (u in 0 until totalQty) {
-                if (kotlin.random.Random.nextFloat() >= saveChance) toConsume++
+                if (Random.nextFloat() >= saveChance) toConsume++
             }
             if (toConsume > 0) result[item] = toConsume
         }
@@ -806,7 +830,7 @@ class CraftingViewModel @Inject constructor(
         if (saveChance <= 0f) return totalQty
         var toConsume = 0
         for (u in 0 until totalQty) {
-            if (kotlin.random.Random.nextFloat() >= saveChance) toConsume++
+            if (Random.nextFloat() >= saveChance) toConsume++
         }
         return toConsume
     }

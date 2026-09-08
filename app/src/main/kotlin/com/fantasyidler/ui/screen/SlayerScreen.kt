@@ -1,5 +1,6 @@
 package com.fantasyidler.ui.screen
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +24,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -43,7 +46,9 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -53,9 +58,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.platform.LocalContext
 import com.fantasyidler.R
 import com.fantasyidler.data.json.EquipmentData
+import com.fantasyidler.data.model.Skills
 import com.fantasyidler.data.model.SlayerTask
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.ui.components.LampSkillDialog
+import com.fantasyidler.ui.viewmodel.SheetQuestSource
 import com.fantasyidler.ui.viewmodel.SlayerViewModel
 import com.fantasyidler.ui.viewmodel.xpProgressFraction
 import com.fantasyidler.ui.theme.ScaledSheetContent
@@ -84,14 +91,19 @@ private val SHOP_ITEMS = listOf(
 @Composable
 fun SlayerScreen(
     onBack: () -> Unit = {},
+    onNavigateToPrestige: (String) -> Unit = {},
     viewModel: SlayerViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val quests = state.slayerQuests
+    val guildMaxed = quests.any { it.source == SheetQuestSource.GUILD && it.guildMaxed }
+    val anyOpen = quests.any { !it.claimed && !(it.source == SheetQuestSource.GUILD && it.guildMaxed) }
+    var showQuestsDialog by remember { mutableStateOf(false) }
 
     AppBannerEffect(state.snackbarMessage, viewModel::snackbarConsumed)
 
     state.pendingSlayerDungeonKey?.let { dungeonKey ->
-        val context = LocalContext.current
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         val dungeonName = GameStrings.dungeonName(context, dungeonKey)
         ModalBottomSheet(
@@ -112,6 +124,89 @@ fun SlayerScreen(
             )
             }
         }
+    }
+
+    if (showQuestsDialog) {
+        val sections = listOf(
+            SheetQuestSource.GUILD    to R.string.guild_daily_button,
+            SheetQuestSource.DAILY    to R.string.label_daily,
+            SheetQuestSource.WEEKLY   to R.string.label_weekly,
+            SheetQuestSource.SEASONAL to R.string.seasonal_bounty_board_title,
+        ).mapNotNull { (source, labelRes) ->
+            quests.filter { it.source == source }.takeIf { it.isNotEmpty() }?.let { labelRes to it }
+        }
+        AlertDialog(
+            onDismissRequest = { showQuestsDialog = false },
+            title = { Text(stringResource(R.string.nav_quests)) },
+            text = {
+                Column(Modifier.verticalScroll(rememberScrollState())) {
+                    sections.forEachIndexed { sectionIndex, (labelRes, sectionQuests) ->
+                        if (sectionIndex > 0) {
+                            Spacer(Modifier.height(12.dp))
+                        }
+                        Text(
+                            text       = stringResource(labelRes),
+                            style      = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color      = MaterialTheme.colorScheme.primary,
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        sectionQuests.forEachIndexed { index, quest ->
+                            if (index > 0) {
+                                Spacer(Modifier.height(8.dp))
+                                HorizontalDivider()
+                                Spacer(Modifier.height(8.dp))
+                            }
+                            Column {
+                                Text(
+                                    text       = when (quest.source) {
+                                        SheetQuestSource.SEASONAL -> GameStrings.seasonalBountyName(context, quest.questId, quest.questName)
+                                        else                      -> GameStrings.questName(context, quest.questId, quest.questName)
+                                    },
+                                    style      = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                                Spacer(Modifier.height(2.dp))
+                                Text(
+                                    text  = when (quest.source) {
+                                        SheetQuestSource.GUILD    -> localizedQuestDesc(quest.type, quest.target, quest.amount, quest.guild)
+                                        SheetQuestSource.DAILY    -> buildDailyObjective(context, quest.guild, quest.target, quest.amount, quest.description)
+                                        SheetQuestSource.WEEKLY   -> GameStrings.questDesc(context, quest.questId)
+                                            .takeIf { it.isNotBlank() } ?: quest.description
+                                        SheetQuestSource.SEASONAL -> GameStrings.seasonalBountyHint(context, quest.questId, quest.description)
+                                    },
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    text  = when {
+                                        quest.claimed                  -> stringResource(R.string.guild_daily_banner_claimed)
+                                        quest.progress >= quest.amount -> stringResource(R.string.guild_daily_banner_claimable)
+                                        else                            -> "${quest.progress} / ${quest.amount}"
+                                    },
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        }
+                    }
+                    if (guildMaxed) {
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text  = stringResource(R.string.guild_daily_rank_maxed),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showQuestsDialog = false }) {
+                    Text(stringResource(R.string.btn_close))
+                }
+            },
+        )
     }
 
     Scaffold(
@@ -136,6 +231,7 @@ fun SlayerScreen(
             return@Scaffold
         }
 
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -150,6 +246,49 @@ fun SlayerScreen(
                 xp           = state.slayerXp,
                 slayerPoints = state.slayerPoints,
             )
+
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(
+                        onClick        = { showQuestsDialog = true },
+                        enabled        = quests.isNotEmpty(),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        modifier       = Modifier.height(24.dp)
+                    ) {
+                        Text(
+                            text  = stringResource(R.string.nav_quests),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = if (anyOpen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    if (guildMaxed) {
+                        Text(
+                            text     = stringResource(R.string.guild_daily_rank_maxed),
+                            style    = MaterialTheme.typography.labelSmall,
+                            color    = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(start = 8.dp),
+                        )
+                    }
+                }
+                TextButton(
+                    onClick = { onNavigateToPrestige(Skills.SLAYER) },
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                    modifier       = Modifier.height(24.dp)
+                ) {
+                    Text(
+                        text  = stringResource(R.string.prestige_skill_tree),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
 
             HorizontalDivider()
 
@@ -502,7 +641,7 @@ private fun ForetellSection(
                 }
             } else {
                 Text(
-                    text  = stringResource(R.string.slayer_foretell_queue_full),
+                    text  = stringResource(R.string.slayer_foretell_queue_full, maxForetellSlots),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -595,7 +734,7 @@ private fun SlayerWeaponPickerSheet(
     onWeaponSelected: (String) -> Unit,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
-    context: android.content.Context,
+    context: Context,
 ) {
     Column(
         modifier = Modifier

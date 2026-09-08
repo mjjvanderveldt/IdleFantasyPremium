@@ -4,6 +4,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "mining_xp_1",
@@ -33,10 +34,7 @@
             "id": "mining_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -103,6 +101,29 @@
             "value": 200
           }
         ]
+      },
+      {
+        "key": "race_human",
+        "nodes": [
+          {
+            "id": "mining_race_human_1",
+            "cost": 2,
+            "effect": "per_level_bonus",
+            "value": 0.025,
+            "races": [
+              "human"
+            ]
+          },
+          {
+            "id": "mining_race_human_2",
+            "cost": 3,
+            "effect": "per_level_bonus",
+            "value": 0.05,
+            "races": [
+              "human"
+            ]
+          }
+        ]
       }
     ]
   },
@@ -111,6 +132,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "fishing_xp_1",
@@ -140,10 +162,7 @@
             "id": "fishing_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -256,6 +275,29 @@
             ]
           }
         ]
+      },
+      {
+        "key": "race_human",
+        "nodes": [
+          {
+            "id": "fishing_race_human_1",
+            "cost": 2,
+            "effect": "per_level_bonus",
+            "value": 0.025,
+            "races": [
+              "human"
+            ]
+          },
+          {
+            "id": "fishing_race_human_2",
+            "cost": 3,
+            "effect": "per_level_bonus",
+            "value": 0.05,
+            "races": [
+              "human"
+            ]
+          }
+        ]
       }
     ]
   },
@@ -264,6 +306,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "woodcutting_xp_1",
@@ -293,10 +336,7 @@
             "id": "woodcutting_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -368,6 +408,29 @@
             ]
           }
         ]
+      },
+      {
+        "key": "race_human",
+        "nodes": [
+          {
+            "id": "woodcutting_race_human_1",
+            "cost": 2,
+            "effect": "per_level_bonus",
+            "value": 0.025,
+            "races": [
+              "human"
+            ]
+          },
+          {
+            "id": "woodcutting_race_human_2",
+            "cost": 3,
+            "effect": "per_level_bonus",
+            "value": 0.05,
+            "races": [
+              "human"
+            ]
+          }
+        ]
       }
     ]
   },
@@ -376,6 +439,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "farming_xp_1",
@@ -405,10 +469,7 @@
             "id": "farming_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -475,6 +536,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "agility_xp_1",
@@ -493,21 +555,6 @@
             "cost": 2,
             "effect": "xp_pct",
             "value": 20
-          },
-          {
-            "id": "agility_xp_4",
-            "cost": 4,
-            "effect": "xp_pct",
-            "value": 30
-          },
-          {
-            "id": "agility_xp_5",
-            "cost": 4,
-            "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
           }
         ]
       },
@@ -541,6 +588,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "thieving_xp_1",
@@ -570,10 +618,7 @@
             "id": "thieving_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -653,6 +698,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "smithing_xp_1",
@@ -682,10 +728,7 @@
             "id": "smithing_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -772,6 +815,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "cooking_xp_1",
@@ -801,10 +845,7 @@
             "id": "cooking_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -914,6 +955,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "fletching_xp_1",
@@ -943,10 +985,7 @@
             "id": "fletching_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -1015,6 +1054,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "crafting_xp_1",
@@ -1044,10 +1084,7 @@
             "id": "crafting_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -1134,6 +1171,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "firemaking_xp_1",
@@ -1163,10 +1201,7 @@
             "id": "firemaking_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -1258,6 +1293,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "runecrafting_xp_1",
@@ -1287,10 +1323,7 @@
             "id": "runecrafting_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -1359,6 +1392,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "herblore_xp_1",
@@ -1388,10 +1422,7 @@
             "id": "herblore_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -1460,6 +1491,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "construction_xp_1",
@@ -1489,10 +1521,7 @@
             "id": "construction_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -1625,6 +1654,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "attack_xp_1",
@@ -1654,10 +1684,7 @@
             "id": "attack_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -1683,6 +1710,12 @@
             "value": 15
           },
           {
+            "id": "attack_prowess_6",
+            "cost": 4,
+            "effect": "second_chance",
+            "value": 1
+          },
+          {
             "id": "attack_prowess_4",
             "cost": 3,
             "effect": "combat_stat_flat",
@@ -1699,12 +1732,29 @@
             "races": [
               "orc"
             ]
+          }
+        ]
+      },
+      {
+        "key": "race_human",
+        "nodes": [
+          {
+            "id": "attack_race_human_1",
+            "cost": 2,
+            "effect": "per_level_bonus",
+            "value": 0.025,
+            "races": [
+              "human"
+            ]
           },
           {
-            "id": "attack_prowess_6",
-            "cost": 4,
-            "effect": "second_chance",
-            "value": 1
+            "id": "attack_race_human_2",
+            "cost": 3,
+            "effect": "per_level_bonus",
+            "value": 0.05,
+            "races": [
+              "human"
+            ]
           }
         ]
       }
@@ -1715,6 +1765,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "strength_xp_1",
@@ -1744,10 +1795,7 @@
             "id": "strength_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -1823,6 +1871,29 @@
             ]
           }
         ]
+      },
+      {
+        "key": "race_human",
+        "nodes": [
+          {
+            "id": "strength_race_human_1",
+            "cost": 2,
+            "effect": "per_level_bonus",
+            "value": 0.025,
+            "races": [
+              "human"
+            ]
+          },
+          {
+            "id": "strength_race_human_2",
+            "cost": 3,
+            "effect": "per_level_bonus",
+            "value": 0.05,
+            "races": [
+              "human"
+            ]
+          }
+        ]
       }
     ]
   },
@@ -1831,6 +1902,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "defense_xp_1",
@@ -1860,10 +1932,7 @@
             "id": "defense_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -1912,6 +1981,29 @@
             "value": 30
           }
         ]
+      },
+      {
+        "key": "race_human",
+        "nodes": [
+          {
+            "id": "defense_race_human_1",
+            "cost": 2,
+            "effect": "per_level_bonus",
+            "value": 0.025,
+            "races": [
+              "human"
+            ]
+          },
+          {
+            "id": "defense_race_human_2",
+            "cost": 3,
+            "effect": "per_level_bonus",
+            "value": 0.05,
+            "races": [
+              "human"
+            ]
+          }
+        ]
       }
     ]
   },
@@ -1920,6 +2012,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "ranged_xp_1",
@@ -1949,10 +2042,7 @@
             "id": "ranged_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -2044,6 +2134,29 @@
             "unlock": "elven_longbow"
           }
         ]
+      },
+      {
+        "key": "race_human",
+        "nodes": [
+          {
+            "id": "ranged_race_human_1",
+            "cost": 2,
+            "effect": "per_level_bonus",
+            "value": 0.025,
+            "races": [
+              "human"
+            ]
+          },
+          {
+            "id": "ranged_race_human_2",
+            "cost": 3,
+            "effect": "per_level_bonus",
+            "value": 0.05,
+            "races": [
+              "human"
+            ]
+          }
+        ]
       }
     ]
   },
@@ -2052,6 +2165,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "magic_xp_1",
@@ -2081,10 +2195,7 @@
             "id": "magic_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -2133,6 +2244,29 @@
             "value": 15
           }
         ]
+      },
+      {
+        "key": "race_human",
+        "nodes": [
+          {
+            "id": "magic_race_human_1",
+            "cost": 2,
+            "effect": "per_level_bonus",
+            "value": 0.025,
+            "races": [
+              "human"
+            ]
+          },
+          {
+            "id": "magic_race_human_2",
+            "cost": 3,
+            "effect": "per_level_bonus",
+            "value": 0.05,
+            "races": [
+              "human"
+            ]
+          }
+        ]
       }
     ]
   },
@@ -2141,6 +2275,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "hitpoints_xp_1",
@@ -2170,10 +2305,7 @@
             "id": "hitpoints_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -2245,6 +2377,29 @@
             ]
           }
         ]
+      },
+      {
+        "key": "race_human",
+        "nodes": [
+          {
+            "id": "hitpoints_race_human_1",
+            "cost": 2,
+            "effect": "per_level_bonus",
+            "value": 0.025,
+            "races": [
+              "human"
+            ]
+          },
+          {
+            "id": "hitpoints_race_human_2",
+            "cost": 3,
+            "effect": "per_level_bonus",
+            "value": 0.05,
+            "races": [
+              "human"
+            ]
+          }
+        ]
       }
     ]
   },
@@ -2253,6 +2408,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "prayer_xp_1",
@@ -2282,10 +2438,7 @@
             "id": "prayer_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -2360,6 +2513,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "mercantile_xp_1",
@@ -2389,10 +2543,7 @@
             "id": "mercantile_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },
@@ -2467,6 +2618,7 @@
     "paths": [
       {
         "key": "xp",
+        "auto": true,
         "nodes": [
           {
             "id": "slayer_xp_1",
@@ -2496,10 +2648,7 @@
             "id": "slayer_xp_5",
             "cost": 4,
             "effect": "xp_pct",
-            "value": 40,
-            "races": [
-              "human"
-            ]
+            "value": 40
           }
         ]
       },

@@ -359,7 +359,7 @@ internal fun BonusesTab(
                     name   = GameStrings.skillName(context, skill),
                     pct    = prestigeEffectValueLabel(effect, value),
                     scope  = "",
-                    detail = prestigeEffectDetail(effect, value),
+                    detail = GameStrings.prestigeEffectDesc(context, effect, value),
                 )
             }
             if (builderDiscountPct > 0) {
@@ -458,28 +458,4 @@ internal fun prestigeEffectValueLabel(effect: String, value: Double): String = w
     PrestigeBoosts.BLESSING_COST_PCT, PrestigeBoosts.BUILDER_DISCOUNT_PCT, PrestigeBoosts.INPUT_SAVE_PCT -> "-${value.toInt()}%"
     PrestigeBoosts.FLOW_INTERVAL_REDUCTION -> "-${value.toInt()}m"
     else -> "+${value.toInt()}%"
-}
-
-/** One-line description for a generic prestige-effect row. */
-@Composable
-internal fun prestigeEffectDetail(effect: String, value: Double): String? = when (effect) {
-    PrestigeBoosts.FLOW_RATE         -> stringResource(R.string.prestige_effect_flow_rate, if (value % 1.0 == 0.0) value.toInt().toString() else value.toString())
-    PrestigeBoosts.FLOW_INTERVAL_REDUCTION -> stringResource(R.string.prestige_effect_flow_interval, value.toInt())
-    PrestigeBoosts.BONUS_ROLL_PCT    -> stringResource(R.string.prestige_effect_bonus_roll, value.toInt())
-    PrestigeBoosts.CROP_ROTATION_PCT -> stringResource(R.string.prestige_effect_crop_rotation, value.toInt())
-    PrestigeBoosts.CROP_ROTATION_ALWAYS -> stringResource(R.string.prestige_effect_crop_rotation_always)
-    PrestigeBoosts.TOOL_EFF_PCT      -> stringResource(R.string.prestige_effect_tool_eff, value.toInt())
-    PrestigeBoosts.SUCCESS_CHANCE_PCT -> stringResource(R.string.prestige_effect_success_chance, value.toInt())
-    PrestigeBoosts.RECLAIM_PCT       -> stringResource(R.string.prestige_effect_reclaim, value.toInt())
-    PrestigeBoosts.HEAL_PCT          -> stringResource(R.string.prestige_effect_heal, value.toInt())
-    PrestigeBoosts.DEATH_KEEP_PCT    -> stringResource(R.string.prestige_effect_death_keep, value.toInt())
-    PrestigeBoosts.QUEUE_SLOT        -> stringResource(R.string.prestige_effect_queue_slot, value.toInt())
-    PrestigeBoosts.PET_BOOST_PCT     -> stringResource(R.string.prestige_effect_pet_boost, value.toInt())
-    PrestigeBoosts.BLESSING_DURATION_PCT -> stringResource(R.string.prestige_effect_blessing_duration, value.toInt())
-    PrestigeBoosts.BLESSING_COST_PCT -> stringResource(R.string.prestige_effect_blessing_cost, value.toInt())
-    PrestigeBoosts.POTION_BONUS_FLAT -> stringResource(R.string.prestige_effect_potion_bonus, value.toInt())
-    PrestigeBoosts.INPUT_SAVE_PCT    -> stringResource(R.string.prestige_effect_input_save, value.toInt())
-    PrestigeBoosts.BUILDER_DISCOUNT_PCT -> stringResource(R.string.prestige_effect_builder_discount, value.toInt())
-    PrestigeBoosts.SELL_PRICE_PCT    -> stringResource(R.string.prestige_effect_sell_price, value.toInt())
-    else -> null
 }

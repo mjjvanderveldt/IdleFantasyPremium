@@ -21,7 +21,7 @@
     <string name="skill_smithing_desc">Wytapiaj rudy w sztabki i wykuwaj potężny sprzęt metalowy.</string>
     <string name="skill_cooking_name">Gotowanie</string>
     <string name="skill_cooking_desc">Gotuj surowe składniki na jedzenie, które przywraca HP w walce.</string>
-    <string name="skill_fletching_name">Płatnerstwo</string>
+    <string name="skill_fletching_name">Łuczarstwo</string>
     <string name="skill_fletching_desc">Wytwarzaj łuki i strzały z kłód i elementów metalowych.</string>
     <string name="skill_crafting_name">Rzemiosło</string>
     <string name="skill_crafting_desc">Twórz biżuterię i inne wyroby z cennych materiałów.</string>
@@ -102,4 +102,5 @@
     <string name="skill_expedition_name">Wyprawa</string>
     <string name="skill_boss_name">Boss</string> <!-- untranslated -->
     <string name="skill_mercantile_name">Handel</string>
+    <string name="skill_mercantile_desc">Dispatch trade caravans along routes for coins and XP. Higher levels improve shop buy and sell prices and unlock exclusive Merchants Guild goods.</string> <!-- untranslated -->
 </resources>

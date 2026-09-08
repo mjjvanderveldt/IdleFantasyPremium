@@ -4,7 +4,7 @@ Great! You want to contribute to the game and want to know how you can get start
 
 Want a simpler task? {wiki_contribution_link} is also a great way to learn your way around the codebase and figure out how things work, explaining things for new players.
 
-{{table_of_contents}}
+{table_of_contents}
 
 ## Ways to contribute
 

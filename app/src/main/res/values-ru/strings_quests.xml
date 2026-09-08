@@ -508,8 +508,8 @@
     <string name="daily_verb_farming">Соберите</string>
 
     <!-- Quest objective format strings -->
-    <string name="quest_obj_gather">%1$s %2$d %3$s</string> <!-- untranslated -->
-    <string name="quest_obj_craft">%1$s %2$d %3$s</string> <!-- untranslated -->
+    <string name="quest_obj_gather">%1$s %2$d %3$s</string>
+    <string name="quest_obj_craft">%1$s %2$d %3$s</string>
     <string name="quest_obj_prayer">Похороните %1$d костей любого вида</string>
     <string name="quest_obj_kill">Победите %1$d врагов</string>
     <string name="quest_obj_kill_enemy">Победите %1$d %2$s</string>

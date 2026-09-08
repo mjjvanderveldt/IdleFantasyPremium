@@ -89,41 +89,41 @@
     <string name="item_raw_lobster_desc">生龙虾。烹饪后食用。</string>
     <string name="item_raw_swordfish_name">生旗鱼</string>
     <string name="item_raw_swordfish_desc">生旗鱼。烹饪后食用。</string>
-    <string name="item_raw_monkfish_name">生 Monkfish</string>
-    <string name="item_raw_monkfish_desc">生 Monkfish。烹饪后食用。</string>
+    <string name="item_raw_monkfish_name">生安康鱼</string>
+    <string name="item_raw_monkfish_desc">生安康鱼。烹饪后食用。</string>
     <string name="item_raw_shark_name">生鲨鱼</string>
     <string name="item_raw_shark_desc">生鲨鱼。烹饪后食用。</string>
-    <string name="item_raw_sea_turtle_name">生海龟肉</string>
-    <string name="item_raw_sea_turtle_desc">生海龟肉。烹饪后食用。</string>
+    <string name="item_raw_sea_turtle_name">生海龟</string>
+    <string name="item_raw_sea_turtle_desc">生海龟。烹饪后食用。</string>
     <string name="item_raw_manta_ray_name">生蝠鲼</string>
     <string name="item_raw_manta_ray_desc">生蝠鲼。烹饪后食用。</string>
 
     <!-- ===== Cooked fish ===== -->
-    <string name="item_shrimp_name">虾</string>
+    <string name="item_shrimp_name">熟虾</string>
     <string name="item_shrimp_desc">烹熟的虾。恢复少量生命值。</string>
-    <string name="item_sardine_name">沙丁鱼</string>
+    <string name="item_sardine_name">熟沙丁鱼</string>
     <string name="item_sardine_desc">烹熟的沙丁鱼。食用后恢复生命值。</string>
-    <string name="item_herring_name">鲱鱼</string>
+    <string name="item_herring_name">熟鲱鱼</string>
     <string name="item_herring_desc">烹熟的鲱鱼。食用后恢复生命值。</string>
-    <string name="item_mackerel_name">鲭鱼</string>
+    <string name="item_mackerel_name">熟鲭鱼</string>
     <string name="item_mackerel_desc">烹熟的鲭鱼。食用后恢复生命值。</string>
-    <string name="item_trout_name">鳟鱼</string>
+    <string name="item_trout_name">熟鳟鱼</string>
     <string name="item_trout_desc">烹熟的鳟鱼。食用后恢复生命值。</string>
-    <string name="item_salmon_name">三文鱼</string>
+    <string name="item_salmon_name">熟三文鱼</string>
     <string name="item_salmon_desc">烹熟的三文鱼。食用后恢复生命值。</string>
-    <string name="item_tuna_name">金枪鱼</string>
+    <string name="item_tuna_name">熟金枪鱼</string>
     <string name="item_tuna_desc">烹熟的金枪鱼。食用后恢复生命值。</string>
-    <string name="item_lobster_name">龙虾</string>
+    <string name="item_lobster_name">熟龙虾</string>
     <string name="item_lobster_desc">烹熟的龙虾。恢复可观的生命值。</string>
-    <string name="item_swordfish_name">旗鱼</string>
+    <string name="item_swordfish_name">熟旗鱼</string>
     <string name="item_swordfish_desc">烹熟的旗鱼。恢复大量生命值。</string>
-    <string name="item_monkfish_name">Monkfish</string>
-    <string name="item_monkfish_desc">烹熟的 Monkfish。恢复相当多的生命值。</string>
-    <string name="item_shark_name">鲨鱼</string>
+    <string name="item_monkfish_name">熟安康鱼</string>
+    <string name="item_monkfish_desc">烹熟的安康鱼。恢复相当多的生命值。</string>
+    <string name="item_shark_name">熟鲨鱼</string>
     <string name="item_shark_desc">烹熟的鲨鱼。恢复大量生命值。</string>
-    <string name="item_sea_turtle_name">海龟肉</string>
-    <string name="item_sea_turtle_desc">烹熟的海龟肉。恢复极多的生命值。</string>
-    <string name="item_manta_ray_name">蝠鲼</string>
+    <string name="item_sea_turtle_name">熟海龟</string>
+    <string name="item_sea_turtle_desc">烹熟的海龟。恢复极多的生命值。</string>
+    <string name="item_manta_ray_name">熟蝠鲼</string>
     <string name="item_manta_ray_desc">烹熟的蝠鲼。最好的食物之一。</string>
 
     <!-- ===== Raw meat ===== -->
@@ -139,7 +139,7 @@
     <string name="item_raw_meat_desc">来历不明的生肉。烹饪后食用。</string>
 
     <!-- ===== Cooked meat ===== -->
-    <string name="item_cooked_rat_meat_name">鼠肉</string>
+    <string name="item_cooked_rat_meat_name">熟鼠肉</string>
     <string name="item_cooked_rat_meat_desc">烹熟的鼠肉。勉强能吃，恢复极少的生命值。</string>
     <string name="item_cooked_chicken_name">熟鸡肉</string>
     <string name="item_cooked_chicken_desc">烹熟的鸡肉。食用后恢复生命值。</string>
@@ -313,15 +313,15 @@
     <string name="item_runite_shield_desc">可用的最精良盾牌。</string>
 
     <!-- Slayer gear item names/descs (used by Shop + Slayer screen) -->
-    <string name="item_slayer_helm_name">杀手头盔</string>
-    <string name="item_slayer_helm_desc">老练杀手佩戴的坚固头盔。</string>
+    <string name="item_slayer_helm_name">讨伐头盔</string>
+    <string name="item_slayer_helm_desc">老练讨伐者佩戴的坚固头盔。</string>
     <string name="item_abyssal_whip_name">深渊鞭</string>
     <string name="item_abyssal_whip_desc">由深渊能量锻造的鞭子，非常适合力量训练。</string>
-    <string name="item_slayer_platebody_name">杀手板甲</string>
-    <string name="item_slayer_platebody_desc">刻有杀手符文的重甲。</string>
-    <string name="item_slayer_platelegs_name">杀手板腿甲</string>
+    <string name="item_slayer_platebody_name">讨伐板甲</string>
+    <string name="item_slayer_platebody_desc">刻有讨伐符文的重甲。</string>
+    <string name="item_slayer_platelegs_name">讨伐板腿甲</string>
     <string name="item_slayer_platelegs_desc">为长时间地牢探索打造的护腿。</string>
-    <string name="item_slayer_plateskirt_name">杀手板裙甲</string>
+    <string name="item_slayer_plateskirt_name">讨伐板裙甲</string>
     <string name="item_slayer_plateskirt_desc">为长时间地牢探索打造的护裙。</string>
 
     <!-- ===== Tools — pickaxes ===== -->
@@ -475,7 +475,9 @@
     <string name="item_diamond_necklace_name">钻石项链</string>
     <string name="item_ancient_treasure_name">古代宝藏</string>
     <string name="item_seaweed_name">海藻</string>
+    <string name="item_old_boot_name">旧靴子</string>
     <string name="item_pearl_name">珍珠</string>
+    <string name="item_black_pearl_name">黑珍珠</string>
     <string name="item_nature_rune_name">自然符文</string>
     <string name="item_herb_name">草药</string>
     <string name="item_mahogany_log_name">红木原木</string>
@@ -629,7 +631,7 @@
     <string name="item_runite_lockpick_name">符文开锁器</string>
 
     <!-- ===== Smithing hammers ===== -->
-    <string name="item_bronze_hammer_name">铜锤</string>
+    <string name="item_bronze_hammer_name">青铜锤</string>
     <string name="item_iron_hammer_name">铁锤</string>
     <string name="item_steel_hammer_name">钢锤</string>
     <string name="item_mithril_hammer_name">秘银锤</string>
@@ -637,7 +639,7 @@
     <string name="item_runite_hammer_name">符文锤</string>
 
     <!-- ===== Cooking frying pans ===== -->
-    <string name="item_bronze_frying_pan_name">铜煎锅</string>
+    <string name="item_bronze_frying_pan_name">青铜煎锅</string>
     <string name="item_iron_frying_pan_name">铁煎锅</string>
     <string name="item_steel_frying_pan_name">钢煎锅</string>
     <string name="item_mithril_frying_pan_name">秘银煎锅</string>
@@ -645,7 +647,7 @@
     <string name="item_runite_frying_pan_name">符文煎锅</string>
 
     <!-- ===== Firemaking tinderboxes ===== -->
-    <string name="item_bronze_tinderbox_name">铜火绒盒</string>
+    <string name="item_bronze_tinderbox_name">青铜火绒盒</string>
     <string name="item_iron_tinderbox_name">铁火绒盒</string>
     <string name="item_steel_tinderbox_name">钢火绒盒</string>
     <string name="item_mithril_tinderbox_name">秘银火绒盒</string>
@@ -653,7 +655,7 @@
     <string name="item_runite_tinderbox_name">符文火绒盒</string>
 
     <!-- ===== Agility grappling hooks ===== -->
-    <string name="item_bronze_grappling_hook_name">铜抓钩</string>
+    <string name="item_bronze_grappling_hook_name">青铜抓钩</string>
     <string name="item_iron_grappling_hook_name">铁抓钩</string>
     <string name="item_steel_grappling_hook_name">钢抓钩</string>
     <string name="item_mithril_grappling_hook_name">秘银抓钩</string>
@@ -666,7 +668,7 @@
     <string name="item_strongmans_sigil_name">力士印记</string>
     <string name="item_strongmans_sigil_desc">刻有力士冠军标记的沉重铁环，提升力量。</string>
     <string name="item_carnival_cape_name">嘉年华披风</string>
-    <string name="item_carnival_cape_desc" formatted="false">A vibrant cape worn by carnival champions. Grants 5% more tickets from Carnival sessions.</string> <!-- untranslated -->
+    <string name="item_carnival_cape_desc" formatted="false">嘉年华赢家披着的鲜亮斗篷。参与嘉年华活动时，获得的奖券数量提升 5%</string>
 
     <!-- Herblore potions -->
     <string name="item_attack_brew_name">攻击药剂</string>
@@ -773,7 +775,7 @@
 
 
     <!-- Additional item/boss/food names (English placeholders) -->
-    <string name="item_abyssal_rod_name">深渊之杖</string>
+    <string name="item_abyssal_rod_name">深渊钓竿</string>
     <string name="item_adamantite_arrow_tip_name">精金箭头</string>
     <string name="item_adamantite_boots_name">精金靴</string>
     <string name="item_adamantite_chainbody_name">精金链甲</string>
@@ -798,7 +800,7 @@
     <string name="item_archers_ring_desc">增加远程精准度。需要商业等级60购买。</string>
     <string name="item_attack_cape_name">攻击披风</string>
     <string name="item_baby_kraken_name">幼年海妖</string>
-    <string name="item_balrog_name">炎魔，乌顿的远古之焰</string>
+    <string name="item_balrog_name">炎魔，深渊的远古之焰</string>
     <string name="item_balrog_whip_name">炎魔之鞭</string>
     <string name="item_balrog_wings_name">炎魔之翼</string>
     <string name="item_beef_name">熟牛肉</string>
@@ -818,8 +820,8 @@
     <string name="item_construction_guild_cape_name">建筑公会披风</string>
     <string name="item_cooking_cape_name">烹饪披风</string>
     <string name="item_cooking_guild_cape_name">烹饪公会披风</string>
-    <string name="item_crafting_cape_name">工艺披风</string>
-    <string name="item_crafting_guild_cape_name">工艺公会披风</string>
+    <string name="item_crafting_cape_name">工艺制作披风</string>
+    <string name="item_crafting_guild_cape_name">工艺制作公会披风</string>
     <string name="item_deep_iron_pickaxe_name">深铁镐</string>
     <string name="item_defense_cape_name">防御披风</string>
     <string name="item_demon_lord_name">恶魔领主</string>
@@ -883,8 +885,8 @@
     <string name="item_magic_cape_name">魔法披风</string>
     <string name="item_magic_longbow_name">魔法长弓</string>
     <string name="item_magic_shortbow_name">魔法短弓</string>
-    <string name="item_elven_shortbow_name">Elven Shortbow</string> <!-- untranslated -->
-    <string name="item_elven_longbow_name">Elven Longbow</string> <!-- untranslated -->
+    <string name="item_elven_shortbow_name">精灵短弓</string>
+    <string name="item_elven_longbow_name">精灵长弓</string>
     <string name="item_maple_shortbow_name">枫木短弓</string>
     <string name="item_mercantile_guild_cape_name">商贸公会披风</string>
     <string name="item_mining_cape_name">采矿披风</string>
@@ -943,7 +945,7 @@
     <string name="item_silver_emerald_ring_name">银祖母绿戒指</string>
     <string name="item_silver_ruby_necklace_name">银红宝石项链</string>
     <string name="item_silver_ruby_ring_name">银红宝石戒指</string>
-    <string name="item_slayer_guild_cape_name">杀手公会披风</string>
+    <string name="item_slayer_guild_cape_name">讨伐公会披风</string>
     <string name="item_smithing_cape_name">锻造披风</string>
     <string name="item_smithing_guild_cape_name">锻造公会披风</string>
     <string name="item_steel_arrow_tip_name">钢箭头</string>
@@ -975,7 +977,7 @@
     <string name="item_sovereign_crown_desc">虚空君主的王冠，散发着黑暗威严。提供无与伦比的防护。</string>
     <string name="item_amulet_of_the_void_name">虚空护符</string>
     <string name="item_amulet_of_the_void_desc">纯虚空精华的吊坠，增强佩戴者所有战斗属性。</string>
-    <string name="item_bronze_longsword_desc">一把铜长剑。</string>
+    <string name="item_bronze_longsword_desc">一把青铜长剑。</string>
     <string name="item_iron_longsword_desc">一把铁长剑。</string>
     <string name="item_shadow_dagger_desc">从暗影巢穴回收的黑色匕首，极其锋利且完美平衡。</string>
     <string name="item_steel_dagger_desc">一把钢匕首。</string>
@@ -1006,8 +1008,8 @@
     <string name="item_yew_longbow_desc">用紫杉制作的长弓。</string>
     <string name="item_magic_shortbow_desc">用魔法原木制作的短弓。</string>
     <string name="item_magic_longbow_desc">用魔法原木制作的长弓。</string>
-    <string name="item_elven_shortbow_desc">A swift bow strung with elven silk. Only elven hands know the fletching.</string> <!-- untranslated -->
-    <string name="item_elven_longbow_desc">A tall elven warbow of layered redwood. Only elven hands know the fletching.</string> <!-- untranslated -->
+    <string name="item_elven_shortbow_desc">一张以精灵之丝弦绷紧的迅疾良弓。只有精灵才通晓这箭矢的羽制之法。</string>
+    <string name="item_elven_longbow_desc">一张高大的精灵战弓，由红木层压而成。只有精灵才通晓这箭矢的羽制之法。</string>
     <string name="item_tower_crossbow_name">高塔弩</string>
     <string name="item_tower_crossbow_desc">用高塔金属打造的精密弩。</string>
     <string name="item_arcane_staff_desc">从奥术废墟回收的法杖，仍然嗡嗡作响，蕴含着摧毁上方尖塔的灾难中的魔法能量。</string>
@@ -1015,13 +1017,13 @@
     <string name="item_void_staff_name">虚空法杖</string>
     <string name="item_void_staff_desc">纯虚空能量的法杖，为所有法术提供无限符文。</string>
     <string name="item_trident_of_the_seas_desc">蕴含深海力量的恐怖三叉戟，从海妖巢穴中获取。</string>
-    <string name="item_bronze_med_helmet_desc">铜制中型头盔。</string>
-    <string name="item_bronze_full_helmet_desc">铜制全罩头盔。</string>
-    <string name="item_bronze_chainbody_desc">铜制锁链甲。</string>
-    <string name="item_bronze_plateskirt_desc">铜制板裙甲。</string>
-    <string name="item_bronze_boots_desc">一双铜靴。</string>
-    <string name="item_bronze_square_shield_desc">铜制方盾。</string>
-    <string name="item_bronze_kiteshield_desc">铜制鸢盾。</string>
+    <string name="item_bronze_med_helmet_desc">青铜制中型头盔。</string>
+    <string name="item_bronze_full_helmet_desc">青铜制全罩头盔。</string>
+    <string name="item_bronze_chainbody_desc">青铜制锁链甲。</string>
+    <string name="item_bronze_plateskirt_desc">青铜制板裙甲。</string>
+    <string name="item_bronze_boots_desc">一双青铜靴。</string>
+    <string name="item_bronze_square_shield_desc">青铜制方盾。</string>
+    <string name="item_bronze_kiteshield_desc">青铜制鸢盾。</string>
     <string name="item_iron_med_helmet_desc">铁制中型头盔。</string>
     <string name="item_iron_full_helmet_desc">铁制全罩头盔。</string>
     <string name="item_iron_chainbody_desc">铁制锁链甲。</string>
@@ -1105,54 +1107,54 @@
     <string name="item_kraken_tentacle_desc">盘旋触手戒指，传导海妖的奥术力量。</string>
     <string name="item_tower_cape_name">高塔披风</string>
     <string name="item_tower_cape_desc">散发着高塔能量的飘逸披风。</string>
-    <string name="item_mining_cape_desc" formatted="false">Awarded for reaching level 99 Mining. Grants 10% more ore per session.</string> <!-- untranslated -->
-    <string name="item_construction_guild_cape_desc" formatted="false">Awarded for reaching Builders Guild level 10. Grants 5% more furniture per session.</string> <!-- untranslated -->
-    <string name="item_mining_guild_cape_desc" formatted="false">Awarded for reaching Mining Guild level 10. Grants 5% more ore per session.</string> <!-- untranslated -->
-    <string name="item_fishing_cape_desc" formatted="false">Awarded for reaching level 99 Fishing. Grants 10% more fish per session.</string> <!-- untranslated -->
-    <string name="item_fishing_guild_cape_desc" formatted="false">Awarded for reaching Fishing Guild level 10. Grants 5% more fish per session.</string> <!-- untranslated -->
-    <string name="item_woodcutting_cape_desc" formatted="false">Awarded for reaching level 99 Woodcutting. Grants 10% more logs per session.</string> <!-- untranslated -->
-    <string name="item_woodcutting_guild_cape_desc" formatted="false">Awarded for reaching Woodcutting Guild level 10. Grants 5% more logs per session.</string> <!-- untranslated -->
-    <string name="item_farming_cape_desc" formatted="false">Awarded for reaching level 99 Farming. Grants 10% more harvest per session.</string> <!-- untranslated -->
-    <string name="item_farming_guild_cape_desc" formatted="false">Awarded for reaching Farming Guild level 10. Grants 5% more harvest per session.</string> <!-- untranslated -->
+    <string name="item_mining_cape_desc" formatted="false">采矿等级达到 99 级时授予，每轮采矿采集的矿石获取量 + 10%</string>
+    <string name="item_construction_guild_cape_desc" formatted="false">建造者公会等级达到 10 级即可获得，每轮制作可多产出 5% 家具</string>
+    <string name="item_mining_guild_cape_desc" formatted="false">采矿公会等级达到 10 级即可获得，每轮采矿矿石产出提升 5%</string>
+    <string name="item_fishing_cape_desc" formatted="false">钓鱼等级达到 99 级时授予，每轮垂钓渔获量提升 10%</string>
+    <string name="item_fishing_guild_cape_desc" formatted="false">钓鱼公会等级达到 10 级即可获得，每轮垂钓渔获量提升 5%</string>
+    <string name="item_woodcutting_cape_desc" formatted="false">伐木等级达到 99 级时授予，每轮伐木获得的原木产出 + 10%</string>
+    <string name="item_woodcutting_guild_cape_desc" formatted="false">伐木公会等级达到 10 级即可获得，每轮伐木原木产出 + 5%</string>
+    <string name="item_farming_cape_desc" formatted="false">农耕等级达到 99 级时授予，每轮种植收获产出 + 10%</string>
+    <string name="item_farming_guild_cape_desc" formatted="false">农耕公会等级达到 10 级即可获得，每轮种植收获产出 + 5%</string>
     <string name="item_thieving_cape_name">盗窃披风</string>
-    <string name="item_thieving_cape_desc" formatted="false">Awarded for reaching level 99 Thieving. Grants 10% more successful pickpockets per session.</string> <!-- untranslated -->
-    <string name="item_thieving_guild_cape_desc" formatted="false">Awarded for reaching Thieves Guild level 10. Grants 5% more successful pickpockets per session.</string> <!-- untranslated -->
-    <string name="item_smithing_cape_desc" formatted="false">Awarded for reaching level 99 Smithing. Grants 10% more items per session.</string> <!-- untranslated -->
-    <string name="item_smithing_guild_cape_desc" formatted="false">Awarded for reaching Smithing Guild level 10. Grants 5% more items per session.</string> <!-- untranslated -->
-    <string name="item_cooking_cape_desc" formatted="false">Awarded for reaching level 99 Cooking. Grants 10% more food per session.</string> <!-- untranslated -->
-    <string name="item_cooking_guild_cape_desc" formatted="false">Awarded for reaching Cooking Guild level 10. Grants 5% more food per session.</string> <!-- untranslated -->
-    <string name="item_fletching_cape_desc" formatted="false">Awarded for reaching level 99 Fletching. Grants 10% more arrows per session.</string> <!-- untranslated -->
-    <string name="item_fletching_guild_cape_desc" formatted="false">Awarded for reaching Fletching Guild level 10. Grants 5% more arrows per session.</string> <!-- untranslated -->
-    <string name="item_crafting_cape_desc" formatted="false">Awarded for reaching level 99 Crafting. Grants 10% more items per session.</string> <!-- untranslated -->
-    <string name="item_crafting_guild_cape_desc" formatted="false">Awarded for reaching Crafting Guild level 10. Grants 5% more items per session.</string> <!-- untranslated -->
-    <string name="item_firemaking_cape_desc" formatted="false">Awarded for reaching level 99 Firemaking. Grants 10% more ashes per session.</string> <!-- untranslated -->
-    <string name="item_firemaking_guild_cape_desc" formatted="false">Awarded for reaching Firemaking Guild level 10. Grants 5% more ashes per session.</string> <!-- untranslated -->
-    <string name="item_runecrafting_cape_desc" formatted="false">Awarded for reaching level 99 Runecrafting. Grants 10% more runes per session.</string> <!-- untranslated -->
-    <string name="item_runecrafting_guild_cape_desc" formatted="false">Awarded for reaching Runecrafting Guild level 10. Grants 5% more runes per session.</string> <!-- untranslated -->
+    <string name="item_thieving_cape_desc" formatted="false">偷窃等级达到 99 级时授予，每轮偷窃的成功概率 + 10%</string>
+    <string name="item_thieving_guild_cape_desc" formatted="false">盗贼公会等级达到 10 级即可获得，每轮扒窃的成功概率 + 5%</string>
+    <string name="item_smithing_cape_desc" formatted="false">锻造等级达到 99 级时授予，每轮锻造制品产出 + 10%</string>
+    <string name="item_smithing_guild_cape_desc" formatted="false">锻造公会等级达到 10 级即可获得，每轮锻造制品产出 + 5%</string>
+    <string name="item_cooking_cape_desc" formatted="false">烹饪等级达到 99 级时授予，每轮烹饪食物产出 + 10%</string>
+    <string name="item_cooking_guild_cape_desc" formatted="false">烹饪公会等级达到 10 级即可获得，每轮烹饪食物产出 + 5%</string>
+    <string name="item_fletching_cape_desc" formatted="false">制箭等级达到 99 级时授予，每轮制作箭矢产出 + 10%</string>
+    <string name="item_fletching_guild_cape_desc" formatted="false">制箭公会等级达到 10 级即可获得，每轮制作箭矢产出 + 5%</string>
+    <string name="item_crafting_cape_desc" formatted="false">工艺制作等级达到 99 级时授予。每轮工艺制作物品产出 + 10%</string>
+    <string name="item_crafting_guild_cape_desc" formatted="false">工艺制作公会等级达到 10 级即可获得。每轮工艺制作物品产出 + 5%</string>
+    <string name="item_firemaking_cape_desc" formatted="false">生火等级达到 99 级时授予，每轮生火灰烬产出 + 10%</string>
+    <string name="item_firemaking_guild_cape_desc" formatted="false">生火公会等级达到 10 级即可获得，每轮生火灰烬产出 + 5%</string>
+    <string name="item_runecrafting_cape_desc" formatted="false">符文制作等级达到 99 级时授予。每轮制符符文产出 + 10%</string>
+    <string name="item_runecrafting_guild_cape_desc" formatted="false">符文制作公会等级达到 10 级即可获得，每轮制符符文产出 + 5%</string>
     <string name="item_herblore_cape_name">草药学披风</string>
-    <string name="item_herblore_cape_desc" formatted="false">Awarded for reaching level 99 Herblore. Grants 10% more potions per session.</string> <!-- untranslated -->
-    <string name="item_herblore_guild_cape_desc" formatted="false">Awarded for reaching Herblore Guild level 10. Grants 5% more potions per session.</string> <!-- untranslated -->
+    <string name="item_herblore_cape_desc" formatted="false">草药学等级达到 99 级时授予，每轮炼制药剂产出 + 10%</string>
+    <string name="item_herblore_guild_cape_desc" formatted="false">草药学公会等级达到 10 级即可获得，每轮炼制药剂产出 + 5%</string>
     <string name="item_construction_cape_name">建筑披风</string>
-    <string name="item_construction_cape_desc" formatted="false">Awarded for reaching level 99 Construction. Grants 10% more items per session.</string> <!-- untranslated -->
-    <string name="item_prayer_cape_desc" formatted="false">Awarded for reaching level 99 Prayer. Strengthens your active blessing by 10%.</string> <!-- untranslated -->
-    <string name="item_prayer_guild_cape_desc" formatted="false">Awarded for reaching Prayer Guild level 10. Strengthens your active blessing by 5%.</string> <!-- untranslated -->
-    <string name="item_mercantile_cape_name">商业披风</string>
-    <string name="item_mercantile_cape_desc" formatted="false">Awarded for reaching level 99 Mercantile. Grants 10% better shop prices and trade returns.</string> <!-- untranslated -->
-    <string name="item_mercantile_guild_cape_desc" formatted="false">Awarded for reaching Merchants Guild level 10. Grants 5% better shop prices and trade returns.</string> <!-- untranslated -->
-    <string name="item_agility_cape_desc" formatted="false">Awarded for reaching level 99 Agility. Grants 10% more XP per session.</string> <!-- untranslated -->
-    <string name="item_agility_guild_cape_desc" formatted="false">Awarded for reaching Agility Guild level 10. Grants 5% more XP per session.</string> <!-- untranslated -->
-    <string name="item_slayer_cape_name">杀手披风</string>
-    <string name="item_slayer_cape_desc" formatted="false">Awarded for reaching level 99 Slayer. Grants 10% more Slayer points.</string> <!-- untranslated -->
-    <string name="item_attack_cape_desc" formatted="false">Awarded for reaching level 99 Attack. Grants 10% bonus Attack XP.</string> <!-- untranslated -->
-    <string name="item_strength_cape_desc" formatted="false">Awarded for reaching level 99 Strength. Grants 10% bonus Strength XP.</string> <!-- untranslated -->
-    <string name="item_defense_cape_desc" formatted="false">Awarded for reaching level 99 Defense. Grants 10% bonus Defense XP.</string> <!-- untranslated -->
-    <string name="item_warriors_guild_cape_desc" formatted="false">Awarded for reaching Warriors Guild level 10. Grants 5% bonus Attack, Strength, and Defense XP.</string> <!-- untranslated -->
-    <string name="item_ranged_cape_desc" formatted="false">Awarded for reaching level 99 Ranged. Grants 10% bonus Ranged XP.</string> <!-- untranslated -->
-    <string name="item_archers_guild_cape_desc" formatted="false">Awarded for reaching Archers Guild level 10. Grants 5% bonus Ranged XP.</string> <!-- untranslated -->
-    <string name="item_magic_cape_desc" formatted="false">Awarded for reaching level 99 Magic. Grants 10% bonus Magic XP.</string> <!-- untranslated -->
-    <string name="item_mages_guild_cape_desc" formatted="false">Awarded for reaching Mages Guild level 10. Grants 5% bonus Magic XP.</string> <!-- untranslated -->
-    <string name="item_slayer_guild_cape_desc" formatted="false">Awarded for reaching Slayers Guild level 10. Grants 5% bonus Slayer XP.</string> <!-- untranslated -->
-    <string name="item_hp_cape_desc" formatted="false">Awarded for reaching level 99 HP. Grants 10% bonus Hitpoints XP.</string> <!-- untranslated -->
+    <string name="item_construction_cape_desc" formatted="false">建造等级达到 99 级时授予，每轮建造物件产出 + 10%</string>
+    <string name="item_prayer_cape_desc" formatted="false">祈祷等级达到 99 级时授予，你生效的祝福效果增强 10%</string>
+    <string name="item_prayer_guild_cape_desc" formatted="false">祈祷公会等级达到 10 级即可获得，你生效的祝福效果增强 5%</string>
+    <string name="item_mercantile_cape_name">商贸披风</string>
+    <string name="item_mercantile_cape_desc" formatted="false">贸易等级达到 99 级时授予，商店买卖价格与贸易收益提升 10%</string>
+    <string name="item_mercantile_guild_cape_desc" formatted="false">商人公会等级达到 10 级即可获得，商店买卖价格与贸易收益提升 5%</string>
+    <string name="item_agility_cape_desc" formatted="false">敏捷等级达到 99 级时授予，每轮行动获取经验 + 10%</string>
+    <string name="item_agility_guild_cape_desc" formatted="false">敏捷公会等级达到 10 级即可获得，每轮行动获取经验 + 5%</string>
+    <string name="item_slayer_cape_name">讨伐披风</string>
+    <string name="item_slayer_cape_desc" formatted="false">讨伐等级达到 99 级时授予，屠戮点数获取量 + 10%</string>
+    <string name="item_attack_cape_desc" formatted="false">攻击等级达到 99 级时授予，攻击技能额外经验 + 10%</string>
+    <string name="item_strength_cape_desc" formatted="false">力量等级达到 99 级时授予，力量技能额外经验 + 10%</string>
+    <string name="item_defense_cape_desc" formatted="false">防御等级达到 99 级时授予，防御技能额外经验 + 10%</string>
+    <string name="item_warriors_guild_cape_desc" formatted="false">战士公会等级达到 10 级即可获得，攻击、力量、防御技能额外经验 + 5%</string>
+    <string name="item_ranged_cape_desc" formatted="false">远程等级达到 99 级时授予，远程技能额外经验 + 10%</string>
+    <string name="item_archers_guild_cape_desc" formatted="false">弓手公会等级达到 10 级即可获得，远程技能额外经验 + 5%</string>
+    <string name="item_magic_cape_desc" formatted="false">魔法等级达到 99 级时授予，魔法技能额外经验 + 10%</string>
+    <string name="item_mages_guild_cape_desc" formatted="false">法师公会等级达到 10 级即可获得，魔法技能额外经验 + 5%</string>
+    <string name="item_slayer_guild_cape_desc" formatted="false">杀手公会等级达到 10 级即可获得，讨伐技能额外经验 + 5%</string>
+    <string name="item_hp_cape_desc" formatted="false">生命等级达到 99 级时授予，生命值技能额外经验 + 10%</string>
     <string name="item_deep_iron_pickaxe_desc">用坍塌矿井最深处的矿石锻造，精准度惊人。</string>
     <string name="item_dwarven_pickaxe_desc">大师级矮人镐，有史以来最精良的采矿工具。</string>
     <string name="item_forge_pickaxe_desc">在远古锻炉的火焰中淬炼，最稀有最强大的镐。</string>
@@ -1162,7 +1164,7 @@
     <string name="item_blessed_fishing_rod_desc">用从溺亡神殿回收的浮木制作，受古老海祭祝福。</string>
     <string name="item_dwarven_fishing_rod_desc">矮人制作的钓竿，几乎能自动把鱼拉出水面。</string>
     <string name="item_abyssal_rod_desc">用从深渊废墟回收的虚空丝线编织，鱼儿主动上钩。</string>
-    <string name="item_bronze_hoe_desc">基础铜锄，略微增加收获产量。</string>
+    <string name="item_bronze_hoe_desc">基础青铜锄，略微增加收获产量。</string>
     <string name="item_iron_hoe_desc">铁锄，增加收获产量。</string>
     <string name="item_steel_hoe_desc">钢锄，明显增加收获产量。</string>
     <string name="item_mithril_hoe_desc">秘银锄，大幅增加收获产量。</string>
@@ -1170,7 +1172,7 @@
     <string name="item_runite_hoe_desc">符文锄，最好的农具。</string>
     <string name="item_dwarven_hoe_desc">传说中的矮人锄，使任何作物产量翻倍。</string>
     <string name="item_divine_hoe_desc">受神圣之光祝福的锄，作物在其触碰下茂盛生长。</string>
-    <string name="item_bronze_hammer_desc">锻造用铜锤。</string>
+    <string name="item_bronze_hammer_desc">锻造用青铜锤。</string>
     <string name="item_iron_hammer_desc">锻造用铁锤。</string>
     <string name="item_steel_hammer_desc">锻造用钢锤。</string>
     <string name="item_mithril_hammer_desc">锻造用秘银锤。</string>
@@ -1178,7 +1180,7 @@
     <string name="item_runite_hammer_desc">锻造用符文锤。</string>
     <string name="item_dwarven_hammer_desc">矮人锻造的锤子，每一击都精准有力。</string>
     <string name="item_divine_hammer_desc">受神圣之光触碰的锤子，金属在其意志下弯曲。</string>
-    <string name="item_bronze_tinderbox_desc">生火用铜火绒盒。</string>
+    <string name="item_bronze_tinderbox_desc">生火用青铜火绒盒。</string>
     <string name="item_iron_tinderbox_desc">生火用铁火绒盒。</string>
     <string name="item_steel_tinderbox_desc">生火用钢火绒盒。</string>
     <string name="item_mithril_tinderbox_desc">生火用秘银火绒盒。</string>
@@ -1186,7 +1188,7 @@
     <string name="item_runite_tinderbox_desc">生火用符文火绒盒。</string>
     <string name="item_dwarven_tinderbox_desc">矮人锻造的火绒盒，瞬间点燃熊熊烈焰。</string>
     <string name="item_divine_tinderbox_desc">受神圣之光触碰的火绒盒，最微弱的火花也能点燃。</string>
-    <string name="item_bronze_grappling_hook_desc">敏捷训练用铜抓钩。</string>
+    <string name="item_bronze_grappling_hook_desc">敏捷训练用青铜抓钩。</string>
     <string name="item_iron_grappling_hook_desc">敏捷训练用铁抓钩。</string>
     <string name="item_steel_grappling_hook_desc">敏捷训练用钢抓钩。</string>
     <string name="item_mithril_grappling_hook_desc">敏捷训练用秘银抓钩。</string>
@@ -1196,7 +1198,7 @@
     <string name="item_dwarven_grappling_hook_desc">矮人锻造的抓钩，永不打滑。</string>
     <string name="item_arcane_grappling_hook_desc">嗡嗡作响的奥术抓钩，瞬间将你拉过间隙。</string>
     <string name="item_divine_grappling_hook_desc">受神圣之光触碰的抓钩，无论投向何处都能找到着力点。</string>
-    <string name="item_bronze_frying_pan_desc">烹饪用铜煎锅。</string>
+    <string name="item_bronze_frying_pan_desc">烹饪用青铜煎锅。</string>
     <string name="item_iron_frying_pan_desc">烹饪用铁煎锅。</string>
     <string name="item_steel_frying_pan_desc">烹饪用钢煎锅。</string>
     <string name="item_mithril_frying_pan_desc">烹饪用秘银煎锅。</string>
@@ -1204,7 +1206,7 @@
     <string name="item_runite_frying_pan_desc">烹饪用符文煎锅。</string>
     <string name="item_dwarven_frying_pan_desc">矮人锻造的煎锅，每次都能烹制完美食物。</string>
     <string name="item_divine_frying_pan_desc">受神圣之光触碰的煎锅，从不烧焦任何一餐。</string>
-    <string name="item_bronze_lockpick_desc">盗窃用基础铜撬锁器。</string>
+    <string name="item_bronze_lockpick_desc">盗窃用基础青铜撬锁器。</string>
     <string name="item_iron_lockpick_desc">盗窃用铁撬锁器。</string>
     <string name="item_steel_lockpick_desc">盗窃用钢撬锁器。</string>
     <string name="item_mithril_lockpick_desc">盗窃用秘银撬锁器。</string>

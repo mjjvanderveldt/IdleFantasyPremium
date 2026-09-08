@@ -36,11 +36,14 @@ data class PrestigeNodeUi(
     val affordable: Boolean,
     /** Recipe key this node unlocks (unlock_recipe effect only). */
     val unlock: String? = null,
+    /** Node on an auto path: earned by prestiging, never bought. */
+    val auto: Boolean = false,
 )
 
 data class PrestigePathUi(
     val key: String,
     val nodes: List<PrestigeNodeUi>,
+    val auto: Boolean = false,
 )
 
 @HiltViewModel
@@ -70,7 +73,8 @@ class PrestigeDetailViewModel @Inject constructor(
         /** Ms until respec is allowed again; 0 = allowed now. */
         val respecCooldownMs: Long = 0L,
         val hasPurchasedNodes: Boolean = false,
-        val atPointCap: Boolean = false,
+        /** False once nothing is left: points at cap and every auto XP tier earned. */
+        val canPrestigeMore: Boolean = true,
         val snackbarMessage: String? = null,
     )
 
@@ -87,50 +91,72 @@ class PrestigeDetailViewModel @Inject constructor(
             val owned = flags.prestigeNodes[skill].orEmpty().toSet()
             val unspent = PrestigeBoosts.unspentPoints(gameData.prestigeTrees, flags, skill)
             val earned = flags.prestigePointsEarned[skill] ?: 0
-            val cap = PrestigeBoosts.pointCapForRace(tree, race)
+            val cap = PrestigeBoosts.pointCapForRace(tree, race, flags.ironman)
+            val prestigeCount = flags.skillPrestige[skill] ?: 0
             val xp = xpMap[skill] ?: 0L
             val now = System.currentTimeMillis()
             val paths = tree?.paths.orEmpty().map { path ->
                 var prevOwnedForRace = true
                 PrestigePathUi(
                     key = path.key,
+                    auto = path.auto,
                     nodes = path.nodes.mapIndexed { index, node ->
-                        val raceOk = PrestigeBoosts.isNodeAvailableToRace(node, race)
-                        val prereqLocked = raceOk && !prevOwnedForRace && node.id !in owned
-                        val ui = PrestigeNodeUi(
-                            id           = node.id,
-                            cost         = node.cost,
-                            effect       = node.effect,
-                            value        = node.value,
-                            races        = node.races,
-                            tier         = index + 1,
-                            owned        = node.id in owned,
-                            raceLocked   = !raceOk,
-                            prereqLocked = prereqLocked,
-                            affordable   = unspent >= node.cost,
-                            unlock       = node.unlock,
-                        )
-                        if (raceOk) prevOwnedForRace = node.id in owned
-                        ui
+                        if (path.auto) {
+                            PrestigeNodeUi(
+                                id           = node.id,
+                                cost         = node.cost,
+                                effect       = node.effect,
+                                value        = node.value,
+                                races        = node.races,
+                                tier         = index + 1,
+                                owned        = index < prestigeCount,
+                                raceLocked   = false,
+                                prereqLocked = false,
+                                affordable   = false,
+                                unlock       = node.unlock,
+                                auto         = true,
+                            )
+                        } else {
+                            val raceOk = PrestigeBoosts.isNodeAvailableToRace(node, race)
+                            val prereqLocked = raceOk && !prevOwnedForRace && node.id !in owned
+                            val ui = PrestigeNodeUi(
+                                id           = node.id,
+                                cost         = node.cost,
+                                effect       = node.effect,
+                                value        = node.value,
+                                races        = node.races,
+                                tier         = index + 1,
+                                owned        = node.id in owned,
+                                raceLocked   = !raceOk,
+                                prereqLocked = prereqLocked,
+                                affordable   = unspent >= node.cost,
+                                unlock       = node.unlock,
+                            )
+                            if (raceOk) prevOwnedForRace = node.id in owned
+                            ui
+                        }
                     },
                 )
             }
+            val purchasableIds = tree?.paths.orEmpty()
+                .filterNot { it.auto }.flatMap { it.nodes }.mapTo(mutableSetOf()) { it.id }
             UiState(
                 isLoading           = false,
                 ironman             = flags.ironman,
                 level               = levels[skill] ?: 1,
                 xp                  = xp,
-                prestigeCount       = flags.skillPrestige[skill] ?: 0,
+                prestigeCount       = prestigeCount,
                 unspentPoints       = unspent,
                 earnedPoints        = earned,
                 pointCap            = cap,
                 playerRace          = race,
                 paths               = paths,
-                pointsOnPrestige    = PrestigePoints.pointsForXp(xp),
+                pointsOnPrestige    = PrestigePoints.pointsForXp(xp)
+                    .let { if (cap > 0) it.coerceAtMost((cap - earned).coerceAtLeast(0)) else it },
                 respecCooldownMs    = ((flags.prestigeLastRespecAt[skill] ?: 0L) +
                     PlayerRepository.PRESTIGE_RESPEC_COOLDOWN_MS - now).coerceAtLeast(0L),
-                hasPurchasedNodes   = owned.isNotEmpty(),
-                atPointCap          = cap in 1..earned,
+                hasPurchasedNodes   = owned.any { it in purchasableIds },
+                canPrestigeMore     = PrestigeBoosts.prestigeHasReward(gameData.prestigeTrees, flags, skill),
                 snackbarMessage     = message,
             )
         }

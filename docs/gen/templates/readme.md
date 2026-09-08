@@ -25,9 +25,15 @@ Train **{skill_count} skills** at your own pace:
 
 Better equipment means faster gathering and surviving tougher dungeons. Craft your own gear or buy it from the Shop. The **Mercantile** skill levels through trade routes and unlocks better prices. **Slayer** tasks are assigned by the Slayer Master in town and are completed by fighting specific enemies in dungeons.
 
+At level 99 a skill can be **prestiged**: it resets to level 1 in exchange for prestige points, which buy permanent upgrades in that skill's tree, including bonuses exclusive to your character's race.
+
 ## Combat and dungeons
 
 Explore **{dungeon_count} dungeons** from the starter Farm all the way to late-game Fortress Ruins and beyond. Each dungeon has its own enemy roster, difficulty rating, and potential drops. Before you go in, the game tells you how your current gear stacks up. Choose from Melee, Ranged, or Magic; each style levels its own combat skills.
+
+## Raid bosses and mercenaries
+
+Some foes are beyond one hero. Raid bosses spread their attacks across your whole party, so hire up to three mercenaries from the daily rotating camp to soak damage and deal it back. Contracts last until the next daily reset, and the live combat view shows every party member's health while the fight runs.
 
 ## Infinite Tower
 
@@ -48,6 +54,10 @@ Over **{quest_count} quests** span all skills. Daily quests reset every morning 
 ## Builder's Workshop
 
 Spend Construction materials to upgrade various town buildings, unlocking better worker slots, guild perks, and more.
+
+## Player housing
+
+Buy rooms on a personal plot off the Town screen, expand them cell by cell, and furnish the result as your Construction level grows. Removing a placed piece always returns it to storage, and the finished house can be rendered to a shareable image.
 
 ## Church
 
@@ -85,7 +95,7 @@ See the [contributors graph](https://github.com/tristinbaker/IdleFantasy/graphs/
 
 ## For developers
 
-**Language:** Kotlin
+**Language:** Kotlin  
 **UI:** Jetpack Compose + Material 3  
 **Database:** Room (SQLite)  
 **Background work:** AlarmManager  

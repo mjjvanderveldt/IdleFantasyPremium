@@ -10,25 +10,25 @@
     <string name="skill_woodcutting_name">Taglialegna</string>
     <string name="skill_woodcutting_desc">Taglia alberi e raccogli vari tipi di legno.</string>
     <string name="skill_farming_name">Agricoltura</string>
-    <string name="skill_farming_desc">Semina e raccogli dalle tue Patch agricole.</string>
+    <string name="skill_farming_desc">Semina e raccogli frutta e ortaggi dai tuoi campi.</string>
     <string name="skill_firemaking_name">Fuochista</string>
-    <string name="skill_firemaking_desc">Brucia legno dal tuo inventario per guadagnare XP in Fuochista. Ciascun legno produce anche cenere, che può essere dispersa durante la Preghiera per guadagnare un bonus di XP in Preghiera.</string>
+    <string name="skill_firemaking_desc">Brucia legno dal tuo deposito. Ciascun legno produce anche cenere, utile come catalizzatore o durante la Preghiera.</string>
     <string name="skill_agility_name">Agilità</string>
-    <string name="skill_agility_desc">Addestra la tua Agilità per ridurre la durata delle sessioni di addestramento in tutti i campi. Il livello 99 riduce di 20 minuti la durata (60 min → 40 min), con una riduzione lineare in base al livello.</string>
+    <string name="skill_agility_desc">Addestra la tua Agilità per ridurre la durata delle sessioni di addestramento. Il livello 99 riduce di 20 minuti la durata (60 min → 40 min), con una riduzione lineare in base al livello.</string>
 
     <!-- Crafting skills -->
     <string name="skill_smithing_name">Fabbro</string>
-    <string name="skill_smithing_desc">Fondi lingotti di metallo dai minerali grezzi e forgia potenti equipaggiamenti di metallo.</string>
+    <string name="skill_smithing_desc">Fondi lingotti di metallo dai minerali grezzi e forgia potenti equipaggiamenti.</string>
     <string name="skill_cooking_name">Cucina</string>
-    <string name="skill_cooking_desc">Prepara dagli ingredienti grezzi cibo per recuperare HP in combattimento.</string>
+    <string name="skill_cooking_desc">Prepara deliziosi manicaretti da ingredienti freschi, in grado di farti recuperare PS in battaglia.</string>
     <string name="skill_fletching_name">Frecciaio</string>
-    <string name="skill_fletching_desc">Costruisci archi e frecce da legno e componenti di metallo.</string>
+    <string name="skill_fletching_desc">Costruisci frecce, armi in legno e altri componenti.</string>
     <string name="skill_crafting_name">Oreficeria</string>
-    <string name="skill_crafting_desc">Crea gioielli e altri oggetti di artigianato da metalli preziosi.</string>
+    <string name="skill_crafting_desc">Crea gioielli da metalli preziosi.</string>
     <string name="skill_runecrafting_name">Incisione di Rune</string>
-    <string name="skill_runecrafting_desc">Dall\'essenza di rune, incidi rune per lanciare incantesimi.</string>
+    <string name="skill_runecrafting_desc">Incidi rune a partire dalla loro essenza per lanciare incantesimi.</string>
     <string name="skill_herblore_name">Erboristeria</string>
-    <string name="skill_herblore_desc">Crea pozioni da erbe e reagenti raccolti dalle tue Patch o nei dungeon, per potenziare le tue abilità.</string>
+    <string name="skill_herblore_desc">Crea pozioni dal raccolto dei tuoi campi in grado di migliorare le tue doti in battaglia.</string>
 
     <!-- Combat skills -->
     <string name="skill_attack_name">Attacco da Mischia</string>
@@ -44,7 +44,7 @@
     <string name="skill_hitpoints_name">Salute</string>
     <string name="skill_hitpoints_desc">La tua energia massima. Livelli più alti ti permettono di sopravvivere più a lungo in combattimento.</string>
     <string name="skill_prayer_name">Preghiera</string>
-    <string name="skill_prayer_desc">Seppellisci le ossa raccolte in combattimento per guadagnare XP Preghiera. Livelli più alti sbloccano benedizioni della Chiesa più potenti.</string>
+    <string name="skill_prayer_desc">Seppellisci le ossa raccolte in combattimento per guadagnare XP. Livelli più alti sbloccano benedizioni della Chiesa più potenti.</string>
 
     <!-- ===== Skill unlock sheet labels ===== -->
     <string name="label_lv">Lv. %1$d</string>
@@ -102,4 +102,5 @@
     <string name="skill_expedition_name">Spedizione</string>
     <string name="skill_boss_name">Boss</string>
     <string name="skill_mercantile_name">Mercantile</string>
+    <string name="skill_mercantile_desc">Spedisci carovane di mercanti verso rotte commerciali per monete e XP. Rotte migliori portano a sconti e offerte nell\'emporio, insieme a oggetti unici.</string>
 </resources>

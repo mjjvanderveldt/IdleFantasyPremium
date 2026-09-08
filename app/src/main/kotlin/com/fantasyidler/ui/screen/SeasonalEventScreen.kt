@@ -22,7 +22,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -66,12 +69,14 @@ import com.fantasyidler.data.json.NightMarketOfferData
 import com.fantasyidler.data.json.SeasonalMinigameConfig
 import com.fantasyidler.data.json.SeasonalRewardTierData
 import com.fantasyidler.repository.SeasonalBountyTaskWithProgress
+import com.fantasyidler.repository.SeasonalEventRepository
 import com.fantasyidler.ui.viewmodel.CraftingViewModel
 import com.fantasyidler.ui.viewmodel.SeasonalEventViewModel
 import com.fantasyidler.ui.viewmodel.SkillsViewModel
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.formatCoins
 import com.fantasyidler.util.formatDurationMs
+import kotlin.random.Random
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,7 +106,7 @@ fun SeasonalEventScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 },
             )
@@ -166,8 +171,9 @@ fun SeasonalEventScreen(
                         BountyTaskRow(
                             taskProgress       = taskProgress,
                             onClaim            = { viewModel.claimBountyTask(taskProgress.task.id) },
+                            onReroll           = { viewModel.rerollBountyTask(taskProgress.task.id) },
                             onGo               = {
-                                if (taskProgress.task.type == "kill") event.expeditionKeys().firstOrNull()?.let(onNavigateToExpedition)
+                                if (taskProgress.task.type == "kill") viewModel.expeditionKeyForKillTarget(event, taskProgress.task.target)?.let(onNavigateToExpedition)
                                 else taskProgress.task.skill?.let(skillsViewModel::onSkillTapped)
                             },
                             onCooldownExpired  = viewModel::refreshBountySlots,
@@ -180,6 +186,12 @@ fun SeasonalEventScreen(
             val expeditionKeys = event.expeditionKeys()
             if ("expedition" in event.pillars && expeditionKeys.isNotEmpty()) {
                 SectionCard(title = stringResource(R.string.label_dungeon)) {
+                    Text(
+                        text  = stringResource(R.string.seasonal_expedition_token_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(8.dp))
                     expeditionKeys.forEachIndexed { index, dungeonKey ->
                         if (index > 0) Spacer(Modifier.height(12.dp))
                         Text(GameStrings.dungeonName(context, dungeonKey), style = MaterialTheme.typography.bodyLarge)
@@ -192,8 +204,14 @@ fun SeasonalEventScreen(
             }
 
             if ("boss" in event.pillars && event.bossKey != null) {
-                SectionCard(title = stringResource(R.string.seasonal_boss_title)) {
+                SectionCard(title = stringResource(R.string.label_boss)) {
                     Text(GameStrings.bossName(context, event.bossKey), style = MaterialTheme.typography.bodyLarge)
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text  = stringResource(R.string.seasonal_boss_token_hint, SeasonalEventRepository.BOSS_TOKENS_PER_DAY),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                     Spacer(Modifier.height(8.dp))
                     Button(onClick = { onNavigateToBoss(event.bossKey) }, modifier = Modifier.fillMaxWidth()) {
                         Text(stringResource(R.string.seasonal_go_to_combat))
@@ -411,10 +429,27 @@ private fun BountyTaskRow(
     taskProgress: SeasonalBountyTaskWithProgress,
     onClaim: () -> Unit,
     onGo: () -> Unit,
+    onReroll: () -> Unit,
     onCooldownExpired: () -> Unit,
 ) {
     val task = taskProgress.task
     val context = LocalContext.current
+    var showRerollConfirm by remember { mutableStateOf(false) }
+    if (showRerollConfirm) {
+        AlertDialog(
+            onDismissRequest = { showRerollConfirm = false },
+            title            = { Text(stringResource(R.string.seasonal_bounty_reroll)) },
+            text             = { Text(stringResource(R.string.seasonal_bounty_reroll_confirm, SeasonalEventRepository.BOUNTY_REROLL_COST.formatCoins())) },
+            confirmButton    = {
+                TextButton(onClick = { showRerollConfirm = false; onReroll() }) {
+                    Text(stringResource(R.string.seasonal_bounty_reroll))
+                }
+            },
+            dismissButton    = {
+                TextButton(onClick = { showRerollConfirm = false }) { Text(stringResource(R.string.btn_cancel)) }
+            },
+        )
+    }
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -439,7 +474,16 @@ private fun BountyTaskRow(
             taskProgress.progress >= task.amount -> Button(onClick = onClaim) {
                 Text(stringResource(if (task.type == "turn_in") R.string.seasonal_donate else R.string.seasonal_claim))
             }
-            else -> TextButton(onClick = onGo) { Text(stringResource(R.string.seasonal_go)) }
+            else -> Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { showRerollConfirm = true }) {
+                    Icon(
+                        Icons.Filled.Refresh,
+                        contentDescription = stringResource(R.string.seasonal_bounty_reroll),
+                        tint               = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                TextButton(onClick = onGo) { Text(stringResource(R.string.seasonal_go)) }
+            }
         }
     }
 }
@@ -589,7 +633,7 @@ private fun BonfireRhythmGame(
         var localHits = 0
         for (r in 0 until config.rounds) {
             round = r
-            litHole = kotlin.random.Random.nextInt(config.holeCount)
+            litHole = Random.nextInt(config.holeCount)
             var elapsed = 0L
             var hitThisRound = false
             while (elapsed < visibleMs) {
@@ -609,8 +653,9 @@ private fun BonfireRhythmGame(
 /**
  * A Simon-style memory minigame: each round the lanterns flash a sequence one step longer
  * ([easyMode] slows the flashes in exchange for a longer cooldown), then the player taps it
- * back in order. One wrong tap ends the run — completing [SeasonalMinigameConfig.hitsRequired]
- * rounds (of [SeasonalMinigameConfig.rounds]) is a win either way.
+ * back in order. One wrong tap ends the run — reaching round
+ * [SeasonalMinigameConfig.hitsRequired] (of [SeasonalMinigameConfig.rounds]) is a win either
+ * way, matching the hint text's promise (issue #1734).
  */
 @Composable
 private fun LanternSequenceGame(
@@ -677,7 +722,7 @@ private fun LanternSequenceGame(
                                     }
                                 } else {
                                     isPlaying = false
-                                    onSubmit(round - 1 >= config.hitsRequired)
+                                    onSubmit(round >= config.hitsRequired)
                                 }
                             },
                         contentAlignment = Alignment.Center,
@@ -725,8 +770,8 @@ private fun LanternSequenceGame(
     // Plays the sequence back at the start of every round, then hands control to the player.
     LaunchedEffect(isPlaying, round, showingSequence) {
         if (!isPlaying || !showingSequence) return@LaunchedEffect
-        if (sequence.isEmpty()) sequence.add(kotlin.random.Random.nextInt(config.holeCount))
-        sequence.add(kotlin.random.Random.nextInt(config.holeCount))
+        if (sequence.isEmpty()) sequence.add(Random.nextInt(config.holeCount))
+        sequence.add(Random.nextInt(config.holeCount))
         delay(500L)
         for (index in sequence) {
             litLantern = index

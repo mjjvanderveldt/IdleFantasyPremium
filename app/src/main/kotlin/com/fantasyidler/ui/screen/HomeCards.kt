@@ -1,5 +1,6 @@
 package com.fantasyidler.ui.screen
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.clickable
@@ -108,26 +109,30 @@ import androidx.compose.ui.text.style.TextOverflow
 import kotlinx.coroutines.delay
 import kotlinx.serialization.decodeFromString
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 
-internal fun xpBreakdownText(total: Long, bonus: Long, boostWasActive: Boolean): String? {
-    if (bonus <= 0L) return null
+internal fun xpBreakdownText(total: Long, bonus: Long, boostFactor: Long): String? {
+    if (bonus <= 0L && boostFactor <= 1L) return null
     val afterBoost = total - bonus
     if (afterBoost <= 0L) return null
-    val base = afterBoost / (if (boostWasActive) 2L else 1L)
+    val base = afterBoost / boostFactor.coerceAtLeast(1L)
     val blessMult = total.toDouble() / afterBoost
-    val blessStr = "%.2f".format(blessMult).trimEnd('0').trimEnd('.')
-    return if (boostWasActive) "(${base.formatXp()} × 2 × $blessStr)"
-           else "(${base.formatXp()} × $blessStr)"
+    val factors = buildList {
+        if (boostFactor > 1L) add("$boostFactor")
+        if (bonus > 0L) add("%.2f".format(blessMult).trimEnd('0').trimEnd('.'))
+    }
+    if (factors.isEmpty()) return null
+    return "(${base.formatXp()} × ${factors.joinToString(" × ")})"
 }
 
 @Composable
 internal fun HomeSessionCard(
     session: SkillSession,
-    context: android.content.Context,
+    context: Context,
     skillXp: Map<String, Long>,
     sessionXpGain: Long,
     showEndTime: Boolean = true,
@@ -284,11 +289,19 @@ internal fun HomeSessionCard(
             Spacer(Modifier.height(8.dp))
 
             if (!isDone) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = onRepeat) {
+                Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                    OutlinedButton(
+                        onClick = onRepeat,
+                        modifier = Modifier.weight(1f)
+                    ) {
                         Text(stringResource(R.string.btn_repeat_action))
                     }
-                    OutlinedButton(onClick = { showAbandonConfirm = true }) {
+                    Spacer(Modifier.width(12.dp))
+                    OutlinedButton(
+                        onClick = { showAbandonConfirm = true },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                    ) {
                         Text(stringResource(R.string.btn_abandon))
                     }
 
@@ -309,7 +322,9 @@ internal fun HomeSessionCard(
                             },
                         )
                     }
-                    if (BuildConfig.DEBUG) {
+                }
+                if (BuildConfig.DEBUG) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         TextButton(onClick = onDebugFinish) {
                             Text("[Debug] Finish Now")
                         }
@@ -325,12 +340,13 @@ internal fun QueueCard(
     queue: List<QueuedAction>,
     maxQueueSize: Int,
     queueEndsAt: Long,
-    context: android.content.Context,
+    context: Context,
     skillXp: Map<String, Long>,
     activeSessionSkill: String,
     activeSessionXpGain: Long,
     towerCurrentFloor: Int,
     showEndTime: Boolean = true,
+    bossEmoji: (String) -> String? = { null },
     onRemove: (Int) -> Unit,
     onMove: (Int, Int) -> Unit,
 ) {
@@ -351,7 +367,8 @@ internal fun QueueCard(
                 if (activeSessionSkill.isNotEmpty() && activeSessionXpGain > 0L)
                     cumul[activeSessionSkill] = (cumul[activeSessionSkill] ?: 0L) + activeSessionXpGain
                 queue.map { a ->
-                    if (a.estimatedXpGain <= 0L) null
+                    val duration = if (a.estimatedDurationMs > 0L) a.estimatedDurationMs.formatDurationMs(context) else null
+                    val xpPart = if (a.estimatedXpGain <= 0L) null
                     else {
                         val startXp    = cumul[a.skillName] ?: 0L
                         val endXp      = startXp + a.estimatedXpGain
@@ -370,6 +387,11 @@ internal fun QueueCard(
                                 else append(" ($pct%)")
                             }
                         }
+                    }
+                    when {
+                        xpPart != null && duration != null -> "$xpPart  •  $duration"
+                        xpPart != null                     -> xpPart
+                        else                               -> duration
                     }
                 }
             }
@@ -477,7 +499,9 @@ internal fun QueueCard(
                             action.skillName == "boss" -> BossIcon(
                                 bossId        = action.activityKey,
                                 modifier      = Modifier.size(20.dp),
-                                fallbackEmoji = emoji,
+                                // skillEmoji("boss") is the 🎮 fallback; prefer the boss's own
+                                // emoji for bosses without sprite art (issue #1614).
+                                fallbackEmoji = bossEmoji(action.activityKey) ?: emoji,
                             )
                             iconRes != null -> Image(
                                 painter            = painterResource(iconRes),
@@ -609,7 +633,7 @@ internal fun WorkerSessionCard(
     hiredWorker: HiredWorker,
     session: SkillSession?,
     pendingCollect: Boolean,
-    context: android.content.Context,
+    context: Context,
     skillXp: Map<String, Long>,
     sessionXpGain: Long,
     showEndTime: Boolean = true,
@@ -802,7 +826,10 @@ internal fun WorkerSessionCard(
                 // Hidden while a finished session awaits collection: dismissing there
                 // abandons the uncollected rewards on a single confirm (issue #1202).
                 if (!isDone) {
-                    OutlinedButton(onClick = { showDismissConfirm = true }) {
+                    OutlinedButton(
+                        onClick = { showDismissConfirm = true },
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                    ) {
                         Text(stringResource(R.string.worker_dismiss_btn))
                     }
                 }
@@ -829,8 +856,8 @@ internal fun SummarySection(title: String) {
 internal fun SummaryRow(
     label: String,
     value: String,
-    labelColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface,
-    valueColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    labelColor: Color = MaterialTheme.colorScheme.onSurface,
+    valueColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     fontWeight: FontWeight = FontWeight.Normal,
 ) {
     Row(
@@ -852,7 +879,7 @@ internal fun SummaryRow(
 internal fun StatInline(
     label: String,
     value: String,
-    valueColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface,
+    valueColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
@@ -873,9 +900,10 @@ internal fun StatInline(
 @Composable
 internal fun RecentSessionsSheet(
     sessions: List<RecentSession>,
+    bossEmoji: (String) -> String? = { null },
     onDismiss: () -> Unit,
 ) {
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -924,15 +952,26 @@ internal fun RecentSessionsSheet(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         val iconRes = GameStrings.skillIconRes(entry.skillName)
-                        if (iconRes != null) {
-                            Image(
-                                painter            = painterResource(iconRes),
-                                contentDescription = null,
-                                modifier           = Modifier.size(18.dp),
-                            )
-                            Spacer(Modifier.width(6.dp))
-                        } else {
-                            Text(
+                        when {
+                            // Boss rows: sprite art, or the boss's own emoji when it has no art;
+                            // skillEmoji("boss") is the generic gamepad fallback (issue #1633).
+                            entry.skillName == "boss" -> {
+                                BossIcon(
+                                    bossId        = entry.activityKey,
+                                    modifier      = Modifier.size(18.dp),
+                                    fallbackEmoji = bossEmoji(entry.activityKey) ?: GameStrings.skillEmoji(entry.skillName),
+                                )
+                                Spacer(Modifier.width(6.dp))
+                            }
+                            iconRes != null -> {
+                                Image(
+                                    painter            = painterResource(iconRes),
+                                    contentDescription = null,
+                                    modifier           = Modifier.size(18.dp),
+                                )
+                                Spacer(Modifier.width(6.dp))
+                            }
+                            else -> Text(
                                 text  = "${GameStrings.skillEmoji(entry.skillName)} ",
                                 style = MaterialTheme.typography.bodyMedium,
                             )

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -46,10 +45,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -67,6 +64,7 @@ import com.fantasyidler.data.json.CropData
 import com.fantasyidler.data.model.FarmingPatch
 import com.fantasyidler.repository.FarmingRepository
 import com.fantasyidler.simulator.XpTable
+import com.fantasyidler.ui.screen.skills.QuestIndicatorIcons
 import com.fantasyidler.ui.theme.ScaledSheetContent
 import com.fantasyidler.ui.viewmodel.FarmingUiState
 import com.fantasyidler.ui.viewmodel.FarmingViewModel
@@ -647,14 +645,14 @@ private fun PlantSheet(
                     .padding(horizontal = 16.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                androidx.compose.material3.FilterChip(
+                FilterChip(
                     selected = selectedAshKey == null,
                     onClick  = { selectedAshKey = null },
                     label    = { Text(stringResource(R.string.catalyst_none)) },
                 )
                 availableAshes.forEach { ashKey ->
                     val pct = ((FarmingRepository.ashYieldMultiplier(ashKey) - 1f) * 100).toInt()
-                    androidx.compose.material3.FilterChip(
+                    FilterChip(
                         selected = selectedAshKey == ashKey,
                         onClick  = { selectedAshKey = ashKey },
                         label    = { Text("${GameStrings.itemName(context, ashKey)} (+$pct%)") },
@@ -678,10 +676,11 @@ private fun PlantSheet(
                     Column(Modifier.weight(1f)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text  = "${crop.emoji} ${GameStrings.cropName(context, crop.id)}",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = if (enabled) MaterialTheme.colorScheme.onSurface
-                                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                                text     = "${crop.emoji} ${GameStrings.cropName(context, crop.id)}",
+                                style    = MaterialTheme.typography.bodyLarge,
+                                color    = if (enabled) MaterialTheme.colorScheme.onSurface
+                                           else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                                modifier = Modifier.weight(1f, fill = false),
                             )
                             QuestIndicatorIcons(questIndicators[crop.id] ?: emptyList())
                         }

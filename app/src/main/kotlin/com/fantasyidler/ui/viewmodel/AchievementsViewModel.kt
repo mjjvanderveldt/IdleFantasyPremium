@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fantasyidler.R
+import com.fantasyidler.data.json.PrestigeNodeData
 import com.fantasyidler.data.model.OwnedPet
 import com.fantasyidler.data.model.PlayerFlags
 import com.fantasyidler.data.model.Skills
@@ -58,7 +59,7 @@ class AchievementsViewModel @Inject constructor(
         } catch (_: Exception) { emptyList() }
         val flags: PlayerFlags = try { json.decodeFromString(player.flags) } catch (_: Exception) { PlayerFlags() }
         val completedQuests = questProgress.count { it.completed && gameData.quests.keys.contains(it.questId)  }
-        val totalLevel  = levels.values.sum()
+        val totalLevel  = totalLevelFrom(levels)
         val combatLevel = combatLevelFrom(levels)
         val prestigeMap = flags.skillPrestige
 
@@ -99,18 +100,20 @@ class AchievementsViewModel @Inject constructor(
         )
 
         val race = PrestigeBoosts.playerRace(flags)
-        fun raceNodes(nodes: List<com.fantasyidler.data.json.PrestigeNodeData>) =
+        fun raceNodes(nodes: List<PrestigeNodeData>) =
             nodes.filter { PrestigeBoosts.isNodeAvailableToRace(it, race) }
-        fun allOwned(skill: String, nodes: List<com.fantasyidler.data.json.PrestigeNodeData>): Boolean {
+        fun allOwned(skill: String, nodes: List<PrestigeNodeData>): Boolean {
             val owned = flags.prestigeNodes[skill].orEmpty().toSet()
             return nodes.isNotEmpty() && nodes.all { it.id in owned }
         }
         val anyNodeOwned    = flags.prestigeNodes.values.any { it.isNotEmpty() }
         val anyPathComplete = gameData.prestigeTrees.any { (skill, tree) ->
-            tree.paths.any { allOwned(skill, raceNodes(it.nodes)) }
+            tree.paths.filterNot { it.auto }.any { allOwned(skill, raceNodes(it.nodes)) }
         }
         val anyTreeMaxed    = gameData.prestigeTrees.any { (skill, tree) ->
-            allOwned(skill, raceNodes(tree.paths.flatMap { it.nodes }))
+            val autoDone = tree.paths.filter { it.auto }
+                .all { (flags.skillPrestige[skill] ?: 0) >= it.nodes.size }
+            autoDone && allOwned(skill, raceNodes(tree.paths.filterNot { it.auto }.flatMap { it.nodes }))
         }
 
         groups["Prestige"] = listOf(

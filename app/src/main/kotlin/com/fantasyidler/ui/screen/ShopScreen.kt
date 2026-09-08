@@ -1,9 +1,12 @@
 package com.fantasyidler.ui.screen
 
-import androidx.compose.foundation.background
+import android.content.Context
+import android.text.format.DateUtils
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,67 +26,68 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Remove
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import kotlinx.coroutines.launch
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fantasyidler.R
+import com.fantasyidler.data.model.BulkSellReceipt
+import com.fantasyidler.ui.theme.ScaledSheetContent
 import com.fantasyidler.ui.viewmodel.BulkSellPreview
 import com.fantasyidler.ui.viewmodel.ShopEntry
 import com.fantasyidler.ui.viewmodel.ShopTransaction
 import com.fantasyidler.ui.viewmodel.ShopViewModel
-import com.fantasyidler.ui.theme.ScaledSheetContent
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.formatCoins
 import com.fantasyidler.util.formatQuantity
+import kotlinx.coroutines.launch
 
-private fun localizedCategory(context: android.content.Context, raw: String): String {
+private fun localizedCategory(context: Context, raw: String): String {
     val resId = when (raw) {
         "Ores & Materials" -> R.string.shop_cat_ores_and_materials
         "Logs & Wood"      -> R.string.shop_cat_logs_and_wood
@@ -120,7 +124,7 @@ fun ShopScreen(
                 title = { Text(stringResource(R.string.label_shop)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 },
             )
@@ -194,6 +198,7 @@ fun ShopScreen(
                         onToggleLock       = viewModel::toggleItemLock,
                         onSellJunk         = viewModel::previewSellJunk,
                         onSellOldEquipment = viewModel::previewSellOldEquipment,
+                        receipts           = state.bulkSellReceipts,
                     )
                     else -> BuyList(
                         entries            = viewModel.buyEntries.filter { it.mercantileLevelRequired <= state.mercantileLevel },
@@ -357,7 +362,7 @@ private fun SellList(
     inventory: Map<String, Int>,
     equipped: Map<String, String?>,
     lockedItems: Set<String>,
-    context: android.content.Context,
+    context: Context,
     compactNumbers: Boolean = false,
     keepOneOfEach: Boolean = false,
     priceFor: (String) -> Int,
@@ -367,9 +372,50 @@ private fun SellList(
     onSellJunk: () -> Unit,
     onSellOldEquipment: () -> Unit,
     onKeepOneChange: (Boolean) -> Unit,
+    receipts: List<BulkSellReceipt> = emptyList(),
 ) {
     var query by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<String?>(null) }
+    var showReceipts by remember { mutableStateOf(false) }
+
+    if (showReceipts) {
+        AlertDialog(
+            onDismissRequest = { showReceipts = false },
+            confirmButton    = {
+                TextButton(onClick = { showReceipts = false }) { Text(stringResource(R.string.home_got_it)) }
+            },
+            title = { Text(stringResource(R.string.shop_recent_bulk_sales)) },
+            text  = {
+                if (receipts.isEmpty()) {
+                    Text(stringResource(R.string.shop_recent_bulk_sales_empty))
+                } else {
+                    Column(Modifier.verticalScroll(rememberScrollState())) {
+                        receipts.forEachIndexed { index, receipt ->
+                            if (index > 0) Spacer(Modifier.height(12.dp))
+                            Text(
+                                text  = DateUtils.getRelativeTimeSpanString(receipt.atMs).toString(),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            receipt.items.entries
+                                .sortedBy { GameStrings.itemName(context, it.key) }
+                                .forEach { (key, qty) ->
+                                    Text(
+                                        text  = stringResource(R.string.format_item_quantity, GameStrings.itemName(context, key), qty),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                    )
+                                }
+                            Text(
+                                text  = stringResource(R.string.reward_part_coins_plain, receipt.coins.formatCoins()),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
+                }
+            },
+        )
+    }
 
     val grouped = remember(inventory, query, selectedCategory) {
         inventory.entries
@@ -421,6 +467,10 @@ private fun SellList(
                     onCheckedChange = onKeepOneChange,
                 )
             }
+            TextButton(
+                onClick  = { showReceipts = true },
+                modifier = Modifier.padding(horizontal = 8.dp),
+            ) { Text(stringResource(R.string.shop_recent_bulk_sales)) }
             OutlinedTextField(
                 value         = query,
                 onValueChange = { query = it },

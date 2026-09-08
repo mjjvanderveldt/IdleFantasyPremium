@@ -4,11 +4,13 @@ import com.fantasyidler.data.model.PlayerFlags
 import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.roundToInt
 import kotlin.random.Random
 import kotlinx.coroutines.sync.withLock
 
 sealed class MonumentTouchResult {
     data class Blessing(val durationMs: Long) : MonumentTouchResult()
+    data class BlessingExtended(val durationMs: Long) : MonumentTouchResult()
     data class Items(val items: Map<String, Int>) : MonumentTouchResult()
     object AlreadyTouchedToday : MonumentTouchResult()
     object NotUnlocked : MonumentTouchResult()
@@ -32,17 +34,37 @@ class MonumentRepository @Inject constructor(
         /** Blessing duration bonus once the Statue stage (3) is built. */
         const val BLESSING_BONUS_MS = 6 * 3_600_000L
 
-        private const val TOUCH_BLESSING_MS = 3_600_000L
+        private const val TOUCH_BLESSING_MS = 2 * 3_600_000L
         private const val TOUCH_BLESSING_KEY = "blessed_focus"
 
-        private val TOUCH_ITEM_BOONS = listOf(
-            mapOf("carnival_ticket" to 3),
-            mapOf("big_bones" to 15),
-            mapOf("adamantite_ore" to 10),
-            mapOf("maple_log" to 30),
-        )
+        /** 1 in N touches rolls [TOUCH_JACKPOT] instead of a regular boon. */
+        private const val TOUCH_JACKPOT_ONE_IN = 10
 
-        private fun today(): Int = Calendar.getInstance().let {
+        // Base quantities; scaled up by [touchTierMultiplier]. Late-game items on purpose:
+        // the stage-2 audience has paid 11M+ and found the original pocket-change boons
+        // (15 big bones, 30 maple logs) not worth the tap.
+        private val TOUCH_ITEM_BOONS = listOf(
+            mapOf("carnival_ticket" to 10),
+            mapOf("dragon_bone" to 25),
+            mapOf("runite_ore" to 25, "platinum_ore" to 10),
+            mapOf("magic_log" to 40, "redwood_log" to 20),
+            mapOf("rune_essence" to 300),
+            mapOf("ruby" to 8, "diamond" to 4),
+            mapOf("raw_shark" to 60),
+        )
+        private val TOUCH_JACKPOT = mapOf("ancient_treasure" to 5)
+
+        /** Later stages deepen the daily touch: x1 at Pillars up to x3 with the Eternal Flame lit. */
+        private fun touchTierMultiplier(tier: Int): Double = when {
+            tier >= 5 -> 3.0
+            tier == 4 -> 2.0
+            tier == 3 -> 1.5
+            else      -> 1.0
+        }
+
+        /** yyyymmdd stamp of the current game day, rolling over at [resetHour] rather than midnight. */
+        private fun today(resetHour: Int): Int = Calendar.getInstance().let {
+            if (it.get(Calendar.HOUR_OF_DAY) < resetHour) it.add(Calendar.DAY_OF_YEAR, -1)
             it.get(Calendar.YEAR) * 10000 + it.get(Calendar.MONTH) * 100 + it.get(Calendar.DAY_OF_MONTH)
         }
     }
@@ -85,15 +107,26 @@ class MonumentRepository @Inject constructor(
     suspend fun touchMonument(): MonumentTouchResult = playerRepo.playerMutex.withLock {
         val flags = playerRepo.getFlagsUnlocked()
         if (flags.monumentTier < 2) return@withLock MonumentTouchResult.NotUnlocked
-        val day = today()
+        val day = today(flags.dailyResetHour)
         if (flags.monumentTouchDay == day) return@withLock MonumentTouchResult.AlreadyTouchedToday
 
         // Ironman characters never receive blessing boons (all XP/coin multipliers are inert);
         // the touch always rolls an item boon instead.
-        val blessingFree = !flags.ironman &&
-            (flags.activeBlessingKey.isEmpty() || flags.activeBlessingExpiresAt <= System.currentTimeMillis())
-        val rollBlessing = blessingFree && Random.nextInt(4) == 0
-        if (rollBlessing) {
+        if (!flags.ironman && Random.nextInt(4) == 0) {
+            val blessingActive = flags.activeBlessingKey.isNotEmpty() &&
+                flags.activeBlessingExpiresAt > System.currentTimeMillis()
+            if (blessingActive) {
+                // Players who keep Church blessings running would otherwise never see this
+                // branch, so an active blessing is extended instead of skipped.
+                val expiresAt = flags.activeBlessingExpiresAt + TOUCH_BLESSING_MS
+                playerRepo.updateFlagsUnlocked(flags.copy(
+                    monumentTouchDay        = day,
+                    activeBlessingExpiresAt = expiresAt,
+                ))
+                buffNotifScheduler.cancelBlessingExpiry()
+                buffNotifScheduler.scheduleBlessingExpiry(expiresAt)
+                return@withLock MonumentTouchResult.BlessingExtended(TOUCH_BLESSING_MS)
+            }
             val expiresAt = System.currentTimeMillis() + TOUCH_BLESSING_MS
             playerRepo.updateFlagsUnlocked(flags.copy(
                 monumentTouchDay        = day,
@@ -104,12 +137,14 @@ class MonumentRepository @Inject constructor(
             return@withLock MonumentTouchResult.Blessing(TOUCH_BLESSING_MS)
         }
 
-        val boon = TOUCH_ITEM_BOONS.random()
+        val mult = touchTierMultiplier(flags.monumentTier)
+        val base = if (Random.nextInt(TOUCH_JACKPOT_ONE_IN) == 0) TOUCH_JACKPOT else TOUCH_ITEM_BOONS.random()
+        val boon = base.mapValues { (_, qty) -> (qty * mult).roundToInt().coerceAtLeast(1) }
         playerRepo.addItemsUnlocked(boon)
         val latest = playerRepo.getFlagsUnlocked()
         playerRepo.updateFlagsUnlocked(latest.copy(monumentTouchDay = day))
         MonumentTouchResult.Items(boon)
     }
 
-    fun touchedToday(flags: PlayerFlags): Boolean = flags.monumentTouchDay == today()
+    fun touchedToday(flags: PlayerFlags): Boolean = flags.monumentTouchDay == today(flags.dailyResetHour)
 }

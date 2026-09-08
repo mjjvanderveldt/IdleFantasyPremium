@@ -56,22 +56,25 @@
     <string name="label_prayer">Preghiera</string>
     <string name="label_hitpoints">Salute</string>
     <string name="label_inventory">Inventario</string>
-    <string name="label_equipment">Armamenti</string>
+    <string name="label_equipment">Utensili</string>
+    <string name="label_combat_equipment">Armamenti</string>
     <string name="label_pets">Compagni</string>
     <string name="label_achievements">Obbiettivi</string>
-    <string name="label_locations">Luoghi</string>
+    <string name="label_locations">Dove si trova</string>
     <string name="label_bestiary">Bestiario</string>
     <string name="label_enemies">Nemici</string>
     <string name="label_bosses">Boss</string>
     <string name="label_by_location">Per luogo</string>
     <string name="bestiary_not_encountered">Non ancora incontrato</string>
     <string name="bestiary_qty_header">Q.tà</string>
-    <string name="bestiary_chance_header">Possibilità</string>
-    <string name="bestiary_encountered_progress">%1$d / %2$d incontrati</string>
+    <string name="bestiary_chance_header">Prob.tà</string>
+    <string name="label_completion_progress">%1$d / %2$d %3$s</string>
+    <string name="achievements_progress_bar">ottenuti</string>
+    <string name="bestiary_progress_bar">incontrati</string>
     <string name="bestiary_always_drops">Bottino garantito</string>
     <string name="bestiary_rare_drops">Bottino raro</string>
     <string name="bestiary_common_loot">Bottino tipico</string>
-    <string name="bestiary_pet_drop">Bottino da compagno</string>
+    <string name="bestiary_pet_drop">Compagni</string>
     <string name="bestiary_atk_def">Dif. Mischia</string>
     <string name="bestiary_str_def">Dif. Forza</string>
     <string name="bestiary_rng_def">Dif. Distanza</string>
@@ -100,6 +103,7 @@
     <string name="label_coming_soon">In arrivo</string>
     <string name="label_time_remaining">Tempo rimanente</string>
     <!-- Translator note: compact duration units; English puts the letter(s) right after the number -->
+    <string name="duration_years">%1$da</string>
     <string name="duration_months">%1$dme</string>
     <string name="duration_weeks">%1$dsett</string>
     <string name="duration_days">%1$dg</string>
@@ -124,7 +128,7 @@
     <string name="label_ready_to_harvest">Pronta per la raccolta</string>
     <string name="label_empty">Vuota</string>
     <string name="inventory_sort_quantity">Quantità</string>
-
+    <string name="inventory_sort_az">A-Z</string>
     <string name="inventory_cat_weapons">Armi</string>
     <string name="inventory_cat_armour">Armature</string>
     <string name="inventory_cat_tools">Utensili</string>
@@ -159,7 +163,7 @@
     <string name="label_inactive">Inattivo</string>
     <string name="label_boost">Potenziamento</string>
     <string name="label_xp_boost">Potenziamento XP</string>
-    <string name="label_prestige_xp_boost">Prestige XP Boost</string> <!-- untranslated -->
+    <string name="label_prestige_xp_boost">Bonus XP Onore</string>
     <string name="label_weapon">Arma</string>
     <string name="label_armour">Armatura</string>
     <string name="label_food">Cibo</string>
@@ -344,7 +348,6 @@
     <string name="label_claim_reward">Riscuoti Ricompensa</string>
     <string name="label_daily">Giornaliere</string>
     <string name="label_weekly">Settimanali</string>
-    <string name="label_timed">A Tempo</string>
     <string name="label_daily_quests">Missioni Del Giorno</string>
     <string name="label_daily_reset">Nuove missioni alle %1$s</string>
     <string name="label_weekly_reset">Nuove missioni ogni Lunedì alle %1$s</string>
@@ -425,7 +428,7 @@
     <string name="theme_editor_sample_button">Pulsante</string>
     <string name="theme_editor_sample_error">Testo di errore</string>
     <string name="theme_editor_name_label">Nome del tema</string>
-    <string name="theme_editor_name_reserved">Questo nome è riservato a un tema ufficiale</string>
+    <string name="theme_editor_name_reserved">Questo nome è riservato per un tema ufficiale</string>
     <string name="theme_editor_overwrite_hint">Il salvataggio sostituirà \"%1$s\"</string>
     <string name="theme_editor_base_label">Stile di base</string>
     <string name="theme_editor_palette_header">Tavolozza</string>
@@ -459,6 +462,9 @@
 
 
 
+
+
+
     <string name="settings_lang_system">Sistema</string>
     <string name="settings_save_data">Salva</string>
     <string name="settings_export">Esporta Salvataggio</string>
@@ -470,9 +476,9 @@
     <string name="settings_source_code">Codice Sorgente</string>
 
     <string name="settings_source_open">Apri</string>
+    <string name="settings_wiki">Wiki</string>
 
-
-
+    <string name="settings_discord">Discord</string>
 
     <string name="settings_exported_ok">Salvataggio esportato</string>
     <string name="settings_imported_ok">Salvataggio importato con successo</string>
@@ -488,6 +494,9 @@
     <string name="settings_backup_weekly">Settimanale</string>
     <string name="settings_backup_at_5am">alle 05:00</string>
     <string name="settings_backup_now">Esegui Backup Ora</string>
+    <string name="settings_backup_status">Ultimo Backup</string>
+    <string name="settings_backup_never">Nessun backup</string>
+    <string name="settings_backup_failed_with">Fallito: %1$s</string>
     <string name="settings_backup_success">Backup salvato.</string>
     <string name="settings_backup_failed">Backup fallito.</string>
     <string name="settings_backup_folder_set">Cartella di backup impostata.</string>
@@ -504,8 +513,11 @@
     <string name="guild_progress_dailies_and_quest">Completa %1$d/%2$d incarichi per avanzare</string>
     <string name="guild_progress_dailies_only">Completa %1$d/%2$d giornaliere per avanzare</string>
     <string name="home_died_message">Sei morto e hai perso la maggior parte dei tuoi guadagni.</string>
-    <string name="home_xp_boost_was_active">Il bonus 2× XP era attivo</string>
-    <string name="home_xp_boost_active">Bonus 2× XP attivo — %1$s rimasti</string>
+    <string name="home_xp_boost_was_active">Il potenziamento XP 2× di tutte le abilità era attivo</string>
+    <string name="home_xp_boost_active">2× XP tutte le abilità - %1$s</string>
+    <string name="home_prestige_xp_boost_active">2× XP %1$s - %2$s</string>
+    <string name="boosts_show_more">+%1$d altri bonus (tocca per mostrare)</string>
+    <string name="boosts_show_less">Nascondi</string>
     <string name="home_loot">Bottino</string>
     <string name="home_food_consumed">Cibo Consumato</string>
     <string name="home_bones_buried">Ossa seppellite</string>
@@ -550,9 +562,11 @@
     <string name="combat_log_you_missed">Hai mancato</string>
     <string name="combat_log_kill">☠ %1$s sconfitto</string>
     <string name="combat_log_player_hit">→ Hai colpito %1$s: %2$d danno</string>
+    <string name="combat_log_player_double_hit">→ Combo! Colpisci %1$s due volte: %2$d danni</string>
     <string name="combat_log_player_miss">→ Hai mancato %1$s</string>
     <string name="combat_log_enemy_hit">← %1$s ti ha colpito: %2$d danno</string>
     <string name="combat_log_enemy_miss">← %1$s manca il bersaglio</string>
+    <string name="combat_log_ally_hit">→ I mercenari attaccano %1$s: %2$d danni</string>
     <string name="combat_log_heal">✚ Hai mangiato: +%1$d PS</string>
     <string name="combat_eat_threshold_warning">Attenzione: a bassi livelli un colpo molto forte può portare alla morte prima di avere tempo di mangiare</string>
     <string name="combat_rec_level">Livello di combattimento consigliato</string>
@@ -561,6 +575,7 @@
     <string name="combat_best_arrow">Miglior freccia</string>
     <string name="combat_arrow_auto">Usa migliore</string>
     <string name="combat_label_arrow">Freccia</string>
+    <string name="combat_arrow_ranged_str">+%1$d Forza a Distanza</string>
     <string name="combat_select_loadout">Seleziona Equipaggiamento</string>
     <string name="combat_enemies">Nemici</string>
     <string name="combat_no_spells">Nessun incantesimo disponibile al tuo livello di magia.</string>
@@ -568,6 +583,8 @@
     <string name="combat_max_hit">danni massimi</string>
     <string name="combat_you_have_runes">(hai %1$d %2$s)</string>
     <string name="combat_infinite_runes">(%1$s infinite)</string>
+    <string name="combat_spell_locked">Richiede Magia liv. %1$d</string>
+    <string name="combat_spell_level_met">Magia liv. %1$d</string>
     <string name="combat_no_potion">Nessuna pozione</string>
     <string name="combat_req_level">Livello di combattimento richiesto</string>
     <string name="combat_duration">Durata</string>
@@ -580,7 +597,7 @@
     <string name="combat_fight_progress">Combattimento %1$d/%2$d</string>
     <string name="combat_run_count_label">Numero di tentativi</string>
     <!-- Translator note: %1$d = number of queued repeat dungeon runs, e.g. "×24 runs" -->
-    <string name="combat_run_count_suffix">×%1$d run</string>
+    <string name="combat_run_count_suffix">×%1$d iter</string>
     <!-- Translator note: %1$d = current run number, %2$d = total runs requested, e.g. "Run 12/24" -->
     <string name="combat_run_progress">Iter %1$d/%2$d</string>
     <string name="combat_xp_on_victory">XP alla vittoria</string>
@@ -611,12 +628,16 @@
     <string name="profile_equip_best">Equipaggia Migliori</string>
     <string name="profile_equip_best_tools">Equipaggia Utensili Migliori</string>
     <string name="profile_weapons">Armi</string>
-    <string name="profile_combat_gear">Armamenti da Battaglia</string>
+    <string name="profile_combat_gear">Armamenti</string>
     <string name="profile_view_combat_gear">Controlla Armamenti</string>
     <string name="profile_gathering_tools">Strumenti di Raccolta</string>
     <string name="profile_food_dungeon">Cibo (Dungeon)</string>
     <string name="profile_no_food">Non hai cibo cotto con te</string>
     <string name="profile_food_threshold">Inizia a mangiare al</string>
+    <string name="profile_food_order">Eating order</string> <!-- untranslated -->
+    <string name="food_order_descending">Highest Heal Value First</string> <!-- untranslated -->
+    <string name="food_order_ascending">Lowest Heal Value First</string> <!-- untranslated -->
+    <string name="food_order_least_quantity">Least Quantity First</string> <!-- untranslated -->
     <string name="profile_combat_style">Stile di Combattimento</string>
     <!-- Translator note: %1$d = quantity, %2$d = heal value -->
     <string name="profile_food_desc">×%1$d  •  cura %2$d HP</string>
@@ -663,7 +684,7 @@
     <string name="skills_bone_selected">%1$d XP ciascuno  •  %2$d disponibili</string>
     <!-- Translator note: %1$d = total XP -->
     <string name="skills_xp_total">+%1$d XP totali</string>
-    <string name="skills_no_essence">Non hai Essenza di Rune con te — estraine un po\'</string>
+    <string name="skills_no_essence">Non hai Essenza di Runa con te — estraine un po\'</string>
     <string name="skills_no_runes">Non hai ancora sbloccato alcun tipo di runa</string>
     <!-- Translator note: %1$d = essence quantity -->
     <string name="skills_essence_qty">Hai %1$d Essenza di Runa</string>
@@ -704,11 +725,12 @@
     <string name="quest_legend_title">Icone delle missioni</string>
     <string name="quest_legend_daily">Missione giornaliera</string>
     <string name="quest_legend_weekly">Missione settimanale</string>
+    <string name="quest_legend_seasonal">Evento Stagionale</string>
     <string name="quest_legend_guild_daily">Giornaliera di gilda</string>
     <string name="quest_legend_guild">Missione di gilda</string>
     <string name="quest_legend_quest">Missione</string>
     <string name="quest_legend_gold_dot">Una missione a tempo è disponibile.</string>
-    <string name="quest_legend_notes">Le icone attenuate non possono ancora essere completate (livello o materiali mancanti). Un piccolo numero in apice indica che più missioni di quel tipo richiedono la stessa cosa.</string>
+    <string name="quest_legend_notes">Le missioni con icone attenuate non possono ancora essere completate (livello o materiali mancanti). Un numerino in apice indica che più missioni richiedono la stessa azione.</string>
     <!-- Translator note: %1$s = quantity in inventory -->
     <string name="shop_qty_in_inv">Hai ×%1$s</string>
     <!-- Translator note: %1$s = formatted coin amount -->
@@ -726,7 +748,7 @@
     <!-- ===== CraftingScreen ===== -->
     <string name="crafting_no_mats">No materiale</string>
     <!-- Translator note: %1$d = total quantity, %2$s = item name -->
-
+    <string name="crafting_produces">= %1$d %2$s</string>
     <string name="crafting_effects">Effetti</string>
     <!-- Translator note: %1$d = total XP -->
     <string name="crafting_xp_total">+%1$d XP totali</string>
@@ -779,7 +801,7 @@
     <string name="character_race_elf">Elfo</string>
     <string name="character_race_dwarf">Nano</string>
     <string name="character_race_orc">Orco</string>
-
+    <string name="character_race_halfling">Halfling</string>
     <string name="character_race_gnome">Gnomo</string>
 
     <!-- ===== CharacterCustomizationSheet ===== -->
@@ -831,7 +853,7 @@
         <item>Wren</item>
         <item>Xander</item>
         <item>Yara</item>
-    </string-array> <!-- untranslated -->
+    </string-array>
     <string name="inn_title">Locanda</string>
     <string name="inn_desc">Assumi un lavoratore per aiutarti nell\'addestramento, o compra cibo dal menù del giorno. I lavoratori non contano per le tue missioni.</string>
     <string name="inn_worker_already_hired">Hai già assunto un lavoratore.</string>
@@ -929,7 +951,7 @@
     <string name="quest_kbd_slayer_2_name">Sgozzatore di Draghi Neri Regali II</string>
     <string name="quest_kbd_slayer_3_name">Sgozzatore di Draghi Neri Regali III</string>
     <string name="inn_daily_resets">Si aggiorna quotidianamente alle %1$s</string>
-    <string name="inn_food_heal">+%1$d HP</string>
+    <string name="inn_food_heal">+%1$d PS</string>
     <string name="inn_food_purchased">Cibo acquistato.</string>
     <string name="inn_buy_qty">Quantità</string>
     <string name="inn_buy_total">Totale: %1$s</string>
@@ -952,6 +974,7 @@
     <string name="guild_no_dailies">Completa missioni della gilda per sbloccare le richieste del giorno.</string>
     <string name="guild_dailies_all_done">Hai completato tutte le richieste giornaliere. Torna dopo l\'orario di ripristino.</string>
     <string name="guild_contribute_inventory">Contribuisci con i tuoi oggetti (%1$d disponibile)</string>
+    <string name="guild_go_to_skill">Vai all\'Abilità</string>
     <string name="guild_quest_desc_gather">%1$s %2$d %3$s per la %4$s.</string>
     <string name="guild_quest_desc_kill">Sconfiggi %1$d nemici in combattimento %2$s.</string>
     <string name="guild_quest_desc_prayer">Seppellisci %1$d ossa per la %2$s.</string>
@@ -995,6 +1018,11 @@
     <string name="mercantile_level_label">Livello Mercante %1$d</string>
     <string name="mercantile_xp_label">XP: %1$s</string>
     <string name="mercantile_coins_label">Monete: %1$s</string>
+    <string name="mercantile_perks_title">Talenti</string>
+    <string name="mercantile_perk_trading_locked">Contrattazione: sconti e offerte migliori a partire dal livello %1$d.</string>
+    <string name="mercantile_perk_trading">Contrattazione: sconti del -%1$d%%, ricavi del +%2$d%%.</string>
+    <string name="mercantile_perk_trading_next">Prossimo bonus al livello %1$d.</string>
+    <string name="mercantile_perk_guild">Gilda dei Mercanti: oggetti esclusivi disponibili dal livello %1$d.</string>
     <string name="mercantile_cost_label">Costo: %1$s</string>
     <string name="mercantile_return_range">Ricavo: %1$s – %2$s</string>
     <string name="mercantile_dispatch_label">Spedisci</string>
@@ -1101,168 +1129,200 @@
     <string name="builder_card_desc">Migliora la Locanda, la Gilda e la Chiesa</string>
 
     <!-- Player housing -->
-    <string name="house_title">My House</string> <!-- untranslated -->
-    <string name="house_edit">Edit</string> <!-- untranslated -->
-    <string name="house_done">Done</string> <!-- untranslated -->
-    <string name="house_share">Share a picture of your house</string> <!-- untranslated -->
-    <string name="house_rooms_owned">Rooms: %1$d</string> <!-- untranslated -->
-    <string name="house_construction_level">Construction level %1$d</string> <!-- untranslated -->
-    <string name="house_add_room">Add room (%1$s)</string> <!-- untranslated -->
-    <string name="house_add_room_locked">Add room (Lv %1$d)</string> <!-- untranslated -->
-    <string name="house_mode_place_item">Placing %1$s. Drag or tap a spot in your house.</string> <!-- untranslated -->
-    <string name="house_mode_place_room">Placing a new 3x3 room. It must touch an existing room.</string> <!-- untranslated -->
-    <string name="house_error_level">Your Construction level is too low.</string> <!-- untranslated -->
-    <string name="house_error_coins">Not enough coins.</string> <!-- untranslated -->
-    <string name="house_error_materials">Not enough materials.</string> <!-- untranslated -->
-    <string name="house_error_spot">That spot doesn\'t work.</string> <!-- untranslated -->
-    <string name="house_error_max_rooms">Your house has reached its maximum number of rooms.</string> <!-- untranslated -->
-    <string name="house_error_max_size">This room can\'t grow any larger.</string> <!-- untranslated -->
-    <string name="house_stored_count">Stored: %1$d</string> <!-- untranslated -->
-    <string name="house_level_short">Lv %1$d</string> <!-- untranslated -->
-    <string name="house_store_hint">Stored furniture keeps its materials and can be placed again later.</string> <!-- untranslated -->
-    <string name="house_store_item">Put in storage</string> <!-- untranslated -->
-    <string name="house_room_n">Room %1$d</string> <!-- untranslated -->
-    <string name="house_room_size">%1$d x %2$d cells</string> <!-- untranslated -->
-    <string name="house_expand_title">Expand</string> <!-- untranslated -->
-    <string name="house_shrink_title">Shrink</string> <!-- untranslated -->
-    <string name="house_shrink_hint">Removes a row of cells from that side. Its cost is refunded and furniture there goes to storage.</string> <!-- untranslated -->
-    <string name="house_error_min_size">Rooms can\'t be smaller than 3x3.</string> <!-- untranslated -->
-    <string name="house_dir_north">North</string> <!-- untranslated -->
-    <string name="house_dir_south">South</string> <!-- untranslated -->
-    <string name="house_dir_east">East</string> <!-- untranslated -->
-    <string name="house_dir_west">West</string> <!-- untranslated -->
-    <string name="house_floor_title">Floor</string> <!-- untranslated -->
-    <string name="house_floor_dark">Dark wood</string> <!-- untranslated -->
-    <string name="house_floor_brick">Stone brick</string> <!-- untranslated -->
-    <string name="house_floor_brick_locked">Stone brick (Lv %1$d)</string> <!-- untranslated -->
-    <string name="house_cat_furniture">Furniture</string> <!-- untranslated -->
-    <string name="house_cat_walls">Walls</string> <!-- untranslated -->
-    <string name="house_cat_wealth">Wealth</string> <!-- untranslated -->
-    <string name="house_item_wall_v">Wall (Upright)</string> <!-- untranslated -->
-    <string name="house_item_wall_h">Wall (Across)</string> <!-- untranslated -->
-    <string name="house_cat_wall">Wall Decor</string> <!-- untranslated -->
-    <string name="house_cat_banner">Banners</string> <!-- untranslated -->
-    <string name="house_banners_empty">Complete a seasonal event to earn a banner you can hang here.</string> <!-- untranslated -->
-    <string name="house_banner_placed">On display</string> <!-- untranslated -->
-    <string name="house_free">Free</string> <!-- untranslated -->
-    <string name="house_cost_coins">%1$s coins</string> <!-- untranslated -->
-    <string name="house_error_already_placed">That banner is already on display.</string> <!-- untranslated -->
-    <string name="house_remove_banner">Take down</string> <!-- untranslated -->
-    <string name="house_move_hint">Drag it on the grid to move it somewhere else.</string> <!-- untranslated -->
-    <string name="house_rotate_item">Rotate</string> <!-- untranslated -->
-    <string name="house_outside_title">Outside</string> <!-- untranslated -->
-    <string name="house_outside_hint">Choose what the ground around your house looks like.</string> <!-- untranslated -->
-    <string name="house_move_room">Move room</string> <!-- untranslated -->
-    <string name="house_demolish_room">Demolish</string> <!-- untranslated -->
-    <string name="house_demolish_confirm_title">Demolish this room?</string> <!-- untranslated -->
-    <string name="house_demolish_confirm_message">Its furniture goes to storage. The room\'s build cost is not refunded.</string> <!-- untranslated -->
-    <string name="house_mode_move_room">Moving room. Drag or tap where it should go.</string> <!-- untranslated -->
-    <string name="house_error_last_room">You can\'t demolish your last room.</string> <!-- untranslated -->
-    <string name="house_item_bed_default">Simple Bed</string> <!-- untranslated -->
-    <string name="house_item_bed_default_alt">Simple Bed (Peach)</string> <!-- untranslated -->
-    <string name="house_item_bed_light">Light Bed</string> <!-- untranslated -->
-    <string name="house_item_bed_light_alt">Light Bed (Peach)</string> <!-- untranslated -->
-    <string name="house_item_bed_dark">Dark Bed</string> <!-- untranslated -->
-    <string name="house_item_bed_dark_alt">Dark Bed (Peach)</string> <!-- untranslated -->
-    <string name="house_sub_beds">Beds</string> <!-- untranslated -->
-    <string name="house_sub_bookshelves">Bookshelves</string> <!-- untranslated -->
-    <string name="house_sub_tables">Tables</string> <!-- untranslated -->
-    <string name="house_item_barrel_default">Barrel</string> <!-- untranslated -->
-    <string name="house_item_barrel_light">Light Barrel</string> <!-- untranslated -->
-    <string name="house_item_barrel_dark">Dark Barrel</string> <!-- untranslated -->
-    <string name="house_item_barrel_storage_default">Barrel Rack</string> <!-- untranslated -->
-    <string name="house_item_barrel_storage_light">Light Barrel Rack</string> <!-- untranslated -->
-    <string name="house_item_barrel_storage_dark">Dark Barrel Rack</string> <!-- untranslated -->
-    <string name="house_item_wardrobe_default">Wardrobe</string> <!-- untranslated -->
-    <string name="house_item_wardrobe_light">Light Wardrobe</string> <!-- untranslated -->
-    <string name="house_item_wardrobe_dark">Dark Wardrobe</string> <!-- untranslated -->
-    <string name="house_item_nightstand_default">Nightstand</string> <!-- untranslated -->
-    <string name="house_item_nightstand_default_1">Nightstand II</string> <!-- untranslated -->
-    <string name="house_item_nightstand_default_2">Nightstand III</string> <!-- untranslated -->
-    <string name="house_item_nightstand_light">Light Nightstand</string> <!-- untranslated -->
-    <string name="house_item_nightstand_light_1">Light Nightstand II</string> <!-- untranslated -->
-    <string name="house_item_nightstand_light_2">Light Nightstand III</string> <!-- untranslated -->
-    <string name="house_item_nightstand_dark">Dark Nightstand</string> <!-- untranslated -->
-    <string name="house_item_nightstand_dark_1">Dark Nightstand II</string> <!-- untranslated -->
-    <string name="house_item_nightstand_dark_2">Dark Nightstand III</string> <!-- untranslated -->
-    <string name="house_sub_seating">Seating</string> <!-- untranslated -->
-    <string name="house_sub_table_decor">Table Decor</string> <!-- untranslated -->
-    <string name="house_sub_nightstands">Nightstands</string> <!-- untranslated -->
-    <string name="house_sub_wardrobes">Wardrobes</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_cup">Silver Cup</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_cups">Silver Cups</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_jug">Silver Jug</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_narrow_pitcher">Narrow Silver Pitcher</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_plate">Silver Plate</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_plates">Silver Plate Stack</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_tall_pitcher">Tall Silver Pitcher</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_wide_pitcher">Wide Silver Pitcher</string> <!-- untranslated -->
-    <string name="house_item_table_default_small">Small Table</string> <!-- untranslated -->
-    <string name="house_item_table_default_large">Large Table</string> <!-- untranslated -->
-    <string name="house_item_table_default_long_v">Long Table</string> <!-- untranslated -->
-    <string name="house_item_table_default_cloth">Tablecloth Table</string> <!-- untranslated -->
-    <string name="house_item_table_default_cloth_long_v">Long Tablecloth Table</string> <!-- untranslated -->
-    <string name="house_item_table_light_small">Light Small Table</string> <!-- untranslated -->
-    <string name="house_item_table_light_large">Light Large Table</string> <!-- untranslated -->
-    <string name="house_item_table_light_long_v">Light Long Table</string> <!-- untranslated -->
-    <string name="house_item_table_light_cloth">Light Tablecloth Table</string> <!-- untranslated -->
-    <string name="house_item_table_light_cloth_long_v">Light Long Tablecloth Table</string> <!-- untranslated -->
-    <string name="house_item_table_dark_small">Dark Small Table</string> <!-- untranslated -->
-    <string name="house_item_table_dark_large">Dark Large Table</string> <!-- untranslated -->
-    <string name="house_item_table_dark_long_v">Dark Long Table</string> <!-- untranslated -->
-    <string name="house_item_table_dark_cloth">Dark Tablecloth Table</string> <!-- untranslated -->
-    <string name="house_item_table_dark_cloth_long_v">Dark Long Tablecloth Table</string> <!-- untranslated -->
-    <string name="house_item_chair_default_n">Chair</string> <!-- untranslated -->
-    <string name="house_item_chair_light_n">Light Chair</string> <!-- untranslated -->
-    <string name="house_item_chair_dark_n">Dark Chair</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_default_1">Bookshelf I</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_default_2">Bookshelf II</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_default_3">Bookshelf III</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_default_4">Bookshelf IV</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_light_1">Light Bookshelf I</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_light_2">Light Bookshelf II</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_light_3">Light Bookshelf III</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_light_4">Light Bookshelf IV</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_dark_1">Dark Bookshelf I</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_dark_2">Dark Bookshelf II</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_dark_3">Dark Bookshelf III</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_dark_4">Dark Bookshelf IV</string> <!-- untranslated -->
-    <string name="house_sub_paintings">Paintings</string> <!-- untranslated -->
-    <string name="house_sub_wall_shelves">Shelves</string> <!-- untranslated -->
-    <string name="house_sub_quest_boards">Quest Boards</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_1">Wall Shelf I</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_2">Wall Shelf II</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_3">Wall Shelf III</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_4">Wall Shelf IV</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_5">Wall Shelf V</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_6">Wall Shelf VI</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_7">Wall Shelf VII</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_8">Wall Shelf VIII</string> <!-- untranslated -->
-    <string name="house_item_questboard_1">Quest Board I</string> <!-- untranslated -->
-    <string name="house_item_questboard_2">Quest Board II</string> <!-- untranslated -->
-    <string name="house_item_questboard_3">Quest Board III</string> <!-- untranslated -->
-    <string name="house_sub_other">Other</string> <!-- untranslated -->
-    <string name="house_item_gold_chest">Gilded Chest</string> <!-- untranslated -->
-    <string name="house_item_gold_nugget">Gold Nuggets</string> <!-- untranslated -->
-    <string name="house_item_gold_pile">Buried Treasure</string> <!-- untranslated -->
-    <string name="house_item_gold_pile_gems">Jeweled Hoard</string> <!-- untranslated -->
-    <string name="house_item_wall_art_default_sunshine_grass">Sunny Meadow</string> <!-- untranslated -->
-    <string name="house_item_wall_art_default_sunshine_ocean">Sunny Seas</string> <!-- untranslated -->
-    <string name="house_item_wall_art_default_starry_night_grass">Starry Meadow</string> <!-- untranslated -->
-    <string name="house_item_wall_art_default_starry_night_ocean">Starry Seas</string> <!-- untranslated -->
-    <string name="house_item_wall_art_light_sunshine_grass">Sunny Meadow (Light Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_light_sunshine_ocean">Sunny Seas (Light Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_light_starry_night_grass">Starry Meadow (Light Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_light_starry_night_ocean">Starry Seas (Light Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_dark_sunshine_grass">Sunny Meadow (Dark Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_dark_sunshine_ocean">Sunny Seas (Dark Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_dark_starry_night_grass">Starry Meadow (Dark Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_dark_starry_night_ocean">Starry Seas (Dark Frame)</string> <!-- untranslated -->
-    <string name="house_item_helmet_trophy">Helmet Trophy</string> <!-- untranslated -->
-    <string name="house_item_shield_round">Round Shield Display</string> <!-- untranslated -->
-    <string name="house_item_shield_kite">Kite Shield Display</string> <!-- untranslated -->
-    <string name="house_item_swords_crossed">Crossed Swords</string> <!-- untranslated -->
-    <string name="house_item_lamp">Wall Lantern</string> <!-- untranslated -->
+    <string name="house_title" formatted="false">Casa</string>
+    <string name="house_edit" formatted="false">Modifica</string>
+    <string name="house_done" formatted="false">Fine</string>
+    <string name="house_share" formatted="false">Condividi una foto della tua casa.</string>
+    <string name="house_rooms_owned">Stanze: %1$d</string>
+    <string name="house_construction_level">Livello costruzione %1$d</string>
+    <string name="house_add_room">Aggiungi stanza (%1$s)</string>
+    <string name="house_add_room_locked">Aggiungi stanza (Liv. %1$d)</string>
+    <string name="house_bill_title">Preventivo</string>
+    <string name="house_bill_cost">Costo per costruire: %1$s</string>
+    <string name="house_bill_no_changes">Nessun cambiamento</string>
+    <string name="house_bill_changes_free">Modifiche non confermate</string>
+    <string name="house_bill_open">Preventivo</string>
+    <string name="house_bill_new_room">Nuova stanza %1$d</string>
+    <string name="house_bill_expand_room">Espandi %1$d (+%2$d celle)</string>
+    <string name="house_bill_shrink_credit">Contrai %1$d credit (%2$d celle)</string>
+    <string name="house_bill_materials_header">Materiali richiesti</string>
+    <string name="house_bill_credit_header">Accreditati durante l\'acquisto</string>
+    <string name="house_bill_xp_total">+%1$s XP Costruzione all\'acquisto</string>
+    <string name="house_bill_level_required">Richiede livello Costruzione %1$d</string>
+    <string name="house_bill_coins_total">Totale: %1$s monete</string>
+    <string name="house_purchase_build">Acquista</string>
+    <string name="house_apply_changes">Conferma modifiche</string>
+    <string name="house_purchase_success">Acquistato!</string>
+    <string name="house_changes_applied">Modifiche applicate</string>
+    <string name="house_discard_build">Scarta</string>
+    <string name="house_discard_confirm_title">Scartare le modifiche?</string>
+    <string name="house_discard_confirm_message">Tutte le modifiche non acquistate verrano scartate.</string>
+    <string name="house_blueprints">Planimetria</string>
+    <string name="house_blueprint_slot_empty">Vuoto</string>
+    <string name="house_blueprint_save">Salva</string>
+    <string name="house_blueprint_load">Carica</string>
+    <string name="house_blueprint_delete">Elimina</string>
+    <string name="house_blueprint_name_hint">Nome planimetria</string>
+    <string name="house_blueprint_saved">Planimetria salvata</string>
+    <string name="house_blueprint_loaded">Planimetria caricata nell\'editor.</string>
+    <string name="house_blueprint_skipped">Planimetria caricata; %1$d oggetti non esistono più e sono stati scartati.</string>
+    <string name="house_blueprint_load_title">Carica planimetria?</string>
+    <string name="house_blueprint_load_message">Le modifiche non acquistate verranno sostituite da \"%1$s\".</string>
+    <string name="house_mode_place_item">Stai piazzando %1$s. Trascina o tocca un punto della tua casa.</string>
+    <string name="house_mode_place_room" formatted="false">Stai piazzando una stanza 3x3. Deve essere adiacente a una stanza esistente.</string>
+    <string name="house_error_level" formatted="false">Il tuo livello Costruzione è troppo basso.</string>
+    <string name="house_error_coins" formatted="false">Non hai abbastanza monete.</string>
+    <string name="house_error_materials" formatted="false">Non hai abbastanza materiali.</string>
+    <string name="house_error_spot">Non puoi usare questa locazione.</string>
+    <string name="house_error_max_rooms" formatted="false">Non puoi aggiungere altre stanze.</string>
+    <string name="house_error_max_size">Non puoi espandere questa stanza ulteriormente.</string>
+    <string name="house_stored_count">In magazzino: %1$d</string>
+    <string name="house_level_short">Liv. %1$d</string>
+    <string name="house_store_hint" formatted="false">I mobili in magazzino possono essere piazzati in seguito.</string>
+    <string name="house_store_item">Sposta nel magazzino</string>
+    <string name="house_room_n">Stanza %1$d</string>
+    <string name="house_room_size">%1$d x %2$d celle</string>
+    <string name="house_expand_title" formatted="false">Espandi</string>
+    <string name="house_shrink_title" formatted="false">Contrai</string>
+    <string name="house_shrink_hint" formatted="false">Rimpicciolisce la stanza di una riga di celle. I materiali usati verranno restituiti e i mobili spostati in magazzino.</string>
+    <string name="house_error_min_size" formatted="false">Una stanza non può essere più piccola di 3x3.</string>
+    <string name="house_dir_north">Nord</string>
+    <string name="house_dir_south">Sud</string>
+    <string name="house_dir_east">Est</string>
+    <string name="house_dir_west">Ovest</string>
+    <string name="house_floor_title">Pavimento</string>
+    <string name="house_floor_dark" formatted="false">Parquet</string>
+    <string name="house_floor_brick" formatted="false">Mattonelle</string>
+    <string name="house_floor_brick_locked">Mattonelle (Liv. %1$d)</string>
+    <string name="house_cat_furniture" formatted="false">Mobili</string>
+    <string name="house_cat_walls" formatted="false">Mura</string>
+    <string name="house_cat_wealth" formatted="false">Ricchezze</string>
+    <string name="house_item_wall_v">Muro (verticale)</string>
+    <string name="house_item_wall_h">Muro (orizzontale)</string>
+    <string name="house_cat_wall">Decorazioni</string>
+    <string name="house_cat_banner">Stendardi</string>
+    <string name="house_banners_empty">Porta a termine un evento stagionale per ottenere uno stendardo.</string>
+    <string name="house_banner_placed">In mostra</string>
+    <string name="house_free">Gratis</string>
+    <string name="house_cost_coins">%1$s monete</string>
+    <string name="house_error_already_placed">Lo stendardo è già in mostra.</string>
+    <string name="house_remove_banner">Togli</string>
+    <string name="house_move_hint">Trascinalo sulla griglia per muoverlo.</string>
+    <string name="house_rotate_item">Ruota</string>
+    <string name="house_nudge_item">Sposta usando le frecce.</string>
+    <string name="house_outside_title">Esterno</string>
+    <string name="house_outside_hint">Scegli l\'aspetto del terreno all\'esterno.</string>
+    <string name="house_move_room">Sposta stanza</string>
+    <string name="house_demolish_room">Demolisci</string>
+    <string name="house_demolish_confirm_title">Demolire questa stanza?</string>
+    <string name="house_demolish_confirm_message">I mobili andranno in magazzino, ma il costo di costruzione non verrà rimborsato.</string>
+    <string name="house_mode_move_room">Stai spostando una stanza. Trascinala or tocca dove vuoi che vada.</string>
+    <string name="house_error_last_room">Non puoi demolire l\'ultima stanza.</string>
+    <string name="house_item_bed_default">Letto Semplice</string>
+    <string name="house_item_bed_default_alt">Letto semplice (color pesca)</string>
+    <string name="house_item_bed_light">Letto chiaro</string>
+    <string name="house_item_bed_light_alt">Letto chiaro (color pesca)</string>
+    <string name="house_item_bed_dark">Letto scuro</string>
+    <string name="house_item_bed_dark_alt">Letto scuro (color pesca)</string>
+    <string name="house_sub_beds">Letti</string>
+    <string name="house_sub_bookshelves">Librerie</string>
+    <string name="house_sub_tables">Tavoli</string>
+    <string name="house_item_barrel_default">Barili</string>
+    <string name="house_item_barrel_light">Barile chiaro</string>
+    <string name="house_item_barrel_dark">Barile scuro</string>
+    <string name="house_item_barrel_storage_default">Scaffalatura</string>
+    <string name="house_item_barrel_storage_light">Scaffalatura chiara</string>
+    <string name="house_item_barrel_storage_dark">Scaffalatura scura</string>
+    <string name="house_item_wardrobe_default">Armadio</string>
+    <string name="house_item_wardrobe_light">Armadio chiaro</string>
+    <string name="house_item_wardrobe_dark">Armadio scuro</string>
+    <string name="house_item_nightstand_default">Comodino</string>
+    <string name="house_item_nightstand_default_1">Comodino II</string>
+    <string name="house_item_nightstand_default_2">Comodino III</string>
+    <string name="house_item_nightstand_light">Comodino chiaro</string>
+    <string name="house_item_nightstand_light_1">Comodino chiaro II</string>
+    <string name="house_item_nightstand_light_2">Comodino chiaro III</string>
+    <string name="house_item_nightstand_dark">Comodino scuro</string>
+    <string name="house_item_nightstand_dark_1">Comodino scuro II</string>
+    <string name="house_item_nightstand_dark_2">Comodino scuro III</string>
+    <string name="house_sub_seating">Sedie</string>
+    <string name="house_sub_table_decor">Centrotavola</string>
+    <string name="house_sub_nightstands">Comodini</string>
+    <string name="house_sub_wardrobes">Armadi</string>
+    <string name="house_item_tabledecor_silver_cup">Tazza d\'Argento</string>
+    <string name="house_item_tabledecor_silver_cups">Tazze d\'argento</string>
+    <string name="house_item_tabledecor_silver_jug">Brocca d\'argento</string>
+    <string name="house_item_tabledecor_silver_narrow_pitcher">Boccale d\'argento</string>
+    <string name="house_item_tabledecor_silver_plate">Piatto d\'Argento</string>
+    <string name="house_item_tabledecor_silver_plates">Pila di piatti d\'argento</string>
+    <string name="house_item_tabledecor_silver_tall_pitcher">Caraffa d\'argento</string>
+    <string name="house_item_tabledecor_silver_wide_pitcher">Ampio boccale d\'argento</string>
+    <string name="house_item_table_default_small">Tavolo Piccolo</string>
+    <string name="house_item_table_default_large">Tavolo Grande</string>
+    <string name="house_item_table_default_long_v">Tavolo Lungo</string>
+    <string name="house_item_table_default_cloth">Tavolo con tovaglia</string>
+    <string name="house_item_table_default_cloth_long_v">Tavolo lungo con tovaglia</string>
+    <string name="house_item_table_light_small">Tavolino chiaro</string>
+    <string name="house_item_table_light_large">Tavolo chiaro</string>
+    <string name="house_item_table_light_long_v">Tavolo lungo chiaro</string>
+    <string name="house_item_table_light_cloth">Tavolo chiaro con tovaglia</string>
+    <string name="house_item_table_light_cloth_long_v">Tavolo lungo chiaro con tovaglia</string>
+    <string name="house_item_table_dark_small">Tavolino scuro</string>
+    <string name="house_item_table_dark_large">Tavolo scuro</string>
+    <string name="house_item_table_dark_long_v">Tavolo lungo scuro</string>
+    <string name="house_item_table_dark_cloth">Tavolo scuro con tovaglia</string>
+    <string name="house_item_table_dark_cloth_long_v">Tavolo lungo scuro con tovaglia</string>
+    <string name="house_item_chair_default_n">Sedia</string>
+    <string name="house_item_chair_light_n">Sedia chiara</string>
+    <string name="house_item_chair_dark_n">Sedia scura</string>
+    <string name="house_item_bookshelf_default_1">Libreria I</string>
+    <string name="house_item_bookshelf_default_2">Libreria II</string>
+    <string name="house_item_bookshelf_default_3">Libreria III</string>
+    <string name="house_item_bookshelf_default_4">Libreria IV</string>
+    <string name="house_item_bookshelf_light_1">Libreria chiara I</string>
+    <string name="house_item_bookshelf_light_2">Libreria chiara II</string>
+    <string name="house_item_bookshelf_light_3">Libreria chiara III</string>
+    <string name="house_item_bookshelf_light_4">Libreria chiara IV</string>
+    <string name="house_item_bookshelf_dark_1">Libreria scura I</string>
+    <string name="house_item_bookshelf_dark_2">Libreria scura II</string>
+    <string name="house_item_bookshelf_dark_3">Libreria scura III</string>
+    <string name="house_item_bookshelf_dark_4">Libreria scura IV</string>
+    <string name="house_sub_paintings">Dipinti</string>
+    <string name="house_sub_wall_shelves">Mensole</string>
+    <string name="house_sub_quest_boards">Bacheca</string>
+    <string name="house_item_wallshelf_1">Mensola I</string>
+    <string name="house_item_wallshelf_2">Mensola II</string>
+    <string name="house_item_wallshelf_3">Mensola III</string>
+    <string name="house_item_wallshelf_4">Mensola IV</string>
+    <string name="house_item_wallshelf_5">Mensola V</string>
+    <string name="house_item_wallshelf_6">Mensola VI</string>
+    <string name="house_item_wallshelf_7">Mensola VII</string>
+    <string name="house_item_wallshelf_8">Mensola VIII</string>
+    <string name="house_item_questboard_1">Bacheca I</string>
+    <string name="house_item_questboard_2">Bacheca II</string>
+    <string name="house_item_questboard_3">Bacheca III</string>
+    <string name="house_sub_other">Altri</string>
+    <string name="house_item_gold_chest">Baule d\'oro</string>
+    <string name="house_item_gold_nugget">Pepite d\'oro</string>
+    <string name="house_item_gold_pile">Tesoro Sepolto</string>
+    <string name="house_item_gold_pile_gems">Ammasso di gemme</string>
+    <string name="house_item_wall_art_default_sunshine_grass">Prato Soleggiato</string>
+    <string name="house_item_wall_art_default_sunshine_ocean">Mari Soleggiati</string>
+    <string name="house_item_wall_art_default_starry_night_grass">Prato Stellato</string>
+    <string name="house_item_wall_art_default_starry_night_ocean">Mari Stellati</string>
+    <string name="house_item_wall_art_light_sunshine_grass">Campo soleggiato (cornice chiara)</string>
+    <string name="house_item_wall_art_light_sunshine_ocean">Giornata al mare (cornice chiara)</string>
+    <string name="house_item_wall_art_light_starry_night_grass">Campo stellato (cornice chiara)</string>
+    <string name="house_item_wall_art_light_starry_night_ocean">Astri in riva al mare (cornice chiara)</string>
+    <string name="house_item_wall_art_dark_sunshine_grass">Campo soleggiato (cornice scura)</string>
+    <string name="house_item_wall_art_dark_sunshine_ocean">Giornata al mare (cornice scura)</string>
+    <string name="house_item_wall_art_dark_starry_night_grass">Campo stellato (cornice scura)</string>
+    <string name="house_item_wall_art_dark_starry_night_ocean">Astri in riva al mare (cornice scura)</string>
+    <string name="house_item_helmet_trophy">Elmo decorativo</string>
+    <string name="house_item_shield_round">Scudo rotondo decorativo</string>
+    <string name="house_item_shield_kite">Scudo decorativo</string>
+    <string name="house_item_swords_crossed">Spade Incrociate</string>
+    <string name="house_item_lamp">Lanterna da Muro</string>
     <string name="slayer_title">Sicario</string>
     <string name="slayer_card_desc">Incarichi e ricompense per i sicari</string>
     <string name="slayer_desc">Completa gli incarichi per ottenere XP e punti. Puoi ottenere armamenti unici spendendo i punti accumulati.</string>
@@ -1305,7 +1365,7 @@
     <string name="slayer_foretell_desc">Assegna automaticamente il prossimo incarico usando ossa. Inizierà al termine del tuo incarico attuale.</string>
     <string name="slayer_foretell_queue_empty">Nessun incarico in coda.</string>
     <string name="slayer_foretell_queue_btn">+ Accoda</string>
-    <string name="slayer_foretell_queue_full">Coda divinatoria piena (3/3).</string>
+    <string name="slayer_foretell_queue_full">Coda divinatoria piena (%1$d/%1$d).</string>
     <string name="slayer_foretell_not_enough_bones">Non hai abbastanza ossa (costo: %1$d ossa).</string>
     <string name="slayer_foretell_success">Divinato il prossimo incarico: %1$s!</string>
     <string name="slayer_foretell_btn">Divina Incarico (%1$d ossa)</string>
@@ -1313,6 +1373,7 @@
 
     <!-- Prestige system -->
     <string name="prestige">Onore</string>
+    <string name="prestige_skill_tree">Albero delle abilità</string>
     <string name="prestige_max">Onore Massimo</string>
     <string name="prestige_confirm_title" formatted="false">Onora %s?</string>
     <string name="prestige_confirm_message_xp">Il livello di %1$s tornerà a 1, ma otterrai un bonus permanente di +%2$d%% XP per questa abilità.</string>
@@ -1323,12 +1384,12 @@
     <!-- Prestige achievements -->
     <string name="achievement_prestige_first_name">Primo Reset</string>
     <string name="achievement_prestige_first_desc">Onora un\'Abilità qualunque per la prima volta</string>
-    <string name="achievement_prestige_node_first_name">Branching Out</string> <!-- untranslated -->
-    <string name="achievement_prestige_node_first_desc">Purchase your first prestige tree upgrade</string> <!-- untranslated -->
-    <string name="achievement_prestige_path_complete_name">End of the Line</string> <!-- untranslated -->
-    <string name="achievement_prestige_path_complete_desc">Purchase every upgrade in one prestige path</string> <!-- untranslated -->
-    <string name="achievement_prestige_tree_one_name">Mastered</string> <!-- untranslated -->
-    <string name="achievement_prestige_tree_one_desc">Purchase every upgrade in one skill\'s prestige tree</string> <!-- untranslated -->
+    <string name="achievement_prestige_node_first_name">Ramificazione</string>
+    <string name="achievement_prestige_node_first_desc">Acquista il primo bonus onore</string>
+    <string name="achievement_prestige_path_complete_name">Traguardo</string>
+    <string name="achievement_prestige_path_complete_desc">Acquista tutti i bonus onore di un singolo percorso.</string>
+    <string name="achievement_prestige_tree_one_name">Omnibus Viribus</string>
+    <string name="achievement_prestige_tree_one_desc">Acquista tutti i bonus onore di una singola abilità</string>
     <string name="achievement_prestige_all_1_name">Tabula Rasa</string>
     <string name="achievement_prestige_all_1_desc">Onora tutte le Abilità almeno una volta</string>
     <string name="achievement_prestige_all_3_name">Onore agli Eroi</string>
@@ -1468,7 +1529,7 @@
     <string name="town_church_no_bonus">Potenzia per estendere la durata delle benedizioni</string>
     <string name="town_building_fairgrounds_name">Giostre</string>
     <string name="town_fairgrounds_no_bonus">4 mini-giochi di abilità, 10 minuti di attesa prima di giocare di nuovo</string>
-    <string name="town_fairgrounds_t1_bonus" formatted="false">Sblocca Scegli-Bicchiere, attesa ridotta a 7.5 minutes, +5% probabilità di ottenere biglietti</string>
+    <string name="town_fairgrounds_t1_bonus" formatted="false">Sblocca Scegli-Bicchiere, attesa ridotta a 7.5 minuti, +5% probabilità di ottenere biglietti</string>
     <string name="town_fairgrounds_t2_bonus" formatted="false">Sblocca Grande-o-Piccolo, +10% probabilità di ottenere biglietti</string>
     <string name="town_fairgrounds_t3_bonus" formatted="false">Attesa ridotta a 5 minuti, +15% probabilità di ottenere biglietti</string>
     <string name="town_building_garden_name">Giardino</string>
@@ -1520,9 +1581,9 @@
     <!-- ===== Carnival ===== -->
     <string name="carnival_title">Fiera</string>
     <string name="carnival_desc">Giochi, premi e allegria!</string>
-    <string name="carnival_prize_xp_lamp_small_name">Piccola Lampada XP</string>
+    <string name="carnival_prize_xp_lamp_small_name">Lampada XP (Piccola)</string>
     <string name="carnival_prize_xp_lamp_small_desc">Fornisce 10.000 XP ad una abilità a scelta.</string>
-    <string name="carnival_prize_xp_lamp_large_name">Grande Lampada XP</string>
+    <string name="carnival_prize_xp_lamp_large_name">Lampada XP (Grande)</string>
     <string name="carnival_prize_xp_lamp_large_desc">Fornisce 50.000 XP ad una abilità a scelta.</string>
     <string name="carnival_ticket_balance">Biglietti: %1$d</string>
     <string name="carnival_idle_tab">Giochi passivi</string>
@@ -1537,7 +1598,7 @@
     <string name="carnival_idle_desc_wizard">Lancia incantesimi illusori contro maghi rivali. La tua padronanza della magia influirà sul risultato.</string>
     <string name="carnival_fishing_derby">Gara di pesca</string>
     <string name="carnival_idle_desc_fishing">Pesca il pesce più grande di tutti! Fai pratica per puntare ai premi migliori!</string>
-    <string name="carnival_skill_level">%1$s Lv.%2$d</string>
+    <string name="carnival_skill_level">%1$s Liv. %2$d</string>
     <string name="carnival_ticket_yield">circa %1$d biglietti/sessione</string>
     <string name="carnival_queue">Metti in coda</string>
     <string name="carnival_ring_toss">Lancio degli anelli</string>
@@ -1580,7 +1641,7 @@
     <string name="carnival_active_shell_desc">Osserva quale bicchiere nasconde la gemma, poi sceglilo dopo essere stato mischiato con gli altri!</string>
     <string name="carnival_shell_showing">Osserva bene — la gemma è nel bicchere %1$d</string>
     <string name="carnival_shell_watch">Osserva attentamente…</string>
-    <string name="carnival_shell_pick">Dove si trova la gemma??</string>
+    <string name="carnival_shell_pick">Dove si trova la gemma?</string>
     <string name="carnival_shell_won">Esatto! +%1$d biglietti</string>
     <string name="carnival_shell_missed">Peccato! La gemma era sotto il bicchere %1$d.</string>
     <string name="carnival_shell_locked">Migliora le giostre al Grado 1 per sbloccare</string>
@@ -1663,6 +1724,8 @@
     <string name="armory_source_smithing">Forgia</string>
     <string name="armory_source_crafting">Oreficeria</string>
     <string name="armory_source_fletching">Frecciaio</string>
+    <string name="armory_source_prestige_locked">%1$s (richiede talento onore %2$s, solo %3$s)</string>
+    <string name="armory_source_prestige_locked_any">%1$s (richiede talento onore %2$s)</string>
     <string name="armory_source_drop_always">Bottino da %1$s (Sempre)</string>
     <string name="armory_source_drop_chance">Bottino da %1$s (%2$s)</string>
     <string name="armory_source_drop">Bottino da %1$s</string>
@@ -1674,14 +1737,14 @@
 
     <!-- Session / queue messages (issue #596) -->
     <string name="skill_no_logs">Nessun tronco nell\'inventario</string>
-    <string name="skill_not_enough_rune_essence">Essenza di Rune insufficiente</string>
+    <string name="skill_not_enough_rune_essence">Essenza di Runa insufficiente</string>
     <string name="skill_not_enough_item">%1$s insufficiente</string>
     <string name="skill_not_enough_materials">Materiali insufficienti</string>
     <string name="skill_session_start_failed">Impossibile avviare la sessione: %1$s</string>
     <string name="skill_added_to_queue_activity">Aggiunto alla coda: %1$s — %2$s.</string>
     <string name="worker_already_busy">Il lavoratore è già occupato.</string>
     <string name="worker_not_enough_logs">Tronchi insufficienti.</string>
-    <string name="worker_not_enough_rune_essence">Essenza di Rune insufficiente.</string>
+    <string name="worker_not_enough_rune_essence">Essenza di Runa insufficiente.</string>
     <string name="worker_not_enough_materials">Materiali insufficienti.</string>
     <string name="shop_no_junk">Nessun oggetto da vendere</string>
     <string name="shop_sold_junk">Oggetti venduti per %1$s monete</string>
@@ -1689,6 +1752,8 @@
     <string name="shop_sold_old_equipment">Equipaggiamento obsoleto venduto per %1$s monete</string>
     <string name="shop_bulk_sell_total">Totale</string>
     <string name="shop_bulk_sell_confirm">Vendi tutto</string>
+    <string name="shop_recent_bulk_sales">Ultime vendite in blocco</string>
+    <string name="shop_recent_bulk_sales_empty">Non hai ancora venduto niente in blocco.</string>
     <string name="shop_xp_boost_activated">Potenziamento XP 2× attivato per %1$d ore!</string>
     <string name="shop_xp_boost_already_active">Un potenziamento XP 2× è già attivo.</string>
     <string name="shop_xp_boost_weekly_limit">Limite di un potenziamento XP 2× a settimana. Di nuovo disponibile dopo il reset settimanale.</string>
@@ -1730,7 +1795,7 @@
     <string name="bonus_coin_return">+%1$d%% ritorno in monete</string>
     <string name="bonus_tower">Torre</string>
     <string name="bonus_builder_discount_detail" formatted="false">Sconto del 0,5% agli edifici per ogni livello</string>
-
+    <string name="bonus_xp">+%1$d%% XP</string>
     <string name="bonus_coin_drops">+%1$d%% monete</string>
     <string name="bonus_hp">+%1$d PS</string>
     <string name="snackbar_added_to_queue">Aggiunto alla coda: %1$s.</string>
@@ -1774,7 +1839,8 @@
     <string name="monument_touch_title">Tocco quotidiano</string>
     <string name="monument_touch_btn">Tocca il Monumento</string>
     <string name="monument_touched_today">Hai toccato il monumento. Senti un mormorio di soddisfazione.</string>
-    <string name="monument_touch_blessing">Una benedizione ti avvolge per un\'ora.</string>
+    <string name="monument_touch_blessing">Una benedizione scende su di te per due ore.</string>
+    <string name="monument_touch_blessing_extended">Il Monumento estende la tua benedizione per due ore.</string>
     <string name="monument_touch_items">Il Monumento ti ha concesso: %1$s</string>
     <string name="monument_contributed">La fiamma brilla più forte!</string>
     <string name="monument_flame_lit">La Fiamma Eterna è accesa! Il Guardiano del Caveau ti attende.</string>
@@ -1783,9 +1849,9 @@
     <string name="monument_not_enough_coins">Monete insufficienti.</string>
     <string name="title_patron_of_the_realm_name">Mecenate del Reame</string>
     <string name="title_patron_of_the_realm_requirement">Completa il Grande Monumento</string>
-    <string name="item_gilded_full_helmet_name">Elmo Indorato</string>
+    <string name="item_gilded_full_helmet_name">Elmo Dorato</string>
     <string name="item_gilded_platebody_name">Corazza Dorata</string>
-    <string name="item_gilded_kiteshield_name">Scudo Dorato</string>
+    <string name="item_gilded_kiteshield_name">Granscudo Dorato</string>
     <string name="boss_coin_cap_remaining">Ricompense monetarie complete rimaste per questo boss: %1$d</string>
     <string name="boss_coin_cap_spent">Riceverai meno monete fino a domani</string>
     <string name="bestiary_coin_cap_label">Dopo %1$d uccisioni/giorno</string>
@@ -1797,42 +1863,41 @@
 
     <!-- ===== Infinite Tower ===== -->
     <!-- Raids and mercenaries -->
-    <string name="raid_section_title">Raids</string> <!-- untranslated -->
-    <string name="raid_section_desc">Bosses no lone hero can fell. Hire a mercenary party first.</string> <!-- untranslated -->
-    <string name="raid_party_status">Mercenaries: %1$d/%2$d hired</string> <!-- untranslated -->
-    <string name="raid_party_title">Raid Party</string> <!-- untranslated -->
-    <string name="raid_solo_warning">Raid bosses cannot be beaten alone, even with the best gear. Hire mercenaries before attempting.</string> <!-- untranslated -->
-    <string name="raid_no_mercs">No mercenaries under contract.</string> <!-- untranslated -->
-    <string name="merc_camp_open">Hire Mercenaries</string> <!-- untranslated -->
-    <string name="merc_camp_title">Mercenary Camp</string> <!-- untranslated -->
-    <string name="merc_camp_desc">Contracts last until the daily reset at %1$s. A new pool of mercenaries arrives each day.</string> <!-- untranslated -->
-    <string name="merc_hire">Hire</string> <!-- untranslated -->
-    <string name="merc_dismiss">Dismiss</string> <!-- untranslated -->
-    <string name="merc_hired">%1$s joins your party until the daily reset.</string> <!-- untranslated -->
-    <string name="merc_party_full">Your party is full.</string> <!-- untranslated -->
-    <string name="merc_already_hired">%1$s is already under contract.</string> <!-- untranslated -->
-    <string name="merc_not_enough_coins">Not enough coins to hire %1$s.</string> <!-- untranslated -->
-    <string name="merc_not_available">%1$s is not available today.</string> <!-- untranslated -->
-    <string name="merc_contract_remaining">Contract: %1$s left</string> <!-- untranslated -->
-    <string name="combat_log_ally_hit">Your mercenaries hit %1$s for %2$d</string> <!-- untranslated -->
-    <string name="raid_allies_down">Mercenaries down: %1$d</string> <!-- untranslated -->
-    <string name="merc_tier_cheap">Sellsword</string> <!-- untranslated -->
-    <string name="merc_tier_seasoned">Veteran</string> <!-- untranslated -->
-    <string name="merc_tier_elite">Champion</string> <!-- untranslated -->
-    <string name="merc_stats">Atk %1$d  Str %2$d  Def %3$d  HP %4$d</string> <!-- untranslated -->
-    <string name="merc_cost_per_day">%1$s coins per day</string> <!-- untranslated -->
-    <string name="merc_bran_the_sellsword_name">Bran the Sellsword</string> <!-- untranslated -->
-    <string name="merc_wren_the_stray_name">Wren the Stray</string> <!-- untranslated -->
-    <string name="merc_tam_the_grey_name">Tam the Grey</string> <!-- untranslated -->
-    <string name="merc_nix_the_cutpurse_name">Nix the Cutpurse</string> <!-- untranslated -->
-    <string name="merc_sera_ironsong_name">Sera Ironsong</string> <!-- untranslated -->
-    <string name="merc_kael_emberhand_name">Kael Emberhand</string> <!-- untranslated -->
-    <string name="merc_dorn_shieldbreaker_name">Dorn Shieldbreaker</string> <!-- untranslated -->
-    <string name="merc_fenna_swiftarrow_name">Fenna Swiftarrow</string> <!-- untranslated -->
-    <string name="merc_grimjaw_the_colossus_name">Grimjaw the Colossus</string> <!-- untranslated -->
-    <string name="merc_sylvara_trueshot_name">Sylvara Trueshot</string> <!-- untranslated -->
-    <string name="merc_vex_the_undying_name">Vex the Undying</string> <!-- untranslated -->
-    <string name="merc_thane_dawnbringer_name">Thane Dawnbringer</string> <!-- untranslated -->
+    <string name="raid_section_title">Assalti</string>
+    <string name="raid_section_desc">Questi boss non possono essere sconfitti da soli. Ingaggia dei mercenari per aiutarti.</string>
+    <string name="raid_party_status">Mercenari assunti: %1$d/%2$d</string>
+    <string name="raid_party_title">Squadra d\'assalto</string>
+    <string name="raid_solo_warning">Questi boss non possono essere sconfitti da soli, neanche con le armi migliori. Assumi dei mercenari prima di affrontarli.</string>
+    <string name="raid_no_mercs">Nessun mercenario assunto.</string>
+    <string name="merc_camp_open">Assumi Mercenari</string>
+    <string name="merc_camp_title">Campo dei mercenari</string>
+    <string name="merc_camp_desc">Un contratto dura 24 ore dopo l\'assunzione. Un nuovo gruppo di mercenari arriverà ogni giorno.</string>
+    <string name="merc_hire">Assumi</string>
+    <string name="merc_dismiss">Congeda</string>
+    <string name="merc_hired">"%1$s si unisce alla squadra per 24 ore "</string>
+    <string name="merc_party_full">La tua squadra ha raggiunto il limite.</string>
+    <string name="merc_already_hired">%1$s è già sotto contratto.</string>
+    <string name="merc_not_enough_coins">Non hai abbastanza monete per assumere %1$s.</string>
+    <string name="merc_not_available">%1$s non è disponibile oggi.</string>
+    <string name="merc_contract_remaining">Contratti: %1$s rimasti</string>
+    <string name="raid_allies_down">Mercenari sconfitti: %1$d</string>
+    <string name="merc_tier_cheap">Novizio</string>
+    <string name="merc_tier_seasoned">Veterano</string>
+    <string name="merc_tier_elite">Campione</string>
+    <string name="merc_stats">Att %1$d  Frz %2$d  Dif %3$d  PS %4$d</string>
+    <string name="merc_cost_per_day">%1$s monete</string>
+    <string name="merc_bran_the_sellsword_name">Bran il Cercadenaro</string>
+    <string name="merc_wren_the_stray_name">Wren della landa</string>
+    <string name="merc_tam_the_grey_name">Tam il Grigio</string>
+    <string name="merc_nix_the_cutpurse_name">Nix il Furfante</string>
+    <string name="merc_sera_ironsong_name">Sera la Cantaspade</string>
+    <string name="merc_kael_emberhand_name">Kael Mano di Fuoco</string>
+    <string name="merc_dorn_shieldbreaker_name">Dorn lo Spaccaferro</string>
+    <string name="merc_fenna_swiftarrow_name">Fenna Frecciarapida</string>
+    <string name="merc_grimjaw_the_colossus_name">Grimjaw il Colosso</string>
+    <string name="merc_sylvara_trueshot_name">Sylvara Occhio di Lince</string>
+    <string name="merc_vex_the_undying_name">Vex il Sopravvissuto</string>
+    <string name="merc_thane_dawnbringer_name">Thane dell\'Alba</string>
 
     <string name="tower_title">Torre dell\'Infinito</string>
     <string name="tower_floor_label" formatted="false">Piano %d</string>
@@ -1879,8 +1944,15 @@
     <string name="seasonal_event_complete">Completato!</string>
     <string name="seasonal_bounty_board_title">Bacheca Missioni</string>
     <string name="seasonal_expedition_title">Spedizione</string>
-    <string name="seasonal_boss_title">Assalto al Boss</string>
     <string name="seasonal_go_to_combat">Vai al Combattimento</string>
+    <string name="treasure_open_message">Aprilo per trovare monete e forse qualche gemma.</string>
+    <string name="treasure_open">Apri</string>
+    <string name="treasure_open_one">Apri 1</string>
+    <string name="treasure_open_all">Apri tutti (%1$d)</string>
+    <string name="treasure_open_result">Aperti %1$d: +%2$s monete</string>
+    <string name="treasure_open_result_gems">Aperti %1$d: +%2$s monete e %3$d gemme</string>
+    <string name="seasonal_expedition_token_hint">Ogni spedizione fornisce un gettone.</string>
+    <string name="seasonal_boss_token_hint">Ogni scalpo fornisce un gettone, fino a %1$d al giorno.</string>
     <string name="seasonal_minigame_hint">Colpisci %1$d fiammelle su %2$d prima che si spengano!</string>
     <string name="seasonal_minigame_round">Round %1$d / %2$d — Colpi: %3$d</string>
     <string name="seasonal_minigame_mode_label">Difficoltà</string>
@@ -1892,6 +1964,8 @@
     <string name="seasonal_tap">Tocca!</string>
     <string name="seasonal_claim">Riscatta</string>
     <string name="seasonal_bounty_cooldown">Nuova missione in %1$dm %2$ds</string>
+    <string name="seasonal_bounty_reroll">Cambia missione</string>
+    <string name="seasonal_bounty_reroll_confirm">Cambiare missione per %1$s monete? Perderai i progressi fatti finora.</string>
     <string name="seasonal_go">Vai</string>
     <string name="seasonal_event_sunspire_solstice_2026_name">Pinnacolo del Solstizio</string>
     <string name="seasonal_event_sunspire_solstice_2026_banner">Hai partecipato all\'evento Pinnacolo del Solstizio 2026</string>
@@ -1929,13 +2003,14 @@
     <string name="seasonal_event_gloomharvest_2026_banner">Hai partecipato all\'evento Raccolto Oscuro 2026</string>
     <string name="seasonal_minigame_lantern_lights_name">Luci delle Lanterne</string>
     <string name="seasonal_minigame_sequence_hint">Osserva le lanterne e ripeti l\'ordine d\'accensione. Raggiungi il round %1$d su %2$d per vincere un gettone!</string>
+    <string name="seasonal_minigame_sequence_success">Well remembered! +1 token.</string> <!-- untranslated -->
     <string name="seasonal_minigame_sequence_round">Round %1$d / %2$d</string>
     <string name="seasonal_minigame_watch">Osserva!</string>
     <string name="seasonal_minigame_your_turn">Tocca a te!</string>
     <string name="seasonal_minigame_sequence_mode_caption">La luce dura %1$dms, disponibile dopo %2$s</string>
     <string name="seasonal_market_price">%1$s monete</string>
     <string name="seasonal_reward_gloomharvest_2026_25_desc">Borsa di monete (50.000 monete)</string>
-    <string name="seasonal_reward_gloomharvest_2026_60_desc">Anello dello Spettro</string>
+    <string name="seasonal_reward_gloomharvest_2026_60_desc">Anello d\'Osso Spettrale</string>
     <string name="seasonal_reward_gloomharvest_2026_100_desc">Bonus XP di 48 ore gratuito</string>
     <string name="seasonal_reward_gloomharvest_2026_150_desc">Falce del Mietitore</string>
     <string name="seasonal_reward_gloomharvest_2026_200_desc">Borsa di monete (250.000 monete)</string>
@@ -1960,7 +2035,7 @@
     <string name="seasonal_bounty_gloom_shortbows_hint">Frecciaio</string>
     <string name="seasonal_bounty_gloom_feast_name">Cucina pescespada per il banchetto del raccolto</string>
     <string name="seasonal_bounty_gloom_feast_hint">Cucina</string>
-    <string name="seasonal_bounty_gloom_bars_name">Fondi adamantite per le cripte maledette</string>
+    <string name="seasonal_bounty_gloom_bars_name">Fondi adamantio per le cripte maledette</string>
     <string name="seasonal_bounty_gloom_bars_hint">Forgia</string>
     <string name="seasonal_bounty_gloom_runes_name">Incidi Rune della Morte per placare gli spiriti</string>
     <string name="seasonal_bounty_gloom_runes_hint">Incisione di Rune</string>
@@ -2045,7 +2120,7 @@
     <string name="settings_credit_characters_subtitle">Pixylac</string>
     <string name="settings_credit_bosses_title">Sprite dei boss</string>
     <string name="settings_credit_bosses_subtitle">Meg</string>
-    <string name="settings_credit_house_title">House Interiors</string> <!-- untranslated -->
+    <string name="settings_credit_house_title">Oggetti per la casa</string>
 
     <string name="title_seasonal_champion_of">Campione di %1$s</string>
     <string name="title_seasonal_requirement">Completa l\'Evento Stagionale %1$s</string>
@@ -2100,7 +2175,7 @@
     <string name="pet_solstice_sprite_desc">Uno spirito infuocato proveniente dal Pinnacolo del Solstizio. Migliora le tue doti in battaglia.</string>
     <string name="pet_lantern_wisp_name">Spirito della lanterna</string>
     <string name="pet_lantern_wisp_desc">Una lanterna vivente fuggita al controllo del Re Vacuo, ora illumina il tuo cammino.</string>
-    <string name="pet_grave_sprout_name">Germoglio della fossa</string>
+    <string name="pet_grave_sprout_name">Germoglio Tombale</string>
     <string name="pet_grave_sprout_desc">Questa pianticella ha messo radici in un cumulo di terra abbandonato. Sa il fatto suo su come si sopravvive.</string>
     <string name="pet_golden_goose_name">Oca d\'oro</string>
     <string name="pet_golden_goose_desc">Oca d\'alto lignaggio che siede in cima al Monumento d\'orato. Le monete sembrano arrivare a lei da sole.</string>
@@ -2137,7 +2212,7 @@
     <string name="ironman_blessing_blocked">I personaggi \"Superuomo\" possono ricevere solo benedizioni difensive.</string>
     <string name="ironman_bonuses_notice">Superuomo: i potenziamenti di XP, resa e monete sono disattivati per questo personaggio.</string>
     <string name="ironman_badge">Superuomo</string>
-    <string name="settings_imported_demoted">Salvataggio importato. È stato modificato fuori dal gioco, quindi lo stato Ironman è stato rimosso.</string>
+    <string name="settings_imported_demoted">Salvataggio importato. È stato modificato fuori dal gioco, quindi lo stato Superuomo è stato rimosso.</string>
     <string name="shop_xp_boost_name">Potenziamento 2× XP (48 ore)</string>
     <string name="bestiary_stat_hp">PS</string>
     <string name="bestiary_stat_attack">Attacco</string>
@@ -2167,150 +2242,195 @@
     <string name="farming_crop_picker_stats">Lv. %1$d  •  %2$s  •  %3$d XP/campo</string>
     <string name="farming_seeds_owned">Semi: %1$d  •  In possesso: %2$d</string>
     <!-- ============ Prestige overhaul (v1.14.0) ============ -->
-    <string name="prestige_title">Prestige</string> <!-- untranslated -->
-    <string name="prestige_open_tree">View tree</string> <!-- untranslated -->
+    <string name="prestige_title">Onore</string>
+    <string name="prestige_open_tree">Mostra talenti</string>
     <!-- Translator note: %1$d = unspent prestige points -->
-    <string name="prestige_points_available">%1$d points available</string> <!-- untranslated -->
+    <string name="prestige_points_available">%1$d punti disponibili</string>
     <!-- Translator note: %1$d = lifetime points earned, %2$d = maximum points for this skill -->
-    <string name="prestige_points_lifetime">%1$d of %2$d lifetime points earned</string> <!-- untranslated -->
+    <string name="prestige_points_lifetime">%1$d di %2$d punti a vita ottenuti</string>
     <!-- Translator note: %1$d = points the reset would award right now -->
-    <string name="prestige_button_with_points">Prestige now for +%1$d points</string> <!-- untranslated -->
+    <string name="prestige_button_with_points">Onora per ottenere +%1$d punti</string>
     <!-- Translator note: %1$d = current skill level -->
-    <string name="prestige_requires_99">Reach level 99 to prestige (currently %1$d).</string> <!-- untranslated -->
-    <string name="prestige_maxed_cap">Maximum prestige reached. Every point this skill can earn is yours.</string> <!-- untranslated -->
+    <string name="prestige_requires_99">Raggiungi il livello 99 per onorare (al momento %1$d).</string>
+    <string name="prestige_maxed_cap">Raggiunto il massimo onore. Hai ottenuto tutti i punti possibili.</string>
     <!-- Translator note: %1$s = skill name, %2$d = points awarded -->
-    <string name="prestige_confirm_message_points">Your %1$s level will reset to 1 and you\'ll earn %2$d prestige points to spend in this skill\'s tree. Equipment that no longer meets its requirements will be swapped out, and unclaimed %1$s daily quest progress resets. You\'ll also gain 2x %1$s XP for 48 hours to speed the climb back up.</string> <!-- untranslated -->
-    <string name="prestige_respec">Reset points</string> <!-- untranslated -->
+    <string name="prestige_confirm_message_points">Il livello di %1$s tornerà a 1 e otterrai %2$d punti onore da spendere in talenti. Non potrai più usare armamenti di livello superiore, e le missioni giornaliere di %1$s saranno reimpostate. Otterrai 2x %1$s XP per 48 ore.</string>
+    <string name="prestige_respec">Reimposta punti</string>
     <!-- Translator note: %1$s = formatted remaining cooldown -->
-    <string name="prestige_respec_available_in">Reset available in %1$s</string> <!-- untranslated -->
-    <string name="prestige_respec_confirm_title">Reset prestige points?</string> <!-- untranslated -->
+    <string name="prestige_respec_available_in">Puoi reimpostare tra %1$s</string>
+    <string name="prestige_respec_confirm_title">Reimposta tutti i punti onore?</string>
     <!-- Translator note: %1$s = skill name -->
-    <string name="prestige_respec_confirm_message">All purchased %1$s upgrades will be refunded for their full point cost. You can reset this skill\'s points again in 24 hours.</string> <!-- untranslated -->
+    <string name="prestige_respec_confirm_message">Tutti i talenti di %1$s acquistati saranno rimborsati. Puoi reimpostare questa abilità tra 24 ore.</string>
     <!-- Translator note: %1$s = skill name -->
-    <string name="prestige_respec_done">%1$s prestige points refunded.</string> <!-- untranslated -->
-    <string name="prestige_respec_on_cooldown">Points were reset recently. Try again later.</string> <!-- untranslated -->
+    <string name="prestige_respec_done">%1$s punti onore restituiti.</string>
+    <string name="prestige_respec_on_cooldown">Hai reimpostato i punti da poco. Torna più tardi.</string>
     <!-- Translator note: %1$d = node cost in points -->
-    <string name="prestige_node_cost">Cost: %1$d points</string> <!-- untranslated -->
-    <string name="prestige_node_owned">Purchased</string> <!-- untranslated -->
+    <string name="prestige_node_cost">Costo: %1$d punti</string>
+    <string name="prestige_node_owned">Acquistato</string>
+    <string name="prestige_path_auto_label">Guadagnato da onore</string>
+    <string name="prestige_node_auto_earned">Guadagnato a onore %1$d.</string>
+    <string name="prestige_node_auto_pending">Disponibile automaticamente a onore %1$d.</string>
+    <string name="prestige_button_xp_only">Onora per il prossimo rango XP</string>
+    <string name="prestige_confirm_message_xp_only">Il tuo livello di %1$s torneà a 1 e sbloccherai il prossimo rango XP. Non potrai più usare armamenti di livello superiore, e le missioni giornaliere di %1$s saranno reimpostate. Otterrai 2x %1$s XP per 48 ore.</string>
     <!-- Translator note: %1$s = list of race names -->
-    <string name="prestige_node_race_only">%1$s only</string> <!-- untranslated -->
+    <string name="prestige_node_race_only">Solo %1$s</string>
     <!-- Translator note: %1$s = list of race names -->
-    <string name="prestige_node_race_locked_desc">Only %1$s characters can learn this upgrade.</string> <!-- untranslated -->
-    <string name="prestige_node_prereq_locked">Requires the previous tier in this path.</string> <!-- untranslated -->
-    <string name="prestige_node_hidden">Unlock the previous upgrade first.</string> <!-- untranslated -->
-    <string name="character_race_edit_hint">Race changes are made in the appearance editor.</string> <!-- untranslated -->
-    <string name="prestige_node_not_enough">Not enough points</string> <!-- untranslated -->
+    <string name="prestige_node_race_locked_desc">Solo personaggi %1$s possono ottenere questo talento.</string>
+    <string name="prestige_node_prereq_locked">Hai bisogno del talento precedente su questo percorso.</string>
+    <string name="prestige_node_hidden">Sblocca il talento precedente prima.</string>
+    <string name="character_race_edit_hint">Puoi cambiare razza nelle impostazioni del personaggio.</string>
+    <string name="prestige_node_not_enough">Non hai abbastanza punti</string>
     <!-- Translator note: %1$s = node name -->
-    <string name="prestige_node_purchased">%1$s purchased!</string> <!-- untranslated -->
+    <string name="prestige_node_purchased">%1$s acquistato!</string>
     <!-- Translator note: %1$d = node cost in points -->
-    <string name="prestige_buy">Purchase for %1$d points</string> <!-- untranslated -->
+    <string name="prestige_buy">Acquista per %1$d punti</string>
 
     <!-- Prestige effect descriptions -->
-    <string name="prestige_effect_xp_pct">+%1$d%% XP in this skill.</string> <!-- untranslated -->
-    <string name="prestige_effect_yield_pct">+%1$d%% items from this skill\'s sessions.</string> <!-- untranslated -->
+    <string name="prestige_effect_xp_pct">+%1$d%% XP per questa abilità.</string>
+    <string name="prestige_effect_yield_pct">+%1$d%% oggetti per questa sessione.</string>
     <!-- Translator note: %1$s = yield percent per interval (may be fractional) -->
-    <string name="prestige_effect_flow_rate">Flow-state: +%1$s%% yield per interval of continuous activity, up to +100%%.</string> <!-- untranslated -->
+    <string name="prestige_effect_flow_rate">Catena di montaggio: +%1$s%% alla resa per attività senza interruzioni, massimo +100%%.</string>
     <!-- Translator note: %1$d = minutes removed from the flow interval -->
-    <string name="prestige_effect_flow_interval">Flow-state interval shortened by %1$d minutes.</string> <!-- untranslated -->
-    <string name="prestige_effect_combat_stat">+%1$d effective levels in combat.</string> <!-- untranslated -->
+    <string name="prestige_effect_flow_interval_reduction">Intervallo catena di montaggio ridotto di %1$d minuti.</string>
+    <string name="prestige_effect_combat_stat_flat">+%1$d livelli durante le battaglie.</string>
     <!-- Translator note: %1$s = minutes (may be fractional) -->
-    <string name="prestige_effect_session_floor">Sessions up to %1$s minutes shorter at level 99.</string> <!-- untranslated -->
-    <string name="prestige_effect_cape_scaling">Cape bonuses for this skill multiplied ×%1$d.</string> <!-- untranslated -->
-    <string name="prestige_effect_bonus_roll">+%1$d%% gem find chance while mining.</string> <!-- untranslated -->
-    <string name="prestige_effect_coin_pct">+%1$d%% coins from this skill.</string> <!-- untranslated -->
-    <string name="prestige_effect_crop_rotation">+%1$d%% yield when planting a different crop than the last harvest.</string> <!-- untranslated -->
-    <string name="prestige_effect_crop_rotation_always">The rotation bonus applies to every crop, no rotation needed.</string> <!-- untranslated -->
-    <string name="prestige_effect_tool_eff">Tool efficiency +%1$d%%.</string> <!-- untranslated -->
-    <string name="prestige_effect_success_chance">Pickpocket success chance +%1$d%%.</string> <!-- untranslated -->
-    <string name="prestige_effect_reclaim">+%1$d%% chance to recover spent arrows and runes after combat.</string> <!-- untranslated -->
-    <string name="prestige_effect_heal">Food heals +%1$d%% more in combat.</string> <!-- untranslated -->
-    <string name="prestige_effect_death_keep">Keep an extra %1$d%% of XP and loot when defeated.</string> <!-- untranslated -->
-    <string name="prestige_effect_queue_slot">+%1$d session queue slot.</string> <!-- untranslated -->
-    <string name="prestige_effect_pet_boost">Pet boosts for this skill are %1$d%% stronger.</string> <!-- untranslated -->
-    <string name="prestige_effect_blessing_duration">Church blessings last %1$d%% longer.</string> <!-- untranslated -->
-    <string name="prestige_effect_blessing_cost">Church blessings cost %1$d%% fewer bones.</string> <!-- untranslated -->
-    <string name="prestige_effect_potion_bonus">Combat potions grant +%1$d more to their stats.</string> <!-- untranslated -->
-    <string name="prestige_effect_input_save">%1$d%% of crafting materials are refunded.</string> <!-- untranslated -->
-    <string name="prestige_effect_builder_discount">Town building upgrades cost %1$d%% less.</string> <!-- untranslated -->
-    <string name="prestige_effect_sell_price">Shop sell prices +%1$d%%.</string> <!-- untranslated -->
-    <string name="prestige_effect_slayer_points">Slayer task points +%1$d%%.</string> <!-- untranslated -->
-    <string name="prestige_effect_double_hit">%1$d%% chance to strike a second melee hit.</string> <!-- untranslated -->
-    <string name="prestige_effect_second_chance">Missed melee attacks are rerolled once.</string> <!-- untranslated -->
-    <string name="prestige_effect_foretell_slots">+%1$d foretold slayer task slots.</string> <!-- untranslated -->
-    <string name="prestige_effect_multi_task">Dungeon kills also count toward matching foretold tasks.</string> <!-- untranslated -->
-    <string name="prestige_effect_unlock_recipe">Unlocks the %1$s fletching recipe.</string> <!-- untranslated -->
+    <string name="prestige_effect_session_floor_min">Sessioni ridotte fino a  %1$s minuti al livello 99.</string>
+    <string name="prestige_effect_cape_scaling">Bonus da mantelli per questa abilità moltiplicati per ×%1$d.</string>
+    <string name="prestige_effect_bonus_roll_pct">+%1$d%% probabilità di trovare gemme durante l\'estrazione.</string>
+    <string name="prestige_effect_coin_pct">+%1$d%% monete da questa abilità.</string>
+    <string name="prestige_effect_crop_rotation_pct">+%1$d%% alla resa se viene piantato un seme diverso dall\'ultimo.</string>
+    <string name="prestige_effect_crop_rotation_always">Il bonus alla resa si applica anche senza cambiare seme.</string>
+    <string name="prestige_effect_tool_eff_pct">Efficienza degli utensili +%1$d%%.</string>
+    <string name="prestige_effect_per_level_bonus">+%1$s efficienza utensili e armi per ogni livello di questa abilità.</string>
+    <string name="prestige_effect_success_chance_pct">Probabilità di furto +%1$d%%.</string>
+    <string name="prestige_effect_reclaim_pct">+%1$d%% probablità di recuperare frecce e rune dopo la battaglia.</string>
+    <string name="prestige_effect_heal_pct">Il cibo riceve un bonus alla cura del +%1$d%%.</string>
+    <string name="prestige_effect_death_keep_pct">Mantiene un %1$d%% di XP e bottino dopo essere stati sconfitti.</string>
+    <string name="prestige_effect_queue_slot">+%1$d slo alla coda delle sessioni.</string>
+    <string name="prestige_effect_pet_boost_pct">I compagni forniscono un bonus aumentato del %1$d%%.</string>
+    <string name="prestige_effect_blessing_duration_pct">Le benedizioni durano un %1$d%% in più.</string>
+    <string name="prestige_effect_blessing_cost_pct">Le benedizioni costano un %1$d%% di ossa in meno.</string>
+    <string name="prestige_effect_potion_bonus_flat">Le pozioni forniscono un bonus del %1$d in più.</string>
+    <string name="prestige_effect_input_save_pct">Il %1$d%% dei materiali viene recuperato.</string>
+    <string name="prestige_effect_builder_discount_pct">Il villaggio può essere migliorato con uno sconto del %1$d%%.</string>
+    <string name="prestige_effect_sell_price_pct">Aumenta il valore di vendita nell\'emporio del %1$d%%.</string>
+    <string name="prestige_effect_slayer_points_pct">Gli incarichi da sicario forniscono un %1$d%% in più di punti.</string>
+    <string name="prestige_effect_double_hit_pct">Puoi sferrare un secondo attacco in mischia con una probabilità del %1$d%%.</string>
+    <string name="prestige_effect_second_chance">Quando manchi il bersaglio in mischia, una volta per attacco puoi tentare nuovamente.</string>
+    <string name="prestige_effect_foretell_slots">+%1$d slot di incarichi da sicario divinati.</string>
+    <string name="prestige_effect_slayer_multi_task">Tutte le uccisioni nei dungeon contano verso gli incarichi da sicario divinati.</string>
+    <string name="prestige_effect_unlock_recipe">Permette di costruire %1$s.</string>
 
     <!-- New distinctive base path names (variety pass) -->
-    <string name="prestige_path_fishing_rod">Sturdy Rod</string> <!-- untranslated -->
-    <string name="prestige_path_woodcutting_axe">Honed Edge</string> <!-- untranslated -->
-    <string name="prestige_path_cooking_hearty">Hearty Meals</string> <!-- untranslated -->
-    <string name="prestige_path_smithing_thrift">Careful Smith</string> <!-- untranslated -->
-    <string name="prestige_path_crafting_thrift">Steady Hands</string> <!-- untranslated -->
-    <string name="prestige_path_herblore_potency">Potent Potions</string> <!-- untranslated -->
-    <string name="prestige_path_runecrafting_runethrift">Essence Bond</string> <!-- untranslated -->
-    <string name="prestige_path_magic_runethrift">Rune Thrift</string> <!-- untranslated -->
-    <string name="prestige_path_construction_efficient">Efficient Builder</string> <!-- untranslated -->
-    <string name="prestige_path_prayer_devotion">Devotion</string> <!-- untranslated -->
-    <string name="prestige_path_mercantile_trade">Trade Baron</string> <!-- untranslated -->
-    <string name="prestige_path_slayer_bounty">Bounty Hunter</string> <!-- untranslated -->
-    <string name="prestige_path_ranged_quiver">Quiver Care</string> <!-- untranslated -->
-    <string name="prestige_path_defense_laststand">Last Stand</string> <!-- untranslated -->
-    <string name="prestige_path_hitpoints_constitution">Constitution</string> <!-- untranslated -->
-    <string name="prestige_path_strength_double_hit">Double Hit</string> <!-- untranslated -->
-    <string name="prestige_path_ranged_bows">Better Bows</string> <!-- untranslated -->
-    <string name="prestige_path_slayer_foresight">Foresight</string> <!-- untranslated -->
+    <string name="prestige_path_fishing_rod">Canna di Magia</string>
+    <string name="prestige_path_woodcutting_axe">Affilato</string>
+    <string name="prestige_path_cooking_hearty">Buona Forchetta</string>
+    <string name="prestige_path_smithing_thrift">Fabbro Dettagliato</string>
+    <string name="prestige_path_crafting_thrift">Mani di Fata</string>
+    <string name="prestige_path_herblore_potency">Pozioni Potenti</string>
+    <string name="prestige_path_runecrafting_runethrift">Legame Magico</string>
+    <string name="prestige_path_magic_runethrift">Efficienza Magica</string>
+    <string name="prestige_path_construction_efficient">Costruttore Efficiente</string>
+    <string name="prestige_path_prayer_devotion">Devozione</string>
+    <string name="prestige_path_mercantile_trade">Barone del Commercio</string>
+    <string name="prestige_path_slayer_bounty">Cacciatore di Taglie</string>
+    <string name="prestige_path_ranged_quiver">Faretra Perfetta</string>
+    <string name="prestige_path_defense_laststand">Inamovibile</string>
+    <string name="prestige_path_hitpoints_constitution">In Salute</string>
+    <string name="prestige_path_strength_double_hit">Doppio Colpo</string>
+    <string name="prestige_path_ranged_bows">Tendere L\'Arco</string>
+    <string name="prestige_path_slayer_foresight">Granvista</string>
 
     <!-- Prestige path names (generic) -->
-    <string name="prestige_path_xp">XP Boost</string> <!-- untranslated -->
-    <string name="prestige_path_yield">Yield</string> <!-- untranslated -->
-    <string name="prestige_path_flow">Flow-state</string> <!-- untranslated -->
-    <string name="prestige_path_endurance">Endurance</string> <!-- untranslated -->
-    <string name="prestige_path_gem">Gem Hunter</string> <!-- untranslated -->
-    <string name="prestige_path_rotation">Crop Rotation</string> <!-- untranslated -->
+    <string name="prestige_path_xp">Bonus XP</string>
+    <string name="prestige_path_yield">Resa</string>
+    <string name="prestige_path_flow">Catena di Montaggio</string>
+    <string name="prestige_path_endurance">Resistenza</string>
+    <string name="prestige_path_gem">Cacciatore di Gemme</string>
+    <string name="prestige_path_rotation">Rotazione delle Colture</string>
 
     <!-- Prestige path names (skill flavored) -->
-    <string name="prestige_path_mining_yield">Purer Ore</string> <!-- untranslated -->
-    <string name="prestige_path_fishing_yield">More Fish</string> <!-- untranslated -->
-    <string name="prestige_path_woodcutting_yield">Sharper Axe</string> <!-- untranslated -->
-    <string name="prestige_path_thieving_yield">Faster Picking</string> <!-- untranslated -->
-    <string name="prestige_path_slayer_yield">Hunter\'s Instinct</string> <!-- untranslated -->
-    <string name="prestige_path_attack_prowess">Precision</string> <!-- untranslated -->
-    <string name="prestige_path_strength_prowess">Might</string> <!-- untranslated -->
-    <string name="prestige_path_defense_prowess">Bulwark</string> <!-- untranslated -->
-    <string name="prestige_path_ranged_prowess">Deadeye</string> <!-- untranslated -->
-    <string name="prestige_path_magic_prowess">Attunement</string> <!-- untranslated -->
-    <string name="prestige_path_hitpoints_prowess">Vitality</string> <!-- untranslated -->
-    <string name="prestige_path_thieving_coin">Silver Tongue</string> <!-- untranslated -->
-    <string name="prestige_path_mercantile_coin">Haggler</string> <!-- untranslated -->
+    <string name="prestige_path_mining_yield">Mineralogia</string>
+    <string name="prestige_path_fishing_yield">Più Pesce</string>
+    <string name="prestige_path_woodcutting_yield">Esperto dei Boschi</string>
+    <string name="prestige_path_thieving_yield">Mani Veloci</string>
+    <string name="prestige_path_slayer_yield">Istinto del Cacciatore</string>
+    <string name="prestige_path_attack_prowess">Precisione</string>
+    <string name="prestige_path_strength_prowess">Potenza</string>
+    <string name="prestige_path_defense_prowess">Bastione</string>
+    <string name="prestige_path_ranged_prowess">Centro!</string>
+    <string name="prestige_path_magic_prowess">Sapienza</string>
+    <string name="prestige_path_hitpoints_prowess">Vitalità</string>
+    <string name="prestige_path_thieving_coin">Lingua d\'Argento</string>
+    <string name="prestige_path_mercantile_coin">Parlantina</string>
 
     <!-- Prestige race branch names -->
-    <string name="prestige_path_thieving_race_elf">Shadow Step</string> <!-- untranslated -->
-    <string name="prestige_path_firemaking_race_dwarf">Ember Heart</string> <!-- untranslated -->
-    <string name="prestige_path_fishing_race_halfling">Patient Angler</string> <!-- untranslated -->
-    <string name="prestige_path_woodcutting_race_halfling">Forest Kin</string> <!-- untranslated -->
-    <string name="prestige_path_farming_race_halfling">Bountiful Harvest</string> <!-- untranslated -->
-    <string name="prestige_path_cooking_race_halfling">Home Cook</string> <!-- untranslated -->
-    <string name="prestige_path_construction_race_halfling">Cozy Builder</string> <!-- untranslated -->
-    <string name="prestige_path_fishing_race_gnome">Clever Lures</string> <!-- untranslated -->
-    <string name="prestige_path_fletching_race_gnome">Tinker\'s Touch</string> <!-- untranslated -->
-    <string name="prestige_path_firemaking_race_gnome">Spark Wright</string> <!-- untranslated -->
-    <string name="prestige_path_construction_race_gnome">Gadget Works</string> <!-- untranslated -->
-    <string name="prestige_path_prayer_race_gnome">Trickster\'s Favor</string> <!-- untranslated -->
-    <string name="prestige_path_hitpoints_race_orc">Thick Hide</string> <!-- untranslated -->
+    <string name="prestige_path_race_human">Adattamento</string>
+    <string name="prestige_path_thieving_race_elf">Passo Felpato</string>
+    <string name="prestige_path_firemaking_race_dwarf">Cuordifuoco</string>
+    <string name="prestige_path_fishing_race_halfling">Paziente Pescatore</string>
+    <string name="prestige_path_woodcutting_race_halfling">Voce della Foresta</string>
+    <string name="prestige_path_farming_race_halfling">Gran Raccolto</string>
+    <string name="prestige_path_cooking_race_halfling">Cucina Casalinga</string>
+    <string name="prestige_path_construction_race_halfling">Costruttore di Sogni</string>
+    <string name="prestige_path_fishing_race_gnome">Esche Innovative</string>
+    <string name="prestige_path_fletching_race_gnome">Tocco del Maestro</string>
+    <string name="prestige_path_firemaking_race_gnome">Scintilla del Genio</string>
+    <string name="prestige_path_construction_race_gnome">Gadgettistica</string>
+    <string name="prestige_path_prayer_race_gnome">Favori dall\'Alto</string>
+    <string name="prestige_path_hitpoints_race_orc">Pelle Spessa</string>
 
     <!-- Race change -->
-    <string name="race_change_confirm_title">Change race?</string> <!-- untranslated -->
-    <string name="item_race_change_token_name">Race Change Token</string> <!-- untranslated -->
-    <string name="item_race_change_token_desc">A rare boss drop that lets you change your character\'s race once.</string> <!-- untranslated -->
+    <string name="race_change_confirm_title">Cambia razza?</string>
+    <string name="item_race_change_token_name">Gettone Cambio Razza</string>
+    <string name="item_race_change_token_desc">Raramente lasciato cadere dai boss, ti permette di cambiare la razza del tuo personaggio.</string>
     <!-- Translator note: %1$d = number of tokens owned -->
-    <string name="race_change_pay_token">Use Race Change Token (%1$d)</string> <!-- untranslated -->
-    <string name="race_change_pay_coins">Pay 10,000,000 coins</string> <!-- untranslated -->
-    <string name="race_change_cannot_afford">You need a Race Change Token (rare boss drop) or 10,000,000 coins to change race.</string> <!-- untranslated -->
-    <string name="race_change_ironman_locked">Ironman characters cannot change their race.</string> <!-- untranslated -->
-    <string name="race_change_ironman_once">As an ironman, this is your one and only race change. Afterwards your race is locked forever.</string> <!-- untranslated -->
-    <string name="ironman_race_permanent_note">Ironman characters cannot change their race later. Choose carefully!</string> <!-- untranslated -->
+    <string name="race_change_pay_token">Usa gettone (%1$d)</string>
+    <string name="race_change_pay_coins">Paga 10,000,000 monete</string>
+    <string name="race_change_cannot_afford">Ti servono un Gettone Cambio Razza oppure 10.000.000 monete.</string>
+    <string name="race_change_ironman_locked">I personaggi Superuomo non possono cambiare razza.</string>
+    <string name="race_change_cooldown_wait">Puoi cambiare razza di nuovo tra %1$s.</string>
+    <string name="race_change_ironman_once">Come Superuomo questa è la tua unica possibilità di cambiare razza.</string>
+    <string name="ironman_race_permanent_note">I personaggi Superuomo non possono cambiare razza in seguito, assicurati delle tue scelte!</string>
     <!-- Translator note: %1$s = comma-separated list of skill names -->
-    <string name="race_proficiency_label">Racial skill trees: %1$s</string> <!-- untranslated -->
-    <string name="race_proficiency_human">Racial bonus: an exclusive XP mastery tier in every skill</string> <!-- untranslated -->
-    <string name="race_change_confirm_message">Your race grants race-locked prestige upgrades. Changing race refunds any points spent in other races\' branches, and you can only change race once every 24 hours.</string> <!-- untranslated -->
+    <string name="race_proficiency_label">Albero abilità di razza: %1$s</string>
+    <string name="race_proficiency_human">Bonus razza: talento XP esclusivo per ogni rango in ogni abilità</string>
+    <string name="race_change_confirm_message">La tua razza ti offre determinati bonus onore. Cambiarla ripristinerà i punti spesi nei talenti delle altre razze. Puoi cambiare razza ogni 24 ore.</string>
+    <!-- Heirloom items (raid boss rare drops that level up with use) -->
+    <string name="item_heirloom_pickaxe_name">Piccone Cimelio</string>
+    <string name="item_heirloom_pickaxe_desc">Un piccone ereditato di generazione in generazione. Ricorda ogni roccia spaccata dai suoi possessori.</string>
+    <string name="item_heirloom_axe_name">Ascia Cimelio</string>
+    <string name="item_heirloom_axe_desc">Ascia utilizzata fin dai tempi della sua creazione. Ogni albero tagliato la rende un po\' più affilata.</string>
+    <string name="item_heirloom_fishing_rod_name">Canna da Pesca Cimelio</string>
+    <string name="item_heirloom_fishing_rod_desc">Una vecchia canna da pesca con cui sono stati catturati pesci delle leggende. Si adatta alle acque con ogni lancio.</string>
+    <string name="item_heirloom_hoe_name">Zappa Cimelio</string>
+    <string name="item_heirloom_hoe_desc">Questa zappa ha preparato la terra per la semina fin da tempo immemore. Nessuna zolla rimarrà senza nutrienti.</string>
+    <string name="item_heirloom_hammer_name">Martello Cimelio</string>
+    <string name="item_heirloom_hammer_desc">Questo martello si è annerito dalla cenere di infinite fucine. Ogni colpo è sempre più preciso.</string>
+    <string name="item_heirloom_tinderbox_name">Acciarino Cimelio</string>
+    <string name="item_heirloom_tinderbox_desc">Vecchio acciarino consumato ma infallibile. Ogni fiamma arde con più vigore.</string>
+    <string name="item_heirloom_grappling_hook_name">Rampino Cimelio</string>
+    <string name="item_heirloom_grappling_hook_desc">Un rampino che si è attaccato ad ogni sporgenza del mondo. Ogni lancio ti rende più sicuro.</string>
+    <string name="item_heirloom_frying_pan_name">Padella Cimelio</string>
+    <string name="item_heirloom_frying_pan_desc">Una padella passata di generazione in generazione. Ogni pietanza preparata ne migliora la fattura.</string>
+    <string name="item_heirloom_lockpick_name">Grimaldello Cimelio</string>
+    <string name="item_heirloom_lockpick_desc">Infallibile grimaldello che ha aperto innumerevoli serrature. Ogni lavoro lo rende più preciso.</string>
+    <string name="item_midas_band_name">Fascia di Mida</string>
+    <string name="item_midas_band_desc">Un filo d\'oro del Guardiano del Caveau. Prende energia dalle battaglie in cui sopravvivi.</string>
+    <string name="item_heirloom_blade_name">Lama Cimelio</string>
+    <string name="item_heirloom_blade_desc">Antica lama dal potere sopito, ogni battaglia ne risveglia un po\' alla volta.</string>
+    <string name="item_heirloom_greathammer_name">Martellone Cimelio</string>
+    <string name="item_heirloom_greathammer_desc">Enorme martello da guerra il cui creatore è ormai perso nella memoria. Ogni colpo è sempre più pesante.</string>
+    <string name="item_heirloom_longbow_name">Arco Cimelio</string>
+    <string name="item_heirloom_longbow_desc">Arco la cui corda è stata tirata da generazione di arcieri. Ogni scoccata è sempre più perfetta.</string>
+    <string name="item_heirloom_staff_name">Bastone Cimelio</string>
+    <string name="item_heirloom_staff_desc">Un bastone imbevuto di potere magico. Ogni incantesimo ne aumenta la quantità.</string>
+    <string name="heirloom_section_title">Cimelio</string>
+    <!-- Translator note: %1$d = the heirloom item\'s current level (1-99) -->
+    <string name="heirloom_level_label">Cimelio Liv. %1$d</string>
+    <!-- Translator note: %1$s = a skill name, used twice -->
+    <string name="heirloom_desc">Il suo potere cresce con XP %1$s fino al liv. 99. Inoltre, scala con il tuo livello di %1$s, raggiungendo il massimo al liv. 85. Le statistiche mostrate sono quelle massime.</string>
+    <string name="shop_sell_blocked_heirloom">%1$s è un cimelio, non puoi venderlo.</string>
+    <!-- Translator note: %1$s = a dungeon or boss name -->
+    <string name="repeat_blocked_level">Il tuo livello di combattimento è troppo basso per ripetere %1$s.</string>
 </resources>

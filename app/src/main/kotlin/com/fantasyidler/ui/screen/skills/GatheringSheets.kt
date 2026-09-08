@@ -1,116 +1,37 @@
-package com.fantasyidler.ui.screen
+package com.fantasyidler.ui.screen.skills
 
 
-import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import com.fantasyidler.ui.screen.AppBannerCenter
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.Button
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import kotlinx.coroutines.launch
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.fantasyidler.BuildConfig
 import com.fantasyidler.R
-import com.fantasyidler.ui.screen.QuestIndicatorIcons
-import com.fantasyidler.ui.viewmodel.ExpeditionsViewModel
-import com.fantasyidler.data.json.AgilityCourseData
-import com.fantasyidler.data.json.BoneData
 import com.fantasyidler.data.json.FishData
-import com.fantasyidler.data.json.LogData
 import com.fantasyidler.data.json.OreData
-import com.fantasyidler.data.json.ThievingNpcData
 import com.fantasyidler.data.json.TreeData
 import com.fantasyidler.data.model.Skills
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.ui.text.style.TextAlign
-import com.fantasyidler.ui.viewmodel.CraftableRecipe
-import com.fantasyidler.ui.viewmodel.CraftingUiState
-import com.fantasyidler.ui.viewmodel.CraftingViewModel
-import com.fantasyidler.ui.viewmodel.SheetState
-import com.fantasyidler.ui.viewmodel.levelDisplay
-import com.fantasyidler.ui.viewmodel.SkillsUiState
-import com.fantasyidler.ui.viewmodel.SkillsViewModel
-import com.fantasyidler.ui.viewmodel.xpProgressFraction
-import com.fantasyidler.ui.viewmodel.nextLevelThreshold
-import com.fantasyidler.ui.viewmodel.xpToNextLevel
 import com.fantasyidler.simulator.SkillSimulator
 import com.fantasyidler.simulator.XpTable
 import com.fantasyidler.util.GameStrings
-import com.fantasyidler.util.toTitleCase
-import com.fantasyidler.util.formatDurationMs
 import com.fantasyidler.util.formatXp
-import com.fantasyidler.util.toCountdown
-import java.util.Locale
-import com.fantasyidler.ui.viewmodel.QuestFillSuggestion
-import com.fantasyidler.ui.viewmodel.QuestCategory
 import com.fantasyidler.ui.viewmodel.QuestIndicator
-import androidx.compose.ui.draw.alpha
 
 
 @Composable
@@ -130,7 +51,6 @@ internal fun MiningSheet(
     onSelect: (String) -> Unit,
 ) {
     val context = LocalContext.current
-    var selectedKey by remember { mutableStateOf<String?>(null) }
     val scrollState = rememberScrollState()
     Column(Modifier.padding(bottom = 24.dp)) {
         Text(
@@ -174,22 +94,10 @@ internal fun MiningSheet(
                         isQueueFull      = isQueueFull,
                         questIndicators  = activeQuests["${Skills.MINING}:$key"] ?: emptyList(),
                         ownedQty         = inventory[key] ?: 0,
-                        onClick          = { selectedKey = key },
+                        onClick          = { onSelect(key) },
                     )
                 }
         }
-    }
-    selectedKey?.let { key ->
-        val ore = ores[key] ?: return@let
-        ActivityDetailDialog(
-            name             = GameStrings.itemName(context, key),
-            detail           = stringResource(R.string.skills_level_req_xp, ore.levelRequired, ore.xpPerOre),
-            description      = GameStrings.itemDesc(context, key),
-            hasActiveSession = hasActiveSession,
-            isQueueFull      = isQueueFull,
-            onConfirm        = { onSelect(key) },
-            onDismiss        = { selectedKey = null },
-        )
     }
 }
 
@@ -210,7 +118,6 @@ internal fun WoodcuttingSheet(
     onSelect: (String) -> Unit,
 ) {
     val context = LocalContext.current
-    var selectedKey by remember { mutableStateOf<String?>(null) }
     val scrollState = rememberScrollState()
     Column(Modifier.padding(bottom = 24.dp)) {
         Text(
@@ -248,22 +155,10 @@ internal fun WoodcuttingSheet(
                         isQueueFull      = isQueueFull,
                         questIndicators  = activeQuests["${Skills.WOODCUTTING}:${tree.logName}"] ?: emptyList(),
                         ownedQty         = inventory[tree.logName] ?: 0,
-                        onClick          = { selectedKey = key },
+                        onClick          = { onSelect(key) },
                     )
                 }
         }
-    }
-    selectedKey?.let { key ->
-        val tree = trees[key] ?: return@let
-        ActivityDetailDialog(
-            name             = GameStrings.itemName(context, tree.logName),
-            detail           = stringResource(R.string.skills_log_desc, tree.levelRequired, tree.xpPerLog),
-            description      = GameStrings.itemDesc(context, tree.logName),
-            hasActiveSession = hasActiveSession,
-            isQueueFull      = isQueueFull,
-            onConfirm        = { onSelect(key) },
-            onDismiss        = { selectedKey = null },
-        )
     }
 }
 
@@ -284,7 +179,6 @@ internal fun FishingSheet(
     onSelect: (String) -> Unit,
 ) {
     val context = LocalContext.current
-    var selectedKey by remember { mutableStateOf<String?>(null) }
     val scrollState = rememberScrollState()
     Column(Modifier.padding(bottom = 24.dp)) {
         Text(
@@ -322,22 +216,10 @@ internal fun FishingSheet(
                         isQueueFull      = isQueueFull,
                         questIndicators  = activeQuests["${Skills.FISHING}:$key"] ?: emptyList(),
                         ownedQty         = inventory[key] ?: 0,
-                        onClick          = { selectedKey = key },
+                        onClick          = { onSelect(key) },
                     )
                 }
         }
-    }
-    selectedKey?.let { key ->
-        val f = fish[key] ?: return@let
-        ActivityDetailDialog(
-            name             = GameStrings.itemName(context, key),
-            detail           = stringResource(R.string.skills_fish_desc, f.levelRequired, f.xpPerCatch),
-            description      = GameStrings.itemDesc(context, key),
-            hasActiveSession = hasActiveSession,
-            isQueueFull      = isQueueFull,
-            onConfirm        = { onSelect(key) },
-            onDismiss        = { selectedKey = null },
-        )
     }
 }
 
@@ -401,7 +283,7 @@ internal fun ActivityRow(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(name, style = MaterialTheme.typography.bodyLarge)
+                Text(name, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f, fill = false))
                 if (questIndicators.isNotEmpty()) {
                     QuestIndicatorIcons(questIndicators)
                 }
@@ -441,48 +323,6 @@ internal fun ActivityRow(
         }
     }
     HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
-}
-
-@Composable
-internal fun ActivityDetailDialog(
-    name: String,
-    detail: String,
-    description: String,
-    hasActiveSession: Boolean,
-    isQueueFull: Boolean,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(name) },
-        text = {
-            Column {
-                Text(detail, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                if (description.isNotBlank()) {
-                    Spacer(Modifier.height(12.dp))
-                    Text(description, style = MaterialTheme.typography.bodyMedium)
-                }
-            }
-        },
-        confirmButton = {
-            val queueFullMessage = stringResource(R.string.snackbar_queue_full)
-            Button(
-                onClick = {
-                    if (isQueueFull) {
-                        AppBannerCenter.enqueue(queueFullMessage)
-                    } else {
-                        onConfirm(); onDismiss()
-                    }
-                },
-            ) {
-               Text(if (hasActiveSession) stringResource(R.string.skills_add_queue_short) else stringResource(R.string.btn_start_session))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.btn_cancel)) }
-        },
-    )
 }
 
 // ---------------------------------------------------------------------------

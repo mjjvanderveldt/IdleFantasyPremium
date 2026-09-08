@@ -43,6 +43,7 @@ import kotlinx.serialization.serializer
 import javax.inject.Inject
 import android.content.Context
 import com.fantasyidler.R
+import com.fantasyidler.data.model.QuestProgress
 import com.fantasyidler.util.GameStrings
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -55,10 +56,14 @@ data class MercantileUiState(
     val isLoading: Boolean = true,
     val startingSession: Boolean = false,
     val snackbarMessage: String? = null,
+    /** Bumped on every message set so identical consecutive messages still re-show (rapid queue taps). */
+    val snackbarNonce: Long = 0L,
     val anySessionActive: Boolean = false,
     val queueSize: Int = 0,
     val maxQueueSize: Int = 8,
     val activeQuests: Map<String, List<QuestIndicator>> = emptyMap(),
+    /** Lowest Mercantile level that unlocks a Merchant's Guild shop item; 0 = none defined. */
+    val guildUnlockLevel: Int = 0,
 )
 
 @HiltViewModel
@@ -112,10 +117,17 @@ class MercantileViewModel @Inject constructor(
                 queueSize        = flags.sessionQueue.size,
                 maxQueueSize     = playerRepo.maxQueueSize(flags),
                 activeQuests     = computeActiveQuests(questProgress, flags, player.coins),
+                guildUnlockLevel = guildUnlockLevel,
             )
         }
     }.flowOn(Dispatchers.Default)
      .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), MercantileUiState())
+
+    private val guildUnlockLevel: Int by lazy {
+        gameData.marketplace["merchants_guild"]?.items?.values
+            ?.mapNotNull { item -> item.mercantileLevelRequired.takeIf { it > 0 } }
+            ?.minOrNull() ?: 0
+    }
 
     fun startTradeRoute(routeId: String) {
         viewModelScope.launch {
@@ -123,7 +135,7 @@ class MercantileViewModel @Inject constructor(
             val player = playerRepo.getOrCreatePlayer()
 
             if (player.coins < route.coinCost) {
-                _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.mercantile_not_enough_coins, route.coinCost.toString())) }
+                postSnackbar(context.withAppLocale().getString(R.string.mercantile_not_enough_coins, route.coinCost.toString()))
                 return@launch
             }
 
@@ -135,7 +147,7 @@ class MercantileViewModel @Inject constructor(
             if (sessionRepo.getActiveSession() != null) {
                 val spent = playerRepo.spendCoins(route.coinCost.toLong())
                 if (!spent) {
-                    _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.mercantile_not_enough_coins, route.coinCost.toString())) }
+                    postSnackbar(context.withAppLocale().getString(R.string.mercantile_not_enough_coins, route.coinCost.toString()))
                     return@launch
                 }
                 val startXp = xp[Skills.MERCANTILE] ?: 0L
@@ -162,12 +174,10 @@ class MercantileViewModel @Inject constructor(
                 if (!enqueued) {
                     playerRepo.addCoins(route.coinCost.toLong())
                 }
-                _extra.update {
-                    it.copy(snackbarMessage = if (enqueued)
-                        context.withAppLocale().getString(R.string.mercantile_added_to_queue, GameStrings.tradeRouteName(context, routeId))
-                    else
-                        context.withAppLocale().getString(R.string.snackbar_queue_full))
-                }
+                postSnackbar(if (enqueued)
+                    context.withAppLocale().getString(R.string.mercantile_added_to_queue, GameStrings.tradeRouteName(context, routeId))
+                else
+                    context.withAppLocale().getString(R.string.snackbar_queue_full))
                 return@launch
             }
 
@@ -175,7 +185,7 @@ class MercantileViewModel @Inject constructor(
             try {
                 val spent = playerRepo.spendCoins(route.coinCost.toLong())
                 if (!spent) {
-                    _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.mercantile_not_enough_coins, route.coinCost.toString())) }
+                    postSnackbar(context.withAppLocale().getString(R.string.mercantile_not_enough_coins, route.coinCost.toString()))
                     return@launch
                 }
 
@@ -200,7 +210,7 @@ class MercantileViewModel @Inject constructor(
                 )
             } catch (e: Exception) {
                 playerRepo.addCoins(route.coinCost.toLong())
-                _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.mercantile_route_start_failed, e.message ?: "")) }
+                postSnackbar(context.withAppLocale().getString(R.string.mercantile_route_start_failed, e.message ?: ""))
             } finally {
                 _extra.update { it.copy(startingSession = false) }
             }
@@ -209,8 +219,11 @@ class MercantileViewModel @Inject constructor(
 
     fun snackbarConsumed() = _extra.update { it.copy(snackbarMessage = null) }
 
+    private fun postSnackbar(message: String) =
+        _extra.update { it.copy(snackbarMessage = message, snackbarNonce = it.snackbarNonce + 1) }
+
     private fun computeActiveQuests(
-        questProgress: List<com.fantasyidler.data.model.QuestProgress>,
+        questProgress: List<QuestProgress>,
         flags: PlayerFlags,
         coins: Long,
     ): Map<String, List<QuestIndicator>> {

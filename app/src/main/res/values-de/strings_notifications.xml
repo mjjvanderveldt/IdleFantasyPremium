@@ -14,8 +14,8 @@
     <!-- ===== Buff alerts ===== -->
     <string name="notif_channel_buffs_name">Verbesserungsmeldungen</string>
     <string name="notif_channel_buffs_desc">Benachrichtigung, wenn aktive Segen enden.</string>
-    <string name="notif_xp_boost_expired_title">EP-Hilfe endet</string>
-    <string name="notif_xp_boost_expired_body">Eure Erfahrungspunkte-Hilfe endete. Besucht den Krämer, um sie zu erneuern.</string>
+    <string name="notif_xp_boost_expired_title">EP-Verstärkung endet</string>
+    <string name="notif_xp_boost_expired_body">Eure EP-Verstärkung endete. Besucht den Krämer, um sie zu erneuern.</string>
     <string name="notif_blessing_expired_title">Segen endete</string>
     <string name="notif_blessing_expired_body">Euer kirchlicher Segen ist verblasst. Besucht das Gotteshaus, um euch erneut segnen zu lassen.</string>
 

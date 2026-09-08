@@ -1,0 +1,11 @@
+• Agility no longer asks you to prestige once there is nothing left to earn: its XP boost tiers now end alongside the Endurance upgrades
+• Seasonal bounty missions now open the dungeon their target enemy actually lives in, instead of always the event's first dungeon
+• Rapidly queueing mercantile trade routes now shows a confirmation for every tap; identical back-to-back confirmations used to be silently dropped, making the buttons feel unresponsive
+• Fixed a crash when opening Housing for players whose character stood in the two leftmost columns of their house
+• Total level now counts only the 23 real skills; older saves could show up to a few extra levels from a leftover internal entry created by combat quest rewards claimed before v1.1.5
+• Bulk sells now re-check every protection at the moment you confirm, so gear equipped, kept, or reserved by the queue can never be sold by a sale dialog that was opened before things changed
+• Selling can no longer silently remove worn gear: bulk sales refuse to touch equipped or loadout-remembered copies outright
+• The shop's sell tab now keeps a record of your last 5 bulk sales (Recent bulk sales), so lost-item reports can be checked against what was actually sold
+• Each task in the session queue now shows how long it will take next to its XP estimate
+• Event bounty slots are no longer locked to one task type: replacements are drawn from the whole bounty pool, so a bounty you can never do stops coming back every rotation
+• Added a paid bounty reroll: swap any active event bounty for a different one instantly for 50,000 coins

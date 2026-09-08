@@ -16,7 +16,8 @@ import tempfile
 from pathlib import Path
 
 from wiki.src import REPO_ROOT, WIKI_ROOT
-from wiki.src.pages import get_pages, check_wiki_validity, get_image_directory
+from wiki.src.pages import get_pages, get_image_directory
+from wiki.src.validation import check_wiki_validity
 from wiki.src.site import get_html_pages
 
 WIKI_REPO  = "git@github.com:tristinbaker/IdleFantasy.wiki.git"
@@ -28,11 +29,10 @@ HTML_TEMPLATES = WIKI_ROOT / "html_templates"
 # Wiki repo management
 # ---------------------------------------------------------------------------
 
-
-def clone_wiki(wiki_dir: Path):
+def clone_wiki(wiki_dir: Path, wiki_repo: str):
     if wiki_dir.exists():
         shutil.rmtree(wiki_dir)
-    subprocess.run(["git", "clone", WIKI_REPO, str(wiki_dir)], check=True)
+    subprocess.run(["git", "clone", wiki_repo, str(wiki_dir)], check=True)
 
 
 def commit_and_push(wiki_dir: Path):
@@ -65,13 +65,13 @@ def write_pages(out: Path, pages: dict[str, str]):
 # ---------------------------------------------------------------------------
 
 
-def run_update():
+def run_update(wiki_repo: str):
     with tempfile.TemporaryDirectory() as tmpdir:
         wiki_dir = Path(tmpdir)
         pages = get_pages()
         print(f"Generated {len(pages)} pages.")
 
-        clone_wiki(wiki_dir)
+        clone_wiki(wiki_dir, wiki_repo)
         write_pages(wiki_dir, pages)
         for path, image in get_image_directory().items():
             shutil.copyfile(path, wiki_dir / image)
@@ -92,6 +92,7 @@ def run_write_html(out: Path):
     for filename, content in pages.items():
         (out / filename).write_text(content, encoding="utf-8")
     # Copy across images
+    (out / "assets" / "images").mkdir(parents=True)
     for path, image in images.items():
         shutil.copyfile(path, out / "assets" / "images" / image)
     print(f"Generated {len(pages)} files → {out}")
@@ -119,7 +120,15 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Idle Fantasy wiki tools.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    subparsers.add_parser("update", help="Clone the wiki repo, generate pages, and push.")
+    update_parser = subparsers.add_parser("update", help="Clone the wiki repo, generate pages, and push.")
+    update_parser.add_argument(
+        "-r",
+        "--repository",
+        type=str,
+        default=WIKI_REPO,
+        help=f"GitHub repository URL (default: {WIKI_REPO}).",
+    )
+
     subparsers.add_parser("validity", help="Check wiki page configuration for errors.")
 
     html_parser = subparsers.add_parser("write-html", help="Generate the HTML site for GitHub Pages.")
@@ -160,7 +169,7 @@ def parse_args():
 def main():
     args = parse_args()
     if args.command == "update":
-        run_update()
+        run_update(args.repository)
     elif args.command == "validity":
         check_wiki_validity()
     elif args.command == "write-html":

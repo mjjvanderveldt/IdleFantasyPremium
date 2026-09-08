@@ -94,6 +94,7 @@
     <string name="equip_slot_weapon_str">Wapen (Kracht)</string>
     <string name="equip_slot_weapon_ranged">Wapen (Afstand)</string>
     <string name="equip_slot_weapon_magic">Wapen (Magie)</string>
+    <string name="equip_slot_weapon">Weapons</string> <!-- untranslated -->
     <string name="equip_slot_head">Hoofd</string>
     <string name="equip_slot_body">Lichaam</string>
     <string name="equip_slot_legs">Benen</string>

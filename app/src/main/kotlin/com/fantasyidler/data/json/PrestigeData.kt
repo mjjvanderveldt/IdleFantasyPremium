@@ -23,6 +23,8 @@ import kotlinx.serialization.Serializable
  *  • foretell_slots          — +value extra slayer foretell queue slots
  *  • slayer_multi_task       — dungeon kills also count toward matching foretold tasks
  *  • unlock_recipe           — grants access to the recipe named in [unlock]
+ *  • per_level_bonus         — +value per CURRENT skill level to this skill's tool
+ *                              efficiency % (gathering) or effective combat stat (combat)
  */
 @Serializable
 data class PrestigeNodeData(
@@ -40,6 +42,8 @@ data class PrestigeNodeData(
 @Serializable
 data class PrestigePathData(
     val key: String,
+    /** Auto paths aren't bought with points: tier N is earned by the skill's Nth prestige. */
+    val auto: Boolean = false,
     val nodes: List<PrestigeNodeData>,
 )
 

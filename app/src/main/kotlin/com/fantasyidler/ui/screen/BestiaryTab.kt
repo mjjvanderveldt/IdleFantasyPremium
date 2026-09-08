@@ -1,8 +1,8 @@
 package com.fantasyidler.ui.screen
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -52,8 +52,9 @@ import com.fantasyidler.ui.viewmodel.BestiaryViewModel
 import com.fantasyidler.ui.theme.ScaledSheetContent
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.repository.PlayerRepository
+import com.fantasyidler.ui.components.CompletionProgressBar
 import com.fantasyidler.util.formatCoinsBrief
-import kotlin.math.roundToInt
+import java.text.Collator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,7 +83,11 @@ fun BestiaryTab(viewModel: BestiaryViewModel = hiltViewModel()) {
         val totalEncountered   = encounteredEnemies + encounteredBosses
         val totalAll           = state.enemies.size + state.bosses.size
         if (totalAll > 0) {
-            BestiaryProgressBar(encountered = totalEncountered, total = totalAll)
+            CompletionProgressBar(
+                completed = totalEncountered,
+                total = totalAll,
+                label = stringResource(R.string.bestiary_progress_bar)
+            )
         }
 
         Row(
@@ -145,9 +150,15 @@ private fun BestiaryList(
     onEntryClick: (BestiaryEntry) -> Unit,
 ) {
     val otherLabel = stringResource(R.string.bestiary_location_other)
+    val context = LocalContext.current
+    val collator = remember(context) { Collator.getInstance(context.resources.configuration.locales[0]) }
+    // Sort by the translated names the rows display, not the English keys (issue #1647).
+    val sortedEntries = remember(entries, collator) {
+        entries.sortedWith(compareBy(collator) { it.nameLoader(context, it.key) })
+    }
     LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
         if (sort == BestiarySort.BY_LOCATION) {
-            val grouped = buildLocationGroups(entries, otherLabel)
+            val grouped = buildLocationGroups(sortedEntries, otherLabel, collator)
             grouped.forEach { (groupName, groupEntries) ->
                 item(key = "header_$groupName") {
                     Text(
@@ -164,7 +175,7 @@ private fun BestiaryList(
                 }
             }
         } else {
-            items(entries, key = { it.key }) { entry ->
+            items(sortedEntries, key = { it.key }) { entry ->
                 BestiaryRow(entry = entry, onClick = { onEntryClick(entry) })
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
             }
@@ -176,6 +187,7 @@ private fun BestiaryList(
 private fun buildLocationGroups(
     entries: List<BestiaryEntry>,
     otherLabel: String,
+    collator: Collator,
 ): List<Pair<String, List<BestiaryEntry>>> {
     val grouped = mutableMapOf<String, MutableList<BestiaryEntry>>()
     entries.forEach { entry ->
@@ -183,8 +195,8 @@ private fun buildLocationGroups(
         locs.forEach { loc -> grouped.getOrPut(loc) { mutableListOf() }.add(entry) }
     }
     return grouped.entries
-        .sortedWith(compareBy({ it.key == otherLabel }, { it.key }))
-        .map { it.key to it.value.sortedBy { e -> e.key } }
+        .sortedWith(compareBy<Map.Entry<String, List<BestiaryEntry>>> { it.key == otherLabel }.thenBy(collator) { it.key })
+        .map { it.key to it.value.toList() }
 }
 
 @Composable
@@ -247,7 +259,7 @@ private fun BestiaryRow(entry: BestiaryEntry, onClick: () -> Unit) {
 private fun EnemyDetailContent(
     entry: BestiaryEntry,
     enemy: EnemyData,
-    context: android.content.Context,
+    context: Context,
 ) {
     LazyColumn(
         Modifier
@@ -354,7 +366,7 @@ private fun EnemyDetailContent(
 private fun BossDetailContent(
     entry: BestiaryEntry,
     boss: BossData,
-    context: android.content.Context,
+    context: Context,
 ) {
     LazyColumn(
         Modifier
@@ -604,47 +616,6 @@ private fun BestiaryDropTable(rows: List<Triple<String, String, String?>>) {
                 )
             }
         }
-    }
-}
-
-// ---------------------------------------------------------------------------
-// Progress bar
-// ---------------------------------------------------------------------------
-
-@Composable
-private fun BestiaryProgressBar(encountered: Int, total: Int) {
-    val fraction = if (total > 0) encountered.toFloat() / total else 0f
-    val pct = (fraction * 100).toInt()
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(
-                text  = stringResource(R.string.bestiary_encountered_progress, encountered, total),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                text       = "$pct%",
-                style      = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.SemiBold,
-                color      = MaterialTheme.colorScheme.primary,
-            )
-        }
-        Spacer(Modifier.height(4.dp))
-        LinearProgressIndicator(
-            gapSize = 0.dp,
-            drawStopIndicator = {},
-            progress  = { fraction },
-            modifier  = Modifier.fillMaxWidth(),
-            color     = MaterialTheme.colorScheme.primary,
-            trackColor = MaterialTheme.colorScheme.surfaceVariant,
-        )
     }
 }
 

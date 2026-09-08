@@ -2,10 +2,12 @@ package com.fantasyidler.repository
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.provider.DocumentsContract
 import android.net.Uri
+import android.util.Log
 import com.fantasyidler.data.model.toExport
 import com.fantasyidler.receiver.BackupAlarmReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -18,6 +20,7 @@ import javax.inject.Singleton
 class BackupScheduler @Inject constructor(
     @ApplicationContext private val context: Context,
     private val sessionRepo: SessionRepository,
+    private val globalStateRepo: GlobalStateRepository,
 ) {
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
@@ -41,7 +44,7 @@ class BackupScheduler @Inject constructor(
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, firstFire, pi)
     }
 
-    /** Reschedule the next alarm occurrence after a successful backup firing. */
+    /** Reschedule the next alarm occurrence after a backup firing (successful or not). */
     fun reschedule(frequency: String) {
         if (frequency.isEmpty()) return
         val intent = Intent(context, BackupAlarmReceiver::class.java)
@@ -50,7 +53,12 @@ class BackupScheduler @Inject constructor(
             context, REQUEST_CODE, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        val nextFire = System.currentTimeMillis() + intervalMs(frequency)
+        // Anchor daily/weekly to the 5am slot rather than "now + interval": a manual
+        // Back Up Now used to shift the next auto fire to the time of the tap, and a
+        // Doze-delayed firing shifted it permanently, so the 5am backup quietly stopped
+        // happening at 5am (playtester report after v1.14.3).
+        val nextFire = if (frequency == "hourly") System.currentTimeMillis() + intervalMs(frequency)
+                       else nextFiveAm(frequency)
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextFire, pi)
     }
 
@@ -73,8 +81,25 @@ class BackupScheduler @Inject constructor(
 
     suspend fun performBackup(playerRepo: PlayerRepository, frequency: String = ""): Boolean {
         val flags = playerRepo.getFlags()
+        // Keep the periodic chain alive no matter how this run ends: a failed or skipped
+        // firing used to end the sequence until the next cold app launch re-registered it.
+        val effectiveFreq = frequency.ifEmpty { flags.backupFrequency }
+        try {
+            if (effectiveFreq.isNotEmpty()) reschedule(effectiveFreq)
+        } catch (e: Exception) {
+            Log.w(TAG, "Backup reschedule failed", e)
+        }
         if (flags.backupFolderUri.isEmpty()) return false
-        return try {
+        // Per-character file names: each save slot keeps its own backup, so switching
+        // characters no longer overwrites another character's auto backup.
+        val activeSlot = globalStateRepo.getActiveSaveSlot()
+        val slotPrefix = autoBackupSlotPrefix(activeSlot)
+        val finalName  = autoBackupFileName(activeSlot, flags.characterName)
+        val tempName   = finalName + TEMP_SUFFIX
+        var tempUri: Uri? = null
+        var oldDocsDeleted = false
+        var failureMsg = ""
+        val ok = try {
             val sessions = buildList {
                 sessionRepo.getActiveSession()?.let { add(it.toExport()) }
                 addAll(sessionRepo.getAllCompletedSessions().map { it.toExport() })
@@ -88,38 +113,93 @@ class BackupScheduler @Inject constructor(
             val treeDocId = DocumentsContract.getTreeDocumentId(treeUri)
             val cr        = context.contentResolver
 
-            val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, treeDocId)
-            var existingDocId: String? = null
-            cr.query(
-                childrenUri,
-                arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID, DocumentsContract.Document.COLUMN_DISPLAY_NAME),
-                null, null, null,
-            )?.use { cursor ->
-                while (cursor.moveToNext()) {
-                    val name = cursor.getString(cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
-                    if (name == "fantasyidler_auto.json" || name == "fantasyidler_auto") {
-                        existingDocId = cursor.getString(cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID))
-                        break
-                    }
+            val created = DocumentsContract.createDocument(
+                cr,
+                DocumentsContract.buildDocumentUriUsingTree(treeUri, treeDocId),
+                "application/json",
+                tempName,
+            ) ?: throw IllegalStateException("backup provider refused to create temp document")
+            tempUri = created
+
+            cr.openOutputStream(created, "w")?.use { it.write(jsonBytes) }
+                ?: throw IllegalStateException("backup provider would not open output stream")
+
+            val verified = cr.openInputStream(created)?.use { input ->
+                val cap = ByteArray(jsonBytes.size + 1)
+                var filled = 0
+                while (filled < cap.size) {
+                    val read = input.read(cap, filled, cap.size - filled)
+                    if (read < 0) break
+                    filled += read
                 }
+                cap.copyOf(filled)
+            } ?: throw IllegalStateException("backup provider would not reopen temp document for verification")
+            if (!verified.contentEquals(jsonBytes)) {
+                throw IllegalStateException("temp document bytes differ from exported save")
             }
 
-            // Delete the existing file before creating a fresh one to avoid SAF truncation issues
-            // that leave old bytes after the new JSON on some devices.
-            existingDocId?.let { docId ->
+            val currentTempId = DocumentsContract.getDocumentId(created)
+            val doomedIds = childDocuments(cr, treeUri, treeDocId)
+                .filter { (docId, name) ->
+                    docId != currentTempId && name.startsWith(slotPrefix)
+                }
+                .map { it.first }
+            oldDocsDeleted = true
+            doomedIds.forEach { docId ->
                 DocumentsContract.deleteDocument(cr, DocumentsContract.buildDocumentUriUsingTree(treeUri, docId))
             }
-            val docUri  = DocumentsContract.buildDocumentUriUsingTree(treeUri, treeDocId)
-            val fileUri = DocumentsContract.createDocument(cr, docUri, "application/json", "fantasyidler_auto")
-            fileUri?.let { cr.openOutputStream(it, "w")?.use { s -> s.write(jsonBytes) } }
 
-            // Schedule the next occurrence. setExactAndAllowWhileIdle is one-shot so
-            // each firing must manually reschedule the next alarm.
-            val effectiveFreq = frequency.ifEmpty { flags.backupFrequency }
-            if (effectiveFreq.isNotEmpty()) reschedule(effectiveFreq)
+            DocumentsContract.renameDocument(cr, created, finalName)
+                ?: throw IllegalStateException("backup provider failed to swap temp document to final name")
+            tempUri = null
+
+            val swappedIn = childDocuments(cr, treeUri, treeDocId)
+                .any { it.second.startsWith(finalName) && !it.second.endsWith(TEMP_SUFFIX) }
+            if (!swappedIn) {
+                throw IllegalStateException("renamed backup document not found after swap")
+            }
 
             true
-        } catch (_: Exception) { false }
+        } catch (e: Exception) {
+            Log.w(TAG, "Auto-backup failed", e)
+            failureMsg = e.message ?: e.javaClass.simpleName
+            false
+        }
+
+        if (!ok && !oldDocsDeleted) {
+            tempUri?.let { temp ->
+                try { DocumentsContract.deleteDocument(context.contentResolver, temp) } catch (_: Exception) {}
+            }
+        }
+
+        try {
+            playerRepo.updateFlagsAtomically { f ->
+                f.copy(
+                    lastBackupAt    = System.currentTimeMillis(),
+                    lastBackupOk    = ok,
+                    lastBackupError = failureMsg,
+                )
+            }
+        } catch (_: Exception) {}
+
+        return ok
+    }
+
+    private fun childDocuments(cr: ContentResolver, treeUri: Uri, treeDocId: String): List<Pair<String, String>> {
+        val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, treeDocId)
+        val docs = mutableListOf<Pair<String, String>>()
+        cr.query(
+            childrenUri,
+            arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID, DocumentsContract.Document.COLUMN_DISPLAY_NAME),
+            null, null, null,
+        )?.use { cursor ->
+            while (cursor.moveToNext()) {
+                val docId = cursor.getString(cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID))
+                val name  = cursor.getString(cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME))
+                docs += docId to name
+            }
+        }
+        return docs
     }
 
     /**
@@ -139,7 +219,31 @@ class BackupScheduler @Inject constructor(
     }.timeInMillis
 
     companion object {
+        private const val TAG = "BackupScheduler"
+        private const val AUTO_BASE   = "fantasyidler_auto"
+        private const val EXPORT_BASE = "fantasyidler_save"
+        private const val TEMP_SUFFIX = ".tmp"
         private const val REQUEST_CODE = 9001
         const val EXTRA_FREQUENCY = "backup_frequency"
+
+        /** Letters and digits only, so every storage provider accepts the display name. */
+        private fun sanitizeCharacterName(name: String): String =
+            name.filter { it.isLetterOrDigit() }.take(24)
+
+        /** Slot prefix scoping backup cleanup: one backup per slot, other slots' files untouched. */
+        internal fun autoBackupSlotPrefix(slot: Int) = "${AUTO_BASE}_$slot"
+
+        /** Per-character backup name, e.g. fantasyidler_auto_2_IronDragon (name part omitted when blank). */
+        internal fun autoBackupFileName(slot: Int, characterName: String): String {
+            val clean = sanitizeCharacterName(characterName)
+            return if (clean.isEmpty()) autoBackupSlotPrefix(slot) else "${autoBackupSlotPrefix(slot)}_$clean"
+        }
+
+        /** Suggested export name, e.g. fantasyidler_save_2_IronDragon.json. */
+        fun exportFileName(slot: Int, characterName: String): String {
+            val clean = sanitizeCharacterName(characterName)
+            val base = if (clean.isEmpty()) "${EXPORT_BASE}_$slot" else "${EXPORT_BASE}_${slot}_$clean"
+            return "$base.json"
+        }
     }
 }

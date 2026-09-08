@@ -1,0 +1,9 @@
+• Overnight queued boss runs now fast-forward at each fight's real speed instead of billing every fight its full scheduled duration, so long repeat chains actually finish while you sleep
+• Boss kills now show up in the session collection popup's Kills list
+• Kills left over after completing a slayer task now roll into the next foretold task when it targets the same enemy
+• The Armory now sorts items by their translated names instead of their English names
+• Player and mercenary HP bars, combat log highlights, carnival target zones, race lock markers, and guild/quest checkmarks now follow the theme's colors and can be changed in the theme editor
+• Several fixed labels (A-Z sort, Wiki, Discord, Halfling, and two number formats) can now be translated
+• Combat level now counts your best attack style: the higher of melee, ranged, or magic, so training any style raises it
+• Seasonal event bounties now show quest indicators on skills, gathering, crafting, and farming lists, with the event's own icon, and appear in the skill sheet quest dialog with quick queueing
+• Turn-in event bounties (like Tithes) now show your full item count instead of stopping at the requested amount

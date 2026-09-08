@@ -130,7 +130,7 @@ class GuildDetailViewModel @Inject constructor(
                     if (rewards.xp > 0 && rewards.xpSkill.isNotBlank()) {
                         val b = playerRepo.previewFlatXpGrant(rewards.xpSkill, rewards.xp.toLong())
                         finalXp = b.finalXp
-                        xpSuffix = xpMultiplierBreakdown(b.baseXp, b.boostActive, b.blessingMult, b.prestigeXpPct)?.let { " $it" } ?: ""
+                        xpSuffix = xpMultiplierBreakdown(b.baseXp, b.boostFactor, b.blessingMult, b.prestigeXpPct)?.let { " $it" } ?: ""
                         playerRepo.applySessionResults(rewards.xpSkill, rewards.xp.toLong(), rewards.items)
                     } else if (rewards.items.isNotEmpty()) {
                         playerRepo.addItems(rewards.items)
@@ -160,7 +160,7 @@ class GuildDetailViewModel @Inject constructor(
             if (rewards.xp > 0 && rewards.xpSkill.isNotBlank()) {
                 val b = playerRepo.previewFlatXpGrant(rewards.xpSkill, rewards.xp.toLong())
                 finalXp = b.finalXp
-                xpSuffix = xpMultiplierBreakdown(b.baseXp, b.boostActive, b.blessingMult, b.prestigeXpPct)?.let { " $it" } ?: ""
+                xpSuffix = xpMultiplierBreakdown(b.baseXp, b.boostFactor, b.blessingMult, b.prestigeXpPct)?.let { " $it" } ?: ""
                 playerRepo.applySessionResults(rewards.xpSkill, rewards.xp.toLong(), rewards.items)
             } else if (rewards.items.isNotEmpty()) {
                 playerRepo.addItems(rewards.items)

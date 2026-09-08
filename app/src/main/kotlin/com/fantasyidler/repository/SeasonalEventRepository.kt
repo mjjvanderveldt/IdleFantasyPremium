@@ -11,10 +11,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.json.Json
 
 data class SeasonalBountyTaskWithProgress(
     val task: SeasonalBountyTaskData,
-    /** For "turn_in" tasks this is how many of the target the player currently holds (capped at the ask). */
+    /** For "turn_in" tasks this is how many of the target the player currently holds. */
     val progress: Int,
     /** Non-null while this slot is waiting for a new task to rotate in after a claim. */
     val cooldownUntilMs: Long?,
@@ -49,10 +50,24 @@ class SeasonalEventRepository @Inject constructor(
             val task = byId[taskId] ?: return@mapIndexedNotNull null
             SeasonalBountyTaskWithProgress(
                 task            = task,
-                progress        = if (task.type == "turn_in") minOf(inventory[task.target] ?: 0, task.amount)
+                progress        = if (task.type == "turn_in") inventory[task.target] ?: 0
                                   else flags.seasonalBountyProgress[taskId] ?: 0,
                 cooldownUntilMs = flags.seasonalBountySlotCooldownUntil[index.toString()],
             )
+        }
+    }
+
+    /** Returns currently active bounty tasks (excluding slots on cooldown), or empty if no event or bounty pillar is active. */
+    fun getActiveBounties(
+        flags: PlayerFlags,
+        inventory: Map<String, Int> = emptyMap(),
+        now: Long = System.currentTimeMillis(),
+    ): List<SeasonalBountyTaskWithProgress> {
+        val event = activeEvent() ?: return emptyList()
+        if ("bounty" !in event.pillars) return emptyList()
+        return bountyTasksWithProgress(event, flags, inventory).filter { bp ->
+            val cooldown = bp.cooldownUntilMs
+            cooldown == null || now >= cooldown
         }
     }
 
@@ -115,8 +130,9 @@ class SeasonalEventRepository @Inject constructor(
         val event = activeEvent() ?: return flags
         val byType = event.bountyTasks.groupBy { it.type }
         val validIds = event.bountyTasks.map { it.id }.toSet()
-        val skillLevels: Map<String, Int> =
-            kotlinx.serialization.json.Json.decodeFromString(playerRepo.getOrCreatePlayer().skillLevels)
+        val player = playerRepo.getOrCreatePlayer()
+        val skillLevels: Map<String, Int> = Json.decodeFromString(player.skillLevels)
+        val inventory:   Map<String, Int> = Json.decodeFromString(player.inventory)
         val now = System.currentTimeMillis()
 
         val slotsValid = flags.seasonalBountyEventId == event.id &&
@@ -142,12 +158,15 @@ class SeasonalEventRepository @Inject constructor(
         var dailyStamp = flags.seasonalBountyDailyStamp
         var changed = false
 
-        // Claimed slots rotate once their post-claim cooldown expires.
+        // Claimed slots rotate once their post-claim cooldown expires. Replacements come
+        // from the WHOLE pool, not the outgoing task's type: a slot chained to one type
+        // (kill, say) was permanently useless to players who can't do that type at all
+        // (discussion #1662). Tasks already in other slots are excluded so no duplicates.
         for ((index, taskId) in flags.seasonalBountySlots.withIndex()) {
             val cooldownUntil = cooldowns[index.toString()] ?: continue
             if (now < cooldownUntil) continue
-            val currentTask = event.bountyTasks.first { it.id == taskId }
-            val nextTask = pickTask(event, byType[currentTask.type].orEmpty(), skillLevels, excludeId = taskId) ?: currentTask
+            val nextTask = pickTask(event, event.bountyTasks.filterNot { it.id in slots }, skillLevels, excludeId = taskId)
+                ?: event.bountyTasks.first { it.id == taskId }
             slots[index] = nextTask.id
             progress = progress - taskId
             cooldowns = cooldowns - index.toString()
@@ -156,13 +175,20 @@ class SeasonalEventRepository @Inject constructor(
 
         // Daily 6am rotation: untouched slots re-roll so an out-of-reach bounty never
         // squats for the whole event. Slots with any progress (or a pending post-claim
-        // cooldown) are left alone to protect in-flight work.
+        // cooldown) are left alone to protect in-flight work. Pool-wide like the
+        // post-claim rotation above.
         if (dailyQuestRepo.shouldRefresh(dailyStamp, flags.dailyResetHour)) {
             for ((index, taskId) in slots.withIndex()) {
                 if (cooldowns.containsKey(index.toString())) continue
                 if ((progress[taskId] ?: 0) > 0) continue
-                val currentTask = event.bountyTasks.first { it.id == taskId }
-                val nextTask = pickTask(event, byType[currentTask.type].orEmpty(), skillLevels, excludeId = taskId) ?: continue
+                // A turn-in tithe tracks no progress; its "progress" is the stockpile in the
+                // player's inventory. A fully stocked one is a claim waiting to happen, so it
+                // must not be re-rolled out from under them (pool-wide rotation made that loss
+                // permanent instead of cycling back to another tithe). Holding merely SOME of
+                // the target does not protect: common items would make the slot squat forever.
+                val current = event.bountyTasks.first { it.id == taskId }
+                if (current.type == "turn_in" && (inventory[current.target] ?: 0) >= current.amount) continue
+                val nextTask = pickTask(event, event.bountyTasks.filterNot { it.id in slots }, skillLevels, excludeId = taskId) ?: continue
                 if (nextTask.id == taskId) continue
                 slots[index] = nextTask.id
                 progress = progress - taskId
@@ -238,6 +264,39 @@ class SeasonalEventRepository @Inject constructor(
         true
     }
 
+    enum class RerollResult { SUCCESS, NOT_ENOUGH_COINS, UNAVAILABLE }
+
+    /**
+     * Instantly replaces the bounty in [taskId]'s slot with a fresh pool-wide pick for
+     * [BOUNTY_REROLL_COST] coins, discarding its progress. The instant swap is what the
+     * fee buys; the free roads stay the post-claim rotation and the daily re-roll
+     * (discussion #1662). Slots in their post-claim cooldown can't be rerolled.
+     */
+    suspend fun rerollBountyTask(taskId: String): RerollResult = playerRepo.playerMutex.withLock {
+        val event = activeEvent() ?: return@withLock RerollResult.UNAVAILABLE
+        if ("bounty" !in event.pillars) return@withLock RerollResult.UNAVAILABLE
+        val flags = ensureBountySlotsRefreshedUnlocked()
+        val slotIndex = flags.seasonalBountySlots.indexOf(taskId)
+        if (slotIndex < 0 || flags.seasonalBountySlotCooldownUntil.containsKey(slotIndex.toString())) {
+            return@withLock RerollResult.UNAVAILABLE
+        }
+        val skillLevels: Map<String, Int> =
+            Json.decodeFromString(playerRepo.getOrCreatePlayer().skillLevels)
+        val nextTask = pickTask(
+            event,
+            event.bountyTasks.filterNot { it.id in flags.seasonalBountySlots },
+            skillLevels,
+            excludeId = taskId,
+        ) ?: return@withLock RerollResult.UNAVAILABLE
+        if (!playerRepo.spendCoinsUnlocked(BOUNTY_REROLL_COST)) return@withLock RerollResult.NOT_ENOUGH_COINS
+        val slots = flags.seasonalBountySlots.toMutableList().also { it[slotIndex] = nextTask.id }
+        playerRepo.updateFlagsUnlocked(flags.copy(
+            seasonalBountySlots    = slots,
+            seasonalBountyProgress = flags.seasonalBountyProgress - taskId,
+        ))
+        RerollResult.SUCCESS
+    }
+
     // -------------------------------------------------------------------------
     // Expedition / Raid Boss — the underlying session is the existing dungeon/boss
     // engine; these just award a token when the completed key matches the active event.
@@ -252,7 +311,16 @@ class SeasonalEventRepository @Inject constructor(
     suspend fun recordBossDefeat(bossKey: String) = playerRepo.playerMutex.withLock {
         val event = activeEvent() ?: return@withLock
         if ("boss" !in event.pillars || event.bossKey != bossKey) return@withLock
-        playerRepo.updateFlagsUnlocked(awardTokenUnlocked(playerRepo.getFlags(), event))
+        val flags = playerRepo.getFlags()
+        val day = playerRepo.gameDay(flags.dailyResetHour)
+        val earnedToday = if (flags.seasonalBossTokenDay == day) flags.seasonalBossTokensToday else 0
+        if (earnedToday >= BOSS_TOKENS_PER_DAY) return@withLock
+        playerRepo.updateFlagsUnlocked(
+            awardTokenUnlocked(flags, event).copy(
+                seasonalBossTokenDay    = day,
+                seasonalBossTokensToday = earnedToday + 1,
+            )
+        )
     }
 
     // -------------------------------------------------------------------------
@@ -276,7 +344,7 @@ class SeasonalEventRepository @Inject constructor(
         }
         // Ironman characters never receive the XP boost component (boosts are inert for them);
         // the tier's other rewards are still granted.
-        if (tier.xpBoost && !flags.ironman) playerRepo.grantXpBoost(PlayerRepository.XP_BOOST_DURATION_MS)
+        if (tier.xpBoost && !flags.ironman) playerRepo.grantXpBoostUnlocked(PlayerRepository.XP_BOOST_DURATION_MS)
 
         // The grants above rewrite the flags column (seen items, boost expiry) — re-read before recording the claim.
         val latest = playerRepo.getFlagsUnlocked()
@@ -342,6 +410,12 @@ class SeasonalEventRepository @Inject constructor(
     // -------------------------------------------------------------------------
     // Shared token award — must only be called while already holding playerMutex.
     // -------------------------------------------------------------------------
+
+    companion object {
+        /** Daily soft cap on tokens from the event boss, resetting at the daily reset hour. */
+        const val BOSS_TOKENS_PER_DAY = 25
+        const val BOUNTY_REROLL_COST = 50_000L
+    }
 
     private fun awardTokenUnlocked(flags: PlayerFlags, event: SeasonalEventData): PlayerFlags {
         val newCount = (flags.seasonalTokensByEvent[event.id] ?: 0) + 1

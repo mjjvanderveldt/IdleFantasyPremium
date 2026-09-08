@@ -94,6 +94,7 @@
     <string name="equip_slot_weapon_str">Arme (Force)</string>
     <string name="equip_slot_weapon_ranged">Arme (Distance)</string>
     <string name="equip_slot_weapon_magic">Arme (Magie)</string>
+    <string name="equip_slot_weapon">Armes</string>
     <string name="equip_slot_head">Tête</string>
     <string name="equip_slot_body">Corps</string>
     <string name="equip_slot_legs">Jambes</string>

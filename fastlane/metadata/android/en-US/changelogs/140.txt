@@ -1,0 +1,10 @@
+• Fixed the Profile button landing in the combat gear screen instead of the profile view after editing gear from the profile
+• Fixed the prestige-ready dot disappearing after 3 prestiges and never showing for ironman characters; it now shows whenever a skill can still earn prestige points
+• New characters no longer open the What's New panel and now keep your settings (theme, font size, home screen layout, compact numbers, and more) instead of resetting them
+• Reverted the 1.14.0 fling change that made skill activity sheets sluggish to close; swipe-down-to-dismiss behaves like 1.13 again
+• Prestige rework: XP tiers are now earned automatically with each prestige (all five tiers, every race); points spent on XP tiers are refunded
+• Racial tree bonuses are now kept when you change race, letting bonuses from different races stack up over time
+• New human race branch: Resourceful, adding a per-level bonus to tool efficiency and combat stats in nine skills
+• Prestige point caps recalculated: XP tiers no longer cost points, and non-ironman caps count every race's branches
+• House editor: new Move with arrows option on placed furniture shows a corner arrow pad for precise one-step nudges without your thumb covering the piece
+• Mercantile now shows its perks up front: the shop buy/sell price bonuses with the next unlock level, and the Merchant's Guild goods it opens up

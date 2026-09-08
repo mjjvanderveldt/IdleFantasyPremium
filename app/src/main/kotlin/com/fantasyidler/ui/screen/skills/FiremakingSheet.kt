@@ -1,6 +1,7 @@
-package com.fantasyidler.ui.screen
+package com.fantasyidler.ui.screen.skills
 
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
@@ -37,6 +40,13 @@ import com.fantasyidler.data.json.LogData
 import com.fantasyidler.data.model.Skills
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import com.fantasyidler.ui.screen.QtyQuickButtons
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.formatDurationMs
 import com.fantasyidler.ui.viewmodel.QuestFillSuggestion
@@ -57,7 +67,7 @@ internal fun FiremakingSheet(
     sessionDurationMs: Long,
     perLogMs: Map<String, Long> = emptyMap(),
     onStart: (logKey: String, qty: Int) -> Unit,
-    context: android.content.Context,
+    context: Context,
     craftLimit: Int = Int.MAX_VALUE,
     questFills: Map<String, List<QuestFillSuggestion>> = emptyMap(),
     activeQuests: Map<String, List<QuestIndicator>> = emptyMap(),
@@ -118,7 +128,7 @@ internal fun FiremakingSheet(
                         ) {
                             Column(Modifier.weight(1f)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(GameStrings.itemName(context, key), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface.copy(alpha = rowAlpha))
+                                    Text(GameStrings.itemName(context, key), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface.copy(alpha = rowAlpha), modifier = Modifier.weight(1f, fill = false))
                                     val questIndicators = activeQuests["${Skills.FIREMAKING}:$ashKey"] ?: emptyList()
                                     if (questIndicators.isNotEmpty()) {
                                         QuestIndicatorIcons(questIndicators)
@@ -166,7 +176,7 @@ internal fun FiremakingSheet(
             }
             val ashOwned = inventory[ashKey] ?: 0
             val maxQty   = (inventory[key] ?: 0).coerceAtMost(craftLimit)
-            var qty      by remember(key) { androidx.compose.runtime.mutableIntStateOf(maxQty.coerceAtLeast(1)) }
+            var qty      by remember(key) { mutableIntStateOf(maxQty.coerceAtLeast(1)) }
             var textValue by remember(key) { mutableStateOf(maxQty.coerceAtLeast(1).toString()) }
             val totalXp = selectedLog.xpPerLog * qty
             val detailScrollState = rememberScrollState()
@@ -200,23 +210,23 @@ internal fun FiremakingSheet(
                 Spacer(Modifier.height(12.dp))
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    androidx.compose.material3.IconButton(onClick = { if (qty > 1) { qty--; textValue = qty.toString() } }, enabled = qty > 1) {
-                        androidx.compose.material3.Icon(androidx.compose.material.icons.Icons.Filled.Remove, contentDescription = null)
+                    IconButton(onClick = { if (qty > 1) { qty--; textValue = qty.toString() } }, enabled = qty > 1) {
+                        Icon(Icons.Filled.Remove, contentDescription = null)
                     }
-                    androidx.compose.material3.OutlinedTextField(
+                    OutlinedTextField(
                         value         = textValue,
                         onValueChange = { new ->
                             val f = new.filter { it.isDigit() }
                             textValue = f
                             f.toIntOrNull()?.coerceIn(1, maxQty.coerceAtLeast(1))?.let { qty = it }
                         },
-                        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine    = true,
                         modifier      = Modifier.width(130.dp),
-                        textStyle     = MaterialTheme.typography.bodyLarge.copy(textAlign = androidx.compose.ui.text.style.TextAlign.Center),
+                        textStyle     = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
                     )
-                    androidx.compose.material3.IconButton(onClick = { if (qty < maxQty) { qty++; textValue = qty.toString() } }, enabled = qty < maxQty) {
-                        androidx.compose.material3.Icon(androidx.compose.material.icons.Icons.Filled.Add, contentDescription = null)
+                    IconButton(onClick = { if (qty < maxQty) { qty++; textValue = qty.toString() } }, enabled = qty < maxQty) {
+                        Icon(Icons.Filled.Add, contentDescription = null)
                     }
                 }
                 QtyQuickButtons(qty, maxQty) { qty = it; textValue = it.toString() }

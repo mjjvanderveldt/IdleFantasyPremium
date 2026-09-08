@@ -46,7 +46,7 @@
     <string name="quest_weekly_demon_slayer_name">Matador de Demônios</string>
     <string name="quest_weekly_demon_slayer_desc">Mate 225 demônios menores esta semana.</string>
     <string name="quest_weekly_boss_hunter_name">Caçador de Chefes</string>
-    <string name="quest_weekly_boss_hunter_desc">Derrote 10 chefes de raide esta semana.</string>
+    <string name="quest_weekly_boss_hunter_desc">Defeat 10 bosses this week.</string> <!-- untranslated -->
     <string name="quest_weekly_kbd_slayer_name">Flagelo do Dragão</string>
     <string name="quest_weekly_kbd_slayer_desc">Derrote o Rei Dragão Negro 5 vezes.</string>
     <string name="quest_weekly_void_champion_name">Campeão do Vazio</string>

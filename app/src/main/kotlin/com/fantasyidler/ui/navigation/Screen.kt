@@ -2,6 +2,10 @@ package com.fantasyidler.ui.navigation
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.ShowChart
+import androidx.compose.material.icons.automirrored.outlined.MenuBook
+import androidx.compose.material.icons.automirrored.outlined.ShowChart
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Celebration
@@ -23,6 +27,7 @@ import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material.icons.outlined.ShowChart
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.fantasyidler.R
+import com.fantasyidler.ui.screen.CombatTabName
 
 sealed class Screen(
     val route: String,
@@ -33,16 +38,20 @@ sealed class Screen(
     object Skills : Screen(
         route        = "skills",
         labelRes     = R.string.nav_skills,
-        icon         = Icons.Outlined.ShowChart,
-        selectedIcon = Icons.Filled.ShowChart,
-    )
+        icon         = Icons.AutoMirrored.Outlined.ShowChart,
+        selectedIcon = Icons.AutoMirrored.Filled.ShowChart,
+    ) {
+        const val openSkillRoute = "skills/open/{openSkill}"
+        fun routeWithSkill(skill: String) = "skills/open/$skill"
+    }
     object Combat : Screen(
         route        = "combat",
         labelRes     = R.string.nav_combat,
         icon         = Icons.Outlined.Shield,
         selectedIcon = Icons.Filled.Shield,
     ) {
-        const val gearRoute = "combat/gear"
+        const val openTabRoute = "combat/tab/{tab}"
+        fun startWithTab(tab: CombatTabName) = "combat/tab/${tab.name}"
         const val presetDungeonRoute = "combat/preset_dungeon/{dungeonKey}"
         fun presetDungeonRoute(key: String) = "combat/preset_dungeon/$key"
         const val presetBossRoute = "combat/preset_boss/{bossKey}"
@@ -57,8 +66,8 @@ sealed class Screen(
     object Quests : Screen(
         route        = "quests",
         labelRes     = R.string.nav_quests,
-        icon         = Icons.Outlined.MenuBook,
-        selectedIcon = Icons.Filled.MenuBook,
+        icon         = Icons.AutoMirrored.Outlined.MenuBook,
+        selectedIcon = Icons.AutoMirrored.Filled.MenuBook,
     )
     object Profile : Screen(
         route        = "profile",
@@ -103,7 +112,7 @@ sealed class Screen(
     object WorkerSkills : Screen(
         route    = "worker_skills?initialSlot={initialSlot}",
         labelRes = R.string.worker_skills_title_nav,
-        icon     = Icons.Filled.ShowChart,
+        icon     = Icons.AutoMirrored.Filled.ShowChart,
     ) {
         fun routeWithSlot(slot: Int) = "worker_skills?initialSlot=$slot"
     }
@@ -141,19 +150,6 @@ sealed class Screen(
     ) {
         fun createRoute(guild: String) = "guild_detail/$guild"
     }
-
-    object Mercantile : Screen(
-        route    = "mercantile",
-        labelRes = R.string.skill_mercantile,
-        icon     = Icons.Filled.ShoppingCart,
-    )
-
-    object Expeditions : Screen(
-        route        = "expeditions",
-        labelRes     = R.string.nav_expeditions,
-        icon         = Icons.Outlined.Explore,
-        selectedIcon = Icons.Filled.Explore,
-    )
 
     object Slayer : Screen(
         route    = "slayer",

@@ -1,5 +1,6 @@
 package com.fantasyidler.ui.screen
 
+import android.content.Context
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -34,6 +35,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ElevatedCard
@@ -68,6 +70,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -77,6 +80,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
@@ -87,7 +91,9 @@ import com.fantasyidler.BuildConfig
 import com.fantasyidler.R
 import com.fantasyidler.data.json.PetData
 import com.fantasyidler.data.json.SkillingDungeonData
-import com.fantasyidler.ui.component.PlayerStatsBar
+import com.fantasyidler.repository.PlayerRepository
+import com.fantasyidler.ui.components.CompletionProgressBar
+import com.fantasyidler.ui.components.PlayerStatsBar
 import com.fantasyidler.ui.theme.ScaledSheetContent
 import com.fantasyidler.ui.viewmodel.Achievement
 import com.fantasyidler.ui.viewmodel.AchievementsViewModel
@@ -103,12 +109,15 @@ import com.fantasyidler.ui.viewmodel.combatLevelFrom
 import com.fantasyidler.ui.viewmodel.xpProgressFraction
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.stringByName
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 private val SKILL_CATEGORY_GROUPS: List<Pair<Int, List<String>>> = listOf(
     R.string.label_gathering      to listOf("mining", "fishing", "woodcutting", "farming", "thieving"),
     R.string.label_crafting       to listOf("smithing", "cooking", "fletching", "crafting", "runecrafting", "herblore", "firemaking", "construction"),
-    R.string.label_support_skills to listOf("prayer", "mercantile", "agility", "slayer"),
-    R.string.label_combat         to listOf("attack", "strength", "defense", "ranged", "magic", "hitpoints"),
+    R.string.label_support_skills to listOf("prayer", "mercantile", "agility"),
+    R.string.label_combat         to listOf("attack", "strength", "defense", "ranged", "magic", "hitpoints", "slayer"),
 )
 
 private data class UnlockMilestone(val level: Int, val description: String)
@@ -245,6 +254,9 @@ fun ProfileScreen(
                     prayerCapeMult            = state.prayerCapeMult,
                     activeBlessingRemainingMs = (state.activeBlessingExpiresAt - System.currentTimeMillis()).coerceAtLeast(0L),
                     xpBoostRemainingMs        = if (state.ironman) 0L else (state.xpBoostExpiresAt - System.currentTimeMillis()).coerceAtLeast(0L),
+                    prestigeBoostsRemainingMs = state.prestigeXpBoosts
+                        .mapValues { (it.value - System.currentTimeMillis()).coerceAtLeast(0L) }
+                        .filterValues { it > 0L },
                     modifier                  = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
                 )
             }
@@ -261,7 +273,7 @@ fun ProfileScreen(
                         ironman        = state.ironman,
                         onOpenPrestige = onNavigateToPrestige,
                     )
-                    1    -> InventoryTab(state.inventory, context, viewModel::categoryFor) { showAddItemSheet = true }
+                    1    -> InventoryTab(state.inventory, context, viewModel::categoryFor, viewModel::openAncientTreasures) { showAddItemSheet = true }
                     2    -> EquipmentTab(
                         equipped           = state.equipped,
                         context            = context,
@@ -315,8 +327,9 @@ fun ProfileScreen(
             ScaledSheetContent {
             EquipPickerSheet(
                 slot      = slot,
-                candidates = state.candidatesFor(slot, viewModel.allEquipment),
+                candidates = state.candidatesFor(slot, state.resolvedEquipment(viewModel.allEquipment)),
                 context   = context,
+                heirloomXp = state.heirloomXp,
                 onEquip   = { itemKey -> viewModel.equip(itemKey, slot) },
                 onDismiss = viewModel::dismissSlotPicker,
             )
@@ -331,6 +344,9 @@ fun ProfileScreen(
             ironman           = state.ironman,
             ironmanRaceLocked = state.ironmanRaceLocked,
             raceChangeTokens  = state.raceChangeTokens,
+            raceCooldownRemainingMs = (state.raceLastChangedAt +
+                PlayerRepository.RACE_CHANGE_COOLDOWN_MS -
+                System.currentTimeMillis()).coerceAtLeast(0L),
             coins             = state.coins,
             raceProficiencies = viewModel.raceProficiencies,
             initialSkin       = state.characterSkinTone,
@@ -488,7 +504,7 @@ private fun TabsLayout(
 private fun SkillsTab(
     skillLevels: Map<String, Int>,
     skillXp: Map<String, Long>,
-    context: android.content.Context,
+    context: Context,
     viewModel: InventoryViewModel,
     skillPrestige: Map<String, Int> = emptyMap(),
     prestigeUnspent: Map<String, Int> = emptyMap(),
@@ -622,7 +638,7 @@ private fun CircularSkillProgress(level: Int, progressFraction: Float, modifier:
         val measured = measurer.measure(level.toString(), textStyle)
         drawText(
             textLayoutResult = measured,
-            topLeft = androidx.compose.ui.geometry.Offset(
+            topLeft = Offset(
                 x = (size.width  - measured.size.width)  / 2f,
                 y = (size.height - measured.size.height) / 2f,
             ),
@@ -635,7 +651,7 @@ private fun SkillGridCard(
     skillKey: String,
     level: Int,
     xp: Long,
-    context: android.content.Context,
+    context: Context,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     debugButton: @Composable () -> Unit,
@@ -682,7 +698,7 @@ private fun SkillGridCard(
 private fun SkillUnlockSheet(
     skillKey: String,
     level: Int,
-    context: android.content.Context,
+    context: Context,
     milestones: List<UnlockMilestone>,
     prestigeCount: Int = 0,
     unspentPoints: Int = 0,
@@ -795,7 +811,7 @@ private fun SkillUnlockSheet(
     }
 }
 
-private fun buildUnlockMilestones(skillKey: String, vm: InventoryViewModel, context: android.content.Context): List<UnlockMilestone> =
+private fun buildUnlockMilestones(skillKey: String, vm: InventoryViewModel, context: Context): List<UnlockMilestone> =
     when (skillKey) {
         "mining" ->
             vm.ores.entries
@@ -920,12 +936,37 @@ private fun buildUnlockMilestones(skillKey: String, vm: InventoryViewModel, cont
 @Composable
 private fun InventoryTab(
     inventory: Map<String, Int>,
-    context: android.content.Context,
+    context: Context,
     categoryFor: (String) -> InventoryCategory,
+    onOpenTreasure: (Boolean) -> Unit,
     onDebugAddItem: () -> Unit,
 ) {
     var sortAlpha by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf<InventoryCategory?>(null) }
+    var treasureDialogQty by remember { mutableStateOf<Int?>(null) }
+
+    treasureDialogQty?.let { qty ->
+        AlertDialog(
+            onDismissRequest = { treasureDialogQty = null },
+            title = { Text(GameStrings.itemName(context, PlayerRepository.ANCIENT_TREASURE_KEY)) },
+            text  = { Text(stringResource(R.string.treasure_open_message)) },
+            confirmButton = {
+                TextButton(onClick = { onOpenTreasure(true); treasureDialogQty = null }) {
+                    Text(
+                        if (qty > 1) stringResource(R.string.treasure_open_all, qty)
+                        else stringResource(R.string.treasure_open)
+                    )
+                }
+            },
+            dismissButton = if (qty > 1) {
+                {
+                    TextButton(onClick = { onOpenTreasure(false); treasureDialogQty = null }) {
+                        Text(stringResource(R.string.treasure_open_one))
+                    }
+                }
+            } else null,
+        )
+    }
 
     val allGroups: List<Pair<InventoryCategory, List<Map.Entry<String, Int>>>> =
         remember(inventory, sortAlpha) {
@@ -1011,7 +1052,13 @@ private fun InventoryTab(
                         )
                     }
                     items(catItems, key = { it.key }) { entry ->
-                        InventoryRow(name = GameStrings.itemName(context, entry.key), qty = entry.value)
+                        InventoryRow(
+                            name    = GameStrings.itemName(context, entry.key),
+                            qty     = entry.value,
+                            onClick = if (entry.key == PlayerRepository.ANCIENT_TREASURE_KEY) {
+                                { treasureDialogQty = entry.value }
+                            } else null,
+                        )
                     }
                 }
                 item { Spacer(Modifier.height(16.dp)) }
@@ -1037,10 +1084,11 @@ private fun categoryLabel(cat: InventoryCategory): String = stringResource(when 
 })
 
 @Composable
-private fun InventoryRow(name: String, qty: Int) {
+private fun InventoryRow(name: String, qty: Int, onClick: (() -> Unit)? = null) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
             .padding(horizontal = 16.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment     = Alignment.CenterVertically,
@@ -1072,7 +1120,7 @@ private fun BannersTab(banners: List<SeasonalBannerDisplay>) {
         }
         return
     }
-    val dateFormat = remember { java.text.SimpleDateFormat("MMM d, yyyy", java.util.Locale.getDefault()) }
+    val dateFormat = remember { SimpleDateFormat("MMM d, yyyy", Locale.getDefault()) }
     val context = LocalContext.current
     LazyVerticalGrid(
         // Adaptive so labels keep enough width to wrap on word boundaries in the
@@ -1114,7 +1162,7 @@ private fun BannersTab(banners: List<SeasonalBannerDisplay>) {
                 )
                 if (banner.earned && banner.earnedAtMs != null) {
                     Text(
-                        text      = stringResource(R.string.profile_banners_earned_on, dateFormat.format(java.util.Date(banner.earnedAtMs))),
+                        text      = stringResource(R.string.profile_banners_earned_on, dateFormat.format(Date(banner.earnedAtMs))),
                         style     = MaterialTheme.typography.labelSmall,
                         color     = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
@@ -1140,28 +1188,11 @@ private fun AchievementsTab(
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
-            Surface(
-                color    = MaterialTheme.colorScheme.surfaceVariant,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text  = stringResource(R.string.label_achievements),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(
-                        text       = "$unlockedCount / $totalCount",
-                        style      = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold,
-                        color      = MaterialTheme.colorScheme.primary,
-                    )
-                }
-            }
+            CompletionProgressBar(
+                completed = unlockedCount,
+                total = totalCount,
+                label = stringResource(R.string.achievements_progress_bar)
+            )
         }
         byGroup.forEach { (group, achievements) ->
             item(key = "hdr_$group") {
@@ -1233,7 +1264,7 @@ private fun AchievementRow(ach: Achievement) {
 
 @Composable
 private fun PetsTab(
-    allPets: Map<String, com.fantasyidler.data.json.PetData>,
+    allPets: Map<String, PetData>,
     ownedPetIds: Set<String>,
 ) {
     if (allPets.isEmpty()) {
@@ -1388,7 +1419,7 @@ private fun DungeonNotesCard(
     combatDungeonUnlocked: Boolean,
 ) {
     val context = LocalContext.current
-    androidx.compose.material3.ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(
                 text = GameStrings.skillingDungeonName(context, dungeonKey, dungeon.displayName),
@@ -1408,7 +1439,7 @@ private fun DungeonNotesCard(
                     Text(
                         text = GameStrings.skillingDungeonNote(context, dungeonKey, index, text),
                         style = MaterialTheme.typography.bodySmall.copy(
-                            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                            fontStyle = FontStyle.Italic,
                         ),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

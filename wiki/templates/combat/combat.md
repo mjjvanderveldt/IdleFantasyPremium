@@ -6,13 +6,15 @@ Combat is a core mechanic of the game allowing you to fight monsters for loot an
 
 Dungeons and bosses have various different bonuses and features however do simulate quite similarly.
 
+{table_of_contents}
+
 ## Combat Level
 
 Combat level acts as an overarching level indicating your combat ability. Accessing dungeons and bosses requires having at least a minimum combat level in order to enter.
 
 Combat level is calculated using the below formula with a minimum level of at least 1:
 
-$`Combat\ Level = 0.325 \times (attackLvl + strengthLvl) + 0.25 \times (defenceLvl + hitpointsLvl)`$
+$`Combat\ Level = 0.65 \times max \left(\dfrac{attackLvl + strengthLvl}{2}, rangedLvl, magicLvl \right) + 0.25 \times (defenceLvl + hitpointsLvl)`$
 
 ## Dungeons
 
@@ -97,11 +99,11 @@ The $`enemyDefence`$ stat is calculated using the defensive stat of the enemy re
 
 Assuming the player succeeds in hitting the enemy, the damage is a random number up to the maximum possible hit which depends on the attacking style as described below:
 
-| Combat Style | Maximum Damage                                                                                              |
-|--------------|-------------------------------------------------------------------------------------------------------------|
-| Melee        | $`maximumDamage = 1 + (playerStrength + weaponStrengthBonus) \times \dfrac{weaponStrengthBonus + 64}{640}`$ |
+| Combat Style | Maximum Damage                                                                                                                                              |
+|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Melee        | $`maximumDamage = 1 + (playerStrength + weaponStrengthBonus) \times \dfrac{weaponStrengthBonus + 64}{640}`$                                                 |
 | Ranged       | $`maximumDamage = 1 + (playerRanged + rangedGearStrengthBonus + arrowStrengthBonus) \times \dfrac{rangedGearStrengthBonus + arrowStrengthBonus + 64}{640}`$ |
-| Magic        | $`maximumDamage = spellMaxHit`$                                                                             |
+| Magic        | $`maximumDamage = spellMaxHit`$                                                                                                                             |
 
 #### Phase 2: Enemy respawning / rewards
 

@@ -1,0 +1,20 @@
+• New Slayer Plateskirt in the slayer shop and Tower Plateskirt in the floor 150 milestone, granted retroactively if you already claimed it (thanks wallsocket-boop!)
+• The Skills and Combat tabs now show a badge and count when a skill is ready to prestige, with a toggle in Settings to turn it off (thanks Michaelomh!)
+• Updated French, German, Italian, Russian, and Chinese translations (thanks MarcMush and all translators!)
+• Infinite Tower milestone descriptions are now translatable and use your language's item names
+• "Keep one of each item" now counts an equipped copy as the one kept, so spares sell down to the equipped one
+• Fixed the in-game changelog listing the same version twice
+• Combat sessions now record your HP and packed food at the start of the run, so leveling Hitpoints or changing gear food mid-run no longer shifts the live combat log
+• Fixed food eaten in the same combat tick reviving a character whose HP had already hit 0; hitting 0 HP now counts as a death
+• Fixed item names, session summaries, and notifications following the system language instead of the in-game language setting
+• Queued boss and dungeon sessions now use your current armor when they start; the weapon style, spell, and arrows chosen when queueing are kept
+• Eating now shows in the live combat log as it happens, and the HP bar reflects each bite instead of snapping up once a minute
+• Added a risk note when the eat-at threshold is set to 30% or lower
+• The active session card now shows boss artwork instead of an emoji
+• Fixed banner names wrapping mid-word on the Profile Banners page and cramped text on the character selection cards
+• Massive Chinese translation update: about 4,000 strings translated or revised (thanks LawrenZzz!)
+• Guild hall sections now list skills in the same order as the Skills page (thanks Michaelomh!)
+• Combat style chips on the Gear tab and skill headers on the Expeditions screen now show their skill icons (thanks Michaelomh!)
+• More French translations
+• The agility bonus on the Bonuses page now explains it is the extra saving from prestige on top of the level reduction, instead of looking like the total
+• The slayer task's queue button now picks the dungeon where the target spawns most often (hellhounds now hunt in Volcanic Depths, not Infernal Stronghold)

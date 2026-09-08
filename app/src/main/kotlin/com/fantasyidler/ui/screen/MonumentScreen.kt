@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -49,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.fantasyidler.BuildConfig
 import com.fantasyidler.R
 import com.fantasyidler.repository.MonumentRepository
 import com.fantasyidler.ui.viewmodel.MonumentViewModel
@@ -104,7 +106,7 @@ fun MonumentScreen(
                 title = { Text(stringResource(R.string.monument_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 },
             )
@@ -161,6 +163,11 @@ fun MonumentScreen(
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
+                            if (BuildConfig.DEBUG) {
+                                TextButton(onClick = viewModel::debugForceTouchMonument) {
+                                    Text("[Debug] Touch the monument anyway")
+                                }
+                            }
                         } else {
                             Button(onClick = viewModel::touchMonument, modifier = Modifier.fillMaxWidth()) {
                                 Text(stringResource(R.string.monument_touch_btn))

@@ -9,12 +9,12 @@
     <string name="skill_fishing_desc">从水域中捕获鱼类与水生珍宝。</string>
     <string name="skill_woodcutting_name">伐木</string>
     <string name="skill_woodcutting_desc">砍伐树木并收集各种木材。</string>
-    <string name="skill_farming_name">种植</string>
+    <string name="skill_farming_name">农业</string>
     <string name="skill_farming_desc">在你的农田中种植和收获作物。</string>
     <string name="skill_firemaking_name">生火</string>
     <string name="skill_firemaking_desc">焚烧背包中的原木以获得生火经验值。焚烧每根原木还会产生灰烬，可在祈祷技能中撒播以获得额外的祈祷经验值。</string>
     <string name="skill_agility_name">敏捷</string>
-    <string name="skill_agility_desc">训练敏捷可缩短所有技能的活动时间。99级时每小时减少20分钟（60分钟→40分钟），随等级提升线性递减。</string>
+    <string name="skill_agility_desc">训练敏捷可缩短所有技能的训练时间。99级时每小时减少20分钟（60分钟→40分钟），随等级提升线性递减。</string>
 
     <!-- Crafting skills -->
     <string name="skill_smithing_name">锻造</string>
@@ -23,7 +23,7 @@
     <string name="skill_cooking_desc">将生食材烹饪为食物，在战斗中恢复生命值。</string>
     <string name="skill_fletching_name">制箭</string>
     <string name="skill_fletching_desc">用木材和金属部件制作弓箭。</string>
-    <string name="skill_crafting_name">制作</string>
+    <string name="skill_crafting_name">工艺制作</string>
     <string name="skill_crafting_desc">用珍贵材料制作珠宝及其他手工物品。</string>
     <string name="skill_runecrafting_name">符文制作</string>
     <string name="skill_runecrafting_desc">用符文精华制作魔法符文，用于施放法术。</string>
@@ -44,7 +44,7 @@
     <string name="skill_hitpoints_name">生命值</string>
     <string name="skill_hitpoints_desc">你的总生命值。更高等级让你在战斗中存活更久。</string>
     <string name="skill_prayer_name">祈祷</string>
-    <string name="skill_prayer_desc">埋葬战斗中掉落的骨头以获得祈祷经验值。更高等级可提升你的战斗等级。</string>
+    <string name="skill_prayer_desc">埋葬战斗中掉落的骨头以获得祈祷经验。更高等级可解锁更强大的教堂祝福。</string>
 
     <!-- ===== Skill unlock sheet labels ===== -->
     <string name="label_lv">等级 %1$d</string>
@@ -102,4 +102,5 @@
     <string name="skill_expedition_name">探险</string>
     <string name="skill_boss_name">首领</string>
     <string name="skill_mercantile_name">贸易</string>
+    <string name="skill_mercantile_desc">派遣商队沿贸易路线出行，获取金币与经验值。技能等级越高，商店买卖价格越优，同时解锁商人公会的专属货品。</string>
 </resources>

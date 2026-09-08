@@ -1,6 +1,7 @@
 package com.fantasyidler.ui.screen
 
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
 import com.fantasyidler.data.model.Skills
 import org.junit.Assert.assertEquals
@@ -24,7 +25,7 @@ class ScrollStateRetentionUnitTest {
 
         // Save via Compose Saver contract
         @Suppress("UNCHECKED_CAST")
-        val saver = LazyListState.Saver as androidx.compose.runtime.saveable.Saver<LazyListState, Any>
+        val saver = LazyListState.Saver as Saver<LazyListState, Any>
         val saved = with(saver) {
             testSaverScope.save(originalState)
         }

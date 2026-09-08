@@ -66,6 +66,18 @@
         "chance": 0.1,
         "quantity_min": 1,
         "quantity_max": 1
+      },
+      {
+        "item": "bronze_med_helmet",
+        "chance": 0.06,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "bronze_chainbody",
+        "chance": 0.04,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -105,6 +117,18 @@
       {
         "item": "iron_sword",
         "chance": 0.05,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "bronze_boots",
+        "chance": 0.05,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "iron_chainbody",
+        "chance": 0.04,
         "quantity_min": 1,
         "quantity_max": 1
       }
@@ -154,6 +178,18 @@
         "chance": 0.4,
         "quantity_min": 1,
         "quantity_max": 2
+      },
+      {
+        "item": "bronze_plateskirt",
+        "chance": 0.05,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "iron_plateskirt",
+        "chance": 0.04,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -199,6 +235,12 @@
       {
         "item": "wooden_bow",
         "chance": 0.12,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "iron_med_helmet",
+        "chance": 0.05,
         "quantity_min": 1,
         "quantity_max": 1
       }
@@ -248,6 +290,18 @@
         "chance": 0.2,
         "quantity_min": 2,
         "quantity_max": 5
+      },
+      {
+        "item": "steel_med_helmet",
+        "chance": 0.05,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "steel_square_shield",
+        "chance": 0.04,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -354,6 +408,12 @@
         "chance": 0.3,
         "quantity_min": 3,
         "quantity_max": 8
+      },
+      {
+        "item": "steel_chainbody",
+        "chance": 0.05,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -495,6 +555,12 @@
         "chance": 0.2,
         "quantity_min": 1,
         "quantity_max": 2
+      },
+      {
+        "item": "iron_square_shield",
+        "chance": 0.04,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -548,6 +614,12 @@
         "chance": 0.25,
         "quantity_min": 2,
         "quantity_max": 5
+      },
+      {
+        "item": "mithril_med_helmet",
+        "chance": 0.04,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -601,6 +673,18 @@
         "chance": 0.15,
         "quantity_min": 1,
         "quantity_max": 3
+      },
+      {
+        "item": "mithril_chainbody",
+        "chance": 0.04,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "adamantite_boots",
+        "chance": 0.03,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -654,6 +738,12 @@
         "chance": 0.35,
         "quantity_min": 5,
         "quantity_max": 12
+      },
+      {
+        "item": "steel_plateskirt",
+        "chance": 0.04,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -713,6 +803,12 @@
         "chance": 0.6,
         "quantity_min": 10,
         "quantity_max": 25
+      },
+      {
+        "item": "adamantite_square_shield",
+        "chance": 0.03,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -725,7 +821,9 @@
   "dragon": {
     "name": "dragon",
     "display_name": "Green Dragon",
-    "tags": ["green_dragon"],
+    "tags": [
+      "green_dragon"
+    ],
     "hp": 150,
     "combat_stats": {
       "attack_level": 28,
@@ -832,6 +930,12 @@
         "chance": 0.25,
         "quantity_min": 1,
         "quantity_max": 3
+      },
+      {
+        "item": "bronze_square_shield",
+        "chance": 0.05,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -1008,6 +1112,18 @@
         "chance": 0.8,
         "quantity_min": 5,
         "quantity_max": 15
+      },
+      {
+        "item": "adamantite_med_helmet",
+        "chance": 0.04,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "runite_square_shield",
+        "chance": 0.03,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -1026,7 +1142,7 @@
       "strength_level": 35,
       "defense_level": 30,
       "attack_bonus": 80,
-      "strength_bonus": 95
+      "strength_bonus": 60
     },
     "defensive_stats": {
       "attack_defense": 80,
@@ -1061,6 +1177,12 @@
         "chance": 0.7,
         "quantity_min": 1,
         "quantity_max": 2
+      },
+      {
+        "item": "runite_med_helmet",
+        "chance": 0.03,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -1108,6 +1230,12 @@
         "chance": 0.65,
         "quantity_min": 5,
         "quantity_max": 12
+      },
+      {
+        "item": "runite_chainbody",
+        "chance": 0.03,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -1250,6 +1378,12 @@
         "chance": 0.1,
         "quantity_min": 1,
         "quantity_max": 2
+      },
+      {
+        "item": "mithril_plateskirt",
+        "chance": 0.04,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": []
@@ -1298,6 +1432,18 @@
         "chance": 0.2,
         "quantity_min": 2,
         "quantity_max": 4
+      },
+      {
+        "item": "mithril_boots",
+        "chance": 0.04,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "adamantite_plateskirt",
+        "chance": 0.03,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": []
@@ -1346,10 +1492,18 @@
         "chance": 0.4,
         "quantity_min": 5,
         "quantity_max": 15
+      },
+      {
+        "item": "adamantite_chainbody",
+        "chance": 0.04,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [],
-    "tags": ["demon"]
+    "tags": [
+      "demon"
+    ]
   },
   "dwarven_guardian": {
     "name": "dwarven_guardian",
@@ -1393,6 +1547,12 @@
       {
         "item": "mithril_platebody",
         "chance": 0.05,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "mithril_square_shield",
+        "chance": 0.04,
         "quantity_min": 1,
         "quantity_max": 1
       }
@@ -1626,6 +1786,12 @@
         "chance": 0.15,
         "quantity_min": 1,
         "quantity_max": 3
+      },
+      {
+        "item": "runite_boots",
+        "chance": 0.03,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": []
@@ -1674,6 +1840,12 @@
         "chance": 0.2,
         "quantity_min": 1,
         "quantity_max": 3
+      },
+      {
+        "item": "runite_plateskirt",
+        "chance": 0.03,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": []
@@ -1990,6 +2162,12 @@
         "chance": 0.28,
         "quantity_min": 1,
         "quantity_max": 2
+      },
+      {
+        "item": "iron_boots",
+        "chance": 0.05,
+        "quantity_min": 1,
+        "quantity_max": 1
       }
     ],
     "always_drops": [
@@ -2548,6 +2726,12 @@
       {
         "item": "emerald",
         "chance": 0.04,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "steel_boots",
+        "chance": 0.05,
         "quantity_min": 1,
         "quantity_max": 1
       }
@@ -3217,11 +3401,28 @@
       "ranged_defense": 18,
       "magic_defense": 50
     },
-    "xp_drops": {"combat": 430},
+    "xp_drops": {
+      "combat": 430
+    },
     "drop_table": [
-      {"item": "coins", "chance": 0.85, "quantity_min": 70, "quantity_max": 160},
-      {"item": "death_rune", "chance": 0.35, "quantity_min": 3, "quantity_max": 8},
-      {"item": "chaos_rune", "chance": 0.4, "quantity_min": 8, "quantity_max": 18}
+      {
+        "item": "coins",
+        "chance": 0.85,
+        "quantity_min": 70,
+        "quantity_max": 160
+      },
+      {
+        "item": "death_rune",
+        "chance": 0.35,
+        "quantity_min": 3,
+        "quantity_max": 8
+      },
+      {
+        "item": "chaos_rune",
+        "chance": 0.4,
+        "quantity_min": 8,
+        "quantity_max": 18
+      }
     ]
   },
   "grave_ghoul": {
@@ -3241,11 +3442,28 @@
       "ranged_defense": 32,
       "magic_defense": 58
     },
-    "xp_drops": {"combat": 640},
+    "xp_drops": {
+      "combat": 640
+    },
     "drop_table": [
-      {"item": "coins", "chance": 0.85, "quantity_min": 140, "quantity_max": 300},
-      {"item": "big_bones", "chance": 0.5, "quantity_min": 1, "quantity_max": 2},
-      {"item": "mithril_ore", "chance": 0.3, "quantity_min": 2, "quantity_max": 6}
+      {
+        "item": "coins",
+        "chance": 0.85,
+        "quantity_min": 140,
+        "quantity_max": 300
+      },
+      {
+        "item": "big_bones",
+        "chance": 0.5,
+        "quantity_min": 1,
+        "quantity_max": 2
+      },
+      {
+        "item": "mithril_ore",
+        "chance": 0.3,
+        "quantity_min": 2,
+        "quantity_max": 6
+      }
     ]
   },
   "husk_horror": {
@@ -3265,12 +3483,34 @@
       "ranged_defense": 38,
       "magic_defense": 62
     },
-    "xp_drops": {"combat": 900},
+    "xp_drops": {
+      "combat": 900
+    },
     "drop_table": [
-      {"item": "coins", "chance": 0.85, "quantity_min": 200, "quantity_max": 420},
-      {"item": "pumpkin", "chance": 0.4, "quantity_min": 1, "quantity_max": 3},
-      {"item": "golden_wheat", "chance": 0.25, "quantity_min": 1, "quantity_max": 2},
-      {"item": "maple_log", "chance": 0.3, "quantity_min": 2, "quantity_max": 5}
+      {
+        "item": "coins",
+        "chance": 0.85,
+        "quantity_min": 200,
+        "quantity_max": 420
+      },
+      {
+        "item": "pumpkin",
+        "chance": 0.4,
+        "quantity_min": 1,
+        "quantity_max": 3
+      },
+      {
+        "item": "golden_wheat",
+        "chance": 0.25,
+        "quantity_min": 1,
+        "quantity_max": 2
+      },
+      {
+        "item": "maple_log",
+        "chance": 0.3,
+        "quantity_min": 2,
+        "quantity_max": 5
+      }
     ]
   },
   "barrow_wight": {
@@ -3290,14 +3530,46 @@
       "ranged_defense": 65,
       "magic_defense": 105
     },
-    "xp_drops": {"combat": 2500},
-    "always_drops": [{"item": "dragon_bone", "quantity": 1}],
+    "xp_drops": {
+      "combat": 2500
+    },
+    "always_drops": [
+      {
+        "item": "dragon_bone",
+        "quantity": 1
+      }
+    ],
     "drop_table": [
-      {"item": "coins", "chance": 0.9, "quantity_min": 550, "quantity_max": 1300},
-      {"item": "death_rune", "chance": 0.6, "quantity_min": 15, "quantity_max": 30},
-      {"item": "adamantite_ore", "chance": 0.5, "quantity_min": 8, "quantity_max": 16},
-      {"item": "runite_ore", "chance": 0.15, "quantity_min": 1, "quantity_max": 3},
-      {"item": "ruby", "chance": 0.2, "quantity_min": 1, "quantity_max": 2}
+      {
+        "item": "coins",
+        "chance": 0.9,
+        "quantity_min": 550,
+        "quantity_max": 1300
+      },
+      {
+        "item": "death_rune",
+        "chance": 0.6,
+        "quantity_min": 15,
+        "quantity_max": 30
+      },
+      {
+        "item": "adamantite_ore",
+        "chance": 0.5,
+        "quantity_min": 8,
+        "quantity_max": 16
+      },
+      {
+        "item": "runite_ore",
+        "chance": 0.15,
+        "quantity_min": 1,
+        "quantity_max": 3
+      },
+      {
+        "item": "ruby",
+        "chance": 0.2,
+        "quantity_min": 1,
+        "quantity_max": 2
+      }
     ]
   },
   "shade_stalker": {
@@ -3317,11 +3589,28 @@
       "ranged_defense": 45,
       "magic_defense": 75
     },
-    "xp_drops": {"combat": 1150},
+    "xp_drops": {
+      "combat": 1150
+    },
     "drop_table": [
-      {"item": "coins", "chance": 0.85, "quantity_min": 300, "quantity_max": 650},
-      {"item": "death_rune", "chance": 0.45, "quantity_min": 8, "quantity_max": 16},
-      {"item": "blood_rune", "chance": 0.2, "quantity_min": 3, "quantity_max": 8}
+      {
+        "item": "coins",
+        "chance": 0.85,
+        "quantity_min": 300,
+        "quantity_max": 650
+      },
+      {
+        "item": "death_rune",
+        "chance": 0.45,
+        "quantity_min": 8,
+        "quantity_max": 16
+      },
+      {
+        "item": "blood_rune",
+        "chance": 0.2,
+        "quantity_min": 3,
+        "quantity_max": 8
+      }
     ]
   },
   "bone_colossus": {
@@ -3341,13 +3630,40 @@
       "ranged_defense": 60,
       "magic_defense": 95
     },
-    "xp_drops": {"combat": 1900},
-    "always_drops": [{"item": "big_bones", "quantity": 2}],
+    "xp_drops": {
+      "combat": 1900
+    },
+    "always_drops": [
+      {
+        "item": "big_bones",
+        "quantity": 2
+      }
+    ],
     "drop_table": [
-      {"item": "coins", "chance": 0.85, "quantity_min": 500, "quantity_max": 1000},
-      {"item": "giant_bones", "chance": 0.4, "quantity_min": 1, "quantity_max": 2},
-      {"item": "adamantite_ore", "chance": 0.45, "quantity_min": 6, "quantity_max": 12},
-      {"item": "runite_ore", "chance": 0.25, "quantity_min": 1, "quantity_max": 3}
+      {
+        "item": "coins",
+        "chance": 0.85,
+        "quantity_min": 500,
+        "quantity_max": 1000
+      },
+      {
+        "item": "giant_bones",
+        "chance": 0.4,
+        "quantity_min": 1,
+        "quantity_max": 2
+      },
+      {
+        "item": "adamantite_ore",
+        "chance": 0.45,
+        "quantity_min": 6,
+        "quantity_max": 12
+      },
+      {
+        "item": "runite_ore",
+        "chance": 0.25,
+        "quantity_min": 1,
+        "quantity_max": 3
+      }
     ]
   },
   "dread_dullahan": {
@@ -3367,14 +3683,46 @@
       "ranged_defense": 75,
       "magic_defense": 115
     },
-    "xp_drops": {"combat": 3600},
-    "always_drops": [{"item": "dragon_bone", "quantity": 2}],
+    "xp_drops": {
+      "combat": 3600
+    },
+    "always_drops": [
+      {
+        "item": "dragon_bone",
+        "quantity": 2
+      }
+    ],
     "drop_table": [
-      {"item": "coins", "chance": 0.9, "quantity_min": 900, "quantity_max": 2000},
-      {"item": "death_rune", "chance": 0.6, "quantity_min": 25, "quantity_max": 45},
-      {"item": "blood_rune", "chance": 0.35, "quantity_min": 8, "quantity_max": 15},
-      {"item": "runite_ore", "chance": 0.3, "quantity_min": 2, "quantity_max": 5},
-      {"item": "diamond", "chance": 0.12, "quantity_min": 1, "quantity_max": 1}
+      {
+        "item": "coins",
+        "chance": 0.9,
+        "quantity_min": 900,
+        "quantity_max": 2000
+      },
+      {
+        "item": "death_rune",
+        "chance": 0.6,
+        "quantity_min": 25,
+        "quantity_max": 45
+      },
+      {
+        "item": "blood_rune",
+        "chance": 0.35,
+        "quantity_min": 8,
+        "quantity_max": 15
+      },
+      {
+        "item": "runite_ore",
+        "chance": 0.3,
+        "quantity_min": 2,
+        "quantity_max": 5
+      },
+      {
+        "item": "diamond",
+        "chance": 0.12,
+        "quantity_min": 1,
+        "quantity_max": 1
+      }
     ]
   }
 }

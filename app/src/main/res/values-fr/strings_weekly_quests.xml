@@ -46,7 +46,7 @@
     <string name="quest_weekly_demon_slayer_name">Tueur de Démons</string>
     <string name="quest_weekly_demon_slayer_desc">Tuez 225 démons cette semaine.</string>
     <string name="quest_weekly_boss_hunter_name">Chasseur de Boss</string>
-    <string name="quest_weekly_boss_hunter_desc">Vainquez 10 boss de raid cette semaine.</string>
+    <string name="quest_weekly_boss_hunter_desc">Vaincre 10 boss cette semaine.</string>
     <string name="quest_weekly_kbd_slayer_name">Fléau du Dragon</string>
     <string name="quest_weekly_kbd_slayer_desc">Vainquez le Roi dragon noir 5 fois.</string>
     <string name="quest_weekly_void_champion_name">Champion du Vide</string>

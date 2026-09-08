@@ -1,0 +1,15 @@
+• Rebalanced the Elven Shortbow's ranged strength so the Elven Longbow is the stronger bow, as intended
+• The quests dialog on skill screens no longer lets you queue tasks whose level requirement you don't meet (e.g. after prestiging)
+• "Equip Best Gear" no longer equips a shield alongside a two-handed weapon
+• "Equip Best Gear" now also updates the armor of your other style loadouts, with armor picked for each style
+• Double Hit procs are now called out in the combat log instead of being silently merged into the damage number
+• The combat screen now shows your full effective ATK/STR/DEF (levels, gear, potions, blessings, and other bonuses) instead of only gear bonuses
+• Daily, weekly, and Cooking Guild quests no longer ask you to cook fish your Fishing level can't catch yet
+• Raid bosses now enrage against smaller parties, hitting proportionally harder and more often (unchanged for a full party of 4)
+• The boost list on the Home and Profile header now shows a "+N more boosts" toggle instead of an inner scroll that cut lines in half and fought the page scroll
+• Mercenary contracts now last a full 24 hours from hiring instead of ending at the daily reset
+• The mercenary hire list is now sorted by cost, and mercenary hits in the combat log match the other log lines
+• Fixed scheduled auto backups silently stopping: manual backups no longer shift the 5am schedule, failed runs keep the schedule alive, and app updates re-register the backup alarm
+• Runite Bars no longer appear as rare drops from Sol Invictus and The Hollow King; their rare pools now hold only genuinely rare items
+• Enemies now drop off-set armor pieces (med helmets, chainbodies, square shields, plateskirts, boots) of their own tier, bronze through runite, so every armor slot can be filled without Smithing; the full plate kit remains smith-only
+• Switching characters no longer asks for confirmation; tapping a character switches immediately

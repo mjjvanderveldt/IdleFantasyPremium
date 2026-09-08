@@ -475,7 +475,9 @@
     <string name="item_diamond_necklace_name">Diamond Necklace</string>
     <string name="item_ancient_treasure_name">Ancient Treasure</string>
     <string name="item_seaweed_name">Seaweed</string>
+    <string name="item_old_boot_name">Old Boot</string>
     <string name="item_pearl_name">Pearl</string>
+    <string name="item_black_pearl_name">Black Pearl</string>
     <string name="item_nature_rune_name">Nature Rune</string>
     <string name="item_herb_name">Herb</string>
     <string name="item_mahogany_log_name">Mahogany Log</string>
@@ -773,7 +775,7 @@
 
 
     <!-- Additional item/boss/food names (English placeholders) -->
-    <string name="item_abyssal_rod_name">Abyssal Rod</string>
+    <string name="item_abyssal_rod_name">Abyssal Fishing Rod</string>
     <string name="item_adamantite_arrow_tip_name">Adamantite Arrow Tips</string>
     <string name="item_adamantite_boots_name">Adamantite Boots</string>
     <string name="item_adamantite_chainbody_name">Adamantite Chainbody</string>
@@ -1162,7 +1164,7 @@
     <string name="item_blessed_fishing_rod_desc">Crafted from driftwood recovered from the Drowned Temple, blessed by ancient sea rites.</string>
     <string name="item_dwarven_fishing_rod_desc">A dwarven-crafted fishing rod. Practically hauls fish out of the water.</string>
     <string name="item_abyssal_rod_desc">Woven from void-touched filament recovered from the Abyssal Ruins. Fish practically leap onto it.</string>
-    <string name="item_bronze_hoe_desc">A basic bronze hoe. Slightly increases harvest yield.</string>
+    <string name="item_bronze_hoe_desc">A basic hoe for Farming.</string>
     <string name="item_iron_hoe_desc">An iron hoe. Increases harvest yield.</string>
     <string name="item_steel_hoe_desc">A steel hoe. Noticeably increases harvest yield.</string>
     <string name="item_mithril_hoe_desc">A mithril hoe. Greatly increases harvest yield.</string>

@@ -522,7 +522,7 @@
     <string name="quest_obj_dungeon_magic_only">Schließt %1$s nur mit Magie ab</string>
     <string name="quest_obj_dungeon_no_food">Schließt %1$s ohne Nahrung ab</string>
     <string name="quest_obj_collect">Sammelt %1$d %2$s im Kampf</string>
-    <string name="quest_obj_slayer_task">Schließt %1$d Trophäensammler-Aufträge ab</string>
+    <string name="quest_obj_slayer_task">Schließt %1$d Trophäenjäger-Aufträge ab</string>
 
     <string name="skilling_dungeon_shattered_spire_note_1">Charred stone and melted glass for a hundred metres in every direction. Whatever happened here was catastrophic.</string> <!-- untranslated -->
     <string name="skilling_dungeon_shattered_spire_note_2">A torn page from a research journal: \'The convergence experiment exceeds all projections. We must press on.\'</string> <!-- untranslated -->

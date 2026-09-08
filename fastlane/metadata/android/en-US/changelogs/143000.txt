@@ -1,0 +1,17 @@
+• Added heirloom items: unique rare drops from the three raid bosses, one for every gathering and artisan tool plus attack, strength, ranged, and magic weapons
+• Heirlooms start at iron quality and permanently level up to 99 as you earn XP with them equipped, reaching stats 50% beyond the current best gear at max level
+• Prestiging a skill temporarily weakens its heirloom; full power returns at level 85, and the heirloom's own level is never lost
+• Heirlooms cannot be sold, and a raid boss never drops one you already own
+• Earned seasonal banners in My House now show the current translated event name instead of the name frozen when the banner was won (thanks for the report)
+• Cloud Kingdom now locks like every other dungeon when your combat level drops below its requirement after a prestige
+• The home screen Repeat button now respects dungeon and boss level requirements instead of letting you chain fights above your current level
+• The Shadow Dagger is now an attack style weapon like every other dagger, so it appears in the attack weapon picker
+• Spell, arrow, potion, and combat style picks no longer leak from one character to another when switching save slots; each character keeps their own saved loadout
+• Guild dailies now hand out every quest your skill level can actually do before falling back to higher-level ones, and any unavoidable top-up quests are the lowest tiers available instead of random (no more level 65 dailies right after a prestige)
+• Removed a stray placeholder line that appeared under the v1.14.2 header in the What's New panel
+• Switching characters now returns every tab to its main page and clears leftover screen state, so the bone altar no longer opens with the previous character's session tallies
+• Character names on the Characters screen no longer get squeezed to a few letters by the Ironman badge on small screens; the badge now sits on its own line under the full-width name
+• Dungeon enemies now spawn at their intended rates: a new enemy is rolled after every kill instead of one type dominating long stretches of a run (thanks for the report)
+• Dungeons queued from the Slayer screen now show the same XP estimate in the action queue as dungeons queued from the Combat screen
+• Repaired 43 Italian strings that were showing unrelated English or misplaced text in the mercantile perks, house editor, and elsewhere after a bad translation batch
+• Auto backups and save exports now include the character's slot and name in the file name (e.g. fantasyidler_auto_2_IronDragon), so each character keeps their own backup and switching characters no longer overwrites another character's file

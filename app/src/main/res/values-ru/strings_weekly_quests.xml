@@ -46,7 +46,7 @@
     <string name="quest_weekly_demon_slayer_name">Истребитель Демонов</string>
     <string name="quest_weekly_demon_slayer_desc">Убейте 225 малых демонов на этой неделе.</string>
     <string name="quest_weekly_boss_hunter_name">Охотник на Боссов</string>
-    <string name="quest_weekly_boss_hunter_desc">Победите 10 рейдовых боссов на этой неделе.</string>
+    <string name="quest_weekly_boss_hunter_desc">Победите 10 боссов на этой неделе.</string>
     <string name="quest_weekly_kbd_slayer_name">Погибель Дракона</string>
     <string name="quest_weekly_kbd_slayer_desc">Победите Чёрного короля-дракона 5 раз.</string>
     <string name="quest_weekly_void_champion_name">Чемпион Пустоты</string>
@@ -60,5 +60,5 @@
     <string name="quest_weekly_farmer_name">Урожай Сезона</string>
     <string name="quest_weekly_farmer_desc">Соберите 30 урожаев на этой неделе.</string>
     <string name="quest_weekly_guild_supporter_name">Помощник гильдии</string>
-    <string name="quest_weekly_guild_supporter_desc">Выполните 20 ежедневных заданий гильдии на этой неделе.</string>
+    <string name="quest_weekly_guild_supporter_desc">Выполните 20 ежедневных поручений гильдии на этой неделе.</string>
 </resources>

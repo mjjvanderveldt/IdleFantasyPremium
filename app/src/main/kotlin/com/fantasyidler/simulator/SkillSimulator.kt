@@ -240,6 +240,7 @@ object SkillSimulator {
     // ------------------------------------------------------------------
     // Generic gathering — uses xp_ranges + drop_tables from skill JSON
     // ------------------------------------------------------------------
+    // Note: Function has been deprecated and is only used by tests - should likely be removed
 
     /**
      * @param skillData    loaded gathering skill data with xp_ranges + drop_tables

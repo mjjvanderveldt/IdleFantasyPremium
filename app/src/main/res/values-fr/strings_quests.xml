@@ -484,7 +484,7 @@
     <string name="quest_daily_wc_willow_objective">Coupez 70 bûches de saule.</string>
     <string name="quest_daily_wc_yew_objective">Coupez 25 bûches d\'if.</string>
     <string name="quest_daily_wc_magic_objective">Coupez 10 bûches magiques.</string>
-    <string name="quest_daily_smith_iron_objective">Forgez 40 barres de fer.</string>
+    <string name="quest_daily_smith_iron_objective">Forgez 40 lingots de fer.</string>
     <string name="quest_daily_smith_mithril_objective">Forgez 15 lingots de mithril.</string>
     <string name="quest_daily_smith_adamantite_objective">Forgez 10 lingots d\'adamantite.</string>
     <string name="quest_daily_smith_runite_objective">Forgez 5 lingots en runite.</string>

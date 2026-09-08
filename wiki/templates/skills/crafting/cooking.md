@@ -11,3 +11,7 @@ Cooked food is automatically used in dungeons via the **Equipped Food** system.
 Equip a frying pan to multiply how many meals you can cook per session. Higher-tier frying pans require a higher Cooking level.
 
 {frying_pan_table}
+
+### Frying pan tier efficiency multiplier
+
+{tool_efficiency_section}

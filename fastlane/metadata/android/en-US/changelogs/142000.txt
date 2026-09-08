@@ -1,0 +1,18 @@
+• House editor now shows the full cost of a new room (coins and materials) while placing it, and the Add room button labels its price as coins
+• New opt-in nightly build channel for playtesters, served from a separate repository
+• House editor palette cards no longer cut off long item and material names; they now wrap to two lines
+• The post-prestige 2x XP boost now stacks with the purchased 2x boost (4x on prestiged skills while both run), session dialogs show the correct per-skill multiplier, and active skill-specific boosts are listed in the home and profile boost box
+• The slayer foretell queue full label now shows your real slot capacity instead of always saying 3/3
+• Importing a save file is now all-or-nothing, so an interrupted import can no longer corrupt your save (thanks xRahul)
+• Ironman characters can no longer speed up sessions by changing the device clock (thanks xRahul)
+• Automatic backups are now written safely, so an interrupted backup can no longer destroy the previous one, and Settings shows the last backup status (thanks xRahul)
+• Skill screens now have a Skill Tree button that jumps straight to that skill's prestige tree (thanks Michaelomh)
+• Updated Italian, French, German, Russian, and Indonesian translations
+• House editor rework: place rooms and furniture freely as a draft, see the full cost on a Bill of Sale, and buy everything at once with Purchase Build; drafts persist until purchased or discarded
+• House blueprints: save up to 3 named layouts and load one back later to buy when you can afford it
+• House drafting ignores Construction level requirements; the level gate applies at purchase and is shown on the bill
+• Sell Old Gear now sells all unequipped equipment, not just outclassed pieces; equipped copies, locked items, skill capes, and the keep-one-of-each keeper are always protected
+• Skill trees now show the effects of other races' locked bonuses instead of ???, so you can judge whether a race change is worth it
+• Sessions queued before a prestige no longer pay out their pre-prestige XP after the reset; as with mid-session prestiges, the XP is voided while loot and coins still pay out
+• The 24 hour race change cooldown is now actually enforced, with the remaining wait shown in the change dialog
+• The worker crafting sheet's quantity box is now the same width as the player's, so large quantities no longer clip and scroll

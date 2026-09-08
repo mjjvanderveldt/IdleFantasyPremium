@@ -12,6 +12,8 @@ data class SeasonalEventData(
     @SerialName("token_goal") val tokenGoal: Int,
     /** Subset of "bounty" | "expedition" | "boss" | "minigame". */
     val pillars: List<String>,
+    /** Emoji icon displayed for this event's quest indicators (e.g. "☀️" or "🎃"); defaults to "🎯". */
+    @SerialName("icon_emoji") val iconEmoji: String = "🎯",
     @SerialName("bounty_tasks") val bountyTasks: List<SeasonalBountyTaskData> = emptyList(),
     /** How long a Bounty Board slot waits after a claim before a new task rotates in. */
     @SerialName("bounty_rotation_ms") val bountyRotationMs: Long = 3_600_000L,

@@ -9,7 +9,7 @@ from typing import Callable
 from xml.etree import ElementTree
 
 from wiki.src import RESOURCES, ASSETS
-from wiki.src.wiki_logs import LOGGER, SimpleWarnType
+from wiki.src.wiki_logs import LOGGER, default_warning
 
 
 # ---------------------------------------------------------------------------
@@ -238,9 +238,13 @@ def item_name(item: str) -> str:
             break
     # Default to title() if item is not found
     if item_title is None:
-        LOGGER.simple_warn(SimpleWarnType.ITEM_NAME, item)
+        LOGGER.warn_by_id(f"item_name:{item}", default_warning(item, "item", "strings_items.xml"))
         return title(item)
     return item_title
+
+
+def house_item_name(item: str) -> str:
+    return _standard_string_resolution(item, "house_item_{}", "house_item_name", "house item")
 
 
 def item_desc(item: str) -> str:
@@ -253,125 +257,166 @@ def item_desc(item: str) -> str:
             break
     # Default to title() if item is not found
     if item_description is None:
-        LOGGER.simple_warn(SimpleWarnType.ITEM_DESC, item)
+        LOGGER.warn_by_id(f"item_desc:{item}", default_warning(item, "item", "strings_items.xml", "description"))
         return "—"
     return item_description
 
 
-def _standard_string_resolution(value: str, key_string: str, warn_type: SimpleWarnType, default_value: str | None = None) -> str:
+def _standard_string_resolution(value: str, key_string: str, warn_category: str, warning_type: str, expected_file: str = "strings.xml",
+    missing_element: str = "name", default_value: str | None = None) -> str:
     value_title = STRINGS.get_string(key_string.format(value)) if key_string.format(value) in STRINGS else None
     if value_title is None:
-        LOGGER.simple_warn(warn_type, value)
-        return default_value if default_value else title(value)
+        LOGGER.warn_by_id(f"{warn_category}:{value}", default_warning(value, warning_type, expected_file, missing_element))
+        return default_value if default_value is not None else title(value)
     return value_title
 
 
 def skill_name(skill: str) -> str:
-    return _standard_string_resolution(skill, "skill_{}_name", SimpleWarnType.SKILL_NAME)
+    return _standard_string_resolution(skill, "skill_{}_name", "skill_name", "skill", "strings_skills.xml")
+
+
+def skill_desc(skill: str) -> str:
+    return _standard_string_resolution(skill, "skill_{}_desc", "skill_desc", "skill", "strings_skills.xml", "description", "")
+
+
+def slot_name(slot: str) -> str:
+    return _standard_string_resolution(slot, "equip_slot_{}", "slot_name", "equip slot", "strings_game.xml")
 
 
 def enemy_name(enemy: str) -> str:
-    return _standard_string_resolution(enemy, "enemy_{}_name", SimpleWarnType.ENEMY_NAME)
+    return _standard_string_resolution(enemy, "enemy_{}_name", "enemy_name", "enemy", "strings_enemies.xml")
 
 
 def guild_name(guild: str) -> str:
-    return _standard_string_resolution(guild, "guild_name_{}", SimpleWarnType.GUILD_NAME)
+    return _standard_string_resolution(guild, "guild_name_{}", "guild_name", "guild")
 
 
 def agility_course_name(course: str) -> str:
-    return _standard_string_resolution(course, "agility_{}_name", SimpleWarnType.AGILITY_COURSE_NAME)
+    return _standard_string_resolution(course, "agility_{}_name", "agility_course_name", "agility course")
+
+
+def tree_name(tree: str) -> str:
+    return _standard_string_resolution(tree, "tree_{}_name", "tree_name", "tree", "strings_skills.xml")
 
 
 def trade_route_name(trade_route: str) -> str:
-    return _standard_string_resolution(trade_route, "trade_route_{}_name", SimpleWarnType.TRADE_ROUTE_NAME)
+    return _standard_string_resolution(trade_route, "trade_route_{}_name", "trade_route_name", "trade route")
 
 
 def trade_route_desc(trade_route: str) -> str:
-    return _standard_string_resolution(trade_route, "trade_route_{}_desc", SimpleWarnType.TRADE_ROUTE_DESC, "")
+    return _standard_string_resolution(trade_route, "trade_route_{}_desc", "trade_route_desc", "trade route", missing_element="description", default_value="")
 
 
 def thieving_npc_name(npc: str) -> str:
-    return _standard_string_resolution(npc, "thieving_npc_{}_name", SimpleWarnType.THIEVING_NPC_NAME)
+    return _standard_string_resolution(npc, "thieving_npc_{}_name", "thieving_npc_name", "thieving NPC")
 
 
 def quest_name(quest: str) -> str:
-    return _standard_string_resolution(quest, "quest_{}_name", SimpleWarnType.QUEST_NAME)
+    return _standard_string_resolution(quest, "quest_{}_name", "quest_name", "quest", "the game strings")
 
 
 def quest_desc(quest: str) -> str:
-    return _standard_string_resolution(quest, "quest_{}_objective", SimpleWarnType.QUEST_DESC, "No objective provided")
+    return _standard_string_resolution(quest, "quest_{}_objective", "quest_desc", "quest", "the game strings", "description", "No objective provided")
 
 
 def town_building_name(building: str) -> str:
-    return _standard_string_resolution(building, "town_building_{}_name", SimpleWarnType.TOWN_BUILDING_NAME)
+    return _standard_string_resolution(building, "town_building_{}_name", "town_building_name", "town building")
 
 
 def title_name(skill: str) -> str:
-    return _standard_string_resolution(skill, "title_{}_name", SimpleWarnType.TITLE_NAME)
+    return _standard_string_resolution(skill, "title_{}_name", "title_name", "title")
 
 
 def pet_name(pet: str) -> str:
-    return _standard_string_resolution(pet, "pet_{}_name", SimpleWarnType.PET_NAME)
+    return _standard_string_resolution(pet, "pet_{}_name", "pet_name", "pet")
 
 
 def pet_desc(pet: str) -> str:
-    return _standard_string_resolution(pet, "pet_{}_desc", SimpleWarnType.PET_DESC, "")
+    return _standard_string_resolution(pet, "pet_{}_desc", "pet_desc", "pet", missing_element="description", default_value="")
+
+
+def merc_name(merc: str) -> str:
+    return _standard_string_resolution(merc, "merc_{}_name", "merc_name", "mercenary")
+
+
+def race_name(race: str) -> str:
+    return _standard_string_resolution(race, "character_race_{}", "race_name", "race")
+
+
+def carnival_prize_name(prize: str) -> str:
+    return _standard_string_resolution(prize, "carnival_prize_{}_name", "carnival_prize_name", "carnival prize")
+
+
+def carnival_prize_desc(prize: str) -> str:
+    return _standard_string_resolution(prize, "carnival_prize_{}_desc", "carnival_prize_desc", "carnival prize", missing_element="description", default_value="")
 
 
 def boss_name(boss: str) -> str:
-    return _standard_string_resolution(boss, "boss_{}_name", SimpleWarnType.BOSS_NAME)
+    return _standard_string_resolution(boss, "boss_{}_name", "boss_name", "boss", "strings_enemies.xml")
 
 
 def boss_desc(boss: str) -> str:
-    return _standard_string_resolution(boss, "boss_{}_desc", SimpleWarnType.BOSS_DESC, "")
+    return _standard_string_resolution(boss, "boss_{}_desc", "boss_desc", "boss", "strings_enemies.xml", "description", "")
 
 
 def dungeon_name(dungeon: str) -> str:
-    return _standard_string_resolution(dungeon, "dungeon_{}_name", SimpleWarnType.DUNGEON_NAME)
+    return _standard_string_resolution(dungeon, "dungeon_{}_name", "dungeon_name", "dungeon", "strings_enemies.xml")
 
 
 def dungeon_desc(dungeon: str) -> str:
-    return _standard_string_resolution(dungeon, "dungeon_{}_desc", SimpleWarnType.DUNGEON_DESC, "")
+    return _standard_string_resolution(dungeon, "dungeon_{}_desc", "dungeon_desc", "dungeon", "strings_enemies.xml", "description", "")
 
 
 def expedition_name(expedition: str) -> str:
-    return _standard_string_resolution(expedition, "skilling_dungeon_{}_name", SimpleWarnType.EXPEDITION_NAME)
+    return _standard_string_resolution(expedition, "skilling_dungeon_{}_name", "expedition_name", "expedition")
 
 
 def expedition_desc(expedition: str) -> str:
-    return _standard_string_resolution(expedition, "skilling_dungeon_{}_desc", SimpleWarnType.EXPEDITION_DESC, "")
+    return _standard_string_resolution(expedition, "skilling_dungeon_{}_desc", "expedition_desc", "expedition", missing_element="description", default_value="")
 
 
 def seasonal_event_name(event: str) -> str:
-    return _standard_string_resolution(event, "seasonal_event_{}_name", SimpleWarnType.SEASONAL_EVENT_NAME)
+    return _standard_string_resolution(event, "seasonal_event_{}_name", "seasonal_event_name", "seasonal event")
 
 
 def seasonal_event_banner(event: str) -> str:
-    return _standard_string_resolution(event, "seasonal_event_{}_banner", SimpleWarnType.SEASONAL_EVENT_BANNER)
+    return _standard_string_resolution(event, "seasonal_event_{}_banner", "seasonal_event_banner", "seasonal event", missing_element="banner")
 
 
 def seasonal_bounty_name(bounty: str) -> str:
-    return _standard_string_resolution(bounty, "seasonal_bounty_{}_name", SimpleWarnType.SEASONAL_BOUNTY_NAME)
+    return _standard_string_resolution(bounty, "seasonal_bounty_{}_name", "seasonal_bounty_name", "seasonal bounty")
 
 
 def seasonal_bounty_hint(bounty: str) -> str:
-    return _standard_string_resolution(bounty, "seasonal_bounty_{}_hint", SimpleWarnType.SEASONAL_BOUNTY_HINT)
+    return _standard_string_resolution(bounty, "seasonal_bounty_{}_hint", "seasonal_bounty_hint", "seasonal bounty", missing_element="hint")
 
 
 def seasonal_minigame_name(minigame: str) -> str:
-    return _standard_string_resolution(minigame, "seasonal_minigame_{}_name", SimpleWarnType.SEASONAL_MINIGAME_NAME)
+    return _standard_string_resolution(minigame, "seasonal_minigame_{}_name", "seasonal_minigame_name", "seasonal minigame")
 
 
 def seasonal_reward_desc(event: str, tokens: int) -> str:
     key = f"seasonal_reward_{event}_{tokens}_desc"
     if key in STRINGS:
         return STRINGS.get_string(key)
-    LOGGER.simple_warn(SimpleWarnType.SEASONAL_REWARD_DESC, f"{event}_{tokens}")
+    reward_id = f"{event}_{tokens}"
+    LOGGER.warn_by_id(f"seasonal_reward_desc:{reward_id}", default_warning(reward_id, "seasonal reward", missing_element="description"))
     return ""
 
 
 def seasonal_market_name(offer: str) -> str:
-    return _standard_string_resolution(offer, "seasonal_market_{}_name", SimpleWarnType.SEASONAL_MARKET_NAME)
+    return _standard_string_resolution(offer, "seasonal_market_{}_name", "seasonal_market_name", "seasonal market offer")
+
+
+def prestige_effect_desc(effect: str, value: float, unlock: str | None = None) -> str:
+    key = f"prestige_effect_{effect}"
+    if key not in STRINGS:
+        LOGGER.warn_by_id(f"prestige_effect_desc:{effect}", default_warning(effect, "prestige effect", missing_element="description"))
+        return ""
+    if effect == "unlock_recipe":
+        return STRINGS.get_string(key, item_name(unlock or NotImplemented))
+    formatted = int(value) if value == int(value) else value
+    return STRINGS.get_string(key, formatted)
 
 
 # ---------------------------------------------------------------------------

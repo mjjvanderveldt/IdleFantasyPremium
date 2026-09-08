@@ -70,4 +70,12 @@ data class SkillSession(
      */
     @ColumnInfo(name = "level_at_start", defaultValue = "0")
     val levelAtStart: Int = 0,
+
+    @ColumnInfo(name = "start_elapsed_ms")
+    val startElapsedMs: Long? = null,
+
+    /** Settings.Global.BOOT_COUNT when the anchor was stamped; a mismatch means the device
+     * rebooted since, so the elapsedRealtime anchor is meaningless and the check fails open. */
+    @ColumnInfo(name = "start_boot_count")
+    val startBootCount: Int? = null,
 )

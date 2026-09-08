@@ -94,6 +94,7 @@
     <string name="equip_slot_weapon_str">Broń (Siła)</string>
     <string name="equip_slot_weapon_ranged">Broń (Strzelec)</string>
     <string name="equip_slot_weapon_magic">Broń (Magia)</string>
+    <string name="equip_slot_weapon">Weapons</string> <!-- untranslated -->
     <string name="equip_slot_head">Głowa</string>
     <string name="equip_slot_body">Ciało</string>
     <string name="equip_slot_legs">Nogi</string>

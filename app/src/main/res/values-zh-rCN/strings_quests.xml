@@ -138,18 +138,18 @@
     <string name="quest_combat_kills_5_objective">击败450个敌人</string>
     <string name="quest_combat_kills_6_name">怪物猎人 VI</string>
     <string name="quest_combat_kills_6_objective">击败650个敌人</string>
-    <string name="quest_slayer_1_name">杀手 I</string>
-    <string name="quest_slayer_1_objective">完成5个杀手任务</string>
-    <string name="quest_slayer_2_name">杀手 II</string>
-    <string name="quest_slayer_2_objective">完成15个杀手任务</string>
-    <string name="quest_slayer_3_name">杀手 III</string>
-    <string name="quest_slayer_3_objective">完成40个杀手任务</string>
-    <string name="quest_slayer_4_name">杀手 IV</string>
-    <string name="quest_slayer_4_objective">完成100个杀手任务</string>
-    <string name="quest_slayer_5_name">杀手 V</string>
-    <string name="quest_slayer_5_objective">完成250个杀手任务</string>
-    <string name="quest_slayer_6_name">杀手 VI</string>
-    <string name="quest_slayer_6_objective">完成500个杀手任务</string>
+    <string name="quest_slayer_1_name">讨伐 I</string>
+    <string name="quest_slayer_1_objective">完成5个讨伐任务</string>
+    <string name="quest_slayer_2_name">讨伐 II</string>
+    <string name="quest_slayer_2_objective">完成15个讨伐任务</string>
+    <string name="quest_slayer_3_name">讨伐 III</string>
+    <string name="quest_slayer_3_objective">完成40个讨伐任务</string>
+    <string name="quest_slayer_4_name">讨伐 IV</string>
+    <string name="quest_slayer_4_objective">完成100个讨伐任务</string>
+    <string name="quest_slayer_5_name">讨伐 V</string>
+    <string name="quest_slayer_5_objective">完成250个讨伐任务</string>
+    <string name="quest_slayer_6_name">讨伐 VI</string>
+    <string name="quest_slayer_6_objective">完成500个讨伐任务</string>
 
     <!-- Dungeon exploration -->
     <string name="quest_dungeon_farm_1_name">地牢探索者 I</string>
@@ -484,10 +484,10 @@
     <string name="quest_daily_wc_willow_objective">砍伐70根柳木原木。</string>
     <string name="quest_daily_wc_yew_objective">砍伐25根紫杉原木。</string>
     <string name="quest_daily_wc_magic_objective">砍伐10根魔法原木。</string>
-    <string name="quest_daily_smith_iron_objective">锻造40根铁条。</string>
-    <string name="quest_daily_smith_mithril_objective">锻造15根秘银条。</string>
-    <string name="quest_daily_smith_adamantite_objective">锻造10根精金条。</string>
-    <string name="quest_daily_smith_runite_objective">锻造5根符文条。</string>
+    <string name="quest_daily_smith_iron_objective">锻造40个铁锭。</string>
+    <string name="quest_daily_smith_mithril_objective">锻造15个秘银锭。</string>
+    <string name="quest_daily_smith_adamantite_objective">锻造10个精金锭。</string>
+    <string name="quest_daily_smith_runite_objective">锻造5个符文锭。</string>
     <string name="quest_daily_cook_trout_objective">烹饪100条鳟鱼。</string>
     <string name="quest_daily_cook_salmon_objective">烹饪80条鲑鱼。</string>
     <string name="quest_daily_cook_lobster_objective">烹饪40只龙虾。</string>
@@ -522,7 +522,7 @@
     <string name="quest_obj_dungeon_magic_only">仅使用魔法通关%1$s</string>
     <string name="quest_obj_dungeon_no_food">不使用任何食物通关%1$s</string>
     <string name="quest_obj_collect">从战斗中收集%1$d个%2$s</string>
-    <string name="quest_obj_slayer_task">完成%1$d个杀戮任务</string>
+    <string name="quest_obj_slayer_task">完成 %1$d 个讨伐任务</string>
 
     <string name="skilling_dungeon_shattered_spire_note_1">方圆百米内都是焦石和熔化的玻璃。无论这里发生了什么，都是灾难性的。</string>
     <string name="skilling_dungeon_shattered_spire_note_2">从研究日志中撕下的一页：「融合实验超出所有预测。我们必须继续。」</string>

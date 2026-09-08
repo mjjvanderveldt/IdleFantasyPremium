@@ -56,7 +56,7 @@
 
     <!-- ===== Logs ===== -->
     <string name="item_log_name">Kłody</string>
-    <string name="item_log_desc">Podstawowe kłody ze zwykłych drzew. Używane w Rozpalaniu Ognia i Płatnerstwie.</string>
+    <string name="item_log_desc">Podstawowe kłody ze zwykłych drzew. Używane w Rozpalaniu Ognia i Łuczarstwie.</string>
     <string name="item_oak_log_name">Kłody Dębowe</string>
     <string name="item_oak_log_desc">Kłody z dębów.</string>
     <string name="item_willow_log_name">Kłody Wierzbowe</string>
@@ -475,7 +475,9 @@
     <string name="item_diamond_necklace_name">Diamond Necklace</string> <!-- untranslated -->
     <string name="item_ancient_treasure_name">Ancient Treasure</string> <!-- untranslated -->
     <string name="item_seaweed_name">Seaweed</string> <!-- untranslated -->
+    <string name="item_old_boot_name">Old Boot</string> <!-- untranslated -->
     <string name="item_pearl_name">Pearl</string> <!-- untranslated -->
+    <string name="item_black_pearl_name">Black Pearl</string> <!-- untranslated -->
     <string name="item_nature_rune_name">Nature Rune</string> <!-- untranslated -->
     <string name="item_herb_name">Herb</string> <!-- untranslated -->
     <string name="item_mahogany_log_name">Mahogany Log</string> <!-- untranslated -->
@@ -773,7 +775,7 @@
 
 
     <!-- Additional item/boss/food names (English placeholders) -->
-    <string name="item_abyssal_rod_name">Abyssal Rod</string> <!-- untranslated -->
+    <string name="item_abyssal_rod_name">Abyssal Fishing Rod</string> <!-- untranslated -->
     <string name="item_adamantite_arrow_tip_name">Adamantite Arrow Tips</string> <!-- untranslated -->
     <string name="item_adamantite_boots_name">Adamantite Boots</string> <!-- untranslated -->
     <string name="item_adamantite_chainbody_name">Adamantite Chainbody</string> <!-- untranslated -->
@@ -1162,7 +1164,7 @@
     <string name="item_blessed_fishing_rod_desc">Crafted from driftwood recovered from the Drowned Temple, blessed by ancient sea rites.</string> <!-- untranslated -->
     <string name="item_dwarven_fishing_rod_desc">A dwarven-crafted fishing rod. Practically hauls fish out of the water.</string> <!-- untranslated -->
     <string name="item_abyssal_rod_desc">Woven from void-touched filament recovered from the Abyssal Ruins. Fish practically leap onto it.</string> <!-- untranslated -->
-    <string name="item_bronze_hoe_desc">A basic bronze hoe. Slightly increases harvest yield.</string> <!-- untranslated -->
+    <string name="item_bronze_hoe_desc">A basic hoe for Farming.</string> <!-- untranslated -->
     <string name="item_iron_hoe_desc">An iron hoe. Increases harvest yield.</string> <!-- untranslated -->
     <string name="item_steel_hoe_desc">A steel hoe. Noticeably increases harvest yield.</string> <!-- untranslated -->
     <string name="item_mithril_hoe_desc">A mithril hoe. Greatly increases harvest yield.</string> <!-- untranslated -->

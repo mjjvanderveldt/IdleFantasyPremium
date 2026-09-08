@@ -1,3 +1,173 @@
+v1.14.11
+• Fixed the Armory freezing the app for a few seconds when opened and on every filter tab change
+• Made 219 guild quest names translatable that were previously stuck in English
+• Fixed the bulk sell confirmation button accepting repeat taps during a large sale, causing extra "sold for 0 gold" notifications
+• Fixed first taps being swallowed after scrolling to the edge of a list (skill sheets, Mercantile, Prestige, and elsewhere)
+• Fixed the guild "Go to Skill" shortcut re-opening its skill menu when returning to the Skills screen
+• Fixed lag around the combat log during kill-heavy dungeon sessions
+• Seasonal bounty quest chips now appear in the Runecrafting and Firemaking crafting menus
+• Lantern Lights now awards its token at reaching round 6 as the hint promises, and the memory game got its own success message
+• Fixed offline queue catch-up losing hours when a fast-forwarded crafting session had a speed tool equipped (frying pan, tinderbox, hammer)
+• Fixed the queue schedule slipping when aggressive battery savers interrupted a session handoff in the background
+• My House now fits the screen in landscape on tablets instead of overflowing and blocking scrolling
+• New food eating order option: highest heal first, lowest heal first, or least quantity first
+• Blessings activate and gathering activities start on a single tap, without a confirmation dialog
+
+v1.14.10
+• The daily bounty refresh no longer replaces a Tithe you have fully stocked up for: holding the asked amount now counts as in-progress work, so the donation can't vanish overnight
+• The Combat screen's Gear tab now has its own translatable label, separate from the Profile Gear tab, so languages can translate each context correctly
+• The live combat log and kill tally now track exactly which enemy is being fought as types change mid-minute: kill counts no longer jump between enemy types or go down, and the enemy card and log name the right enemy
+• Notification bubbles no longer get stuck on screen when the same message arrives several times in a row (like rapidly queueing the same session); repeats now fold into the bubble already showing
+• Guild quests and daily requests now have a Go to Skill button that jumps straight to the matching skill, dungeon list, or Slayer master
+• The Monument's daily touch is far more generous: late-game boons (dragon bones, runite and platinum ore, magic logs, gems, rune essence, sharks) that grow with your monument stage, a 1 in 10 Ancient Treasure jackpot, and its blessing now lasts 2 hours or extends the blessing you already have
+• The Vault Guardian guards a new 1 in 1000 treasure: the Midas Band, a ring that grows stronger with every battle you survive
+
+v1.14.9
+• Overnight queued boss runs now fast-forward at each fight's real speed instead of billing every fight its full scheduled duration, so long repeat chains actually finish while you sleep
+• Boss kills now show up in the session collection popup's Kills list
+• Kills left over after completing a slayer task now roll into the next foretold task when it targets the same enemy
+• The Armory now sorts items by their translated names instead of their English names
+• Player and mercenary HP bars, combat log highlights, carnival target zones, race lock markers, and guild/quest checkmarks now follow the theme's colors and can be changed in the theme editor
+• Several fixed labels (A-Z sort, Wiki, Discord, Halfling, and two number formats) can now be translated
+• Combat level now counts your best attack style: the higher of melee, ranged, or magic, so training any style raises it
+• Seasonal event bounties now show quest indicators on skills, gathering, crafting, and farming lists, with the event's own icon, and appear in the skill sheet quest dialog with quick queueing
+• Turn-in event bounties (like Tithes) now show your full item count instead of stopping at the requested amount
+
+v1.14.8
+• Agility no longer asks you to prestige once there is nothing left to earn: its XP boost tiers now end alongside the Endurance upgrades
+• Seasonal bounty missions now open the dungeon their target enemy actually lives in, instead of always the event's first dungeon
+• Rapidly queueing mercantile trade routes now shows a confirmation for every tap; identical back-to-back confirmations used to be silently dropped, making the buttons feel unresponsive
+• Fixed a crash when opening Housing for players whose character stood in the two leftmost columns of their house
+• Total level now counts only the 23 real skills; older saves could show up to a few extra levels from a leftover internal entry created by combat quest rewards claimed before v1.1.5
+• Bulk sells now re-check every protection at the moment you confirm, so gear equipped, kept, or reserved by the queue can never be sold by a sale dialog that was opened before things changed
+• Selling can no longer silently remove worn gear: bulk sales refuse to touch equipped or loadout-remembered copies outright
+• The shop's sell tab now keeps a record of your last 5 bulk sales (Recent bulk sales), so lost-item reports can be checked against what was actually sold
+• Each task in the session queue now shows how long it will take next to its XP estimate
+• Event bounty slots are no longer locked to one task type: replacements are drawn from the whole bounty pool, so a bounty you can never do stops coming back every rotation
+• Added a paid bounty reroll: swap any active event bounty for a different one instantly for 50,000 coins
+
+v1.14.7
+• Fixed overlapping text in the spell selector when translated rune names made the rune count line too long
+• Monument touch now resets at your daily reset hour instead of midnight
+• Boss coin soft cap now resets at your daily reset hour instead of midnight
+• Slayer now appears under Combat instead of Support in the Profile skills list
+• Switching characters now immediately backs up the outgoing character to its own backup file
+• Repeating an Infinite Tower session no longer shows a meaningless XP estimate on queued floors
+• Fixed a farming exploit where planting and clearing crops with an XP bonus active netted free XP; planting XP is now flat and fully reclaimed on clearing
+• The bestiary now always lists every enemy and boss, including past and future event monsters, greyed out until first defeated
+• The bestiary's A-Z sort now orders enemies and bosses by their translated names instead of their English names
+• Daily/weekly/guild quest markers no longer disappear next to long translated activity names
+• The seasonal event banner on the Home screen stays tappable after reaching the token goal, so rewards can still be claimed
+• A newly started seasonal event re-shows the Home banner once for players who had hidden it
+• The Dungeons list now updates to the new seasonal event's dungeon without needing an app restart
+• Equip Best Gear no longer swaps your equipped tools
+• Seasonal event boss tokens are now capped at 25 per day, resetting at your daily reset hour
+• The event page now explains that each boss kill and dungeon run grants 1 token, and shows the boss daily limit
+• Renamed the Abyssal Rod to Abyssal Fishing Rod to match the other fishing rods
+• The Bronze Hoe now shows its farming stat like other bronze tools, and its description no longer claims a yield bonus it never had
+• Ancient Treasure can now be opened from the Profile inventory for coins and a chance at gems, and is protected from bulk junk selling
+
+v1.14.6.1
+• The What's New dialog now correctly lists the recent updates; the 1.14.6 hotfix entry was missing from it
+• Re-release of the 1.14.6 hotfix: collecting sessions and starting queued sessions froze the game indefinitely in 1.14.5; nothing was lost, and stuck sessions collect normally after updating
+
+v1.14.6
+• Hotfix: collecting sessions and starting queued sessions froze the game indefinitely in 1.14.5; nothing was lost, and all stuck sessions collect normally after updating
+
+v1.14.5
+Improvements
+• The combat arrow dropdown now shows each arrow's ranged strength, and the spell dropdown shows every spell with its Magic level requirement, including ones you haven't unlocked yet
+• Dangerous session actions are now red with bigger buttons to help avoid misclicks
+• Collection progress bars in the profile tabs now share one design, and Achievements gained a real progress bar
+• Active boosts now have a distinct icon per type, consistent formatting, and a larger tap area
+• Daily and Weekly quests now sit directly in the main quest tab bar instead of behind the Timed tab
+• Prestige tier numerals now go up to X, so tier 6 no longer shows as 'Precision 6'
+• The Infinite Tower now uses the same arrow and spell dropdowns as the Combat screen, showing arrow strength, rune stock, and spell requirements
+• Combat skill dialogs now have a Skill Tree button in the title row for quick access to that skill's tree
+• Very long durations now show years instead of piling up months (250mo reads as 20y 10mo)
+
+Bug Fixes
+• The notification icon in the status bar is now a clean shield silhouette instead of a distorted white blob
+• Changing the loadout when starting a slayer task is now remembered app-wide like the Combat screen's picker, instead of resetting for every task (thanks for the report)
+• Queued boss fights in Up Next now show the boss's own icon instead of a generic gamepad when the boss has no portrait art yet (thanks for the report)
+• The enemy panel in the combat log no longer shows the old emoji next to the enemy name; the portrait at the top of the page already covers it (thanks for the report)
+• The seasonal event screen now calls its boss a Boss instead of a Raid Boss, since raid bosses are their own thing now (thanks for the report)
+• The Ancient Guardian in the Ancient Temple hit much harder than everything else in the dungeon, which made the no-food challenge there mathematically hopeless even at max stats; its damage is now in line with its dungeon-mates, so the challenge is brutal but beatable with full HP boosts (thanks for the reports)
+• Queued boss sessions can no longer each roll the same unique heirloom drop; a rare drop sitting in an uncollected session now counts as owned when later sessions roll theirs, so the duplicate roll goes to something you don't have (thanks for the report)
+• The Mercenary Camp now shows your hired party with each contract's remaining time, so mercenaries can be dismissed even after the daily pool rolls over and they no longer appear in it (thanks for the report)
+• Heirlooms now gain XP based on the gear you actually started the session with, so swapping to an heirloom right before collecting no longer levels it for work it never did, and heirloom weapons only gain XP from fights in their own combat style (thanks for the report)
+• The armory now shows when an item's recipe is locked behind a prestige perk and a race, so the elven bows no longer look craftable by everyone (thanks for the report)
+• Sell Old Gear can no longer sell the last copy of gear referenced by a session waiting in your queue (thanks for the report)
+• The Recent Activity list now shows each boss's own icon instead of the generic gamepad (thanks for the report)
+• The Boss Hunter weekly quest now says 'Defeat 10 bosses' since solo bosses always counted, and the Grand Monument's stage 5 reward no longer calls the Vault Guardian a raid boss (thanks for the report)
+• The Gothic Ember now counts as a demon for kill quests, matching its description (thanks for the report)
+
+Translations
+• Updated Russian, Italian, Polish, and Chinese translations (thanks to the community translators)
+
+v1.14.4
+• Sell Old Gear no longer sells equipment saved in another combat style's loadout; gear remembered by any loadout now counts as equipped when selling (thanks for the report)
+• The Heirloom Greathammer and Heirloom Blade now show their attack, strength, and defense stats in the gear list like the bow and staff already did (thanks for the report)
+• Equip Best Gear now rates heirloom weapons and tools by their current stats instead of their max potential, so a fresh heirloom no longer replaces stronger gear (thanks for the report)
+• The prestige skill tree screens now use the same pixel art skill icons as the rest of the app instead of the old emoji in the header (thanks for the report)
+• Switching to a combat style whose weapon is two handed now removes the shield instead of showing both equipped and quietly saving the shield into that style's loadout (thanks for the report)
+• Equipping a shield now only unequips the active style's two handed weapon; other styles keep their weapons and drop the shield when you switch to them
+• Bows are now two handed and cannot be used with a shield; crossbows still can, and staffs are unaffected
+• The bone altar now honors the 48 hour double XP boost earned from prestiging, stacking with the shop boost up to 4x like everywhere else, and prestige Cape Mastery perks now boost altar XP too (thanks for the report)
+• Queued sessions started after a prestige now pay out their full XP as long as you still meet the activity's level requirement; actions you no longer qualify for are removed from the queue instead of running for nothing (thanks for the report)
+• Boss and raid fights now show the fight clock, counting down the full fight duration, so a faster playback from agility bonuses no longer looks like less time to beat the boss; the real completion time is still shown next to it (thanks for the report)
+
+v1.14.3
+• Added heirloom items: unique rare drops from the three raid bosses, one for every gathering and artisan tool plus attack, strength, ranged, and magic weapons
+• Heirlooms start at iron quality and permanently level up to 99 as you earn XP with them equipped, reaching stats 50% beyond the current best gear at max level
+• Prestiging a skill temporarily weakens its heirloom; full power returns at level 85, and the heirloom's own level is never lost
+• Heirlooms cannot be sold, and a raid boss never drops one you already own
+• Earned seasonal banners in My House now show the current translated event name instead of the name frozen when the banner was won (thanks for the report)
+• Cloud Kingdom now locks like every other dungeon when your combat level drops below its requirement after a prestige
+• The home screen Repeat button now respects dungeon and boss level requirements instead of letting you chain fights above your current level
+• The Shadow Dagger is now an attack style weapon like every other dagger, so it appears in the attack weapon picker
+• Spell, arrow, potion, and combat style picks no longer leak from one character to another when switching save slots; each character keeps their own saved loadout
+• Guild dailies now hand out every quest your skill level can actually do before falling back to higher-level ones, and any unavoidable top-up quests are the lowest tiers available instead of random (no more level 65 dailies right after a prestige)
+• Removed a stray placeholder line that appeared under the v1.14.2 header in the What's New panel
+• Switching characters now returns every tab to its main page and clears leftover screen state, so the bone altar no longer opens with the previous character's session tallies
+• Character names on the Characters screen no longer get squeezed to a few letters by the Ironman badge on small screens; the badge now sits on its own line under the full-width name
+• Dungeon enemies now spawn at their intended rates: a new enemy is rolled after every kill instead of one type dominating long stretches of a run (thanks for the report)
+• Dungeons queued from the Slayer screen now show the same XP estimate in the action queue as dungeons queued from the Combat screen
+• Repaired 43 Italian strings that were showing unrelated English or misplaced text in the mercantile perks, house editor, and elsewhere after a bad translation batch
+• Auto backups and save exports now include the character's slot and name in the file name (e.g. fantasyidler_auto_2_IronDragon), so each character keeps their own backup and switching characters no longer overwrites another character's file
+
+v1.14.2
+• House editor now shows the full cost of a new room (coins and materials) while placing it, and the Add room button labels its price as coins
+• New opt-in nightly build channel for playtesters, served from a separate repository
+• House editor palette cards no longer cut off long item and material names; they now wrap to two lines
+• The post-prestige 2x XP boost now stacks with the purchased 2x boost (4x on prestiged skills while both run), session dialogs show the correct per-skill multiplier, and active skill-specific boosts are listed in the home and profile boost box
+• The slayer foretell queue full label now shows your real slot capacity instead of always saying 3/3
+• Importing a save file is now all-or-nothing, so an interrupted import can no longer corrupt your save (thanks xRahul)
+• Ironman characters can no longer speed up sessions by changing the device clock (thanks xRahul)
+• Automatic backups are now written safely, so an interrupted backup can no longer destroy the previous one, and Settings shows the last backup status (thanks xRahul)
+• Skill screens now have a Skill Tree button that jumps straight to that skill's prestige tree (thanks Michaelomh)
+• Updated Italian, French, German, Russian, and Indonesian translations
+• House editor rework: place rooms and furniture freely as a draft, see the full cost on a Bill of Sale, and buy everything at once with Purchase Build; drafts persist until purchased or discarded
+• House blueprints: save up to 3 named layouts and load one back later to buy when you can afford it
+• House drafting ignores Construction level requirements; the level gate applies at purchase and is shown on the bill
+• Sell Old Gear now sells all unequipped equipment, not just outclassed pieces; equipped copies, locked items, skill capes, and the keep-one-of-each keeper are always protected
+• Skill trees now show the effects of other races' locked bonuses instead of ???, so you can judge whether a race change is worth it
+• Sessions queued before a prestige no longer pay out their pre-prestige XP after the reset; as with mid-session prestiges, the XP is voided while loot and coins still pay out
+• The 24 hour race change cooldown is now actually enforced, with the remaining wait shown in the change dialog
+• The worker crafting sheet's quantity box is now the same width as the player's, so large quantities no longer clip and scroll
+
+v1.14.1
+• Fixed the Profile button landing in the combat gear screen instead of the profile view after editing gear from the profile
+• Fixed the prestige-ready dot disappearing after 3 prestiges and never showing for ironman characters; it now shows whenever a skill can still earn prestige points
+• New characters no longer open the What's New panel and now keep your settings (theme, font size, home screen layout, compact numbers, and more) instead of resetting them
+• Reverted the 1.14.0 fling change that made skill activity sheets sluggish to close; swipe-down-to-dismiss behaves like 1.13 again
+• Prestige rework: XP tiers are now earned automatically with each prestige (all five tiers, every race); points spent on XP tiers are refunded
+• Racial tree bonuses are now kept when you change race, letting bonuses from different races stack up over time
+• New human race branch: Resourceful, adding a per-level bonus to tool efficiency and combat stats in nine skills
+• Prestige point caps recalculated: XP tiers no longer cost points, and non-ironman caps count every race's branches
+• House editor: new Move with arrows option on placed furniture shows a corner arrow pad for precise one-step nudges without your thumb covering the piece
+• Mercantile now shows its perks up front: the shop buy/sell price bonuses with the next unlock level, and the Merchant's Guild goods it opens up
+
 v1.14.0
 New Features:
 

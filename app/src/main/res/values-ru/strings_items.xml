@@ -475,7 +475,9 @@
     <string name="item_diamond_necklace_name">Бриллиантовое ожерелье</string>
     <string name="item_ancient_treasure_name">Древнее сокровище</string>
     <string name="item_seaweed_name">Морские водоросли</string>
+    <string name="item_old_boot_name">Старый ботинок</string>
     <string name="item_pearl_name">Жемчужина</string>
+    <string name="item_black_pearl_name">Черный жемчуг</string>
     <string name="item_nature_rune_name">Природная руна</string>
     <string name="item_herb_name">Трава</string>
     <string name="item_mahogany_log_name">Бревно из красного дерева</string>
@@ -883,8 +885,8 @@
     <string name="item_magic_cape_name">Плащ мага</string>
     <string name="item_magic_longbow_name">Магический длинный лук</string>
     <string name="item_magic_shortbow_name">Магический короткий лук</string>
-    <string name="item_elven_shortbow_name">Elven Shortbow</string> <!-- untranslated -->
-    <string name="item_elven_longbow_name">Elven Longbow</string> <!-- untranslated -->
+    <string name="item_elven_shortbow_name">Короткий эльфийский лук</string>
+    <string name="item_elven_longbow_name">Эльфийский длинный лук</string>
     <string name="item_maple_shortbow_name">Кленовый короткий лук</string>
     <string name="item_mercantile_guild_cape_name">Плащ гильдии торговцев</string>
     <string name="item_mining_cape_name">Плащ рудокопа</string>
@@ -1006,8 +1008,8 @@
     <string name="item_yew_longbow_desc">Длинный лук, собранный из тисовых брёвен.</string>
     <string name="item_magic_shortbow_desc">Короткий лук, собранный из магических брёвен.</string>
     <string name="item_magic_longbow_desc">Длинный лук, собранный из магических брёвен.</string>
-    <string name="item_elven_shortbow_desc">A swift bow strung with elven silk. Only elven hands know the fletching.</string> <!-- untranslated -->
-    <string name="item_elven_longbow_desc">A tall elven warbow of layered redwood. Only elven hands know the fletching.</string> <!-- untranslated -->
+    <string name="item_elven_shortbow_desc">Быстрый лук, натянутый эльфийским шелком. Только эльфийским рукам знакомо оперение.</string>
+    <string name="item_elven_longbow_desc">Высокий эльфийский боевой лук из многослойного красного дерева. Только эльфийским рукам знакомо оперение.</string>
     <string name="item_tower_crossbow_name">Арбалет башни</string>
     <string name="item_tower_crossbow_desc">Высокоточный арбалет, изготовленный из башенного металла.</string>
     <string name="item_arcane_staff_desc">Посох, найденный в Тайных руинах, все еще гудящий от сдерживаемой магической энергии, оставшейся после катастрофы, разрушившей шпиль наверху.</string>

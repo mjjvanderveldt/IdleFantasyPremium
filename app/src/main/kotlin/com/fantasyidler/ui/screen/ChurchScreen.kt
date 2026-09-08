@@ -1,8 +1,8 @@
 package com.fantasyidler.ui.screen
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -31,10 +31,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -59,54 +57,6 @@ fun ChurchScreen(
     val state by viewModel.uiState.collectAsState()
 
     AppBannerEffect(state.snackbarMessage, viewModel::snackbarConsumed)
-
-    // Confirmation dialog
-    state.pendingBlessingKey?.let { key ->
-        val blessing = ChurchRepository.ALL_BLESSINGS.find { it.key == key }
-        if (blessing != null) {
-            val context   = LocalContext.current
-            val nameResId = context.resources.getIdentifier(
-                "blessing_${blessing.key}_name", "string", context.packageName,
-            )
-            val name      = if (nameResId != 0) stringResource(nameResId) else blessing.key
-            val cost      = ChurchRepository.discountedBoneCost(blessing, state.blessingCostMult)
-            val hasEnough = state.totalBoneEquivalent >= cost
-            AlertDialog(
-                onDismissRequest = viewModel::dismissConfirm,
-                title = { Text(stringResource(R.string.church_confirm_title), fontWeight = FontWeight.Bold) },
-                text = {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(text = name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        Text(
-                            text = blessingEffectText(blessing, state.blessingDuration, state.prayerCapeMult),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Spacer(Modifier.height(4.dp))
-                        Text(
-                            text  = stringResource(R.string.church_cost_bones, cost),
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                        Text(
-                            text  = stringResource(R.string.church_bones_available, state.totalBoneCount, state.totalBoneEquivalent),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = if (hasEnough) MaterialTheme.colorScheme.onSurfaceVariant
-                                    else MaterialTheme.colorScheme.error,
-                        )
-                    }
-                },
-                confirmButton = {
-                    Button(onClick = viewModel::confirmActivate, enabled = hasEnough) {
-                        Text(stringResource(R.string.church_activate))
-                    }
-                },
-                dismissButton = {
-                    OutlinedButton(onClick = viewModel::dismissConfirm) {
-                        Text(stringResource(R.string.btn_cancel))
-                    }
-                },
-            )
-        }
-    }
 
     if (state.showDeactivateConfirm) {
         AlertDialog(
@@ -150,7 +100,7 @@ fun ChurchScreen(
 
         LazyColumn(
             modifier            = Modifier.fillMaxSize().padding(padding),
-            contentPadding      = androidx.compose.foundation.layout.PaddingValues(bottom = 24.dp),
+            contentPadding      = PaddingValues(bottom = 24.dp),
         ) {
             // ── Active blessing banner ──────────────────────────────────
             item {

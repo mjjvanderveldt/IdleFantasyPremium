@@ -944,9 +944,114 @@ Builds:
     gradle:
       - yes
 
+  - versionName: '1.13.9'
+    versionCode: 136
+    commit: c630915047176e340069b0bf3bab80f709816eed
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.13.10'
+    versionCode: 137
+    commit: 0a321e9dead2e48cd68a0bc7135cb7ec7c8d5aa1
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.13.11'
+    versionCode: 138
+    commit: 8cdd407eb3eb036537ae96b89839d86d4cd77d00
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.14.0'
+    versionCode: 139
+    commit: 6e1df48eab99cdfb7523fc313c42c21ce0970cc3
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.14.1'
+    versionCode: 140
+    commit: 930ebf9c4b7c46167e2faa4c4499c4869c809a3e
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.14.2'
+    versionCode: 142000
+    commit: 0079458151e5054695b5838216d6c7957e9108da
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.14.3'
+    versionCode: 143000
+    commit: f8e12e33e05639cac475c4cef9fae0061d2bf205
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.14.4'
+    versionCode: 144000
+    commit: 6a76bf81626635cf339355e18fb7286843d8d197
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.14.5'
+    versionCode: 145000
+    commit: adcf618d391e60b4a5626e52548eecfa835d08a2
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.14.6'
+    versionCode: 146000
+    commit: 83b944064a509310c5ee97eb1a42a64f47b504d7
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.14.6.1'
+    versionCode: 146001
+    commit: 4e9538b27465b46272234564bc2e3bbbc2dd2b41
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.14.7'
+    versionCode: 147000
+    commit: d679125785a3836d966dcd499b683322e79f3885
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.14.8'
+    versionCode: 148000
+    commit: cdfb2689dbe45d25748a1f413e61e83a3a6de61e
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.14.9'
+    versionCode: 149000
+    commit: a39ab3748a7f3bbd037e2cfa86d65c04e301aca1
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: '1.14.10'
+    versionCode: 149001
+    commit: 193868073308d287dd9b92dd041eb959232740d9
+    subdir: app
+    gradle:
+      - yes
+
 AllowedAPKSigningKeys: 99a980a934cb0149bfbdd5f4358471ffe69302e0467bae4d8574d4feeda34010
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: 1.13.8
-CurrentVersionCode: 135
+CurrentVersion: 1.14.10
+CurrentVersionCode: 149001

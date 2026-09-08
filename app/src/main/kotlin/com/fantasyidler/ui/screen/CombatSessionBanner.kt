@@ -1,9 +1,6 @@
 package com.fantasyidler.ui.screen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,88 +10,50 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import kotlin.math.roundToInt
 import com.fantasyidler.BuildConfig
 import com.fantasyidler.R
-import com.fantasyidler.simulator.CombatSimulator
-import com.fantasyidler.simulator.TowerScaling
 import com.fantasyidler.data.json.BossData
-import com.fantasyidler.data.json.CookingRecipe
 import com.fantasyidler.data.json.DungeonData
 import com.fantasyidler.data.json.EnemyData
-import com.fantasyidler.data.json.EquipmentData
-import com.fantasyidler.data.json.SpellData
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import com.fantasyidler.data.model.EquipSlot
 import com.fantasyidler.data.model.SessionFrame
 import com.fantasyidler.data.model.SkillSession
 import com.fantasyidler.data.model.Skills
-import com.fantasyidler.ui.viewmodel.CombatViewModel
-import com.fantasyidler.ui.viewmodel.InventoryViewModel
-import com.fantasyidler.ui.viewmodel.combatLevelFrom
-import com.fantasyidler.ui.viewmodel.slotDisplayName
-import com.fantasyidler.ui.viewmodel.xpProgressFraction
+import com.fantasyidler.simulator.CombatSimulator
+import com.fantasyidler.simulator.TowerScaling
+import com.fantasyidler.ui.viewmodel.MercContract
 import com.fantasyidler.util.GameStrings
-import com.fantasyidler.util.formatCoins
 import com.fantasyidler.util.formatXp
+import com.fantasyidler.util.toClockTime
 import com.fantasyidler.util.toCountdown
-import com.fantasyidler.util.toTitleCase
 import kotlinx.coroutines.delay
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlin.time.Duration.Companion.milliseconds
 
 internal fun combatXpBreakdownText(total: Long, bonus: Long, boostWasActive: Boolean): String? {
     if (bonus <= 0L) return null
@@ -120,6 +79,8 @@ internal data class CombatLogEntry(
     val heal: Int = 0,
     /** True when this damage came from the raid mercenary party. */
     val ally: Boolean = false,
+    /** True when a prestige Double Hit landed this tick (issue #1567). */
+    val doubleHit: Boolean = false,
 )
 
 @Composable
@@ -137,10 +98,11 @@ internal fun CombatSessionBanner(
     defenseBonus: Int,
     equippedFood: Map<String, Int>,
     foodHealValues: Map<String, Int>,
+    foodEatOrder: String,
     showEndTime: Boolean = true,
     repeatIndex: Int = 0,
     repeatTotal: Int = 0,
-    hiredMercs: List<com.fantasyidler.ui.viewmodel.MercContract> = emptyList(),
+    hiredMercs: List<MercContract> = emptyList(),
     onAbandon: () -> Unit,
     onDebugFinish: () -> Unit,
 ) {
@@ -165,13 +127,22 @@ internal fun CombatSessionBanner(
             } else session.activityKey
         }
 
+    // Each GameStrings lookup creates a configuration context, and the log rebuild
+    // resolved a name per kill line every half-tick, stalling kill-heavy sessions
+    // (issue #1727). Resolve each enemy key once per session instead.
+    val enemyNames = remember(session.sessionId) { mutableMapOf<String, String>() }
+    fun enemyDisplayName(key: String): String = enemyNames.getOrPut(key) {
+        bosses.firstOrNull { it.id == key }?.let { GameStrings.bossName(context, it.id) }
+            ?: enemies[key]?.let { GameStrings.enemyName(context, key) } ?: key
+    }
+
     var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
     var showAbandonConfirm by remember { mutableStateOf(false) }
     val endsAt = session.endsAt
     LaunchedEffect(endsAt) {
         while (System.currentTimeMillis() < endsAt) {
             now = System.currentTimeMillis()
-            delay(500L)
+            delay(500.milliseconds)
         }
         now = System.currentTimeMillis()
     }
@@ -192,14 +163,6 @@ internal fun CombatSessionBanner(
     }
     val currentFrame = frames.getOrNull(currentFrameIdx)
 
-    val currentEnemyKey: String? = remember(currentFrameIdx) {
-        currentFrame?.enemyKey?.takeIf { it.isNotEmpty() }
-            ?: frames.take(currentFrameIdx + 1)
-                .lastOrNull { it.killsByEnemy.isNotEmpty() }
-                ?.killsByEnemy?.keys?.firstOrNull()
-    }
-    val currentEnemy = currentEnemyKey?.let { enemies[it] }
-
     val isBoss = session.skillName == "boss"
     // Pace by the session's true tick cadence, not the current frame's own hit count: a
     // partial final frame would otherwise stretch its few hits across the whole minute
@@ -213,24 +176,25 @@ internal fun CombatSessionBanner(
     val halfTickInFrame = if (!isDone) ((now - frameStartMs) * 2 / attackSpeedMs).toInt().coerceIn(0, maxTick * 2 + 1) else maxTick * 2 + 1
     val tickInFrame = halfTickInFrame / 2
 
+    // Each kill respawns a random enemy type mid-minute, so the tick-exact enemy, its HP,
+    // and the in-frame kill attribution all come from replaying the recorded spawn chain
+    // instead of pinning the whole minute on the frame's first enemy (issue #1690).
+    val replayState = remember(currentFrameIdx, tickInFrame) {
+        if (isBoss) null else replayFrameAt(frames, currentFrameIdx, tickInFrame, enemies)
+    }
+    val currentEnemyKey: String? = replayState?.enemyKey
+        ?: currentFrame?.enemyKey?.takeIf { it.isNotEmpty() }
+        ?: frames.take(currentFrameIdx + 1)
+            .lastOrNull { it.killsByEnemy.isNotEmpty() }
+            ?.killsByEnemy?.keys?.firstOrNull()
+    val currentEnemy = currentEnemyKey?.let { enemies[it] }
+
     val killsSoFar: Map<String, Int> = remember(currentFrameIdx, tickInFrame) {
         val acc = frames.take(currentFrameIdx).fold(mutableMapOf<String, Int>()) { a, f ->
             f.killsByEnemy.forEach { (k, v) -> a[k] = (a[k] ?: 0) + v }
             a
         }
-        val f = frames.getOrNull(currentFrameIdx)
-        if (f != null && !isBoss) {
-            val enemy = enemies[f.enemyKey]
-            if (enemy != null && f.playerHits.isNotEmpty()) {
-                var hp = enemyHpAtFrameStart(frames, currentFrameIdx, enemies) ?: enemy.hp
-                var kills = 0
-                for (dmg in f.playerHits.take(tickInFrame + 1)) {
-                    hp -= dmg
-                    if (hp <= 0) { kills++; hp = enemy.hp }
-                }
-                if (kills > 0) acc[f.enemyKey] = (acc[f.enemyKey] ?: 0) + kills
-            }
-        }
+        replayState?.killsInFrame?.forEach { (k, v) -> acc[k] = (acc[k] ?: 0) + v }
         acc
     }
 
@@ -286,7 +250,19 @@ internal fun CombatSessionBanner(
 
         if (!isDone) {
             Text(
-                text       = remember(now, showEndTime) { endsAt.toCountdown(context, showEndTime) },
+                text       = remember(now, showEndTime) {
+                    if (isBoss && sessionBoss != null) {
+                        // Agility/Chronospire compress the playback, but the boss always gets
+                        // its full durationMinutes of simulated fight: show the fight clock so
+                        // a shorter playback doesn't read as less time to beat the boss
+                        // (issue #1590). The real completion time stays in the parentheses.
+                        val actualMs = (endsAt - session.startedAt).coerceAtLeast(1L)
+                        val fightRemainingMs = (endsAt - now).coerceAtLeast(0L) *
+                            (sessionBoss.durationMinutes * 60_000L) / actualMs
+                        (now + fightRemainingMs).toCountdown(context, showEndTime = false) +
+                            if (showEndTime) " (${endsAt.toClockTime(context)})" else ""
+                    } else endsAt.toCountdown(context, showEndTime)
+                },
                 style      = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
                 color      = MaterialTheme.colorScheme.primary,
@@ -325,14 +301,7 @@ internal fun CombatSessionBanner(
                             (currentFrame?.allyHits?.take(tickInFrame + 1)?.sum() ?: 0)
                         (currentBoss.hp - prevDmg - curDmg).coerceAtLeast(0)
                     }
-                    currentEnemy != null && currentFrame?.playerHits?.isNotEmpty() == true -> {
-                        var hp = enemyHpAtFrameStart(frames, currentFrameIdx, enemies) ?: currentEnemy.hp
-                        for (dmg in currentFrame.playerHits.take(tickInFrame + 1)) {
-                            hp -= dmg
-                            if (hp <= 0) hp = currentEnemy.hp
-                        }
-                        hp.coerceAtLeast(0)
-                    }
+                    currentEnemy != null -> replayState?.enemyHp ?: currentEnemy.hp
                     else -> currentEnemy?.hp ?: 0
                 }
 
@@ -341,21 +310,31 @@ internal fun CombatSessionBanner(
                 // tick they actually happened (issue #935).
                 val combatLog = remember(currentFrameIdx, halfTickInFrame) {
                     buildList<CombatLogEntry> {
+                        fun nameOf(key: String) = enemyDisplayName(key)
+                        fun fullHpOf(key: String) = if (!isBoss) enemies[key]?.hp ?: Int.MAX_VALUE else Int.MAX_VALUE
+                        var key = ""
                         var hp = 0
-                        var prevKey: String? = null
+                        var carried = false
                         for (i in 0..currentFrameIdx) {
                             val f = frames.getOrNull(i) ?: break
-                            val eName = bosses.firstOrNull { it.id == f.enemyKey }?.let { GameStrings.bossName(context, it.id) }
-                                ?: enemies[f.enemyKey]?.let { GameStrings.enemyName(context, f.enemyKey) } ?: f.enemyKey
-                            val enemyHp = if (!isBoss) enemies[f.enemyKey]?.hp ?: Int.MAX_VALUE else Int.MAX_VALUE
-                            if (f.enemyKey != prevKey) hp = enemyHp
-                            prevKey = f.enemyKey
+                            // A mid-minute kill switches to the recorded next spawn, so names,
+                            // kill lines, and HP follow the actual enemy chain (issue #1690).
+                            if (!carried || f.enemyKey != key) { key = f.enemyKey; hp = fullHpOf(key) }
+                            carried = true
+                            var eName = nameOf(key)
+                            var killIdx = 0
                             val lastTick = if (i < currentFrameIdx) maxOf(f.playerHits.size, f.enemyHits.size) - 1 else tickInFrame
                             for (t in 0..lastTick) {
                                 f.playerHits.getOrNull(t)?.let { dmg ->
-                                    add(CombatLogEntry(true, dmg, eName))
+                                    add(CombatLogEntry(true, dmg, eName, doubleHit = t in f.doubleHitTicks))
                                     hp -= dmg
-                                    if (hp <= 0) { add(CombatLogEntry(false, 0, eName, isKill = true)); hp = enemyHp }
+                                    if (hp <= 0) {
+                                        add(CombatLogEntry(false, 0, eName, isKill = true))
+                                        key = f.spawnsAfterKills.getOrNull(killIdx) ?: key
+                                        killIdx++
+                                        hp = fullHpOf(key)
+                                        eName = nameOf(key)
+                                    }
                                 }
                                 f.allyHits.getOrNull(t)?.takeIf { it > 0 }
                                     ?.let { add(CombatLogEntry(true, it, eName, ally = true)) }
@@ -394,7 +373,7 @@ internal fun CombatSessionBanner(
                         // ── Enemy ──────────────────────────────────────────
                         if (currentBoss != null) {
                             Text(
-                                text       = "${currentBoss.emoji} ${GameStrings.bossName(context, currentBoss.id)}",
+                                text       = GameStrings.bossName(context, currentBoss.id),
                                 style      = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
                                 color      = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -448,7 +427,7 @@ internal fun CombatSessionBanner(
                         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = divColor)
                         val hpPct   = currentPlayerHp * 100 / maxHp
                         val hpColor = when {
-                            hpPct >= 50 -> Color(0xFF4CAF50)
+                            hpPct >= 50 -> MaterialTheme.colorScheme.tertiary
                             hpPct >= 20 -> Color(0xFFFFC107)
                             else        -> MaterialTheme.colorScheme.error
                         }
@@ -471,12 +450,19 @@ internal fun CombatSessionBanner(
                             progress  = { if (maxHp > 0) currentPlayerHp / maxHp.toFloat() else 0f },
                             modifier  = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
                             color     = hpColor,
-                            trackColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.15f),
+                            trackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
                         )
                         val atkLabel = stringResource(R.string.combat_atk)
                         val strLabel = stringResource(R.string.combat_str)
                         val defLabel = stringResource(R.string.combat_def)
-                        val bonusParts = buildList {
+                        // Effective stats the simulation fought with (levels, gear, potions,
+                        // blessings, prestige), stamped on frame 0 (issue #1569). Sessions
+                        // simulated before the stamp existed fall back to gear bonuses.
+                        val statsAtStart = frames.firstOrNull()?.statsAtStart ?: emptyMap()
+                        val bonusParts = if (statsAtStart.isNotEmpty()) {
+                            listOf("atk" to atkLabel, "str" to strLabel, "def" to defLabel)
+                                .mapNotNull { (key, label) -> statsAtStart[key]?.let { "$label $it" } }
+                        } else buildList {
                             if (attackBonus   != 0) add("+$attackBonus $atkLabel")
                             if (strengthBonus != 0) add("+$strengthBonus $strLabel")
                             if (defenseBonus  != 0) add("+$defenseBonus $defLabel")
@@ -509,7 +495,7 @@ internal fun CombatSessionBanner(
                                 val downed    = mercHpNow <= 0
                                 val mercHpPct   = if (mercMaxHp > 0) mercHpNow * 100 / mercMaxHp else 0
                                 val mercHpColor = when {
-                                    mercHpPct >= 50 -> Color(0xFF4CAF50)
+                                    mercHpPct >= 50 -> MaterialTheme.colorScheme.tertiary
                                     mercHpPct >= 20 -> Color(0xFFFFC107)
                                     else            -> MaterialTheme.colorScheme.error
                                 }
@@ -535,7 +521,7 @@ internal fun CombatSessionBanner(
                                     progress  = { if (mercMaxHp > 0) mercHpNow / mercMaxHp.toFloat() else 0f },
                                     modifier  = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
                                     color     = mercHpColor,
-                                    trackColor = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.15f),
+                                    trackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
                                 )
                                 Spacer(Modifier.height(4.dp))
                                 Text(
@@ -571,7 +557,14 @@ internal fun CombatSessionBanner(
                                 color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f),
                             )
                             Spacer(Modifier.height(2.dp))
-                            for ((key, startQty) in foodAtStart) {
+                            for ((key, startQty) in foodAtStart.entries.sortedBy {
+                                when (foodEatOrder) {
+                                    "descending" -> -(foodHealValues[it.key] ?: 0)
+                                    "ascending" -> foodHealValues[it.key] ?: 0
+                                    "least_quantity" -> it.value
+                                    else -> 0
+                                }
+                            }) {
                                 val remaining = (startQty - (foodConsumedSoFar[key] ?: 0)).coerceAtLeast(0)
                                 val heal      = foodHealValues[key] ?: 0
                                 val name      = GameStrings.itemName(context, key)
@@ -589,7 +582,14 @@ internal fun CombatSessionBanner(
                                 Spacer(Modifier.height(2.dp))
                                 Text(
                                     text  = foodConsumedSoFar.entries
-                                        .sortedByDescending { it.value }
+                                        .sortedBy {
+                                            when (foodEatOrder) {
+                                                "descending" -> -(foodHealValues[it.key] ?: 0)
+                                                "ascending" -> foodHealValues[it.key] ?: 0
+                                                "least_quantity" -> foodAtStart[it.key] ?: 0
+                                                else -> 0
+                                            }
+                                        }
                                         .joinToString(", ") { (k, v) ->
                                             "$v ${GameStrings.itemName(context, k)}"
                                         }
@@ -607,9 +607,7 @@ internal fun CombatSessionBanner(
                             Text(
                                 text  = killsSoFar.entries
                                     .sortedByDescending { it.value }
-                                    .joinToString(", ") { (k, v) ->
-                                        "$v ${bosses.firstOrNull { it.id == k }?.let { GameStrings.bossName(context, it.id) } ?: enemies[k]?.let { GameStrings.enemyName(context, k) } ?: k}"
-                                    }
+                                    .joinToString(", ") { (k, v) -> "$v ${enemyDisplayName(k)}" }
                                     + " $defeatedSoFar",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -675,7 +673,7 @@ internal fun CombatSessionBanner(
                                         Text(
                                             text  = stringResource(R.string.combat_log_heal, entry.heal),
                                             style = MaterialTheme.typography.bodySmall,
-                                            color = Color(0xFF4CAF50),
+                                            color = MaterialTheme.colorScheme.tertiary,
                                         )
                                     } else if (entry.isKill) {
                                         Text(
@@ -690,12 +688,16 @@ internal fun CombatSessionBanner(
                                             color = Color(0xFF64B5F6),
                                         )
                                     } else if (entry.isPlayer) {
-                                        val color = if (entry.damage > 0) Color(0xFF4CAF50)
+                                        val color = if (entry.damage > 0) MaterialTheme.colorScheme.tertiary
                                                     else MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.45f)
-                                        val text = if (entry.damage > 0)
-                                            stringResource(R.string.combat_log_player_hit, entry.enemyName, entry.damage)
-                                        else
-                                            stringResource(R.string.combat_log_player_miss, entry.enemyName)
+                                        val text = when {
+                                            entry.doubleHit && entry.damage > 0 ->
+                                                stringResource(R.string.combat_log_player_double_hit, entry.enemyName, entry.damage)
+                                            entry.damage > 0 ->
+                                                stringResource(R.string.combat_log_player_hit, entry.enemyName, entry.damage)
+                                            else ->
+                                                stringResource(R.string.combat_log_player_miss, entry.enemyName)
+                                        }
                                         Text(text = text, style = MaterialTheme.typography.bodySmall, color = color)
                                     } else {
                                         val color = if (entry.damage > 0) MaterialTheme.colorScheme.error
@@ -761,30 +763,55 @@ internal fun CombatSessionBanner(
     }
 }
 
+/** Tick-exact dungeon replay result: the enemy under attack, its remaining HP, and this frame's per-type kills. */
+private data class FrameReplayState(
+    val enemyKey: String,
+    val enemyHp: Int,
+    val killsInFrame: Map<String, Int>,
+)
+
 /**
- * Enemy HP carried into [frameIdx], mirroring the simulator's cross-frame carryover: a
- * partially damaged enemy persists across minute boundaries, resetting only on a kill or
- * when the enemy type changes. Replaying every frame from full HP would show kills later
- * than they happened (issue #935). Null when the frame's enemy starts fresh or is unknown.
+ * Replays player hits through [frameIdx] up to [tickInFrame], following each frame's
+ * recorded spawn chain: the minute starts on [SessionFrame.enemyKey] and every kill
+ * switches to the next entry of [SessionFrame.spawnsAfterKills] at that enemy's full HP
+ * (issue #1690). Enemy HP carries across minute boundaries like the simulator's
+ * carryover: it resets only on a kill or when the enemy type changes (issue #935).
+ * Frames from before the spawn chain existed keep the old same-enemy behavior. Null for
+ * a missing frame or one with no combat enemy.
  */
-private fun enemyHpAtFrameStart(
+private fun replayFrameAt(
     frames: List<SessionFrame>,
     frameIdx: Int,
+    tickInFrame: Int,
     enemies: Map<String, EnemyData>,
-): Int? {
+): FrameReplayState? {
     val frame = frames.getOrNull(frameIdx) ?: return null
-    val full  = enemies[frame.enemyKey]?.hp ?: return null
-    var hp = full
-    var prevKey: String? = null
+    if (frame.enemyKey.isEmpty()) return null
+    var key = ""
+    var hp = 0
+    var carried = false
+    fun resetTo(newKey: String) { key = newKey; hp = enemies[newKey]?.hp ?: Int.MAX_VALUE }
     for (i in 0 until frameIdx) {
-        val f     = frames.getOrNull(i) ?: break
-        val fFull = enemies[f.enemyKey]?.hp ?: continue
-        if (f.enemyKey != prevKey) hp = fFull
+        val f = frames.getOrNull(i) ?: break
+        if (f.enemyKey.isEmpty()) continue
+        if (!carried || f.enemyKey != key) resetTo(f.enemyKey)
+        carried = true
+        var killIdx = 0
         for (dmg in f.playerHits) {
             hp -= dmg
-            if (hp <= 0) hp = fFull
+            if (hp <= 0) { resetTo(f.spawnsAfterKills.getOrNull(killIdx) ?: key); killIdx++ }
         }
-        prevKey = f.enemyKey
     }
-    return if (frame.enemyKey == prevKey) hp else full
+    if (!carried || frame.enemyKey != key) resetTo(frame.enemyKey)
+    val kills = mutableMapOf<String, Int>()
+    var killIdx = 0
+    for (dmg in frame.playerHits.take(tickInFrame + 1)) {
+        hp -= dmg
+        if (hp <= 0) {
+            kills[key] = (kills[key] ?: 0) + 1
+            resetTo(frame.spawnsAfterKills.getOrNull(killIdx) ?: key)
+            killIdx++
+        }
+    }
+    return FrameReplayState(key, hp.coerceAtLeast(0), kills)
 }

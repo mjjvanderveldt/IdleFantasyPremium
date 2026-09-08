@@ -32,6 +32,7 @@ import com.fantasyidler.repository.QueuedSessionStarter
 import com.fantasyidler.repository.SeasonalEventRepository
 import com.fantasyidler.repository.SessionRepository
 import com.fantasyidler.repository.TownRepository
+import com.fantasyidler.simulator.PrestigeBoosts
 import com.fantasyidler.simulator.SkillSimulator
 import com.fantasyidler.simulator.ThievingSimulator
 import com.fantasyidler.simulator.XpTable
@@ -49,9 +50,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
+import kotlin.random.Random
 import javax.inject.Inject
 import android.content.Context
 import com.fantasyidler.R
+import com.fantasyidler.data.model.OwnedPet
+import com.fantasyidler.data.model.QuestProgress
 import com.fantasyidler.util.GameStrings
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -93,6 +97,8 @@ data class SkillsUiState(
     /** Actual per-log burn duration, tinderbox tier bonus applied. Keyed by log key. */
     val firemakingPerLogMs: Map<String, Long> = emptyMap(),
     val skillPrestige: Map<String, Int> = emptyMap(),
+    /** Skills at 99+ where another prestige still earns points or an XP tier. */
+    val prestigeReadySkills: Set<String> = emptySet(),
     val ironman: Boolean = false,
     val showPrestigeNotifications: Boolean = true,
     val inventory: Map<String, Int> = emptyMap(),
@@ -104,9 +110,10 @@ data class SkillsUiState(
     val showQuestDots: Boolean = true,
     /** Guild dailies plus daily/weekly quests for each sheet skill, keyed by skill (guild keys match skill keys). */
     val sheetQuests: Map<String, List<SheetQuestSummary>> = emptyMap(),
+    val seasonalEventEmoji: String? = null,
 )
 
-enum class SheetQuestSource { GUILD, DAILY, WEEKLY }
+enum class SheetQuestSource { GUILD, DAILY, WEEKLY, SEASONAL }
 
 data class SheetQuestSummary(
     val questId: String,
@@ -123,6 +130,8 @@ data class SheetQuestSummary(
     val description: String = "",
     /** Guild dailies only: true once the guild's rank is capped, so dailies no longer advance tier progression. */
     val guildMaxed: Boolean = false,
+    /** False when the player's skill level no longer meets the target activity's requirement (e.g. after prestige). */
+    val meetsLevel: Boolean = true,
 )
 
 sealed class SheetState {
@@ -195,6 +204,8 @@ class SkillsViewModel @Inject constructor(
             val inv:      Map<String, Int>     = json.decodeFromString(player.inventory)
             val flags = try { json.decodeFromString<PlayerFlags>(player.flags) } catch (_: Exception) { PlayerFlags() }
             val activeQuests = computeActiveQuests(questProgress, flags, inv)
+            val activeEvent = seasonalEventRepo.activeEvent()
+            val seasonalEmoji = if (activeEvent != null && "bounty" in activeEvent.pillars) activeEvent.iconEmoji else null
             extra.copy(
                 isLoading             = false,
                 skillLevels           = levels,
@@ -203,25 +214,28 @@ class SkillsViewModel @Inject constructor(
                 anySessionActive      = session != null,
                 queueSize             = flags.sessionQueue.size,
                 maxQueueSize          = playerRepo.maxQueueSize(flags),
-                miningEfficiency      = gameData.toolEfficiency(equipped[EquipSlot.PICKAXE],     EquipSlot.PICKAXE,     0) * boostRepo.toolEffMultiplier(Skills.MINING, flags),
-                woodcuttingEfficiency = gameData.toolEfficiency(equipped[EquipSlot.AXE],         EquipSlot.AXE,         0) * boostRepo.toolEffMultiplier(Skills.WOODCUTTING, flags),
-                fishingEfficiency     = gameData.toolEfficiency(equipped[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD, 0) * boostRepo.toolEffMultiplier(Skills.FISHING, flags),
-                farmingEfficiency     = gameData.toolEfficiency(equipped[EquipSlot.HOE],         EquipSlot.HOE,         0),
-                firemakingEfficiency  = gameData.toolEfficiency(equipped[EquipSlot.TINDERBOX],      EquipSlot.TINDERBOX,      0),
-                smithingEfficiency    = gameData.toolEfficiency(equipped[EquipSlot.HAMMER],         EquipSlot.HAMMER,         0),
-                agilityEfficiency     = gameData.toolEfficiency(equipped[EquipSlot.GRAPPLING_HOOK], EquipSlot.GRAPPLING_HOOK, 0),
-                thievingEfficiency    = gameData.toolEfficiency(equipped[EquipSlot.LOCKPICK],       EquipSlot.LOCKPICK,       0),
-                cookingEfficiency     = gameData.toolEfficiency(equipped[EquipSlot.FRYING_PAN],     EquipSlot.FRYING_PAN,     0),
+                miningEfficiency      = gameData.toolEfficiency(equipped[EquipSlot.PICKAXE],     EquipSlot.PICKAXE,     0, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.MINING, flags, levels[Skills.MINING] ?: 1),
+                woodcuttingEfficiency = gameData.toolEfficiency(equipped[EquipSlot.AXE],         EquipSlot.AXE,         0, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.WOODCUTTING, flags, levels[Skills.WOODCUTTING] ?: 1),
+                fishingEfficiency     = gameData.toolEfficiency(equipped[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD, 0, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.FISHING, flags, levels[Skills.FISHING] ?: 1),
+                farmingEfficiency     = gameData.toolEfficiency(equipped[EquipSlot.HOE],         EquipSlot.HOE,         0, skillLevels = levels, heirloomXp = flags.heirloomXp),
+                firemakingEfficiency  = gameData.toolEfficiency(equipped[EquipSlot.TINDERBOX],      EquipSlot.TINDERBOX,      0, skillLevels = levels, heirloomXp = flags.heirloomXp),
+                smithingEfficiency    = gameData.toolEfficiency(equipped[EquipSlot.HAMMER],         EquipSlot.HAMMER,         0, skillLevels = levels, heirloomXp = flags.heirloomXp),
+                agilityEfficiency     = gameData.toolEfficiency(equipped[EquipSlot.GRAPPLING_HOOK], EquipSlot.GRAPPLING_HOOK, 0, skillLevels = levels, heirloomXp = flags.heirloomXp),
+                thievingEfficiency    = gameData.toolEfficiency(equipped[EquipSlot.LOCKPICK],       EquipSlot.LOCKPICK,       0, skillLevels = levels, heirloomXp = flags.heirloomXp),
+                cookingEfficiency     = gameData.toolEfficiency(equipped[EquipSlot.FRYING_PAN],     EquipSlot.FRYING_PAN,     0, skillLevels = levels, heirloomXp = flags.heirloomXp),
                 xpBonusMult           = if (flags.ironman) 1.0f
                                         else (if (flags.xpBoostExpiresAt > System.currentTimeMillis()) 2.0f else 1.0f) * ChurchRepository.xpMultiplier(flags, blessingPrayerCapeMult(flags, equipped, inv.keys, gameData)),
                 petBoosts             = listOf(Skills.MINING, Skills.WOODCUTTING, Skills.FISHING, Skills.AGILITY)
                     .associateWith { if (flags.ironman) 0 else petBoostFor(player.pets, it) },
                 sessionDurationMs     = SkillSimulator.sessionDurationMs(levels[Skills.AGILITY] ?: 1, boostRepo.sessionFloorReductionMin(flags), townRepo.playerSessionDurationMultiplier(flags)),
                 firemakingPerLogMs    = gameData.logs.mapValues { (_, log) ->
-                    val toolEff = gameData.toolEfficiency(equipped[EquipSlot.TINDERBOX], EquipSlot.TINDERBOX, log.levelRequired)
+                    val toolEff = gameData.toolEfficiency(equipped[EquipSlot.TINDERBOX], EquipSlot.TINDERBOX, log.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp)
                     (SkillSimulator.sessionDurationMs(levels[Skills.AGILITY] ?: 1, boostRepo.sessionFloorReductionMin(flags), townRepo.playerSessionDurationMultiplier(flags)) / 60L / toolEff).toLong()
                 },
                 skillPrestige         = flags.skillPrestige,
+                prestigeReadySkills   = Skills.ALL.filterTo(mutableSetOf()) {
+                    (levels[it] ?: 1) >= 99 && PrestigeBoosts.prestigeHasReward(gameData.prestigeTrees, flags, it)
+                },
                 ironman               = flags.ironman,
                 showPrestigeNotifications = flags.showPrestigeNotifications,
                 inventory             = inv,
@@ -235,7 +249,8 @@ class SkillsViewModel @Inject constructor(
                     .mapValues { (_, lists) ->
                         lists.flatten()
                             .filter {
-                                it.category == QuestCategory.DAILY || it.category == QuestCategory.WEEKLY || it.category == QuestCategory.GUILD_DAILY
+                                it.category == QuestCategory.DAILY || it.category == QuestCategory.WEEKLY ||
+                                it.category == QuestCategory.SEASONAL || it.category == QuestCategory.GUILD_DAILY
                             }
                             // "any"-target quests add one indicator per matching activity
                             // (e.g. every buriable bone), so collapse back to one per quest.
@@ -245,7 +260,8 @@ class SkillsViewModel @Inject constructor(
                     .filterValues { it.isNotEmpty() },
                 showSessionEndTime    = flags.showSessionEndTime,
                 showQuestDots         = flags.showQuestDots,
-                sheetQuests           = computeSheetQuests(questProgress, flags),
+                sheetQuests           = computeSheetQuests(questProgress, flags, levels, inv),
+                seasonalEventEmoji    = seasonalEmoji,
             )
         }
     }.flowOn(Dispatchers.Default)
@@ -387,7 +403,7 @@ class SkillsViewModel @Inject constructor(
             agilityLevel     = levels[Skills.AGILITY] ?: 1,
             floorReductionMin  = boostRepo.sessionFloorReductionMin(flags),
             petBoostPct      = boostRepo.boostedPetPct(Skills.MINING, flags, petBoostFor(player.pets, Skills.MINING, flags.ironman)),
-            toolEfficiency   = gameData.toolEfficiency(equipped[EquipSlot.PICKAXE], EquipSlot.PICKAXE, oreData.levelRequired) * boostRepo.toolEffMultiplier(Skills.MINING, flags),
+            toolEfficiency   = gameData.toolEfficiency(equipped[EquipSlot.PICKAXE], EquipSlot.PICKAXE, oreData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.MINING, flags, levels[Skills.MINING] ?: 1),
             petDropKey       = petKey,
             petDropChance    = petChance,
             chronosMultiplier = townRepo.playerSessionDurationMultiplier(flags),
@@ -411,7 +427,7 @@ class SkillsViewModel @Inject constructor(
             agilityLevel     = levels[Skills.AGILITY] ?: 1,
             floorReductionMin  = boostRepo.sessionFloorReductionMin(flags),
             petBoostPct      = boostRepo.boostedPetPct(Skills.WOODCUTTING, flags, petBoostFor(player.pets, Skills.WOODCUTTING, flags.ironman)),
-            toolEfficiency   = gameData.toolEfficiency(equipped[EquipSlot.AXE], EquipSlot.AXE, treeData.levelRequired) * boostRepo.toolEffMultiplier(Skills.WOODCUTTING, flags),
+            toolEfficiency   = gameData.toolEfficiency(equipped[EquipSlot.AXE], EquipSlot.AXE, treeData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.WOODCUTTING, flags, levels[Skills.WOODCUTTING] ?: 1),
             petDropKey       = petKey,
             petDropChance    = petChance,
             chronosMultiplier = townRepo.playerSessionDurationMultiplier(flags),
@@ -433,7 +449,7 @@ class SkillsViewModel @Inject constructor(
             agilityLevel    = levels[Skills.AGILITY] ?: 1,
             floorReductionMin = boostRepo.sessionFloorReductionMin(flags),
             petBoostPct     = boostRepo.boostedPetPct(Skills.AGILITY, flags, petBoostFor(player.pets, Skills.AGILITY, flags.ironman)),
-            toolEfficiency  = gameData.toolEfficiency(equipped[EquipSlot.GRAPPLING_HOOK], EquipSlot.GRAPPLING_HOOK, courseData.levelRequired),
+            toolEfficiency  = gameData.toolEfficiency(equipped[EquipSlot.GRAPPLING_HOOK], EquipSlot.GRAPPLING_HOOK, courseData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp),
             petDropKey      = petKey,
             petDropChance   = petChance,
             chronosMultiplier = townRepo.playerSessionDurationMultiplier(flags),
@@ -455,7 +471,7 @@ class SkillsViewModel @Inject constructor(
             val flags = try { json.decodeFromString<PlayerFlags>(player.flags) } catch (_: Exception) { PlayerFlags() }
             val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
             val logData = gameData.logs[logKey]
-            val toolEff = gameData.toolEfficiency(equipped[EquipSlot.TINDERBOX], EquipSlot.TINDERBOX, logData?.levelRequired ?: 0)
+            val toolEff = gameData.toolEfficiency(equipped[EquipSlot.TINDERBOX], EquipSlot.TINDERBOX, logData?.levelRequired ?: 0, skillLevels = levels, heirloomXp = flags.heirloomXp)
             val perLogMs = (SkillSimulator.sessionDurationMs(agility, boostRepo.sessionFloorReductionMin(flags), townRepo.playerSessionDurationMultiplier(flags)) / 60L / toolEff).toLong()
             val logXp = logData?.xpPerLog?.toLong() ?: 0L
             val xpQueueMult = if (flags.ironman) 1.0 else (if (flags.xpBoostExpiresAt > System.currentTimeMillis()) 2.0 else 1.0) * ChurchRepository.xpMultiplier(flags, blessingPrayerCapeMult(player, flags, gameData))
@@ -716,7 +732,7 @@ class SkillsViewModel @Inject constructor(
             agilityLevel     = levels[Skills.AGILITY] ?: 1,
             floorReductionMin  = boostRepo.sessionFloorReductionMin(flags),
             petBoostPct      = boostRepo.boostedPetPct(Skills.FISHING, flags, petBoostFor(player.pets, Skills.FISHING, flags.ironman)),
-            rodEfficiency    = gameData.toolEfficiency(equipped[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD, fishData.levelRequired) * boostRepo.toolEffMultiplier(Skills.FISHING, flags),
+            rodEfficiency    = gameData.toolEfficiency(equipped[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD, fishData.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.FISHING, flags, levels[Skills.FISHING] ?: 1),
             petDropKey       = petKey,
             petDropChance    = petChance,
             fishingSkillData = gameData.fishingSkillData,
@@ -735,7 +751,7 @@ class SkillsViewModel @Inject constructor(
                 val levels = json.decodeFromString<Map<String, Int>>(player.skillLevels)
                 val thievingLevel = levels[Skills.THIEVING] ?: 1
                 val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
-                val lockpickEff = gameData.toolEfficiency(equipped[EquipSlot.LOCKPICK], EquipSlot.LOCKPICK, npc.levelRequired)
+                val lockpickEff = gameData.toolEfficiency(equipped[EquipSlot.LOCKPICK], EquipSlot.LOCKPICK, npc.levelRequired, skillLevels = levels, heirloomXp = thievingFlags.heirloomXp)
                 val successChance = (0.40 + (thievingLevel - npc.levelRequired) * 0.02 * lockpickEff +
                     boostRepo.thievingSuccessBonus(thievingFlags)).coerceIn(0.10, 0.98)
                 val petBoostPct = petBoostFor(player.pets, Skills.THIEVING, thievingFlags.ironman)
@@ -782,7 +798,7 @@ class SkillsViewModel @Inject constructor(
                     petBoostPct     = boostRepo.boostedPetPct(Skills.THIEVING, flags, petBoostFor(player.pets, Skills.THIEVING, flags.ironman)),
                     petDropKey      = petKey,
                     petDropChance   = petChance,
-                    toolEfficiency  = gameData.toolEfficiency(equipped[EquipSlot.LOCKPICK], EquipSlot.LOCKPICK, npc.levelRequired),
+                    toolEfficiency  = gameData.toolEfficiency(equipped[EquipSlot.LOCKPICK], EquipSlot.LOCKPICK, npc.levelRequired, skillLevels = levels, heirloomXp = flags.heirloomXp),
                     chronosMultiplier = townRepo.playerSessionDurationMultiplier(flags),
                     successBonus = boostRepo.thievingSuccessBonus(flags),
                 )
@@ -797,6 +813,15 @@ class SkillsViewModel @Inject constructor(
                     durationMs       = result.durationMs,
                     skillDisplayName = "Thieving",
                 )
+                _uiState.update {
+                    it.copy(
+                        snackbarMessage = context.withAppLocale().getString(
+                            R.string.skill_added_to_queue_activity,
+                            GameStrings.skillName(context, Skills.THIEVING),
+                            GameStrings.thievingNpcName(context, npcKey),
+                        ),
+                    )
+                }
             } catch (e: Exception) {
                 _uiState.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.skill_session_start_failed, e.message ?: "")) }
             } finally {
@@ -817,12 +842,13 @@ class SkillsViewModel @Inject constructor(
             // loop over startSession instead -- concurrent launches would race the
             // getActiveSession check and start several live sessions.
             var toQueue = count
+            var startedLive = false
             if (sessionRepo.getActiveSession() == null) {
                 _uiState.update { it.copy(startingSession = true) }
                 try {
                     val result = simulate()
                     val framesJson = json.encodeToString(
-                        json.serializersModule.serializer<List<com.fantasyidler.data.model.SessionFrame>>(),
+                        json.serializersModule.serializer<List<SessionFrame>>(),
                         result.frames,
                     )
                     sessionRepo.startSession(
@@ -833,6 +859,7 @@ class SkillsViewModel @Inject constructor(
                         skillDisplayName = skillName.replaceFirstChar { it.uppercase() },
                     )
                     toQueue -= 1
+                    startedLive = true
                 } catch (e: Exception) {
                     _uiState.update {
                         it.copy(snackbarMessage = context.withAppLocale().getString(R.string.skill_session_start_failed, e.message ?: ""))
@@ -842,12 +869,27 @@ class SkillsViewModel @Inject constructor(
                     _uiState.update { it.copy(startingSession = false) }
                 }
             }
-            if (toQueue <= 0) return@launch
 
             val displayName  = GameStrings.skillName(context, skillName)
             val actDisplay   = GameStrings.activityName(context, skillName, activityKey)
+
+            if (toQueue <= 0) {
+                if (startedLive) {
+                    _uiState.update {
+                        it.copy(
+                            snackbarMessage = if (activityKey.isNotEmpty())
+                                context.withAppLocale().getString(R.string.skill_added_to_queue_activity, displayName, actDisplay)
+                            else
+                                context.withAppLocale().getString(R.string.slayer_queue_added, displayName),
+                        )
+                    }
+                }
+                return@launch
+            }
+
             val player       = playerRepo.getOrCreatePlayer()
-            val agility      = (json.decodeFromString<Map<String, Int>>(player.skillLevels))[Skills.AGILITY] ?: 1
+            val gatherLevels: Map<String, Int> = json.decodeFromString(player.skillLevels)
+            val agility      = gatherLevels[Skills.AGILITY] ?: 1
             val gatherFlags = try { json.decodeFromString<PlayerFlags>(player.flags) } catch (_: Exception) { PlayerFlags() }
             val xpQueueMult = if (gatherFlags.ironman) 1.0 else (if (gatherFlags.xpBoostExpiresAt > System.currentTimeMillis()) 2.0 else 1.0) * ChurchRepository.xpMultiplier(gatherFlags, blessingPrayerCapeMult(player, gatherFlags, gameData))
             val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
@@ -855,21 +897,21 @@ class SkillsViewModel @Inject constructor(
             val rawXp = when (skillName) {
                 Skills.MINING      -> SkillSimulator.estimateGatheringXp(
                     gameData.ores[activityKey]?.xpPerOre ?: 0,
-                    gameData.toolEfficiency(equipped[EquipSlot.PICKAXE], EquipSlot.PICKAXE),
+                    gameData.toolEfficiency(equipped[EquipSlot.PICKAXE], EquipSlot.PICKAXE, skillLevels = gatherLevels, heirloomXp = gatherFlags.heirloomXp),
                 )
                 Skills.WOODCUTTING -> SkillSimulator.estimateGatheringXp(
                     gameData.trees[activityKey]?.xpPerLog ?: 0,
-                    gameData.toolEfficiency(equipped[EquipSlot.AXE], EquipSlot.AXE),
+                    gameData.toolEfficiency(equipped[EquipSlot.AXE], EquipSlot.AXE, skillLevels = gatherLevels, heirloomXp = gatherFlags.heirloomXp),
                 )
                 Skills.FISHING     -> SkillSimulator.estimateGatheringXp(
                     gameData.fish[activityKey]?.xpPerCatch ?: 0,
-                    gameData.toolEfficiency(equipped[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD),
+                    gameData.toolEfficiency(equipped[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD, skillLevels = gatherLevels, heirloomXp = gatherFlags.heirloomXp),
                 )
                 Skills.AGILITY     -> {
                     val course = gameData.agilityCourses[activityKey]
                     SkillSimulator.estimateAgilityXp(
                         course?.xpPerSuccess ?: 0, course?.levelRequired ?: 1, agility,
-                        gameData.toolEfficiency(equipped[EquipSlot.GRAPPLING_HOOK], EquipSlot.GRAPPLING_HOOK),
+                        gameData.toolEfficiency(equipped[EquipSlot.GRAPPLING_HOOK], EquipSlot.GRAPPLING_HOOK, skillLevels = gatherLevels, heirloomXp = gatherFlags.heirloomXp),
                     )
                 }
                 else               -> 0L
@@ -892,6 +934,7 @@ class SkillsViewModel @Inject constructor(
                 if (!enqueued) break
                 enqueuedAny = true
             }
+
             if (enqueuedAny) queuedSessionStarter.startNextQueued()
             _uiState.update {
                 it.copy(
@@ -915,7 +958,7 @@ class SkillsViewModel @Inject constructor(
     fun abandonSession() {
         viewModelScope.launch {
             val session = sessionRepo.getActiveSession() ?: return@launch
-            val frames: List<com.fantasyidler.data.model.SessionFrame> = json.decodeFromString(session.frames)
+            val frames: List<SessionFrame> = json.decodeFromString(session.frames)
             if (session.skillName == Skills.MERCANTILE) {
                 val coinCost = gameData.tradeRoutes.firstOrNull { it.id == session.activityKey }?.coinCost?.toLong() ?: 0L
                 if (coinCost > 0) playerRepo.addCoins(coinCost)
@@ -933,8 +976,7 @@ class SkillsViewModel @Inject constructor(
 
     fun debugFinishSession() {
         viewModelScope.launch {
-            val session = sessionRepo.getActiveSession() ?: return@launch
-            sessionRepo.markCompleted(session.sessionId)
+            queuedSessionStarter.debugFinishActiveSessionWithRepeats()
         }
     }
 
@@ -992,7 +1034,7 @@ class SkillsViewModel @Inject constructor(
 
     private fun computeItemFills(
         itemKey: String,
-        questProgress: Map<String, com.fantasyidler.data.model.QuestProgress>,
+        questProgress: Map<String, QuestProgress>,
         flags: PlayerFlags,
     ): List<QuestFillSuggestion> {
         val fills = mutableListOf<QuestFillSuggestion>()
@@ -1048,11 +1090,23 @@ class SkillsViewModel @Inject constructor(
             if (remaining > 0) fills += QuestFillSuggestion(context.withAppLocale().getString(R.string.quest_fill_guild), remaining)
         }
 
+        // Seasonal Event Bounty Board, mirroring CraftingViewModel.computeQuestFills:
+        // without it the rune and log sheets showed no chip for craft bounties (issue #1732).
+        seasonalEventRepo.activeEvent()?.let { event ->
+            for (bounty in seasonalEventRepo.getActiveBounties(flags)) {
+                val task = bounty.task
+                if (task.type != "craft" || task.target != itemKey) continue
+                val remaining = task.amount - bounty.progress
+                if (remaining > 0)
+                    fills += QuestFillSuggestion(GameStrings.seasonalEventName(context, event.id, event.displayName), remaining)
+            }
+        }
+
         return fills.sortedBy { it.qty }
     }
 
     private fun computePrayerFills(
-        questProgress: Map<String, com.fantasyidler.data.model.QuestProgress>,
+        questProgress: Map<String, QuestProgress>,
         flags: PlayerFlags,
     ): List<QuestFillSuggestion> {
         val fills = mutableListOf<QuestFillSuggestion>()
@@ -1115,9 +1169,13 @@ class SkillsViewModel @Inject constructor(
     )
 
     private fun computeSheetQuests(
-        questProgress: List<com.fantasyidler.data.model.QuestProgress>,
+        questProgress: List<QuestProgress>,
         flags: PlayerFlags,
+        skillLevels: Map<String, Int>,
+        inventory: Map<String, Int> = emptyMap(),
     ): Map<String, List<SheetQuestSummary>> {
+        fun meetsLevel(type: String, skill: String, target: String): Boolean =
+            (skillLevels[skill] ?: 1) >= sheetQuestLevelRequired(type, skill, target)
         val completedIds = questProgress.filter { it.completed }.map { it.questId }.toSet()
         val result = mutableMapOf<String, MutableList<SheetQuestSummary>>()
         for (guild in skillGuilds) {
@@ -1138,6 +1196,7 @@ class SkillsViewModel @Inject constructor(
                     claimed    = daily.claimed,
                     source     = SheetQuestSource.GUILD,
                     guildMaxed = maxed,
+                    meetsLevel = meetsLevel(daily.template.type, guild, daily.template.target),
                 )
             }
         }
@@ -1155,6 +1214,7 @@ class SkillsViewModel @Inject constructor(
                 claimed     = dq.claimed,
                 source      = SheetQuestSource.DAILY,
                 description = dq.template.description,
+                meetsLevel  = meetsLevel(dq.template.type, skill, dq.template.target),
             )
         }
         for (wq in weeklyQuestRepo.getActiveWeeklyQuests(flags)) {
@@ -1171,6 +1231,25 @@ class SkillsViewModel @Inject constructor(
                 claimed     = wq.claimed,
                 source      = SheetQuestSource.WEEKLY,
                 description = wq.template.description,
+                meetsLevel  = meetsLevel(wq.template.type, skill, wq.template.target),
+            )
+        }
+        for (bounty in seasonalEventRepo.getActiveBounties(flags, inventory)) {
+            val task = bounty.task
+            val skill = task.skill ?: continue
+            if (skill !in skillGuilds) continue
+            result.getOrPut(skill) { mutableListOf() } += SheetQuestSummary(
+                questId     = task.id,
+                questName   = task.displayName,
+                guild       = skill,
+                type        = task.type,
+                target      = task.target,
+                progress    = bounty.progress,
+                amount      = task.amount,
+                claimed     = false,
+                source      = SheetQuestSource.SEASONAL,
+                description = task.hint,
+                meetsLevel  = meetsLevel(task.type, skill, task.target),
             )
         }
         return result
@@ -1182,6 +1261,10 @@ class SkillsViewModel @Inject constructor(
      * trade); craft-guild dailies are routed through CraftingViewModel instead.
      */
     fun queueDailySession(daily: SheetQuestSummary): Boolean {
+        // Guild dailies can outlive the level that rolled them (prestige resets the
+        // skill), so re-check the activity requirement here (issue #1563).
+        val level = uiState.value.skillLevels[daily.guild] ?: 1
+        if (sheetQuestLevelRequired(daily.type, daily.guild, daily.target) > level) return false
         val remaining = (daily.amount - daily.progress).coerceAtLeast(1)
         when {
             daily.type == "gather" && daily.guild == Skills.MINING      -> startMiningSession(daily.target)
@@ -1196,9 +1279,7 @@ class SkillsViewModel @Inject constructor(
             daily.type == "sessions" && daily.guild == Skills.AGILITY   -> {
                 // Progress only counts on the quest's own course (recordGuildSessions
                 // matches target), so queue that course, not the best unlocked one.
-                val level  = uiState.value.skillLevels[Skills.AGILITY] ?: 1
-                val course = gameData.agilityCourses[daily.target] ?: return false
-                if (course.levelRequired > level) return false
+                if (daily.target !in gameData.agilityCourses) return false
                 startAgilitySession(daily.target, remaining)
             }
             daily.type == "craft" && daily.guild == Skills.RUNECRAFTING -> startRunecraftingSession(daily.target, remaining)
@@ -1216,8 +1297,24 @@ class SkillsViewModel @Inject constructor(
         return true
     }
 
+    /**
+     * Level needed in [guild] for the activity the quick-add "+" maps [type]/[target] to.
+     * Craft-guild recipes are gated in CraftingViewModel.queueCraftForDaily instead.
+     */
+    private fun sheetQuestLevelRequired(type: String, guild: String, target: String): Int = when {
+        (type == "gather" || type == "turn_in") && guild == Skills.MINING      -> gameData.ores[target]?.levelRequired
+        (type == "gather" || type == "turn_in") && guild == Skills.WOODCUTTING -> gameData.trees.values.firstOrNull { it.logName == target }?.levelRequired
+        (type == "gather" || type == "turn_in") && guild == Skills.FISHING     -> gameData.fish[target]?.levelRequired
+        (type == "gather" || type == "turn_in") && guild == Skills.FARMING     -> gameData.crops[target]?.levelRequired
+        type == "pickpocket"                            -> gameData.thievingNpcs[target]?.levelRequired
+        type == "sessions" && guild == Skills.AGILITY   -> gameData.agilityCourses[target]?.levelRequired
+        type == "craft" && guild == Skills.RUNECRAFTING -> gameData.runes[target]?.levelRequired
+        type == "craft" && guild == Skills.FIREMAKING   -> gameData.logs[target.replace("ashes", "log")]?.levelRequired
+        else -> null
+    } ?: 1
+
     private fun computeActiveQuests(
-        questProgress: List<com.fantasyidler.data.model.QuestProgress>,
+        questProgress: List<QuestProgress>,
         flags: PlayerFlags,
         inventory: Map<String, Int>,
     ): Map<String, List<QuestIndicator>> {
@@ -1230,7 +1327,7 @@ class SkillsViewModel @Inject constructor(
         val activeGuildDailyIds = flags.guildDailyIds.filter { it !in flags.guildDailyClaimed }
         val completedIds = progressById.entries.filter { it.value.completed }.map { it.key }.toSet()
 
-        fun addIndicator(key: String, skill: String, category: QuestCategory, remaining: Int, questId: String) {
+        fun addIndicator(key: String, skill: String, category: QuestCategory, remaining: Int, questId: String, customEmoji: String? = null) {
             val isCompletable = when (skill) {
                 Skills.RUNECRAFTING -> {
                     val rune = gameData.runes[key]
@@ -1261,7 +1358,7 @@ class SkillsViewModel @Inject constructor(
             // Prefixed by skill: some item keys (e.g. "ashes") are shared between skills
             // (Firemaking byproduct vs. Prayer buriable), and would otherwise leak
             // indicators across their sheets (issue #1014).
-            result.getOrPut("$skill:$key") { mutableListOf() }.add(QuestIndicator(category, isCompletable, questId))
+            result.getOrPut("$skill:$key") { mutableListOf() }.add(QuestIndicator(category, isCompletable, questId, customEmoji))
         }
 
         fun checkAndAdd(questId: String, questType: String, questSkill: String, questTarget: String, questAmount: Int, questProgressVal: Int, category: QuestCategory) {
@@ -1381,13 +1478,32 @@ class SkillsViewModel @Inject constructor(
             checkAndAdd(id, template.type, template.guild, template.target, template.amount, progress, QuestCategory.GUILD_DAILY)
         }
 
+        // Seasonal Event Bounties
+        val eventEmoji = seasonalEventRepo.activeEvent()?.iconEmoji ?: QuestCategory.SEASONAL.emoji
+        for (bounty in seasonalEventRepo.getActiveBounties(flags, inventory)) {
+            val task = bounty.task
+            val remaining = task.amount - bounty.progress
+            if (remaining <= 0) continue
+            val skill = task.skill ?: continue
+            when (task.type) {
+                "gather", "craft" -> {
+                    addIndicator(task.target, skill, QuestCategory.SEASONAL, remaining, task.id, eventEmoji)
+                }
+                "turn_in" -> {
+                    val isCompletable = (inventory[task.target] ?: 0) >= task.amount
+                    result.getOrPut("$skill:${task.target}") { mutableListOf() }
+                        .add(QuestIndicator(QuestCategory.SEASONAL, isCompletable, task.id, eventEmoji))
+                }
+            }
+        }
+
         return result
     }
 
     private fun petBoostFor(petsJson: String, skillKey: String, ironman: Boolean = false): Int {
         if (ironman) return 0
         val pets = try {
-            json.decodeFromString<List<com.fantasyidler.data.model.OwnedPet>>(petsJson)
+            json.decodeFromString<List<OwnedPet>>(petsJson)
         } catch (_: Exception) {
             return 0
         }
@@ -1401,7 +1517,7 @@ class SkillsViewModel @Inject constructor(
         if (saveChance <= 0f) return totalQty
         var toConsume = 0
         for (u in 0 until totalQty) {
-            if (kotlin.random.Random.nextFloat() >= saveChance) toConsume++
+            if (Random.nextFloat() >= saveChance) toConsume++
         }
         return toConsume
     }

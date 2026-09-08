@@ -12,13 +12,13 @@
     <string name="skill_farming_name">Agriculture</string>
     <string name="skill_farming_desc">Planter et récolter des cultures dans vos parcelles agricoles.</string>
     <string name="skill_firemaking_name">Incinération</string>
-    <string name="skill_firemaking_desc">Brûler des bûches de votre inventaire pour gagner des XP en Allumage de feu. Chaque bûche brûlée produit aussi des cendres que vous pouvez disperser dans la compétence Prière pour obtenir un bonus d\'XP en Prière.</string>
+    <string name="skill_firemaking_desc">Brûler des bûches de votre inventaire pour gagner des XP en Allumage de feu. Chaque bûche brûlée produit aussi des cendres que vous pouvez disperser dans l\'aptitude Prière pour obtenir un bonus d\'XP en Prière.</string>
     <string name="skill_agility_name">Agilité</string>
-    <string name="skill_agility_desc">Entraînez votre Agilité pour réduire le temps des sessions dans toutes les compétences. Le niveau 99 réduit de 20 minutes l\'heure (60 min → 40 min), avec une réduction linéaire progressive à mesure que vous montez en niveau.</string>
+    <string name="skill_agility_desc">Entraînez votre Agilité pour réduire le temps des sessions dans toutes les aptitudes. Le niveau 99 réduit de 20 minutes l\'heure (60 min → 40 min), avec une réduction linéaire progressive à mesure que vous montez en niveau.</string>
 
     <!-- Crafting skills -->
     <string name="skill_smithing_name">Forge</string>
-    <string name="skill_smithing_desc">Fondez des minerais en barres et forgez des équipements métalliques puissants.</string>
+    <string name="skill_smithing_desc">Fondez des minerais en lingots et forgez des équipements métalliques puissants.</string>
     <string name="skill_cooking_name">Cuisine</string>
     <string name="skill_cooking_desc">Cuisinez des ingrédients crus pour obtenir des aliments qui restaurent des PV en combat.</string>
     <string name="skill_fletching_name">Art du Bois</string>
@@ -102,4 +102,5 @@
     <string name="skill_expedition_name">Expédition</string>
     <string name="skill_boss_name">Boss</string>
     <string name="skill_mercantile_name">Commerce</string>
+    <string name="skill_mercantile_desc">Envoyez des caravanes commerciales le long des routes pour gagner des pièces et de l\'expérience. Les niveaux supérieurs améliorent les prix d\'achat et de vente en boutique et débloquent des marchandises exclusives de la Guilde des marchands.</string>
 </resources>

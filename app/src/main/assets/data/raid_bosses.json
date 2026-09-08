@@ -280,6 +280,9 @@
     "id": "balrog",
     "display_name": "Gothic Ember, Ancient Flame of the Deep",
     "emoji": "🔥",
+    "tags": [
+      "demon"
+    ],
     "description": "An ancient demon of flame and shadow, awakened from its slumber deep beneath the earth.",
     "combat_level_required": 100,
     "duration_minutes": 120,
@@ -510,11 +513,6 @@
     },
     "rare_drops": [
       {
-        "item": "runite_bar",
-        "chance": 0.02,
-        "comment": "1/50"
-      },
-      {
         "item": "race_change_token",
         "chance": 0.004,
         "comment": "1/250 race change token"
@@ -577,11 +575,6 @@
       }
     },
     "rare_drops": [
-      {
-        "item": "runite_bar",
-        "chance": 0.02,
-        "comment": "1/50"
-      },
       {
         "item": "race_change_token",
         "chance": 0.004,
@@ -660,6 +653,11 @@
         "item": "race_change_token",
         "chance": 0.004,
         "comment": "1/250 race change token"
+      },
+      {
+        "item": "midas_band",
+        "chance": 0.001,
+        "comment": "1/1000 heirloom ring"
       }
     ],
     "requires_monument": true
@@ -712,6 +710,26 @@
       }
     },
     "rare_drops": [
+      {
+        "item": "heirloom_pickaxe",
+        "chance": 0.01,
+        "comment": "1/100 unique heirloom, skipped if already owned"
+      },
+      {
+        "item": "heirloom_axe",
+        "chance": 0.01,
+        "comment": "1/100 unique heirloom, skipped if already owned"
+      },
+      {
+        "item": "heirloom_fishing_rod",
+        "chance": 0.01,
+        "comment": "1/100 unique heirloom, skipped if already owned"
+      },
+      {
+        "item": "heirloom_hoe",
+        "chance": 0.01,
+        "comment": "1/100 unique heirloom, skipped if already owned"
+      },
       {
         "item": "gilded_full_helmet",
         "chance": 0.015,
@@ -773,6 +791,31 @@
       }
     },
     "rare_drops": [
+      {
+        "item": "heirloom_hammer",
+        "chance": 0.01,
+        "comment": "1/100 unique heirloom, skipped if already owned"
+      },
+      {
+        "item": "heirloom_tinderbox",
+        "chance": 0.01,
+        "comment": "1/100 unique heirloom, skipped if already owned"
+      },
+      {
+        "item": "heirloom_frying_pan",
+        "chance": 0.01,
+        "comment": "1/100 unique heirloom, skipped if already owned"
+      },
+      {
+        "item": "heirloom_lockpick",
+        "chance": 0.01,
+        "comment": "1/100 unique heirloom, skipped if already owned"
+      },
+      {
+        "item": "heirloom_grappling_hook",
+        "chance": 0.01,
+        "comment": "1/100 unique heirloom, skipped if already owned"
+      },
       {
         "item": "gilded_platebody",
         "chance": 0.015,
@@ -838,6 +881,26 @@
       }
     },
     "rare_drops": [
+      {
+        "item": "heirloom_blade",
+        "chance": 0.01,
+        "comment": "1/100 unique heirloom, skipped if already owned"
+      },
+      {
+        "item": "heirloom_greathammer",
+        "chance": 0.01,
+        "comment": "1/100 unique heirloom, skipped if already owned"
+      },
+      {
+        "item": "heirloom_longbow",
+        "chance": 0.01,
+        "comment": "1/100 unique heirloom, skipped if already owned"
+      },
+      {
+        "item": "heirloom_staff",
+        "chance": 0.01,
+        "comment": "1/100 unique heirloom, skipped if already owned"
+      },
       {
         "item": "gilded_kiteshield",
         "chance": 0.015,

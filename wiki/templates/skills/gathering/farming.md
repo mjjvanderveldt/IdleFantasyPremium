@@ -1,10 +1,10 @@
 # {icon} Farming
 
-Plant seeds in up to **5 patches** and return after the growth time to harvest. A **Garden** building adds up to 2 more patches.
+Plant seeds in up to **8 patches** and return after the growth time to harvest. A {garden_link} building adds up to 2 more patches and the **Grand Monument** provides another additional patch
 
 {seed_table}
 
-Seeds can be purchased from the **Shop** under Seeds & Farming.
+Seeds can be purchased from the **Shop** under Seeds & Farming or by {thieving_link} them from NPCs.
 
 ## Hoes
 
@@ -12,7 +12,17 @@ Equip a hoe to increase your harvest yield. The bonus is applied on top of the b
 
 {hoe_table}
 
-## The Magic Bean
+### Hoe tier efficiency multiplier
+
+{tool_efficiency_section}
+
+## Ashes
+
+Ashes can provide additional bonuses for farming yield which can significantly increase overall yield at higher tiers.
+
+{ashes_table}
+
+## 🫘 The Magic Bean
 
 Deep in the soil of Gielinor, something stirs.
 

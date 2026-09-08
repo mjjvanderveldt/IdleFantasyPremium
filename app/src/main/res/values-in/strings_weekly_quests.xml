@@ -46,7 +46,7 @@
     <string name="quest_weekly_demon_slayer_name">Pembasmi Iblis</string>
     <string name="quest_weekly_demon_slayer_desc">Bunuh 225 iblis kecil minggu ini.</string>
     <string name="quest_weekly_boss_hunter_name">Pemburu Bos</string>
-    <string name="quest_weekly_boss_hunter_desc">Kalahkan 10 bos raid minggu ini.</string>
+    <string name="quest_weekly_boss_hunter_desc">Defeat 10 bosses this week.</string> <!-- untranslated -->
     <string name="quest_weekly_kbd_slayer_name">Kutukan Naga</string>
     <string name="quest_weekly_kbd_slayer_desc">Kalahkan Raja Naga Hitam 5 kali.</string>
     <string name="quest_weekly_void_champion_name">Juara Hampa</string>

@@ -7,6 +7,7 @@ import com.fantasyidler.data.model.Skills
 import javax.inject.Inject
 import javax.inject.Singleton
 import javax.inject.Provider
+import kotlinx.serialization.json.Json
 
 sealed class BlessingActivateResult {
     object Success : BlessingActivateResult()
@@ -147,13 +148,13 @@ class ChurchRepository @Inject constructor(
             return@withLock BlessingActivateResult.IronmanBlocked
         }
         val player    = playerRepo.getOrCreatePlayer()
-        val levels: Map<String, Int> = kotlinx.serialization.json.Json.decodeFromString(player.skillLevels)
+        val levels: Map<String, Int> = Json.decodeFromString(player.skillLevels)
         val prayerLevel = levels[Skills.PRAYER] ?: 1
         if (prayerLevel < blessing.prayerLevelRequired) {
             return@withLock BlessingActivateResult.LevelTooLow(blessing.prayerLevelRequired)
         }
         val cost      = discountedBoneCost(blessing, flags)
-        val inventory: Map<String, Int> = kotlinx.serialization.json.Json.decodeFromString(player.inventory)
+        val inventory: Map<String, Int> = Json.decodeFromString(player.inventory)
         if (totalBoneXp(inventory) < cost * BASE_BONE_XP) return@withLock BlessingActivateResult.NotEnoughBones(cost)
 
         // Consume bone types greedily from most to least valuable

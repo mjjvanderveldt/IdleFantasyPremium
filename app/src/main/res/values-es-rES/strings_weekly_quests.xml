@@ -46,7 +46,7 @@
     <string name="quest_weekly_demon_slayer_name">Demon Slayer</string> <!-- untranslated -->
     <string name="quest_weekly_demon_slayer_desc">Kill 225 demons this week.</string> <!-- untranslated -->
     <string name="quest_weekly_boss_hunter_name">Boss Hunter</string> <!-- untranslated -->
-    <string name="quest_weekly_boss_hunter_desc">Defeat 10 raid bosses this week.</string> <!-- untranslated -->
+    <string name="quest_weekly_boss_hunter_desc">Defeat 10 bosses this week.</string> <!-- untranslated -->
     <string name="quest_weekly_kbd_slayer_name">Dragon Bane</string> <!-- untranslated -->
     <string name="quest_weekly_kbd_slayer_desc">Defeat the King Black Dragon 5 times.</string> <!-- untranslated -->
     <string name="quest_weekly_void_champion_name">Void Champion</string> <!-- untranslated -->

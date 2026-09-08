@@ -173,7 +173,7 @@
     "name": "shadow_dagger",
     "display_name": "Shadow Dagger",
     "slot": "weapon",
-    "combat_style": "strength",
+    "combat_style": "attack",
     "description": "A black-bladed dagger recovered from the Shadow Den. Wickedly sharp and perfectly balanced for close work.",
     "attack_bonus": 16,
     "strength_bonus": 24,
@@ -700,6 +700,7 @@
     "display_name": "Wooden Bow",
     "slot": "weapon",
     "combat_style": "ranged",
+    "two_handed": true,
     "description": "A simple wooden bow. Good for training ranged.",
     "attack_bonus": 0,
     "strength_bonus": 0,
@@ -713,6 +714,7 @@
     "display_name": "Shortbow",
     "slot": "weapon",
     "combat_style": "ranged",
+    "two_handed": true,
     "description": "A shortbow crafted from regular logs.",
     "attack_bonus": 0,
     "strength_bonus": 0,
@@ -726,6 +728,7 @@
     "display_name": "Oak Bow",
     "slot": "weapon",
     "combat_style": "ranged",
+    "two_handed": true,
     "description": "A sturdy oak bow. Better range weapon.",
     "attack_bonus": 0,
     "strength_bonus": 0,
@@ -741,6 +744,7 @@
     "display_name": "Oak Shortbow",
     "slot": "weapon",
     "combat_style": "ranged",
+    "two_handed": true,
     "attack_speed": 2.0,
     "description": "A shortbow crafted from oak logs.",
     "attack_bonus": 0,
@@ -757,6 +761,7 @@
     "display_name": "Willow Shortbow",
     "slot": "weapon",
     "combat_style": "ranged",
+    "two_handed": true,
     "attack_speed": 2.0,
     "description": "A shortbow crafted from willow logs.",
     "attack_bonus": 0,
@@ -773,6 +778,7 @@
     "display_name": "Maple Shortbow",
     "slot": "weapon",
     "combat_style": "ranged",
+    "two_handed": true,
     "attack_speed": 2.0,
     "description": "A shortbow crafted from maple logs.",
     "attack_bonus": 0,
@@ -789,6 +795,7 @@
     "display_name": "Yew Shortbow",
     "slot": "weapon",
     "combat_style": "ranged",
+    "two_handed": true,
     "attack_speed": 1.5,
     "description": "A shortbow crafted from yew logs.",
     "attack_bonus": 0,
@@ -805,6 +812,7 @@
     "display_name": "Yew Longbow",
     "slot": "weapon",
     "combat_style": "ranged",
+    "two_handed": true,
     "attack_speed": 1.8,
     "description": "A longbow crafted from yew logs.",
     "attack_bonus": 0,
@@ -821,6 +829,7 @@
     "display_name": "Magic Shortbow",
     "slot": "weapon",
     "combat_style": "ranged",
+    "two_handed": true,
     "attack_speed": 1.5,
     "description": "A shortbow crafted from magic logs.",
     "attack_bonus": 0,
@@ -837,6 +846,7 @@
     "display_name": "Elven Shortbow",
     "slot": "weapon",
     "combat_style": "ranged",
+    "two_handed": true,
     "attack_speed": 1.5,
     "description": "A swift bow strung with elven silk. Only elven hands know the fletching.",
     "attack_bonus": 0,
@@ -846,13 +856,14 @@
     "requirements": {
       "ranged": 75
     },
-    "ranged_strength_bonus": 70
+    "ranged_strength_bonus": 55
   },
   "elven_longbow": {
     "name": "elven_longbow",
     "display_name": "Elven Longbow",
     "slot": "weapon",
     "combat_style": "ranged",
+    "two_handed": true,
     "attack_speed": 1.8,
     "description": "A tall elven warbow of layered redwood. Only elven hands know the fletching.",
     "attack_bonus": 0,
@@ -869,6 +880,7 @@
     "display_name": "Magic Longbow",
     "slot": "weapon",
     "combat_style": "ranged",
+    "two_handed": true,
     "attack_speed": 1.8,
     "description": "A longbow crafted from magic logs.",
     "attack_bonus": 0,
@@ -3741,7 +3753,7 @@
   },
   "abyssal_rod": {
     "name": "abyssal_rod",
-    "display_name": "Abyssal Rod",
+    "display_name": "Abyssal Fishing Rod",
     "slot": "fishing_rod",
     "combat_style": null,
     "description": "Woven from void-touched filament recovered from the Abyssal Ruins. Fish practically leap onto it.",
@@ -3772,10 +3784,11 @@
     "display_name": "Bronze Hoe",
     "slot": "hoe",
     "combat_style": null,
-    "description": "A basic bronze hoe. Slightly increases harvest yield.",
+    "description": "A basic hoe for Farming.",
     "attack_bonus": 0,
     "strength_bonus": 0,
     "defense_bonus": 0,
+    "farming_efficiency": 1.0,
     "requirements": {}
   },
   "iron_hoe": {
@@ -4566,6 +4579,245 @@
     "defense_bonus": 71,
     "requirements": {
       "defense": 60
+    }
+  },
+  "heirloom_pickaxe": {
+    "name": "heirloom_pickaxe",
+    "display_name": "Heirloom Pickaxe",
+    "slot": "pickaxe",
+    "combat_style": null,
+    "description": "A family pickaxe passed down through generations. It remembers every ore its bearers ever broke.",
+    "attack_bonus": 0,
+    "strength_bonus": 0,
+    "defense_bonus": 0,
+    "mining_efficiency": 5.25,
+    "requirements": {},
+    "heirloom_skill": "mining",
+    "heirloom_base": {
+      "efficiency": 1.25
+    }
+  },
+  "heirloom_axe": {
+    "name": "heirloom_axe",
+    "display_name": "Heirloom Axe",
+    "slot": "axe",
+    "combat_style": null,
+    "description": "A woodsman's axe worn smooth by a hundred hands. Every felled tree sharpens it a little more.",
+    "attack_bonus": 0,
+    "strength_bonus": 0,
+    "defense_bonus": 0,
+    "woodcutting_efficiency": 5.25,
+    "requirements": {},
+    "heirloom_skill": "woodcutting",
+    "heirloom_base": {
+      "efficiency": 1.25
+    }
+  },
+  "heirloom_fishing_rod": {
+    "name": "heirloom_fishing_rod",
+    "display_name": "Heirloom Fishing Rod",
+    "slot": "fishing_rod",
+    "combat_style": null,
+    "description": "An old rod that has landed catches beyond counting. It learns the water with every cast.",
+    "attack_bonus": 0,
+    "strength_bonus": 0,
+    "defense_bonus": 0,
+    "fishing_efficiency": 5.25,
+    "requirements": {},
+    "heirloom_skill": "fishing",
+    "heirloom_base": {
+      "efficiency": 1.25
+    }
+  },
+  "heirloom_hoe": {
+    "name": "heirloom_hoe",
+    "display_name": "Heirloom Hoe",
+    "slot": "hoe",
+    "combat_style": null,
+    "description": "A humble hoe that has turned soil for generations. Each harvest leaves it keener than before.",
+    "attack_bonus": 0,
+    "strength_bonus": 0,
+    "defense_bonus": 0,
+    "farming_efficiency": 4.5,
+    "requirements": {},
+    "heirloom_skill": "farming",
+    "heirloom_base": {
+      "efficiency": 1.25
+    }
+  },
+  "heirloom_hammer": {
+    "name": "heirloom_hammer",
+    "display_name": "Heirloom Hammer",
+    "slot": "hammer",
+    "combat_style": null,
+    "description": "A smith's hammer black with the soot of a thousand forges. It grows truer with every strike.",
+    "attack_bonus": 0,
+    "strength_bonus": 0,
+    "defense_bonus": 0,
+    "smithing_efficiency": 4.5,
+    "requirements": {},
+    "heirloom_skill": "smithing",
+    "heirloom_base": {
+      "efficiency": 1.25
+    }
+  },
+  "heirloom_tinderbox": {
+    "name": "heirloom_tinderbox",
+    "display_name": "Heirloom Tinderbox",
+    "slot": "tinderbox",
+    "combat_style": null,
+    "description": "A battered tinderbox that has never failed to spark. Every fire it lights burns a little brighter.",
+    "attack_bonus": 0,
+    "strength_bonus": 0,
+    "defense_bonus": 0,
+    "firemaking_efficiency": 4.5,
+    "requirements": {},
+    "heirloom_skill": "firemaking",
+    "heirloom_base": {
+      "efficiency": 1.25
+    }
+  },
+  "heirloom_grappling_hook": {
+    "name": "heirloom_grappling_hook",
+    "display_name": "Heirloom Grappling Hook",
+    "slot": "grappling_hook",
+    "combat_style": null,
+    "description": "A climber's hook that has held on ledges beyond counting. It grows surer with every course.",
+    "attack_bonus": 0,
+    "strength_bonus": 0,
+    "defense_bonus": 0,
+    "agility_efficiency": 5.25,
+    "requirements": {},
+    "heirloom_skill": "agility",
+    "heirloom_base": {
+      "efficiency": 1.25
+    }
+  },
+  "heirloom_frying_pan": {
+    "name": "heirloom_frying_pan",
+    "display_name": "Heirloom Frying Pan",
+    "slot": "frying_pan",
+    "combat_style": null,
+    "description": "A seasoned pan handed down through a family of cooks. Every meal deepens its seasoning.",
+    "attack_bonus": 0,
+    "strength_bonus": 0,
+    "defense_bonus": 0,
+    "cooking_efficiency": 4.5,
+    "requirements": {},
+    "heirloom_skill": "cooking",
+    "heirloom_base": {
+      "efficiency": 1.25
+    }
+  },
+  "heirloom_lockpick": {
+    "name": "heirloom_lockpick",
+    "display_name": "Heirloom Lockpick",
+    "slot": "lockpick",
+    "combat_style": null,
+    "description": "A thief's pick that has whispered open countless locks. It grows subtler with every job.",
+    "attack_bonus": 0,
+    "strength_bonus": 0,
+    "defense_bonus": 0,
+    "thieving_efficiency": 5.25,
+    "requirements": {},
+    "heirloom_skill": "thieving",
+    "heirloom_base": {
+      "efficiency": 1.25
+    }
+  },
+  "heirloom_blade": {
+    "name": "heirloom_blade",
+    "display_name": "Heirloom Blade",
+    "slot": "weapon",
+    "combat_style": "attack",
+    "description": "An ancestral blade that wakes a little more with every battle its line survives.",
+    "attack_bonus": 128,
+    "strength_bonus": 143,
+    "defense_bonus": 0,
+    "requirements": {},
+    "heirloom_skill": "attack",
+    "heirloom_base": {
+      "attack_bonus": 9,
+      "strength_bonus": 12
+    }
+  },
+  "heirloom_greathammer": {
+    "name": "heirloom_greathammer",
+    "display_name": "Heirloom Greathammer",
+    "slot": "weapon",
+    "combat_style": "strength",
+    "description": "A colossal warhammer of forgotten make. Each blow it lands adds to its legend.",
+    "attack_bonus": 180,
+    "strength_bonus": 195,
+    "defense_bonus": 0,
+    "requirements": {},
+    "heirloom_skill": "strength",
+    "heirloom_base": {
+      "attack_bonus": 12,
+      "strength_bonus": 16
+    }
+  },
+  "heirloom_longbow": {
+    "name": "heirloom_longbow",
+    "display_name": "Heirloom Longbow",
+    "slot": "weapon",
+    "combat_style": "ranged",
+    "two_handed": true,
+    "attack_speed": 1.8,
+    "description": "A bow strung and restrung across generations of archers. Every arrow teaches it something.",
+    "attack_bonus": 0,
+    "strength_bonus": 0,
+    "defense_bonus": 0,
+    "ranged_attack_bonus": 150,
+    "ranged_strength_bonus": 120,
+    "requirements": {},
+    "heirloom_skill": "ranged",
+    "heirloom_base": {
+      "ranged_attack_bonus": 9,
+      "ranged_strength_bonus": 7
+    }
+  },
+  "heirloom_staff": {
+    "name": "heirloom_staff",
+    "display_name": "Heirloom Staff",
+    "slot": "weapon",
+    "combat_style": "magic",
+    "attack_speed": 1.5,
+    "description": "A staff steeped in the castings of every mage who ever bore it. Its power still deepens.",
+    "attack_bonus": 0,
+    "strength_bonus": 0,
+    "defense_bonus": 0,
+    "magic_attack_bonus": 132,
+    "magic_damage_bonus": 38,
+    "requirements": {},
+    "heirloom_skill": "magic",
+    "heirloom_base": {
+      "magic_attack_bonus": 12,
+      "magic_damage_bonus": 4
+    }
+  },
+  "midas_band": {
+    "name": "midas_band",
+    "display_name": "Midas Band",
+    "slot": "ring",
+    "description": "A sliver of the Vault Guardian's living gold. It drinks in a little of every battle its wearer survives.",
+    "attack_bonus": 20,
+    "strength_bonus": 22,
+    "defense_bonus": 16,
+    "ranged_attack_bonus": 20,
+    "ranged_strength_bonus": 8,
+    "magic_attack_bonus": 20,
+    "magic_damage_bonus": 8,
+    "requirements": {},
+    "heirloom_skill": "hitpoints",
+    "heirloom_base": {
+      "attack_bonus": 6,
+      "strength_bonus": 7,
+      "defense_bonus": 5,
+      "ranged_attack_bonus": 7,
+      "ranged_strength_bonus": 2,
+      "magic_attack_bonus": 7,
+      "magic_damage_bonus": 2
     }
   }
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.fantasyidler.R
 import com.fantasyidler.data.json.BoneData
 import com.fantasyidler.data.model.EquipSlot
+import com.fantasyidler.data.model.OwnedPet
 import com.fantasyidler.data.model.PlayerFlags
 import com.fantasyidler.data.model.Skills
 import com.fantasyidler.repository.BoostRepository
@@ -18,6 +19,7 @@ import com.fantasyidler.repository.PlayerRepository
 import com.fantasyidler.repository.resolveCapeMultiplier
 import com.fantasyidler.repository.blessingPrayerCapeMult
 import com.fantasyidler.repository.QuestRepository
+import com.fantasyidler.repository.SaveSlotRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -40,7 +42,7 @@ data class BoneAltarUiState(
     val inventory: Map<String, Int> = emptyMap(),
     val prayerLevel: Int = 1,
     val prayerXp: Long = 0L,
-    val boostActive: Boolean = false,
+    val boostFactor: Float = 1f,
     val prayerCapeMult: Float = 1f,
     val churchMult: Float = 1f,
     val prestigeMult: Float = 1f,
@@ -60,11 +62,30 @@ class BoneAltarViewModel @Inject constructor(
     private val questRepo: QuestRepository,
     private val guildRepo: GuildRepository,
     private val gameData: GameDataRepository,
+    private val saveSlotRepo: SaveSlotRepository,
     private val json: Json,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val _extra = MutableStateFlow(BoneAltarUiState())
+
+    init {
+        // Session tallies belong to the character that buried the bones; without this reset
+        // they survive a save-slot switch and show under the next character (issue #1550).
+        viewModelScope.launch {
+            saveSlotRepo.switchEvents.collect {
+                _extra.update {
+                    it.copy(
+                        sessionXp       = 0L,
+                        totalBuried     = 0,
+                        combo           = 0,
+                        lastTapMs       = 0L,
+                        selectedBoneKey = null,
+                    )
+                }
+            }
+        }
+    }
 
     // Rapid taps are counted optimistically in the UI and written to the DB in adaptive
     // batches: while one batch is being written, new taps accumulate into the next one.
@@ -95,19 +116,17 @@ class BoneAltarViewModel @Inject constructor(
             .entries.sortedByDescending { it.value.xpPerBone }
             .associate { it.key to it.value }
 
-        val boostActive    = !flags.ironman && flags.xpBoostExpiresAt > System.currentTimeMillis()
+        // Canonical 2x-boost factor (purchased + post-prestige 48h, stacking to 4x,
+        // ironman-aware) — the altar previously only honored the purchased boost, so the
+        // earned post-prestige boost did nothing here (issue #1593).
+        val boostFactor    = boostRepo.xpBoostFactor(Skills.PRAYER, flags).toFloat()
         val equippedCape   = equipped[EquipSlot.CAPE]?.let { gameData.equipment[it] }
-        // skillPrestige is intentionally omitted here (not flags.skillPrestige): prestige is
-        // already applied as its own separate factor below (prestigeMult), multiplied together
-        // with prayerCapeMult at collection time. Passing the real prestige map here would fold
-        // (prestige + 1) into the cape multiplier too, double-counting prestige for any player
-        // who has prestiged Prayer and owns/equips a prayer cape.
         val prayerCapeMult = resolveCapeMultiplier(
             skillName = Skills.PRAYER,
             equippedCape = equippedCape,
             inventoryKeys = inventory.keys,
             townBuildingTiers = flags.townBuildingTiers,
-            capeScaling = emptyMap(),
+            capeScaling = boostRepo.capeScalingBySkill(flags),
             allEquipment = gameData.equipment,
             ironman = flags.ironman,
         )
@@ -124,7 +143,7 @@ class BoneAltarViewModel @Inject constructor(
             inventory       = inventory,
             prayerLevel     = levels[Skills.PRAYER] ?: 1,
             prayerXp        = xpMap[Skills.PRAYER] ?: 0L,
-            boostActive     = boostActive,
+            boostFactor     = boostFactor,
             prayerCapeMult  = prayerCapeMult,
             churchMult      = churchMult,
             prestigeMult    = prestigeMult,
@@ -157,7 +176,7 @@ class BoneAltarViewModel @Inject constructor(
                        else (state.combo + 1).coerceAtMost(99)
         val comboMult = if (newCombo >= COMBO_THRESHOLD) COMBO_XP_MULT else 1.0f
 
-        val boostMult   = if (state.boostActive) 2.0f else 1.0f
+        val boostMult   = state.boostFactor
         val petMult     = 1.0f + state.petBoostPct / 100.0f
         val effectiveXp = (bone.xpPerBone * comboMult * boostMult *
             state.churchMult * state.prayerCapeMult * state.prestigeMult * petMult)
@@ -212,7 +231,7 @@ class BoneAltarViewModel @Inject constructor(
 
     private fun petBoostFor(petsJson: String, skillKey: String): Int {
         val pets = try {
-            json.decodeFromString<List<com.fantasyidler.data.model.OwnedPet>>(petsJson)
+            json.decodeFromString<List<OwnedPet>>(petsJson)
         } catch (_: Exception) {
             return 0
         }

@@ -15,8 +15,22 @@ android {
         applicationId = "com.tristinbaker.idlefantasy"
         minSdk = 26
         targetSdk = 35
-        versionCode = 139
-        versionName = "1.14.0"
+        versionCode = 149002
+        versionName = "1.14.11"
+
+        // Nightly channel (-PnightlyBuild=N): publishes as <stable>.N with
+        // versionCode <stableCode>+N. Requires the thousands versionCode
+        // scheme (stable releases at multiples of 1000, first used for 1.14.2
+        // = 141000) so every stable release outranks its preceding nightlies.
+        (project.findProperty("nightlyBuild") as String?)?.let { raw ->
+            val n = raw.toIntOrNull()
+            require(n != null && n in 1..999) { "nightlyBuild must be 1..999, got '$raw'" }
+            require(versionCode!! % 1000 == 0) {
+                "Nightly builds require the thousands versionCode scheme; found $versionCode"
+            }
+            versionCode = versionCode!! + n
+            versionName = "$versionName.$n"
+        }
     }
 
     dependenciesInfo {

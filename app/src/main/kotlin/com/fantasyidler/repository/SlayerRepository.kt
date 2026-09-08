@@ -170,38 +170,48 @@ class SlayerRepository @Inject constructor(
         if (boostRepo.slayerMultiTaskActive(flags)) return recordKillsMultiTask(flags, enemyKey, count)
         if (task.enemyKey != enemyKey) return 0L
 
-        val added          = minOf(count, task.targetKills - task.killsCompleted)
-        if (added <= 0) return 0L
         val equippedCape   = playerRepo.getEquipped()[EquipSlot.CAPE]?.let { gameData.equipment[it] }
         val capeMult       = resolveCapeMultiplier(
             Skills.SLAYER, equippedCape, playerRepo.getInventory().keys,
             flags.townBuildingTiers, boostRepo.capeScalingBySkill(flags), gameData.equipment, flags.ironman,
         )
-        val xpEarned       = (added.toLong() * task.xpPerKill * capeMult).toLong()
-        val newCompleted   = task.killsCompleted + added
-        val taskCompleted  = newCompleted >= task.targetKills
 
-        if (taskCompleted) {
-            val freshFlags = playerRepo.getFlags()  // re-read to get latest foretelledTasks
-            val nextTask = freshFlags.foretelledTasks.firstOrNull()
-            playerRepo.updateFlags(
-                freshFlags.copy(
-                    activeSlayerTask = nextTask,
-                    foretelledTasks  = if (nextTask != null) freshFlags.foretelledTasks.drop(1) else freshFlags.foretelledTasks,
-                    slayerPoints     = freshFlags.slayerPoints +
-                        (task.taskPoints * boostRepo.slayerPointsMultiplier(freshFlags)).toInt(),
-                )
-            )
-            questRepo.recordSlayerTaskCompleted()
-            playerRepo.recordWeeklyProgress("slayer_task", "any", 1)
-        } else {
-            playerRepo.updateFlags(
-                flags.copy(
-                    activeSlayerTask = task.copy(killsCompleted = newCompleted)
-                )
-            )
+        // Order-strict chain walk: kills left over after completing the active task roll
+        // into the next foretold task, but only while consecutive tasks are for the same
+        // enemy (issue #1677). The multi-task prestige perk keeps its broader any-order
+        // behavior in recordKillsMultiTask.
+        val chain = (listOf(task) + flags.foretelledTasks).toMutableList()
+        var remaining      = count
+        var xpEarned       = 0L
+        var applied        = 0
+        var completedCount = 0
+        for (idx in chain.indices) {
+            if (remaining <= 0) break
+            val t = chain[idx]
+            if (t.enemyKey != enemyKey) break
+            val added = minOf(remaining, t.targetKills - t.killsCompleted)
+            if (added <= 0) break
+            remaining -= added
+            applied   += added
+            xpEarned  += (added.toLong() * t.xpPerKill * capeMult).toLong()
+            chain[idx] = t.copy(killsCompleted = t.killsCompleted + added)
+            if (chain[idx].killsCompleted < t.targetKills) break
+            completedCount++
         }
-        guildRepo.recordGuildSlayer(added, if (taskCompleted) 1 else 0)
+        if (applied <= 0) return 0L
+
+        val pointsGained = chain.take(completedCount)
+            .sumOf { (it.taskPoints * boostRepo.slayerPointsMultiplier(flags)).toInt() }
+        playerRepo.updateFlags(
+            flags.copy(
+                activeSlayerTask = chain.getOrNull(completedCount),
+                foretelledTasks  = chain.drop(completedCount + 1),
+                slayerPoints     = flags.slayerPoints + pointsGained,
+            )
+        )
+        repeat(completedCount) { questRepo.recordSlayerTaskCompleted() }
+        if (completedCount > 0) playerRepo.recordWeeklyProgress("slayer_task", "any", completedCount)
+        guildRepo.recordGuildSlayer(applied, completedCount)
         return xpEarned
     }
 

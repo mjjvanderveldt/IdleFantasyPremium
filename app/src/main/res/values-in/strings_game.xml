@@ -94,6 +94,7 @@
     <string name="equip_slot_weapon_str">Senjata (Kekuatan)</string>
     <string name="equip_slot_weapon_ranged">Senjata (Jarak Jauh)</string>
     <string name="equip_slot_weapon_magic">Senjata (Sihir)</string>
+    <string name="equip_slot_weapon">Weapons</string> <!-- untranslated -->
     <string name="equip_slot_head">Kepala</string>
     <string name="equip_slot_body">Badan</string>
     <string name="equip_slot_legs">Kaki</string>

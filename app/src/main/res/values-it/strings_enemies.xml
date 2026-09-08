@@ -134,12 +134,12 @@
     <string name="boss_the_hollow_king_desc">Il sovrano decapitato di ogni oscura pianta, uscito dal suo castello nel Bosco Moribondo per giudicare i mortali.</string>
     <string name="boss_the_vault_guardian_name">Guardiano del Caveau</string>
     <string name="boss_the_vault_guardian_desc">Colossale creatura d\'oro, risvegliata dalla Fiamma Eterna. Solo chi viene riconosciuto come Mecenate può incontrarlo.</string>
-    <string name="boss_obsidian_colossus_name">Obsidian Colossus</string> <!-- untranslated -->
-    <string name="boss_obsidian_colossus_desc">A mountain given wrath. No lone hero has ever chipped more than a scar into it. Bring a party.</string> <!-- untranslated -->
-    <string name="boss_brood_empress_name">Brood Empress</string> <!-- untranslated -->
-    <string name="boss_brood_empress_desc">Mother of the swarm between the stars. Her brood has ended armies; yours had better be paid well.</string> <!-- untranslated -->
-    <string name="boss_the_world_ender_name">The World Ender</string> <!-- untranslated -->
-    <string name="boss_the_world_ender_desc">When it stirs, kingdoms write their wills. Four names on the contract or none return.</string> <!-- untranslated -->
+    <string name="boss_obsidian_colossus_name">Colosso d\'Ossidiana</string>
+    <string name="boss_obsidian_colossus_desc">Una montagna di pura rabbia. Nessuno ha mai scalfito la sua pelle da solo. Porta con te una squadra.</string>
+    <string name="boss_brood_empress_name">Imperatrice del Nido</string>
+    <string name="boss_brood_empress_desc">Madre dello sciame che attraversa le stelle. I suoi piccoli hanno sconfitto interi eserciti, assicurati di pagare bene il tuo.</string>
+    <string name="boss_the_world_ender_name">Destructio Mundi</string>
+    <string name="boss_the_world_ender_desc">Colui che porta la fine di ogni era. Quattro saranno i nomi sul contratto.</string>
 
     <!-- ===== Expedition-unlocked dungeon names ===== -->
     <string name="dungeon_collapsed_mine_name">Miniera Crollata</string>

@@ -282,7 +282,7 @@ private fun DailyStatusIndicator(summary: GuildSummary) {
         summary.dailiesTodayTotal > 0 && summary.dailiesTodayRemaining == 0 -> Icon(
             imageVector        = Icons.Filled.CheckCircle,
             contentDescription = stringResource(R.string.guild_dailies_done_today),
-            tint               = Color(0xFF4CAF50),
+            tint               = MaterialTheme.colorScheme.tertiary,
             modifier           = Modifier.height(20.dp).width(20.dp),
         )
         summary.dailiesTodayTotal > 0 -> Text(

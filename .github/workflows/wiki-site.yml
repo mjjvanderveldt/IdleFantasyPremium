@@ -6,6 +6,8 @@ on:
     paths:
       - 'wiki/**'
       - 'app/src/main/assets/data/**'
+      - 'app/src/main/res/drawable/**'
+      - 'app/src/main/res/values/**'
   workflow_dispatch:
 
 permissions:
@@ -24,8 +26,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r wiki/requirements.txt
 
+      - name: Generate wiki pages
+        run: python -m wiki.src write
+
       - name: Generate HTML site
         run: python -m wiki.src write-html
+
+      - name: Update GitHub Wiki
+        uses: Andrew-Chen-Wang/github-wiki-action@v4
+        with:
+          path: out/IdleFantasy-wiki
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

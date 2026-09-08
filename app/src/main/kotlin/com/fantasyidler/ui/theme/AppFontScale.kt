@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
@@ -31,38 +32,20 @@ val LocalAppFontScale = compositionLocalOf { 1f }
  *
  * Upward leftovers (scroll and fling) are swallowed entirely: a fully expanded sheet can't
  * move up, so all they do is feed Material3's drag-state settle, which can wedge and lock the
- * sheet's lists until it is reopened (issue #1365).
- *
- * Downward leftovers only flow to the sheet while a finger is on the glass: fling momentum
- * that reaches the top of the list mid-animation must never start dragging the sheet, or a
- * strong downward fling from anywhere in the list whips to the top and dismisses the sheet
- * (issue #1499). Leftover fling velocity is handed to the sheet only when a finger pull
- * actually moved it during this gesture, so one uninterrupted swipe can still flow from
- * "scroll to the top" straight into "dismiss" (issue #1174).
+ * sheet's lists until it is reopened (issue #1365). Downward leftovers still flow to the
+ * sheet so swipe-down-to-dismiss keeps working.
  */
 @Composable
 private fun rememberSheetSwipeConnection(): NestedScrollConnection = remember {
     object : NestedScrollConnection {
-        private var fingerPulledSheet = false
-
         override fun onPostScroll(
             consumed: Offset,
             available: Offset,
-            source: androidx.compose.ui.input.nestedscroll.NestedScrollSource,
-        ): Offset = when {
-            consumed.y != 0f || available.y < 0f -> available
-            available.y > 0f && source != androidx.compose.ui.input.nestedscroll.NestedScrollSource.UserInput -> available
-            else -> {
-                if (available.y > 0f) fingerPulledSheet = true
-                Offset.Zero
-            }
-        }
+            source: NestedScrollSource,
+        ): Offset = if (consumed.y != 0f || available.y < 0f) available else Offset.Zero
 
-        override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-            val pulled = fingerPulledSheet
-            fingerPulledSheet = false
-            return if (available.y > 0f && pulled) Velocity.Zero else available
-        }
+        override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity =
+            if (available.y < 0f) available else Velocity.Zero
     }
 }
 

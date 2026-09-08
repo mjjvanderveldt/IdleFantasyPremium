@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- ===== Notification channel metadata ===== -->
-    <string name="notif_channel_sessions_name">活动提醒</string>
-    <string name="notif_channel_sessions_desc">技能活动完成时的通知</string>
+    <string name="notif_channel_sessions_name">训练提醒</string>
+    <string name="notif_channel_sessions_desc">技能训练完成时的通知</string>
     <string name="notif_channel_farming_name">种植提醒</string>
     <string name="notif_channel_farming_desc">作物可以收获时的通知</string>
 
     <!-- ===== Session complete ===== -->
-    <string name="notif_session_complete_title">活动完成！</string>
+    <string name="notif_session_complete_title">训练完成！</string>
     <!-- Translator note: %1$s = localised skill name (e.g. "Mining") -->
-    <string name="notif_session_complete_body">你的 %1$s 活动已结束。点击领取奖励。</string>
+    <string name="notif_session_complete_body">你的 %1$s 训练已结束。点击领取奖励。</string>
 
     <!-- ===== Buff alerts ===== -->
     <string name="notif_channel_buffs_name">增益提醒</string>
@@ -25,5 +25,5 @@
     <string name="notif_farming_ready_body">你的 %1$s 可以收获了。</string>
     <!-- Plural variant used when multiple patches are ready -->
     <!-- Translator note: %1$d = number of patches ready -->
-    <string name="notif_farming_ready_body_multi">%1$d 块土地的作物可以收获了。</string>
+    <string name="notif_farming_ready_body_multi">%1$d 块田地的作物可以收获了。</string>
 </resources>

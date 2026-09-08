@@ -94,6 +94,7 @@
     <string name="equip_slot_weapon_str">Arma (Forza)</string>
     <string name="equip_slot_weapon_ranged">Arma (Distanza)</string>
     <string name="equip_slot_weapon_magic">Arma (Magia)</string>
+    <string name="equip_slot_weapon">Armi</string>
     <string name="equip_slot_head">Testa</string>
     <string name="equip_slot_body">Busto</string>
     <string name="equip_slot_legs">Gambe</string>

@@ -57,6 +57,7 @@ import com.fantasyidler.ui.viewmodel.CombatViewModel.Companion.MAX_BOSS_REPEAT_C
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.formatDurationMs
 import com.fantasyidler.ui.viewmodel.MercContract
+import com.fantasyidler.ui.viewmodel.combatLevelFrom
 import com.fantasyidler.util.formatCoins
 import com.fantasyidler.util.formatXp
 import com.fantasyidler.util.toCountdown
@@ -91,7 +92,7 @@ internal fun BossInfoSheet(
     onDismiss: () -> Unit,
 ) {
     val context   = LocalContext.current
-    val combatLvl = combatLevel(skillLevels)
+    val combatLvl = combatLevelFrom(skillLevels)
     // Raid bosses show a beyond-player combat level for flavor; the mercenary party is
     // their real gate, so the level requirement never blocks starting one.
     val canFight  = boss.raid || combatLvl >= boss.combatLevelRequired

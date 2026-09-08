@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
@@ -72,7 +73,6 @@ fun SaveSlotsScreen(
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    var switchSlot by remember { mutableStateOf<SlotInfo?>(null) }
     var createSlot by remember { mutableStateOf<SlotInfo?>(null) }
     var deleteSlot by remember { mutableStateOf<SlotInfo?>(null) }
 
@@ -90,24 +90,6 @@ fun SaveSlotsScreen(
             viewModel.switchFailedConsumed()
             AppBannerCenter.enqueue(context.getString(R.string.save_slot_switch_failed))
         }
-    }
-
-    switchSlot?.let { slot ->
-        val name = slot.flags?.characterName?.ifBlank { null }
-            ?: stringResource(R.string.home_adventurer)
-        AlertDialog(
-            onDismissRequest = { switchSlot = null },
-            title = { Text(stringResource(R.string.save_slot_switch_title)) },
-            text  = { Text(stringResource(R.string.save_slot_switch_body, name)) },
-            confirmButton = {
-                Button(onClick = { switchSlot = null; viewModel.switchTo(slot.slot) }) {
-                    Text(stringResource(R.string.save_slot_switch_btn))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { switchSlot = null }) { Text(stringResource(R.string.btn_cancel)) }
-            },
-        )
     }
 
     createSlot?.let { slot ->
@@ -154,7 +136,7 @@ fun SaveSlotsScreen(
                 title = { Text(stringResource(R.string.save_slots_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 },
             )
@@ -184,7 +166,7 @@ fun SaveSlotsScreen(
                         onClick  = {
                             when {
                                 slot.isActive -> {}
-                                slot.exists   -> switchSlot = slot
+                                slot.exists   -> viewModel.switchTo(slot.slot)
                                 else          -> createSlot = slot
                             }
                         },
@@ -278,19 +260,21 @@ private fun SaveSlotCard(
                 modifier            = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
-                Row(
-                    verticalAlignment     = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Text(
-                        text       = flags.characterName.ifBlank { stringResource(R.string.home_adventurer) },
-                        style      = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        maxLines   = 1,
-                        overflow   = TextOverflow.Ellipsis,
-                        modifier   = Modifier.weight(1f, fill = false),
-                    )
-                    if (flags.ironman) {
+                // Name on its own line: sharing a row with the badge let the badge (and the
+                // unweighted right column) squeeze the name down to a few characters on
+                // narrow screens (issue #1552).
+                Text(
+                    text       = flags.characterName.ifBlank { stringResource(R.string.home_adventurer) },
+                    style      = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines   = 1,
+                    overflow   = TextOverflow.Ellipsis,
+                )
+                if (flags.ironman) {
+                    Row(
+                        verticalAlignment     = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
                         Icon(
                             imageVector        = Icons.Filled.Shield,
                             contentDescription = null,

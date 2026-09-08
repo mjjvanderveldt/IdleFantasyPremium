@@ -43,8 +43,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.fantasyidler.data.model.CombatGuilds
+import com.fantasyidler.data.model.Skills
 import com.fantasyidler.notification.SessionNotificationManager
 import com.fantasyidler.ui.screen.AppBannerHost
 import com.fantasyidler.ui.screen.BoneAltarScreen
@@ -67,6 +69,7 @@ import com.fantasyidler.ui.screen.QuestsScreen
 import com.fantasyidler.ui.screen.SeasonalEventScreen
 import com.fantasyidler.ui.screen.HomeScreenSettingsScreen
 import com.fantasyidler.ui.screen.ArtCreditsScreen
+import com.fantasyidler.ui.screen.CombatTabName
 import com.fantasyidler.ui.screen.SaveSlotsScreen
 import com.fantasyidler.ui.screen.SettingsScreen
 import com.fantasyidler.ui.screen.ThemeEditorScreen
@@ -132,6 +135,7 @@ fun AppNavigation(
         "home"   to setOf("shop", "settings", "inn", Screen.WorkerSkills.route, "guild_hall", "guild_detail/{guild}", "church", "slayer", "carnival", Screen.SeasonalEvent.route),
         "skills" to setOf("farming", "mercantile", Screen.Slayer.route, Screen.BoneAltar.route, Screen.PrestigeDetail.route),
         "combat" to setOf(Screen.Tower.route),
+        "profile" to setOf(Screen.Combat.startWithTab(CombatTabName.GEAR), Screen.PrestigeDetail.route),
     )
 
     Scaffold(
@@ -161,6 +165,12 @@ fun AppNavigation(
                                     }
                                     launchSingleTop = true
                                     restoreState = !isHome
+                                }
+                                if (screen is Screen.Profile) {
+                                    // restoreState can bring back another tab's screen on top of
+                                    // profile (e.g. combat gear, issue #1511); drop it so the
+                                    // Profile button always lands on the profile view itself.
+                                    navController.popBackStack(screen.route, inclusive = false)
                                 }
                             }
                         },
@@ -214,20 +224,19 @@ fun AppNavigation(
             modifier         = Modifier.padding(innerPadding),
         ) {
             paneComposable(Screen.Skills.route)   {
-                SkillsScreen(
-                    onNavigateToSlayer    = { navController.navigate(Screen.Slayer.route) },
-                    onNavigateToBoneAltar = { navController.navigate(Screen.BoneAltar.route) },
-                    onNavigateToPrestige  = { skill -> navController.navigate(Screen.PrestigeDetail.createRoute(skill)) },
+                BoundSkillsScreen(navController)
+            }
+            paneComposable(
+                route     = Screen.Skills.openSkillRoute,
+                arguments = listOf(navArgument("openSkill") { type = NavType.StringType }),
+            ) { entry ->
+                BoundSkillsScreen(
+                    navController = navController,
+                    openSkill     = entry.arguments?.getString("openSkill"),
                 )
             }
             paneComposable(Screen.Farming.route) { entry ->
                 FarmingScreen(onBack = { if (navController.currentBackStackEntry == entry) navController.popBackStack() })
-            }
-            paneComposable(Screen.Combat.route)   {
-                CombatScreen(
-                    onNavigateToTower    = { navController.navigate(Screen.Tower.route) },
-                    onNavigateToPrestige = { skill -> navController.navigate(Screen.PrestigeDetail.createRoute(skill)) },
-                )
             }
             paneComposable(Screen.Home.route)     {
                 HomeScreen(
@@ -249,22 +258,39 @@ fun AppNavigation(
             paneComposable(Screen.Quests.route)   { QuestsScreen() }
             paneComposable(Screen.Profile.route)  {
                 ProfileScreen(
-                    onNavigateToCombat   = { navController.navigate(Screen.Combat.gearRoute) },
+                    onNavigateToCombat   = { navController.navigate(Screen.Combat.startWithTab(CombatTabName.GEAR)) },
                     onNavigateToPrestige = { skill -> navController.navigate(Screen.PrestigeDetail.createRoute(skill)) },
                 )
             }
-            paneComposable(Screen.Combat.gearRoute) { CombatScreen(startOnGear = true) }
+            paneComposable(Screen.Combat.route)   {
+                BoundCombatScreen(navController)
+            }
+            paneComposable(
+                route     = Screen.Combat.openTabRoute,
+                arguments = listOf(navArgument("tab") { type = NavType.EnumType(CombatTabName::class.java) }),
+            ) { entry ->
+                BoundCombatScreen(
+                    navController = navController,
+                    startingPage  = entry.arguments?.getString("tab")?.let { CombatTabName.valueOf(it) }
+                )
+            }
             paneComposable(
                 route     = Screen.Combat.presetDungeonRoute,
                 arguments = listOf(navArgument("dungeonKey") { type = NavType.StringType }),
             ) { entry ->
-                CombatScreen(initialDungeonKey = entry.arguments?.getString("dungeonKey"))
+                BoundCombatScreen(
+                    navController     = navController,
+                    initialDungeonKey = entry.arguments?.getString("dungeonKey"),
+                )
             }
             paneComposable(
                 route     = Screen.Combat.presetBossRoute,
                 arguments = listOf(navArgument("bossKey") { type = NavType.StringType }),
             ) { entry ->
-                CombatScreen(initialBossKey = entry.arguments?.getString("bossKey"))
+                BoundCombatScreen(
+                    navController     = navController,
+                    initialBossKey = entry.arguments?.getString("bossKey"),
+                )
             }
             paneComposable(Screen.Settings.route) { entry ->
                 SettingsScreen(
@@ -285,7 +311,11 @@ fun AppNavigation(
                 SaveSlotsScreen(
                     onBack     = { if (navController.currentBackStackEntry == entry) navController.popBackStack() },
                     onSwitched = {
-                        // Rebuild the whole back stack on the new character.
+                        // Rebuild the whole back stack on the new character. Also drop every
+                        // tab's saved sub-screen stack (and its ViewModels): without this the
+                        // Skills tab restores the previous character's remembered screen, e.g.
+                        // the bone altar with their session tallies (issue #1550).
+                        Screen.bottomNavItems.forEach { navController.clearBackStack(it.route) }
                         navController.navigate(Screen.Home.route) {
                             popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
                         }
@@ -351,7 +381,14 @@ fun AppNavigation(
             }
             paneComposable(Screen.GuildDetail.route) { entry ->
                 GuildDetailScreen(
-                    onBack = { if (navController.currentBackStackEntry == entry) navController.popBackStack() },
+                    onBack             = { if (navController.currentBackStackEntry == entry) navController.popBackStack() },
+                    onNavigateToSkill  = { skill ->
+                        when (skill) {
+                            Skills.SLAYER -> navController.navigate(Screen.Slayer.route)
+                            in CombatGuilds.ALL -> navController.navigate(Screen.Combat.startWithTab(CombatTabName.DUNGEONS))
+                            else -> navController.navigate(Screen.Skills.routeWithSkill(skill))
+                        }
+                    },
                 )
             }
             paneComposable(Screen.Church.route) { entry ->
@@ -367,6 +404,7 @@ fun AppNavigation(
             paneComposable(Screen.Slayer.route) { entry ->
                 SlayerScreen(
                     onBack = { if (navController.currentBackStackEntry == entry) navController.popBackStack() },
+                    onNavigateToPrestige = { skill -> navController.navigate(Screen.PrestigeDetail.createRoute(skill)) },
                 )
             }
             paneComposable(Screen.BoneAltar.route) { entry ->
@@ -404,6 +442,39 @@ fun AppNavigation(
         }
     }
     AppBannerHost()
+}
+
+// ---------------------------------------------------------------------------
+// Bound screens — Used when multiple routes lead to the same screen to improve code reuse
+// ---------------------------------------------------------------------------
+
+@Composable
+private fun BoundSkillsScreen(
+    navController: NavController,
+    openSkill: String? = null,
+) {
+    SkillsScreen(
+        openSkill             = openSkill,
+        onNavigateToSlayer    = { navController.navigate(Screen.Slayer.route) },
+        onNavigateToBoneAltar = { navController.navigate(Screen.BoneAltar.route) },
+        onNavigateToPrestige  = { skill -> navController.navigate(Screen.PrestigeDetail.createRoute(skill)) },
+    )
+}
+
+@Composable
+private fun BoundCombatScreen(
+    navController: NavController,
+    startingPage: CombatTabName? = null,
+    initialDungeonKey: String? = null,
+    initialBossKey: String? = null
+) {
+    CombatScreen(
+        startingPage = startingPage,
+        initialDungeonKey = initialDungeonKey,
+        initialBossKey = initialBossKey,
+        onNavigateToTower    = { navController.navigate(Screen.Tower.route) },
+        onNavigateToPrestige = { skill -> navController.navigate(Screen.PrestigeDetail.createRoute(skill)) },
+    )
 }
 
 /**

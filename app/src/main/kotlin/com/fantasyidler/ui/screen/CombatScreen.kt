@@ -1,5 +1,7 @@
 package com.fantasyidler.ui.screen
 
+import android.R as AndroidR
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -85,23 +87,29 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.safeDrawing
+import com.fantasyidler.data.model.DungeonRunStats
 import com.fantasyidler.data.model.EquipSlot
 import com.fantasyidler.data.model.Skills
 import com.fantasyidler.ui.theme.ScaledSheetContent
 import com.fantasyidler.ui.viewmodel.CombatViewModel
 import com.fantasyidler.ui.viewmodel.InventoryViewModel
 import com.fantasyidler.ui.viewmodel.combatLevelFrom
-import com.fantasyidler.ui.viewmodel.slotDisplayName
 import com.fantasyidler.ui.viewmodel.xpProgressFraction
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.formatXp
+
+
+enum class CombatTabName {
+    DUNGEONS,
+    GEAR
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CombatScreen(
     viewModel:          CombatViewModel    = hiltViewModel(),
     inventoryVm:        InventoryViewModel = hiltViewModel(),
-    startOnGear:        Boolean            = false,
+    startingPage:       CombatTabName?     = null,
     initialDungeonKey:  String?            = null,
     initialBossKey:     String?            = null,
     onNavigateToTower:  () -> Unit         = {},
@@ -111,7 +119,7 @@ fun CombatScreen(
     val invState         by inventoryVm.uiState.collectAsState()
     val context           = LocalContext.current
     var showMercCamp     by remember { mutableStateOf(false) }
-    val visibleDungeons   = remember(state.unlockedDungeons) {
+    val visibleDungeons   = remember(state.unlockedDungeons, viewModel.dungeonList) {
         viewModel.dungeonList.filter { !it.loreUnlockOnly || it.name in state.unlockedDungeons }
     }
     LaunchedEffect(initialDungeonKey, initialBossKey) {
@@ -161,15 +169,20 @@ fun CombatScreen(
         }
 
         val combatSession = state.combatSession
-        val skillsPrestigeReadyCount = if (state.ironman || !state.showPrestigeNotifications) 0 else COMBAT_SKILLS.count { key ->
-            (state.skillLevels[key] ?: 1) >= 99 && (state.skillPrestige[key] ?: 0) < 3
-        }
+        val skillsPrestigeReadyCount = if (!state.showPrestigeNotifications) 0
+            else COMBAT_SKILLS.count { it in state.prestigeReadySkills }
         val skillsTabLabel = if (skillsPrestigeReadyCount > 0)
             stringResource(R.string.tab_label_with_count, stringResource(R.string.label_skills), skillsPrestigeReadyCount)
         else
             stringResource(R.string.label_skills)
         if (combatSession != null) {
-            var savedPage by rememberSaveable { mutableIntStateOf(if (startOnGear) 2 else 0) }
+            var savedPage by rememberSaveable {
+                mutableIntStateOf(when (startingPage) {
+                    CombatTabName.GEAR -> 2
+                    CombatTabName.DUNGEONS -> 1
+                    else -> 0
+                })
+            }
             val pagerState = rememberPagerState(initialPage = savedPage, pageCount = { 4 })
             LaunchedEffect(Unit) {
                 if (pagerState.currentPage != savedPage) pagerState.scrollToPage(savedPage)
@@ -191,7 +204,7 @@ fun CombatScreen(
                     Tab(
                         selected = pagerState.currentPage == 2,
                         onClick  = { scope.launch { pagerState.animateScrollToPage(2) } },
-                        text     = { Text(stringResource(R.string.label_equipment)) },
+                        text     = { Text(stringResource(R.string.label_combat_equipment)) },
                     )
                     Tab(
                         selected = pagerState.currentPage == 3,
@@ -210,13 +223,14 @@ fun CombatScreen(
                             hiredMercs     = state.hiredMercs,
                             enemies        = viewModel.enemyMap,
                             skillLevels    = state.skillLevels,
-                            hpPrestigeBonus = state.hpPrestigeBonus,
+                            hpPrestigeBonus = state.combatPrestigeBonus[Skills.HITPOINTS] ?: 0,
                             towerHpBonus   = state.towerHpBonus,
                             attackBonus    = state.totalAttackBonus,
                             strengthBonus  = state.totalStrengthBonus,
                             defenseBonus   = state.totalDefenseBonus,
                             equippedFood   = state.equippedFood,
                             foodHealValues = viewModel.foodHealValues,
+                            foodEatOrder   = invState.foodEatOrder,
                             showEndTime    = state.showSessionEndTime,
                             repeatIndex    = if (combatSession.skillName == "boss") state.activeBossRepeatIndex else state.activeDungeonRepeatIndex,
                             repeatTotal    = if (combatSession.skillName == "boss") state.activeBossRepeatTotal else state.activeDungeonRepeatTotal,
@@ -248,11 +262,14 @@ fun CombatScreen(
                             equippedFood   = invState.equippedFood,
                             foodHealValues = inventoryVm.foodHealValues,
                             cookingRecipes = inventoryVm.cookingRecipes,
-                            allEquipment   = inventoryVm.allEquipment,
+                            allEquipment   = invState.resolvedEquipment(inventoryVm.allEquipment),
+                            heirloomXp     = invState.heirloomXp,
                             context        = context,
                             activeWeaponSlot    = state.selectedWeaponSlot,
                             foodEatThresholdPct = invState.foodEatThresholdPct,
-                            availableSpells  = viewModel.availableSpells(state.skillLevels),
+                            foodEatOrder        = invState.foodEatOrder,
+                            availableSpells  = viewModel.availableSpells(),
+                            magicLevel       = state.skillLevels[Skills.MAGIC] ?: 1,
                             selectedArrowKey = state.selectedArrowKey,
                             selectedSpell    = state.selectedSpell,
                             onSlotTap      = inventoryVm::openSlotPicker,
@@ -264,21 +281,28 @@ fun CombatScreen(
                             onArrowSelected = viewModel::selectArrow,
                             onSpellSelected = viewModel::selectSpell,
                             onFoodThresholdChanged = inventoryVm::setFoodEatThresholdPct,
+                            onFoodOrderChanged     = inventoryVm::setFoodEatOrder,
                         )
                         else -> CombatSkillsTab(
-                            skillLevels        = state.skillLevels,
-                            skillXp            = state.skillXp,
-                            totalAttackBonus   = state.totalAttackBonus,
-                            totalStrengthBonus = state.totalStrengthBonus,
-                            totalDefenseBonus  = state.totalDefenseBonus,
-                            skillPrestige      = state.skillPrestige,
-                            onOpenPrestige     = onNavigateToPrestige,
+                            skillLevels         = state.skillLevels,
+                            skillXp             = state.skillXp,
+                            totalAttackBonus    = state.totalAttackBonus,
+                            totalStrengthBonus  = state.totalStrengthBonus,
+                            totalDefenseBonus   = state.totalDefenseBonus,
+                            skillPrestigeLevels = state.skillPrestigeLevels,
+                            combatPrestigeBonus = state.combatPrestigeBonus,
+                            onOpenPrestige      = onNavigateToPrestige,
                         )
                     }
                 }
             }
         } else {
-            var savedPage by rememberSaveable { mutableIntStateOf(if (startOnGear) 1 else 0) }
+            var savedPage by rememberSaveable {
+                mutableIntStateOf(when (startingPage) {
+                    CombatTabName.GEAR -> 1
+                    else -> 0
+                })
+            }
             val pagerState = rememberPagerState(initialPage = savedPage, pageCount = { 3 })
             LaunchedEffect(Unit) {
                 if (pagerState.currentPage != savedPage) pagerState.scrollToPage(savedPage)
@@ -295,7 +319,7 @@ fun CombatScreen(
                     Tab(
                         selected = pagerState.currentPage == 1,
                         onClick  = { scope.launch { pagerState.animateScrollToPage(1) } },
-                        text     = { Text(stringResource(R.string.label_equipment)) },
+                        text     = { Text(stringResource(R.string.label_combat_equipment)) },
                     )
                     Tab(
                         selected = pagerState.currentPage == 2,
@@ -330,11 +354,14 @@ fun CombatScreen(
                             equippedFood   = invState.equippedFood,
                             foodHealValues = inventoryVm.foodHealValues,
                             cookingRecipes = inventoryVm.cookingRecipes,
-                            allEquipment   = inventoryVm.allEquipment,
+                            allEquipment   = invState.resolvedEquipment(inventoryVm.allEquipment),
+                            heirloomXp     = invState.heirloomXp,
                             context        = context,
                             activeWeaponSlot    = state.selectedWeaponSlot,
                             foodEatThresholdPct = invState.foodEatThresholdPct,
-                            availableSpells  = viewModel.availableSpells(state.skillLevels),
+                            foodEatOrder        = invState.foodEatOrder,
+                            availableSpells  = viewModel.availableSpells(),
+                            magicLevel       = state.skillLevels[Skills.MAGIC] ?: 1,
                             selectedArrowKey = state.selectedArrowKey,
                             selectedSpell    = state.selectedSpell,
                             onSlotTap      = inventoryVm::openSlotPicker,
@@ -346,15 +373,17 @@ fun CombatScreen(
                             onArrowSelected = viewModel::selectArrow,
                             onSpellSelected = viewModel::selectSpell,
                             onFoodThresholdChanged = inventoryVm::setFoodEatThresholdPct,
+                            onFoodOrderChanged     = inventoryVm::setFoodEatOrder,
                         )
                         else -> CombatSkillsTab(
-                            skillLevels        = state.skillLevels,
-                            skillXp            = state.skillXp,
-                            totalAttackBonus   = state.totalAttackBonus,
-                            totalStrengthBonus = state.totalStrengthBonus,
-                            totalDefenseBonus  = state.totalDefenseBonus,
-                            skillPrestige      = state.skillPrestige,
-                            onOpenPrestige     = onNavigateToPrestige,
+                            skillLevels         = state.skillLevels,
+                            skillXp             = state.skillXp,
+                            totalAttackBonus    = state.totalAttackBonus,
+                            totalStrengthBonus  = state.totalStrengthBonus,
+                            totalDefenseBonus   = state.totalDefenseBonus,
+                            skillPrestigeLevels = state.skillPrestigeLevels,
+                            combatPrestigeBonus = state.combatPrestigeBonus,
+                            onOpenPrestige      = onNavigateToPrestige,
                         )
                     }
                 }
@@ -373,8 +402,9 @@ fun CombatScreen(
             ScaledSheetContent {
             EquipPickerSheet(
                 slot       = slot,
-                candidates = invState.candidatesFor(slot, inventoryVm.allEquipment),
+                candidates = invState.candidatesFor(slot, invState.resolvedEquipment(inventoryVm.allEquipment)),
                 context    = context,
+                heirloomXp = invState.heirloomXp,
                 onEquip    = { itemKey -> inventoryVm.equip(itemKey, slot) },
                 onDismiss  = inventoryVm::dismissSlotPicker,
             )
@@ -395,7 +425,6 @@ fun CombatScreen(
                 MercenaryCampSheet(
                     pool           = state.mercPool,
                     hiredMercs     = state.hiredMercs,
-                    dailyResetHour = state.dailyResetHour,
                     maxParty       = MercenaryRepository.MAX_PARTY,
                     onHire         = viewModel::hireMercenary,
                     onDismissMerc  = viewModel::dismissMercenary,
@@ -486,7 +515,7 @@ fun CombatScreen(
             },
             dismissButton = {
                 TextButton(onClick = viewModel::dismissNoFoodWarning) {
-                    Text(stringResource(android.R.string.cancel))
+                    Text(stringResource(AndroidR.string.cancel))
                 }
             },
         )
@@ -504,7 +533,7 @@ private fun CombatSelectionList(
     skillLevels: Map<String, Int>,
     survivalRatings: Map<String, CombatSimulator.SurvivalRating> = emptyMap(),
     dungeonRuns: Map<String, Int> = emptyMap(),
-    dungeonLastRunStats: Map<String, com.fantasyidler.data.model.DungeonRunStats> = emptyMap(),
+    dungeonLastRunStats: Map<String, DungeonRunStats> = emptyMap(),
     unlockedDungeons: List<String> = emptyList(),
     towerBestFloor: Int = 0,
     bossKillCounts: Map<String, Int> = emptyMap(),
@@ -518,17 +547,16 @@ private fun CombatSelectionList(
     onTower: () -> Unit = {},
     onOpenMercCamp: () -> Unit = {},
 ) {
-    val combatLvl = combatLevel(skillLevels)
+    val combatLvl = combatLevelFrom(skillLevels)
 
     LazyColumn(modifier.fillMaxSize()) {
         item { CombatSectionHeader(stringResource(R.string.label_dungeons_tab)) }
         item { TowerEntryRow(bestFloor = towerBestFloor, isQueueFull = isQueueFull, onTap = onTower) }
         items(dungeons) { dungeon ->
-            val unlocked = if (dungeon.loreUnlockOnly) {
-                unlockedDungeons.contains(dungeon.name)
-            } else {
-                combatLvl >= dungeon.recommendedLevel - UNLOCK_TOLERANCE
-            }
+            // Lore dungeons need discovery on top of the level gate, not instead of it,
+            // or a prestiged player keeps access far below the requirement (issue #1542).
+            val discovered = !dungeon.loreUnlockOnly || unlockedDungeons.contains(dungeon.name)
+            val unlocked = discovered && combatLvl >= dungeon.recommendedLevel - UNLOCK_TOLERANCE
             DungeonRow(
                 dungeon        = dungeon,
                 unlocked       = unlocked,
@@ -537,7 +565,7 @@ private fun CombatSelectionList(
                 runCount       = dungeonRuns[dungeon.name] ?: 0,
                 lastRunStats   = dungeonLastRunStats[dungeon.name],
                 onTap          = { onDungeon(dungeon) },
-                loreLockedHint = if (dungeon.loreUnlockOnly && !unlocked)
+                loreLockedHint = if (!discovered)
                     dungeon.loreHint ?: stringResource(R.string.expedition_discover_hint) else null,
             )
         }
@@ -602,10 +630,13 @@ private fun CombatGearTab(
     foodHealValues: Map<String, Int>,
     cookingRecipes: Map<String, CookingRecipe>,
     allEquipment: Map<String, EquipmentData>,
-    context: android.content.Context,
+    heirloomXp: Map<String, Long>,
+    context: Context,
     activeWeaponSlot: String?,
     foodEatThresholdPct: Int,
+    foodEatOrder: String,
     availableSpells: List<SpellData>,
+    magicLevel: Int,
     selectedArrowKey: String?,
     selectedSpell: SpellData?,
     onSlotTap: (String) -> Unit,
@@ -617,12 +648,21 @@ private fun CombatGearTab(
     onArrowSelected: (String?) -> Unit,
     onSpellSelected: (SpellData?) -> Unit,
     onFoodThresholdChanged: (Int) -> Unit,
+    onFoodOrderChanged: (String) -> Unit,
 ) {
     val cookedItemKeys = remember(cookingRecipes) {
         cookingRecipes.values.map { it.cookedItem }.toSet()
     }
-    val foodInInventory = remember(inventory, cookedItemKeys) {
-        inventory.filterKeys { it in cookedItemKeys }.entries.toList()
+    val foodInInventory = remember(inventory, cookedItemKeys, foodHealValues, foodEatOrder) {
+        inventory.filterKeys { it in cookedItemKeys }.entries
+            .sortedBy {
+                when (foodEatOrder) {
+                    "descending" -> -(foodHealValues[it.key] ?: 0)
+                    "ascending" -> foodHealValues[it.key] ?: 0
+                    "least_quantity" -> it.value
+                    else -> 0
+                }
+            }
     }
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -659,43 +699,48 @@ private fun CombatGearTab(
         item {
             val weaponSlot = activeWeaponSlot ?: EquipSlot.WEAPON_ATK
             EquipSlotRow(
-                slotName  = slotDisplayName(context, weaponSlot),
+                slotName  = GameStrings.slotName(context, weaponSlot),
                 itemKey   = equipped[weaponSlot],
                 xpLabel   = weaponXpLabel(allEquipment[equipped[weaponSlot]]?.combatStyle, context),
                 equipment = allEquipment[equipped[weaponSlot]],
+                heirloomXp = heirloomXp,
                 onTap     = { onSlotTap(weaponSlot) },
                 onUnequip = { onUnequip(weaponSlot) },
             )
         }
-        if (EquipSlot.combatStyleForSlot(activeWeaponSlot ?: "") == "ranged") {
+        val loadoutStyle = EquipSlot.combatStyleForSlot(activeWeaponSlot ?: "")
+        if (loadoutStyle == "ranged" || loadoutStyle == "magic") {
             item {
-                ArrowLoadoutPicker(
-                    selectedArrowKey = selectedArrowKey,
-                    inventory        = inventory,
-                    context          = context,
-                    onArrowSelected  = onArrowSelected,
-                )
-            }
-        }
-        if (EquipSlot.combatStyleForSlot(activeWeaponSlot ?: "") == "magic") {
-            item {
-                val weaponSlot = activeWeaponSlot ?: EquipSlot.WEAPON_ATK
-                SpellLoadoutPicker(
-                    selectedSpell   = selectedSpell,
-                    availableSpells = availableSpells,
-                    inventory       = inventory,
-                    equippedWeapon  = allEquipment[equipped[weaponSlot]],
-                    context         = context,
-                    onSpellSelected = onSpellSelected,
-                )
+                Column(Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+                    if (loadoutStyle == "ranged") {
+                        ArrowLoadoutPicker(
+                            selectedArrowKey = selectedArrowKey,
+                            inventory        = inventory,
+                            context          = context,
+                            onArrowSelected  = onArrowSelected,
+                        )
+                    } else {
+                        val weaponSlot = activeWeaponSlot ?: EquipSlot.WEAPON_ATK
+                        SpellLoadoutPicker(
+                            selectedSpell   = selectedSpell,
+                            availableSpells = availableSpells,
+                            magicLevel      = magicLevel,
+                            inventory       = inventory,
+                            equippedWeapon  = allEquipment[equipped[weaponSlot]],
+                            context         = context,
+                            onSpellSelected = onSpellSelected,
+                        )
+                    }
+                }
             }
         }
         item { SlotSectionHeader(stringResource(R.string.profile_combat_gear)) }
         items(EquipSlot.ARMOR_SLOTS) { slot ->
             EquipSlotRow(
-                slotName  = slotDisplayName(context, slot),
+                slotName  = GameStrings.slotName(context, slot),
                 itemKey   = equipped[slot],
                 equipment = allEquipment[equipped[slot]],
+                heirloomXp = heirloomXp,
                 onTap     = { onSlotTap(slot) },
                 onUnequip = { onUnequip(slot) },
             )
@@ -762,6 +807,12 @@ private fun CombatGearTab(
                 )
             }
         }
+        item { SlotSectionHeader(stringResource(R.string.profile_food_order)) }
+        item {
+            Column(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+                FoodOrderPicker(foodEatOrder, onFoodOrderChanged)
+            }
+        }
         item { Spacer(Modifier.height(16.dp)) }
     }
 }
@@ -782,8 +833,9 @@ private fun CombatSkillsTab(
     totalAttackBonus: Int,
     totalStrengthBonus: Int,
     totalDefenseBonus: Int,
-    skillPrestige: Map<String, Int> = emptyMap(),
-    onOpenPrestige: ((String) -> Unit)? = null,
+    skillPrestigeLevels: Map<String, Int> = emptyMap(),
+    combatPrestigeBonus: Map<String, Int> = emptyMap(),
+    onOpenPrestige: (String) -> Unit = {},
 ) {
     val context = LocalContext.current
     var tappedSkill by remember { mutableStateOf<String?>(null) }
@@ -791,7 +843,18 @@ private fun CombatSkillsTab(
     tappedSkill?.let { key ->
         AlertDialog(
             onDismissRequest = { tappedSkill = null },
-            title = { Text(GameStrings.skillName(context, key)) },
+            title = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(GameStrings.skillName(context, key))
+                    TextButton(onClick = { tappedSkill = null; onOpenPrestige(key) }) {
+                        Text(stringResource(R.string.prestige_skill_tree))
+                    }
+                }
+            },
             text  = { Text(GameStrings.skillDesc(context, key)) },
             confirmButton = {
                 TextButton(onClick = { tappedSkill = null }) {
@@ -814,8 +877,9 @@ private fun CombatSkillsTab(
                 level         = skillLevels[key] ?: 1,
                 xp            = skillXp[key]     ?: 0L,
                 gearBonus     = gearBonus,
-                prestigeLevel = skillPrestige[key] ?: 0,
-                onOpenPrestige = onOpenPrestige?.let { cb -> { cb(key) } },
+                prestigeLevel = skillPrestigeLevels[key] ?: 0,
+                prestigeBonus = combatPrestigeBonus[key] ?: 0,
+                onOpenPrestige = onOpenPrestige.let { cb -> { cb(key) } },
                 onClick       = { tappedSkill = key },
             )
         }
@@ -830,6 +894,7 @@ private fun CombatSkillRow(
     xp: Long,
     gearBonus: Int = 0,
     prestigeLevel: Int = 0,
+    prestigeBonus: Int = 0,
     onOpenPrestige: (() -> Unit)? = null,
     onClick: () -> Unit = {},
 ) {
@@ -898,10 +963,10 @@ private fun CombatSkillRow(
                             color = MaterialTheme.colorScheme.primary,
                         )
                     }
-                    if (prestigeLevel > 0) {
+                    if (prestigeBonus > 0) {
                         Spacer(Modifier.width(6.dp))
                         Text(
-                            text  = stringResource(R.string.combat_prestige_bonus, prestigeLevel * 5),
+                            text  = stringResource(R.string.combat_prestige_bonus, prestigeBonus),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.primary,
                         )
@@ -1105,7 +1170,7 @@ private fun DungeonRow(
     isQueueFull: Boolean,
     survivalRating: CombatSimulator.SurvivalRating? = null,
     runCount: Int = 0,
-    lastRunStats: com.fantasyidler.data.model.DungeonRunStats? = null,
+    lastRunStats: DungeonRunStats? = null,
     loreLockedHint: String? = null,
     onTap: () -> Unit,
 ) {
@@ -1196,9 +1261,3 @@ private fun DungeonRow(
 
 /** Dungeons within this many levels of the recommendation are still enterable. */
 internal const val UNLOCK_TOLERANCE = 5
-
-/** Arrow tiers from best to worst — mirrors CombatViewModel.ARROW_TIERS. */
-internal val ARROW_TIERS = listOf(
-    "runite_arrow", "adamantite_arrow", "mithril_arrow",
-    "steel_arrow", "iron_arrow", "bronze_arrow",
-)

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.fantasyidler.R
 import com.fantasyidler.data.json.SkillingDungeonData
 import com.fantasyidler.data.model.EquipSlot
+import com.fantasyidler.util.toolEfficiency
 import com.fantasyidler.data.model.PlayerFlags
 import com.fantasyidler.data.model.QueuedAction
 import com.fantasyidler.data.model.Skills
@@ -75,9 +76,9 @@ class ExpeditionsViewModel @Inject constructor(
 
         val equippedMap: Map<String, String?> = json.decodeFromString(player.equipped)
 
-        val miningEff   = equippedMap["pickaxe"]?.let { gameData.equipment[it]?.miningEfficiency }     ?: 1.0f
-        val woodEff     = equippedMap["axe"]?.let { gameData.equipment[it]?.woodcuttingEfficiency }     ?: 1.0f
-        val fishingEff  = equippedMap["fishing_rod"]?.let { gameData.equipment[it]?.fishingEfficiency } ?: 1.0f
+        val miningEff   = gameData.toolEfficiency(equippedMap[EquipSlot.PICKAXE], EquipSlot.PICKAXE, skillLevels = levels, heirloomXp = flags.heirloomXp)
+        val woodEff     = gameData.toolEfficiency(equippedMap[EquipSlot.AXE], EquipSlot.AXE, skillLevels = levels, heirloomXp = flags.heirloomXp)
+        val fishingEff  = gameData.toolEfficiency(equippedMap[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD, skillLevels = levels, heirloomXp = flags.heirloomXp)
 
         val agilityLevel = levels[Skills.AGILITY] ?: 1
 
@@ -156,9 +157,9 @@ class ExpeditionsViewModel @Inject constructor(
 
             val equippedMap: Map<String, String?> = json.decodeFromString(player.equipped)
             val toolEfficiency: Float = when (dungeon.skill) {
-                Skills.MINING      -> equippedMap[EquipSlot.PICKAXE]?.let { gameData.equipment[it]?.miningEfficiency }     ?: 1.0f
-                Skills.WOODCUTTING -> equippedMap[EquipSlot.AXE]?.let { gameData.equipment[it]?.woodcuttingEfficiency }    ?: 1.0f
-                Skills.FISHING     -> equippedMap[EquipSlot.FISHING_ROD]?.let { gameData.equipment[it]?.fishingEfficiency } ?: 1.0f
+                Skills.MINING      -> gameData.toolEfficiency(equippedMap[EquipSlot.PICKAXE], EquipSlot.PICKAXE, skillLevels = levels, heirloomXp = flags.heirloomXp)
+                Skills.WOODCUTTING -> gameData.toolEfficiency(equippedMap[EquipSlot.AXE], EquipSlot.AXE, skillLevels = levels, heirloomXp = flags.heirloomXp)
+                Skills.FISHING     -> gameData.toolEfficiency(equippedMap[EquipSlot.FISHING_ROD], EquipSlot.FISHING_ROD, skillLevels = levels, heirloomXp = flags.heirloomXp)
                 else               -> 1.0f
             }
             val xpMap: Map<String, Long> = json.decodeFromString(player.skillXp)

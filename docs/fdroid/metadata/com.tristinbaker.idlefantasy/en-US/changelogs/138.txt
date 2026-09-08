@@ -1,0 +1,16 @@
+• Void Staff is now the strongest staff in the game, above the Trident of the Seas, as befits the final tower milestone reward
+• Laborer crafting sheets now list material tiers by rank (bronze, iron, ...) instead of alphabetically, matching the regular skill screens
+• Coin amounts over 1M now floor instead of round, so the display never overstates what you have (99.96M no longer shows as 100.0M when you can't yet afford a 100M purchase) (thanks Michaelomh!)
+• Crop-ready notifications are now character aware: tapping one that belongs to another character opens the character selection screen instead of the active character's farm, and one character's planting or harvesting no longer cancels another's pending crop alarms
+• Amulet of the Void now lives up to its description, boosting every combat style and beating the Flame Heart Amulet, Necklace of Anguish, and Amulet of the Kraken as the top endgame necklace
+• Runecrafting ash catalysts you own but can't cover for the chosen quantity now show greyed out with an owned/needed count instead of silently disappearing from the list (1 ash covers 10 essence)
+• Guild dailies tab now says all of today's requests are complete instead of wrongly telling you to unlock dailies when you've finished them all with hide-completed on
+• The cape rack now applies the Farming Cape's harvest bonus passively like other gathering capes, no longer requiring the cape to be equipped
+• Chronos Spire speed reductions now actually shorten sessions: whole-minute rounding was swallowing the bonus entirely at many agility levels
+• Mercantile dispatch button no longer ignores taps when a finished session is waiting to be collected with a full queue
+• Farm crop picker now shows quest icons next to crops wanted by open guild quests and dailies (thanks Michaelomh!)
+• Boss and dungeon weapon loadout pickers now show combat-style icons (thanks Michaelomh!)
+• Guild hall visual refresh: skill icons, claimable-reward badges, and clearer per-guild progress text (thanks Michaelomh!)
+• More compact skill rows with a smaller prestige button (thanks Michaelomh!)
+• The Profile screen now shows the same stats bar as Home (thanks Michaelomh!)
+• Updated French, Italian, Russian, and German translations, and added the start of Catalan (thanks to all translators!)

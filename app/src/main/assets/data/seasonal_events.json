@@ -6,6 +6,7 @@
     "end_ms": 1788220800000,
     "token_goal": 100,
     "pillars": ["bounty", "expedition", "boss", "minigame"],
+    "icon_emoji": "☀️",
     "bounty_tasks": [
       {
         "id": "sunspire_firewood",
@@ -116,6 +117,7 @@
     "end_ms": 1796083200000,
     "token_goal": 300,
     "pillars": ["bounty", "expedition", "boss", "minigame"],
+    "icon_emoji": "🎃",
     "bounty_tasks": [
       {
         "id": "gloom_pumpkins",

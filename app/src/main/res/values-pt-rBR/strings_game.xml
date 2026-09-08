@@ -94,6 +94,7 @@
     <string name="equip_slot_weapon_str">Arma (Força)</string>
     <string name="equip_slot_weapon_ranged">Arma (À Distância)</string>
     <string name="equip_slot_weapon_magic">Arma (Magia)</string>
+    <string name="equip_slot_weapon">Weapons</string> <!-- untranslated -->
     <string name="equip_slot_head">Cabeça</string>
     <string name="equip_slot_body">Corpo</string>
     <string name="equip_slot_legs">Pernas</string>

@@ -15,7 +15,7 @@
     <string name="notif_channel_buffs_name">Alertes bonus</string>
     <string name="notif_channel_buffs_desc">Notifications lorsque vos bonus actifs expirent</string>
     <string name="notif_xp_boost_expired_title">Boost d\'XP expiré</string>
-    <string name="notif_xp_boost_expired_body">Votre bonus d\'XP ×2 a expiré. Rendez-vous sur la boutique pour le réactiver.</string>
+    <string name="notif_xp_boost_expired_body">Votre bonus d\'XP ×2 a expiré. Rendez-vous dans le magasin pour le réactiver.</string>
     <string name="notif_blessing_expired_title">Bénédiction expirée</string>
     <string name="notif_blessing_expired_body">La bénédiction de l\'église a expiré. Rendez-vous à l\'église pour la renouveler.</string>
 

@@ -14,6 +14,8 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.random.Random
+import java.io.File
+import kotlinx.serialization.json.Json
 
 /**
  * Tests for the most complex simulator, [CombatSimulator.simulateDungeon], made
@@ -198,8 +200,8 @@ class CombatSimulatorTest {
 
     /** The real raid bosses from the shipped data file, so tuning and tests cannot drift apart. */
     private val raidBosses: List<BossData> by lazy {
-        val json = kotlinx.serialization.json.Json { ignoreUnknownKeys = true }
-        val text = java.io.File("src/main/assets/data/raid_bosses.json").readText()
+        val json = Json { ignoreUnknownKeys = true }
+        val text = File("src/main/assets/data/raid_bosses.json").readText()
         json.decodeFromString<Map<String, BossData>>(text).values.filter { it.raid }
     }
 
@@ -257,5 +259,29 @@ class CombatSimulatorTest {
         val soloTaken  = runRaid(boss, seed = 5, mercs = emptyList()).sumOf { it.enemyHits.sum() }
         val partyTaken = runRaid(boss, seed = 5, mercs = (1..3).map { eliteMerc(it) }).sumOf { it.enemyHits.sum() }
         assertTrue("expected party player to take less damage (solo=$soloTaken party=$partyTaken)", partyTaken < soloTaken)
+    }
+
+    @Test
+    fun `spawns follow their weights across a full run`() {
+        // Two equal-weight one-hit enemies: kills must land near 50/50 rather than one
+        // type dominating whole frames or chaining across them (issue #1557).
+        val result = CombatSimulator.simulateDungeon(
+            dungeon = dungeon(listOf(EnemySpawn("rat", 1), EnemySpawn("bat", 1))),
+            enemies = mapOf("rat" to weakEnemy(), "bat" to weakEnemy().copy(name = "bat", displayName = "Bat")),
+            playerAttack = 99,
+            playerStrength = 99,
+            playerDefence = 99,
+            playerHp = 99,
+            weaponStrengthBonus = 64,
+            random = Random(7),
+        )
+        val killsByEnemy = mutableMapOf<String, Int>()
+        result.frames.forEach { f ->
+            f.killsByEnemy.forEach { (k, v) -> killsByEnemy[k] = (killsByEnemy[k] ?: 0) + v }
+        }
+        val total = killsByEnemy.values.sum()
+        assertTrue("expected a large kill sample, got $total", total > 200)
+        val ratShare = (killsByEnemy["rat"] ?: 0).toDouble() / total
+        assertTrue("expected both types near 50/50, got $killsByEnemy", ratShare in 0.40..0.60)
     }
 }

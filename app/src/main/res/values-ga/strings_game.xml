@@ -94,6 +94,7 @@
     <string name="equip_slot_weapon_str">Weapon (Str)</string> <!-- untranslated -->
     <string name="equip_slot_weapon_ranged">Weapon (Ranged)</string> <!-- untranslated -->
     <string name="equip_slot_weapon_magic">Weapon (Magic)</string> <!-- untranslated -->
+    <string name="equip_slot_weapon">Weapons</string> <!-- untranslated -->
     <string name="equip_slot_head">Head</string> <!-- untranslated -->
     <string name="equip_slot_body">Body</string> <!-- untranslated -->
     <string name="equip_slot_legs">Legs</string> <!-- untranslated -->

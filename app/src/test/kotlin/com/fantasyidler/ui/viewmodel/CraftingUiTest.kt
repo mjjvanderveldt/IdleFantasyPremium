@@ -42,4 +42,23 @@ class CraftingUiTest {
 
         assertEquals(4, state.maxCraftable(recipe))
     }
+
+    @Test
+    fun `quest indicator falls back to category emoji when customEmoji is null`() {
+        val indicator = QuestIndicator(
+            category = QuestCategory.SEASONAL,
+            isCompletable = true,
+        )
+        assertEquals("🎯", indicator.emoji)
+    }
+
+    @Test
+    fun `quest indicator uses customEmoji when provided`() {
+        val indicator = QuestIndicator(
+            category = QuestCategory.SEASONAL,
+            isCompletable = true,
+            customEmoji = "☀️",
+        )
+        assertEquals("☀️", indicator.emoji)
+    }
 }

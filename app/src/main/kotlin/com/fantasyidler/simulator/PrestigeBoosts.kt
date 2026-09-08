@@ -9,11 +9,13 @@ import kotlin.collections.iterator
  * Pure prestige-node effect math, callable without DI (composables, tests).
  *
  * Engine rule: for a given skill and effect key, the total is the SUM over the
- * skill's paths of the MAX purchased node value within each path. Node values are
+ * skill's paths of the MAX active node value within each path. Node values are
  * therefore authored as totals per tier, and independent paths (e.g. a base path
- * plus a race branch) stack additively. Race-locked nodes only count while the
- * player's race is in the node's races list. Prestige effects apply to ironman characters too: they
- * are earned through play, unlike purchased boosts.
+ * plus a race branch) stack additively. Auto paths (the XP lines) aren't bought:
+ * tier N is active once the skill has been prestiged N times. Race locks gate
+ * PURCHASING only — nodes bought while the race matched stay active after a race
+ * change, so racial bonuses accumulate across switches. Prestige effects apply to
+ * ironman characters too: they are earned through play, unlike purchased boosts.
  */
 object PrestigeBoosts {
 
@@ -48,6 +50,7 @@ object PrestigeBoosts {
     const val FORETELL_SLOTS = "foretell_slots"
     const val SLAYER_MULTI_TASK = "slayer_multi_task"
     const val UNLOCK_RECIPE = "unlock_recipe"
+    const val PER_LEVEL_BONUS = "per_level_bonus"
 
     const val FLOW_BASE_INTERVAL_MIN = 60.0
     const val FLOW_CAP_PCT = 100.0
@@ -59,7 +62,11 @@ object PrestigeBoosts {
     fun isNodeAvailableToRace(node: PrestigeNodeData, race: String): Boolean =
         node.races == null || race in node.races
 
-    /** Purchased nodes of [skill] that are currently in force (race lock honored). */
+    /**
+     * Nodes of [skill] currently in force: auto-path tiers up to the skill's prestige
+     * count, plus every purchased node. Purchased race nodes stay active regardless of
+     * the player's current race.
+     */
     fun activeNodes(
         trees: Map<String, PrestigeSkillTreeData>,
         flags: PlayerFlags,
@@ -67,11 +74,11 @@ object PrestigeBoosts {
     ): List<Pair<String, PrestigeNodeData>> {
         val tree = trees[skill] ?: return emptyList()
         val owned = flags.prestigeNodes[skill].orEmpty().toSet()
-        if (owned.isEmpty()) return emptyList()
-        val race = playerRace(flags)
+        val prestige = flags.skillPrestige[skill] ?: 0
         return tree.paths.flatMap { path ->
-            path.nodes.filter { it.id in owned && isNodeAvailableToRace(it, race) }
-                .map { path.key to it }
+            val nodes = if (path.auto) path.nodes.take(prestige.coerceAtMost(path.nodes.size))
+                        else path.nodes.filter { it.id in owned }
+            nodes.map { path.key to it }
         }
     }
 
@@ -87,17 +94,22 @@ object PrestigeBoosts {
         .values
         .sumOf { valuesInPath -> valuesInPath.max() }
 
-    /** Points spent on [skill]'s purchased nodes (race-mismatched nodes still count as spent). */
+    /**
+     * Points spent on [skill]'s purchased nodes (race-mismatched nodes still count as spent).
+     * Auto-path nodes never cost points: legacy saves that bought XP tiers before they became
+     * automatic get those points back simply by the ids being ignored here.
+     */
     fun spentPoints(trees: Map<String, PrestigeSkillTreeData>, flags: PlayerFlags, skill: String): Int {
         val tree = trees[skill] ?: return 0
         val owned = flags.prestigeNodes[skill].orEmpty().toSet()
-        return tree.paths.sumOf { path -> path.nodes.filter { it.id in owned }.sumOf { it.cost } }
+        return tree.paths.filterNot { it.auto }
+            .sumOf { path -> path.nodes.filter { it.id in owned }.sumOf { it.cost } }
     }
 
     fun unspentPoints(trees: Map<String, PrestigeSkillTreeData>, flags: PlayerFlags, skill: String): Int =
         ((flags.prestigePointsEarned[skill] ?: 0) - spentPoints(trees, flags, skill)).coerceAtLeast(0)
 
-    /** Skills that have race-locked tree branches, per race (human excluded: XP mastery everywhere). */
+    /** Skills that have race-locked tree branches, per race. */
     fun raceProficiencies(trees: Map<String, PrestigeSkillTreeData>): Map<String, List<String>> {
         val result = linkedMapOf<String, MutableList<String>>()
         for ((skill, tree) in trees) {
@@ -105,10 +117,8 @@ object PrestigeBoosts {
                 for (node in path.nodes) {
                     val races = node.races ?: continue
                     races.forEach { race ->
-                        if (race != "human") {
-                            val list = result.getOrPut(race) { mutableListOf() }
-                            if (skill !in list) list.add(skill)
-                        }
+                        val list = result.getOrPut(race) { mutableListOf() }
+                        if (skill !in list) list.add(skill)
                     }
                 }
             }
@@ -116,11 +126,31 @@ object PrestigeBoosts {
         return result
     }
 
-    /** Lifetime point cap for [skill]: total cost of every node available to [race]. */
-    fun pointCapForRace(tree: PrestigeSkillTreeData?, race: String): Int =
-        tree?.paths?.sumOf { path ->
-            path.nodes.filter { isNodeAvailableToRace(it, race) }.sumOf { it.cost }
+    /**
+     * Lifetime point cap for [skill]: total cost of every purchasable (non-auto) node.
+     * Regular characters can change race and keep what they bought, so every race's
+     * nodes count; ironmen have their race fixed, so only their own race's nodes do.
+     */
+    fun pointCapForRace(tree: PrestigeSkillTreeData?, race: String, raceLocked: Boolean = false): Int =
+        tree?.paths?.filterNot { it.auto }?.sumOf { path ->
+            path.nodes.filter { !raceLocked || isNodeAvailableToRace(it, race) }.sumOf { it.cost }
         } ?: 0
+
+    /** Highest auto-path tier count for [tree] (the number of prestiges that still earn an XP tier). */
+    fun autoTierCount(tree: PrestigeSkillTreeData?): Int =
+        tree?.paths?.filter { it.auto }?.maxOfOrNull { it.nodes.size } ?: 0
+
+    /**
+     * True while prestiging [skill] again still earns something: lifetime points below
+     * the cap, or an auto XP tier not yet reached. Skills without a tree keep the legacy
+     * unlimited behavior.
+     */
+    fun prestigeHasReward(trees: Map<String, PrestigeSkillTreeData>, flags: PlayerFlags, skill: String): Boolean {
+        val tree = trees[skill] ?: return true
+        val cap = pointCapForRace(tree, playerRace(flags), flags.ironman)
+        if (cap > 0 && (flags.prestigePointsEarned[skill] ?: 0) < cap) return true
+        return (flags.skillPrestige[skill] ?: 0) < autoTierCount(tree)
+    }
 
     /** Cape-bonus scaling multiplier per skill (1 = unmodified), for [com.fantasyidler.repository.resolveCapeMultiplier]. */
     fun capeScalingBySkill(

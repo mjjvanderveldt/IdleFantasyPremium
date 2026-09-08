@@ -124,4 +124,30 @@ class MigrationTest {
         assertEquals(0, db.intColumn("SELECT worker_slot FROM skill_sessions WHERE session_id = 's1'"))
         assertEquals(1, db.intColumn("SELECT COUNT(*) FROM skill_sessions WHERE session_id = 's1'"))
     }
+
+    @Test
+    fun `full chain 1 to 7 preserves v6 rows with null start_elapsed_ms`() {
+        val db = openV1Database()
+        insertSession(db, "s1")
+
+        MIGRATION_1_2.migrate(db)
+        MIGRATION_2_3.migrate(db)
+        MIGRATION_3_4.migrate(db)
+        MIGRATION_4_5.migrate(db)
+        MIGRATION_5_6.migrate(db)
+        insertSession(db, "v6row")
+
+        MIGRATION_6_7.migrate(db)
+
+        assertEquals(2, db.intColumn("SELECT COUNT(*) FROM skill_sessions"))
+        assertEquals(0, db.intColumn("SELECT started_at FROM skill_sessions WHERE session_id = 'v6row'"))
+        db.query("SELECT start_elapsed_ms FROM skill_sessions WHERE session_id = 's1'").use { c ->
+            assertTrue(c.moveToFirst())
+            assertTrue(c.isNull(0))
+        }
+        db.query("SELECT start_elapsed_ms FROM skill_sessions WHERE session_id = 'v6row'").use { c ->
+            assertTrue(c.moveToFirst())
+            assertTrue(c.isNull(0))
+        }
+    }
 }

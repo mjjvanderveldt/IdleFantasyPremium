@@ -1,6 +1,7 @@
 package com.fantasyidler.notification
 
 import android.Manifest
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -105,7 +106,7 @@ class SessionNotificationManager @Inject constructor(
     fun showSessionComplete(skillDisplayName: String) {
         val lc = localizedContext()
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_SESSIONS)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(lc.getString(R.string.notif_session_complete_title))
             .setContentText(lc.getString(R.string.notif_session_complete_body, skillDisplayName))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -120,7 +121,7 @@ class SessionNotificationManager @Inject constructor(
     fun showFarmingReady(cropDisplayName: String, saveSlot: Int = 0) {
         val lc = localizedContext()
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_FARMING)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(lc.getString(R.string.notif_farming_ready_title))
             .setContentText(lc.getString(R.string.notif_farming_ready_body, cropDisplayName))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -135,7 +136,7 @@ class SessionNotificationManager @Inject constructor(
     fun showXpBoostExpired() {
         val lc = localizedContext()
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_BUFFS)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(lc.getString(R.string.notif_xp_boost_expired_title))
             .setContentText(lc.getString(R.string.notif_xp_boost_expired_body))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -149,7 +150,7 @@ class SessionNotificationManager @Inject constructor(
     fun showBlessingExpired() {
         val lc = localizedContext()
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_BUFFS)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(lc.getString(R.string.notif_blessing_expired_title))
             .setContentText(lc.getString(R.string.notif_blessing_expired_body))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -159,7 +160,7 @@ class SessionNotificationManager @Inject constructor(
         postIfPermitted(NOTIF_ID_BLESSING_EXPIRED, notification)
     }
 
-    private fun postIfPermitted(id: Int, notification: android.app.Notification) {
+    private fun postIfPermitted(id: Int, notification: Notification) {
         if (appInForeground) return
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
             == PackageManager.PERMISSION_GRANTED

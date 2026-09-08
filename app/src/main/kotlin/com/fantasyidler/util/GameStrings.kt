@@ -53,8 +53,11 @@ object GameStrings {
     fun skillingDungeonNote(context: Context, key: String, index: Int, fallback: String): String =
         context.stringByName("skilling_dungeon_${key}_note_${index + 1}") ?: fallback
 
+    // Boss fallback: collect-summary kill lines mix dungeon enemies and boss keys (issue #1675).
     fun enemyName(context: Context, key: String): String =
-        context.stringByName("enemy_${key}_name") ?: key.toTitleCase()
+        context.stringByName("enemy_${key}_name")
+            ?: context.stringByName("boss_${key}_name")
+            ?: key.toTitleCase()
 
     fun bossName(context: Context, key: String): String =
         context.stringByName("boss_${key}_name") ?: key.toTitleCase()
@@ -249,43 +252,17 @@ object GameStrings {
     fun raceNames(context: Context, races: List<String>): String =
         races.joinToString(" & ") { raceName(context, it) }
 
-    fun prestigePathDisplayName(context: Context, skill: String, pathKey: String) =
+    fun prestigePathName(context: Context, skill: String, pathKey: String) =
         context.stringByName("prestige_path_${skill}_${pathKey}")
             ?: context.stringByName("prestige_path_${pathKey}")
             ?: pathKey.toTitleCase()
 
-    fun prestigeEffectDesc(context: Context, effect: String, value: Double, unlock: String? = null): String = when (effect) {
-        PrestigeBoosts.XP_PCT            -> context.getString(R.string.prestige_effect_xp_pct, value.toInt())
-        PrestigeBoosts.YIELD_PCT         -> context.getString(R.string.prestige_effect_yield_pct, value.toInt())
-        PrestigeBoosts.FLOW_RATE         -> context.getString(R.string.prestige_effect_flow_rate, value.trimmed())
-        PrestigeBoosts.FLOW_INTERVAL_REDUCTION -> context.getString(R.string.prestige_effect_flow_interval, value.toInt())
-        PrestigeBoosts.COMBAT_STAT_FLAT  -> context.getString(R.string.prestige_effect_combat_stat, value.toInt())
-        PrestigeBoosts.SESSION_FLOOR_MIN -> context.getString(R.string.prestige_effect_session_floor, value.trimmed())
-        PrestigeBoosts.CAPE_SCALING      -> context.getString(R.string.prestige_effect_cape_scaling, value.toInt())
-        PrestigeBoosts.BONUS_ROLL_PCT    -> context.getString(R.string.prestige_effect_bonus_roll, value.toInt())
-        PrestigeBoosts.COIN_PCT          -> context.getString(R.string.prestige_effect_coin_pct, value.toInt())
-        PrestigeBoosts.CROP_ROTATION_PCT -> context.getString(R.string.prestige_effect_crop_rotation, value.toInt())
-        PrestigeBoosts.CROP_ROTATION_ALWAYS -> context.getString(R.string.prestige_effect_crop_rotation_always)
-        PrestigeBoosts.TOOL_EFF_PCT      -> context.getString(R.string.prestige_effect_tool_eff, value.toInt())
-        PrestigeBoosts.SUCCESS_CHANCE_PCT -> context.getString(R.string.prestige_effect_success_chance, value.toInt())
-        PrestigeBoosts.RECLAIM_PCT       -> context.getString(R.string.prestige_effect_reclaim, value.toInt())
-        PrestigeBoosts.HEAL_PCT          -> context.getString(R.string.prestige_effect_heal, value.toInt())
-        PrestigeBoosts.DEATH_KEEP_PCT    -> context.getString(R.string.prestige_effect_death_keep, value.toInt())
-        PrestigeBoosts.QUEUE_SLOT        -> context.getString(R.string.prestige_effect_queue_slot, value.toInt())
-        PrestigeBoosts.PET_BOOST_PCT     -> context.getString(R.string.prestige_effect_pet_boost, value.toInt())
-        PrestigeBoosts.BLESSING_DURATION_PCT -> context.getString(R.string.prestige_effect_blessing_duration, value.toInt())
-        PrestigeBoosts.BLESSING_COST_PCT -> context.getString(R.string.prestige_effect_blessing_cost, value.toInt())
-        PrestigeBoosts.POTION_BONUS_FLAT -> context.getString(R.string.prestige_effect_potion_bonus, value.toInt())
-        PrestigeBoosts.INPUT_SAVE_PCT    -> context.getString(R.string.prestige_effect_input_save, value.toInt())
-        PrestigeBoosts.BUILDER_DISCOUNT_PCT -> context.getString(R.string.prestige_effect_builder_discount, value.toInt())
-        PrestigeBoosts.SELL_PRICE_PCT    -> context.getString(R.string.prestige_effect_sell_price, value.toInt())
-        PrestigeBoosts.SLAYER_POINTS_PCT -> context.getString(R.string.prestige_effect_slayer_points, value.toInt())
-        PrestigeBoosts.DOUBLE_HIT_PCT    -> context.getString(R.string.prestige_effect_double_hit, value.toInt())
-        PrestigeBoosts.SECOND_CHANCE     -> context.getString(R.string.prestige_effect_second_chance)
-        PrestigeBoosts.FORETELL_SLOTS    -> context.getString(R.string.prestige_effect_foretell_slots, value.toInt())
-        PrestigeBoosts.SLAYER_MULTI_TASK -> context.getString(R.string.prestige_effect_multi_task)
-        PrestigeBoosts.UNLOCK_RECIPE     -> context.getString(R.string.prestige_effect_unlock_recipe, itemName(context, unlock ?: ""))
-        else -> ""
+    fun prestigeEffectDesc(context: Context, effect: String, value: Double, unlock: String? = null): String {
+        val arg = when (effect) {
+            PrestigeBoosts.UNLOCK_RECIPE -> itemName(context, unlock ?: "")
+            else -> if (value % 1.0 == 0.0) value.toInt() else value.trimmed()
+        }
+        return context.stringByName("prestige_effect_$effect", arg) ?: ""
     }
 }
 
@@ -312,13 +289,14 @@ fun Context.withAppLocale(): Context {
 // Returns null rather than throwing if the identifier does not exist.
 // ---------------------------------------------------------------------------
 
-fun Context.stringByName(name: String): String? {
+fun Context.stringByName(name: String, vararg formatArgs: Any): String? {
     // Resolve against the in-app language, not the caller's locale: ViewModels and
     // receivers hold the application context, which follows the system language on
     // pre-33 devices even when the game is set to another language (issue #1434).
     val ctx = withAppLocale()
     val id = ctx.resources.getIdentifier(name, "string", ctx.packageName)
-    return if (id != 0) ctx.getString(id) else null
+    if (id == 0) return null
+    return if (formatArgs.isEmpty()) ctx.getString(id) else ctx.getString(id, *formatArgs)
 }
 
 // ---------------------------------------------------------------------------

@@ -26,7 +26,11 @@ class BootReceiver : BroadcastReceiver() {
     @Inject lateinit var buffNotifScheduler: BuffNotificationScheduler
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action != Intent.ACTION_BOOT_COMPLETED) return
+        // MY_PACKAGE_REPLACED included: an app update cancels every alarm this app set,
+        // and only a cold MainActivity launch used to restore them, so scheduled backups
+        // and session timers could stay dead for days after updating.
+        if (intent.action != Intent.ACTION_BOOT_COMPLETED &&
+            intent.action != Intent.ACTION_MY_PACKAGE_REPLACED) return
         val pending = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
             try {

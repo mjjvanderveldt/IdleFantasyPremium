@@ -1,14 +1,20 @@
 package com.fantasyidler.receiver
 
 import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.fantasyidler.data.db.AppDatabase
 import com.fantasyidler.data.model.SkillSession
+import com.fantasyidler.repository.BoostRepository
+import com.fantasyidler.repository.BuffNotificationScheduler
+import com.fantasyidler.repository.DailyQuestRepository
 import com.fantasyidler.repository.GameDataRepository
+import com.fantasyidler.repository.PlayerRepository
 import com.fantasyidler.repository.SessionRepository
+import com.fantasyidler.repository.WeeklyQuestRepository
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.junit.After
@@ -39,7 +45,12 @@ class SessionAlarmTest {
             .build()
         val json = Json { ignoreUnknownKeys = true }
         val gameData = GameDataRepository(context, json)
-        sessionRepo = SessionRepository(db.skillSessionDao(), context, json, gameData)
+        val playerRepo = PlayerRepository(
+            db.playerDao(), db.questProgressDao(), db.farmingPatchDao(), json,
+            DailyQuestRepository(gameData), WeeklyQuestRepository(gameData),
+            BuffNotificationScheduler(context), gameData, BoostRepository(gameData), db,
+        )
+        sessionRepo = SessionRepository(db.skillSessionDao(), context, json, gameData, db.playerDao(), playerRepo)
         alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
 
@@ -70,7 +81,7 @@ class SessionAlarmTest {
             String::class.java,
             String::class.java,
         ).apply { isAccessible = true }
-        val pi = method.invoke(sessionRepo, sessionId, "Mining") as android.app.PendingIntent
+        val pi = method.invoke(sessionRepo, sessionId, "Mining") as PendingIntent
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, session.endsAt, pi)
 
         assertEquals(1, shadowAm.scheduledAlarms.size)
@@ -102,7 +113,7 @@ class SessionAlarmTest {
             String::class.java,
             String::class.java,
         ).apply { isAccessible = true }
-        val pi = method.invoke(sessionRepo, sessionId, "Mining") as android.app.PendingIntent
+        val pi = method.invoke(sessionRepo, sessionId, "Mining") as PendingIntent
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, session.endsAt, pi)
 
         assertEquals(1, shadowAm.scheduledAlarms.size)

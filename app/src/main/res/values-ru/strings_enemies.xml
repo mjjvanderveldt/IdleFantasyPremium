@@ -134,12 +134,12 @@
     <string name="boss_the_hollow_king_desc">Тыквоголовый властелин Мрачной жатвы, выезжающий верхом из Гиблого леса, чтобы пожать то, что посеяли живые.</string>
     <string name="boss_the_vault_guardian_name">Страж хранилища</string>
     <string name="boss_the_vault_guardian_desc">Колосс из живого золота, пробужденный светом вечного огня. Только покровители Великого монумента могут встретиться с ним.</string>
-    <string name="boss_obsidian_colossus_name">Obsidian Colossus</string> <!-- untranslated -->
-    <string name="boss_obsidian_colossus_desc">A mountain given wrath. No lone hero has ever chipped more than a scar into it. Bring a party.</string> <!-- untranslated -->
-    <string name="boss_brood_empress_name">Brood Empress</string> <!-- untranslated -->
-    <string name="boss_brood_empress_desc">Mother of the swarm between the stars. Her brood has ended armies; yours had better be paid well.</string> <!-- untranslated -->
-    <string name="boss_the_world_ender_name">The World Ender</string> <!-- untranslated -->
-    <string name="boss_the_world_ender_desc">When it stirs, kingdoms write their wills. Four names on the contract or none return.</string> <!-- untranslated -->
+    <string name="boss_obsidian_colossus_name">Обсидиановый колосс</string>
+    <string name="boss_obsidian_colossus_desc">Гора, охваченная гневом. Ни один герой-одиночка никогда не оставлял на ней ничего, кроме царапины. Приводите отряд.</string>
+    <string name="boss_brood_empress_name">Королева улья</string>
+    <string name="boss_brood_empress_desc">Мать звездного роя. Ее потомство положило конец армиям; лучше бы тебе хорошо заплатили.</string>
+    <string name="boss_the_world_ender_name">Разрушитель мира</string>
+    <string name="boss_the_world_ender_desc">Когда он пробуждается, королевства пишут свои завещания. Четыре имени прописаны и ни один не возвращается.</string>
 
     <!-- ===== Expedition-unlocked dungeon names ===== -->
     <string name="dungeon_collapsed_mine_name">Обрушившаяся шахта</string>

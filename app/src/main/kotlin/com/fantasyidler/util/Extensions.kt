@@ -1,9 +1,14 @@
 package com.fantasyidler.util
 
+import android.content.Context
+import android.text.format.DateFormat
 import com.fantasyidler.R
 import com.fantasyidler.data.model.SessionFrame
 import com.fantasyidler.data.model.SkillSession
 import kotlinx.serialization.json.Json
+import java.util.Calendar
+import java.util.Date
+import kotlin.math.floor
 
 /** Format a raw XP long as a readable string (e.g. 1,234,567 → "1.2M"). */
 fun Long.formatXp(): String = when {
@@ -13,10 +18,10 @@ fun Long.formatXp(): String = when {
 }
 
 /** Parenthetical multiplier breakdown for a flat XP grant, e.g. "(50,000 × 2 × 1.28)", or null if no bonus applied. */
-fun xpMultiplierBreakdown(baseXp: Long, boostActive: Boolean, blessingMult: Float, prestigeXpPct: Int = 0): String? {
-    if (!boostActive && blessingMult <= 1f && prestigeXpPct <= 0) return null
+fun xpMultiplierBreakdown(baseXp: Long, boostFactor: Long, blessingMult: Float, prestigeXpPct: Int = 0): String? {
+    if (boostFactor <= 1L && blessingMult <= 1f && prestigeXpPct <= 0) return null
     val factors = buildList {
-        if (boostActive) add("2")
+        if (boostFactor > 1L) add("$boostFactor")
         if (blessingMult > 1f) add("%.2f".format(blessingMult).trimEnd('0').trimEnd('.'))
         if (prestigeXpPct > 0) add("%.2f".format(1.0 + prestigeXpPct / 100.0).trimEnd('0').trimEnd('.'))
     }
@@ -30,7 +35,7 @@ fun xpMultiplierBreakdown(baseXp: Long, boostActive: Boolean, blessingMult: Floa
  * disabled (issue #1470).
  */
 fun Long.formatCoins(): String = when {
-    this >= 1_000_000L -> "%.1fM".format(kotlin.math.floor(this / 100_000.0) / 10.0)
+    this >= 1_000_000L -> "%.1fM".format(floor(this / 100_000.0) / 10.0)
     this >= 1_000L     -> "%,d".format(this)
     else               -> toString()
 }
@@ -40,7 +45,7 @@ fun Int.formatCoins(): String = toLong().formatCoins()
 
 /** Abbreviated coin format for compact UI (e.g. 50000 → "50k"). */
 fun Long.formatCoinsBrief(): String = when {
-    this >= 1_000_000L -> "%.1fM".format(kotlin.math.floor(this / 100_000.0) / 10.0)
+    this >= 1_000_000L -> "%.1fM".format(floor(this / 100_000.0) / 10.0)
     this >= 1_000L     -> "${this / 1000}k"
     else               -> toString()
 }
@@ -63,15 +68,15 @@ fun Long.formatQuantity(compact: Boolean = false): String = when {
 }
 
 /** Formats an epoch-ms timestamp as a clock time, respecting the device's 12/24-hour preference. */
-fun Long.toClockTime(context: android.content.Context): String =
-    android.text.format.DateFormat.getTimeFormat(context).format(java.util.Date(this))
+fun Long.toClockTime(context: Context): String =
+    DateFormat.getTimeFormat(context).format(Date(this))
 
 /** Formats the player's local daily reset hour as a clock string, respecting the device's 12/24-hour preference. */
-fun dailyResetClockTime(context: android.content.Context, resetHour: Int): String {
-    val cal = java.util.Calendar.getInstance().apply {
-        set(java.util.Calendar.HOUR_OF_DAY, resetHour)
-        set(java.util.Calendar.MINUTE, 0)
-        set(java.util.Calendar.SECOND, 0)
+fun dailyResetClockTime(context: Context, resetHour: Int): String {
+    val cal = Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, resetHour)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
     }
     return cal.timeInMillis.toClockTime(context)
 }
@@ -80,7 +85,7 @@ fun dailyResetClockTime(context: android.content.Context, resetHour: Int): Strin
  * Convert an epoch-ms "ends_at" timestamp to a human-readable countdown string, optionally
  * with the completion clock time, e.g. "42m 10s (1:45 PM)" or "42m 10s" or "Complete"
  */
-fun Long.toCountdown(context: android.content.Context, showEndTime: Boolean = true): String {
+fun Long.toCountdown(context: Context, showEndTime: Boolean = true): String {
     val remaining = this - System.currentTimeMillis()
     if (remaining <= 0) return context.getString(R.string.duration_complete)
     val totalSeconds = remaining / 1_000
@@ -110,10 +115,10 @@ fun Long.toRelativeTime(): String {
 
 /**
  * Format a raw millisecond duration (not an epoch) as a human-readable string, e.g. "2h 30m",
- * "45m", or "1mo 1w 1d 8h 54m". Zero-valued units are omitted; months are 30 days. Unit
- * suffixes come from string resources so each locale can abbreviate its own way (issue #1399).
+ * "45m", or "4y 1mo 1w 1d 8h 54m". Zero-valued units are omitted; months are 30 days, years 365.
+ * Unit suffixes come from string resources so each locale can abbreviate its own way (issue #1399).
  */
-fun Long.formatDurationMs(context: android.content.Context): String =
+fun Long.formatDurationMs(context: Context): String =
     context.withAppLocale().let { ctx -> formatDurationMs { resId, value -> ctx.getString(resId, value) } }
 
 /** Testable core of [formatDurationMs]; [unitString] renders one unit from its template resource. */
@@ -122,12 +127,14 @@ internal fun Long.formatDurationMs(unitString: (Int, Long) -> String): String {
     var rem = totalSeconds / 60
     if (rem == 0L) return unitString(R.string.duration_seconds, totalSeconds)
     val minutesPerDay = 24L * 60
-    val months = rem / (30 * minutesPerDay); rem %= 30 * minutesPerDay
-    val weeks  = rem / (7 * minutesPerDay);  rem %= 7 * minutesPerDay
-    val days   = rem / minutesPerDay;        rem %= minutesPerDay
+    val years  = rem / (365 * minutesPerDay); rem %= 365 * minutesPerDay  // this does allow 1y 12mo 4 days, which is acceptable
+    val months = rem / (30 * minutesPerDay);  rem %= 30 * minutesPerDay
+    val weeks  = rem / (7 * minutesPerDay);   rem %= 7 * minutesPerDay
+    val days   = rem / minutesPerDay;         rem %= minutesPerDay
     val hours  = rem / 60
     val minutes = rem % 60
     return buildList {
+        if (years   > 0) add(unitString(R.string.duration_years, years))
         if (months  > 0) add(unitString(R.string.duration_months, months))
         if (weeks   > 0) add(unitString(R.string.duration_weeks, weeks))
         if (days    > 0) add(unitString(R.string.duration_days, days))

@@ -1,0 +1,10 @@
+• Sell Old Gear no longer sells equipment saved in another combat style's loadout; gear remembered by any loadout now counts as equipped when selling (thanks for the report)
+• The Heirloom Greathammer and Heirloom Blade now show their attack, strength, and defense stats in the gear list like the bow and staff already did (thanks for the report)
+• Equip Best Gear now rates heirloom weapons and tools by their current stats instead of their max potential, so a fresh heirloom no longer replaces stronger gear (thanks for the report)
+• The prestige skill tree screens now use the same pixel art skill icons as the rest of the app instead of the old emoji in the header (thanks for the report)
+• Switching to a combat style whose weapon is two handed now removes the shield instead of showing both equipped and quietly saving the shield into that style's loadout (thanks for the report)
+• Equipping a shield now only unequips the active style's two handed weapon; other styles keep their weapons and drop the shield when you switch to them
+• Bows are now two handed and cannot be used with a shield; crossbows still can, and staffs are unaffected
+• The bone altar now honors the 48 hour double XP boost earned from prestiging, stacking with the shop boost up to 4x like everywhere else, and prestige Cape Mastery perks now boost altar XP too (thanks for the report)
+• Queued sessions started after a prestige now pay out their full XP as long as you still meet the activity's level requirement; actions you no longer qualify for are removed from the queue instead of running for nothing (thanks for the report)
+• Boss and raid fights now show the fight clock, counting down the full fight duration, so a faster playback from agility bonuses no longer looks like less time to beat the boss; the real completion time is still shown next to it (thanks for the report)

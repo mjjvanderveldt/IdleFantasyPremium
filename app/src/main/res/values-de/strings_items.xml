@@ -257,7 +257,7 @@
     <string name="item_bronze_helmet_desc">Einfacher Kopfschutz aus Bronze.</string>
     <string name="item_bronze_platebody_name">Bronzebrustpanzer</string>
     <string name="item_bronze_platebody_desc">Einfacher Körperpanzer aus Bronze.</string>
-    <string name="item_bronze_platelegs_name">Bronzeplattenhose</string>
+    <string name="item_bronze_platelegs_name">Bronzebeinschienen</string>
     <string name="item_bronze_platelegs_desc">Einfacher Beinschutz aus Bronze.</string>
     <string name="item_bronze_shield_name">Bronzeschild</string>
     <string name="item_bronze_shield_desc">Ein einfacher Bronzeschild.</string>
@@ -267,7 +267,7 @@
     <string name="item_iron_helmet_desc">Kopfschutz aus Eisen.</string>
     <string name="item_iron_platebody_name">Eisenbrustpanzer</string>
     <string name="item_iron_platebody_desc">Körperpanzer aus Eisen.</string>
-    <string name="item_iron_platelegs_name">Eisenplattenhose</string>
+    <string name="item_iron_platelegs_name">Eisenbeinschienen</string>
     <string name="item_iron_platelegs_desc">Beinschutz aus Eisen.</string>
     <string name="item_iron_shield_name">Eisenschild</string>
     <string name="item_iron_shield_desc">Ein Eisenschild.</string>
@@ -277,7 +277,7 @@
     <string name="item_steel_helmet_desc">Robuster Kopfschutz aus Stahl.</string>
     <string name="item_steel_platebody_name">Stahlbrustpanzer</string>
     <string name="item_steel_platebody_desc">Robuster Körperpanzer aus Stahl.</string>
-    <string name="item_steel_platelegs_name">Stahlplattenhose</string>
+    <string name="item_steel_platelegs_name">Stahlbeinschienen</string>
     <string name="item_steel_platelegs_desc">Robuster Beinschutz aus Stahl.</string>
     <string name="item_steel_shield_name">Stahlschild</string>
     <string name="item_steel_shield_desc">Ein robuster Stahlschild.</string>
@@ -287,7 +287,7 @@
     <string name="item_mithril_helmet_desc">Leichter, magischer Kopfschutz.</string>
     <string name="item_mithril_platebody_name">Mithrilbrustpanzer</string>
     <string name="item_mithril_platebody_desc">Leichte magischer Körperpanzer aus Mithril.</string>
-    <string name="item_mithril_platelegs_name">Mithrilplattenhose</string>
+    <string name="item_mithril_platelegs_name">Mithrilbeinschienen</string>
     <string name="item_mithril_platelegs_desc">Leichter, magischer Beinschutz aus Mithril.</string>
     <string name="item_mithril_shield_name">Mithrilschild</string>
     <string name="item_mithril_shield_desc">Ein leichter magischer Mithrilschild.</string>
@@ -297,7 +297,7 @@
     <string name="item_adamantite_helmet_desc">Extrem robuster Kopfschutz.</string>
     <string name="item_adamantite_platebody_name">Adamantitbrustpanzer</string>
     <string name="item_adamantite_platebody_desc">Extrem harte Körperpanzerung.</string>
-    <string name="item_adamantite_platelegs_name">Adamantitplattenhose</string>
+    <string name="item_adamantite_platelegs_name">Adamantitbeinschienen</string>
     <string name="item_adamantite_platelegs_desc">Extrem robuster Beinschutz.</string>
     <string name="item_adamantite_shield_name">Adamantitschild</string>
     <string name="item_adamantite_shield_desc">Ein extrem harter Adamantitschild.</string>
@@ -307,7 +307,7 @@
     <string name="item_runite_helmet_desc">Der beste Kopfschutz, den es gibt.</string>
     <string name="item_runite_platebody_name">Runitbrustpanzer</string>
     <string name="item_runite_platebody_desc">Die beste Schutzausrüstung, die es gibt.</string>
-    <string name="item_runite_platelegs_name">Runitplattenhose</string>
+    <string name="item_runite_platelegs_name">Runitbeinschienen</string>
     <string name="item_runite_platelegs_desc">Der beste Beinschutz, den es gibt.</string>
     <string name="item_runite_shield_name">Runitschild</string>
     <string name="item_runite_shield_desc">Der beste Schild, den es gibt.</string>
@@ -317,12 +317,12 @@
     <string name="item_slayer_helm_desc">Ein robuster Helm, wie Ihn erfahrene Trophäenjäger tragen.</string>
     <string name="item_abyssal_whip_name">Peitsche des Abgrunds</string>
     <string name="item_abyssal_whip_desc">Eine Peitsche, die aus der Kraft des Abgrunds geschmiedet wurde. Hervorragend für Krafttraining geeignet.</string>
-    <string name="item_slayer_platebody_name">Plattenpanzer des Trophäensammlers</string>
-    <string name="item_slayer_platebody_desc">Schwere Rüstung, in die Runen durch den Trophäensammler eingeätzt wurden.</string>
+    <string name="item_slayer_platebody_name">Plattenpanzer des Trophäenjäger</string>
+    <string name="item_slayer_platebody_desc">Schwere Rüstung, in die Runen durch den Trophäenjäger eingeätzt wurden.</string>
     <string name="item_slayer_platelegs_name">Beinschienen des Trophäenjägers</string>
     <string name="item_slayer_platelegs_desc">Beinschutz, der extra für lange Besuche im Verlies hergestellt wurde.</string>
-    <string name="item_slayer_plateskirt_name">Slayer Plateskirt</string> <!-- untranslated -->
-    <string name="item_slayer_plateskirt_desc">Protective skirt crafted for extended dungeon runs.</string> <!-- untranslated -->
+    <string name="item_slayer_plateskirt_name">Plattenrock des Trophäenjägers</string>
+    <string name="item_slayer_plateskirt_desc">Schutzrock, speziell für ausgedehnte Verlies-Erkundungen entwickelt.</string>
 
     <!-- ===== Tools — pickaxes ===== -->
     <string name="item_bronze_pickaxe_name">Bronzespitzhacke</string>
@@ -475,7 +475,9 @@
     <string name="item_diamond_necklace_name">Diamantcollier</string>
     <string name="item_ancient_treasure_name">Antiker Schatz</string>
     <string name="item_seaweed_name">Seetang</string>
+    <string name="item_old_boot_name">Old Boot</string> <!-- untranslated -->
     <string name="item_pearl_name">Perle</string>
+    <string name="item_black_pearl_name">Black Pearl</string> <!-- untranslated -->
     <string name="item_nature_rune_name">Naturrune</string>
     <string name="item_herb_name">Kraut</string>
     <string name="item_mahogany_log_name">MahagonischeitLog</string>
@@ -653,12 +655,12 @@
     <string name="item_runite_tinderbox_name">Runit-Zunderbüchse</string>
 
     <!-- ===== Agility grappling hooks ===== -->
-    <string name="item_bronze_grappling_hook_name">Bronze-Enterhaken</string>
-    <string name="item_iron_grappling_hook_name">Eisen-Enterhaken</string>
-    <string name="item_steel_grappling_hook_name">Stahl-Enterhaken</string>
-    <string name="item_mithril_grappling_hook_name">Mithril-Enterhaken</string>
-    <string name="item_adamantite_grappling_hook_name">Adamantit-Enterhaken</string>
-    <string name="item_runite_grappling_hook_name">Runit-Enterhaken</string>
+    <string name="item_bronze_grappling_hook_name">Bronze-Greifhaken</string>
+    <string name="item_iron_grappling_hook_name">Eisen-Greifhaken</string>
+    <string name="item_steel_grappling_hook_name">Stahl-Greifhaken</string>
+    <string name="item_mithril_grappling_hook_name">Mithril-Greifhaken</string>
+    <string name="item_adamantite_grappling_hook_name">Adamantit-Greifhaken</string>
+    <string name="item_runite_grappling_hook_name">Runit-Greifhaken</string>
 
     <!-- ===== Carnival prizes ===== -->
     <string name="item_tricksters_amulet_name">Amulett des Trickbetrügers</string>
@@ -666,7 +668,7 @@
     <string name="item_strongmans_sigil_name">Siegel des Machthabers</string>
     <string name="item_strongmans_sigil_desc">Ein schwerer eiserner Ring, in den das Zeichen des Champions des Machthabers eingeätzt ist. Erhöht Stärke.</string>
     <string name="item_carnival_cape_name">Jahrmarkt-Umhang</string>
-    <string name="item_carnival_cape_desc" formatted="false">A vibrant cape worn by carnival champions. Grants 5% more tickets from Carnival sessions.</string> <!-- untranslated -->
+    <string name="item_carnival_cape_desc" formatted="false">Ein farbenfroher Umhang, der von Karnevalsmeistern getragen wird. Gewährt 5% mehr Tickets aus Karnevalsaktivitäten.</string>
 
     <!-- Herblore potions -->
     <string name="item_attack_brew_name">Angriffs-Gebräu</string>
@@ -778,11 +780,11 @@
     <string name="item_adamantite_boots_name">Adamantitstiefel</string>
     <string name="item_adamantite_chainbody_name">Adamantit-Kettenhemd</string>
     <string name="item_adamantite_dagger_name">Adamantit-Dolch</string>
-    <string name="item_adamantite_full_helmet_name">Adamantite Full Helmet</string> <!-- untranslated -->
+    <string name="item_adamantite_full_helmet_name">Adamantit-Vollvisierhelm</string>
     <string name="item_adamantite_kiteshield_name">Adamantit-Langspitzschild</string>
     <string name="item_adamantite_longsword_name">Adamantit-Langschwert</string>
     <string name="item_adamantite_med_helmet_name">Adamantite Med Helmet</string> <!-- untranslated -->
-    <string name="item_adamantite_plateskirt_name">Adamantite Plateskirt</string> <!-- untranslated -->
+    <string name="item_adamantite_plateskirt_name">Adamantit-Plattenrock</string>
     <string name="item_adamantite_square_shield_name">Quadratischer Adamantit-Schild</string>
     <string name="item_agility_cape_name">Beweglichkeitsumhang</string>
     <string name="item_agility_guild_cape_name">Beweglichkeitsgildenumhang</string>
@@ -808,12 +810,12 @@
     <string name="item_bronze_arrow_tip_name">Pfeilspitzen aus Bronze</string>
     <string name="item_bronze_boots_name">Bronzene Stiefel</string>
     <string name="item_bronze_chainbody_name">Bronze-Kettenhemd</string>
-    <string name="item_bronze_full_helmet_name">Bronze Full Helmet</string> <!-- untranslated -->
+    <string name="item_bronze_full_helmet_name">Bronzener Vollvisierhelm</string>
     <string name="item_bronze_kiteshield_name">Bronze-Langspitzschild</string>
     <string name="item_bronze_longsword_name">Bronzenes Langschwert</string>
     <string name="item_bronze_med_helmet_name">Bronze Med Helmet</string> <!-- untranslated -->
-    <string name="item_bronze_plateskirt_name">Bronze Plateskirt</string> <!-- untranslated -->
-    <string name="item_bronze_square_shield_name">Bronze Square Shield</string> <!-- untranslated -->
+    <string name="item_bronze_plateskirt_name">Bronzener Plattenrock</string>
+    <string name="item_bronze_square_shield_name">Quadratischer Bronze-Schild</string>
     <string name="item_chicken_name">Broiler</string>
     <string name="item_construction_guild_cape_name">Baumeistergildenumhang</string>
     <string name="item_cooking_cape_name">Küchenumhang</string>
@@ -844,8 +846,8 @@
     <string name="item_dwarven_hoe_name">Zwergen-Hacke</string>
     <string name="item_dwarven_lockpick_name">Zwergendietrich</string>
     <string name="item_dwarven_pickaxe_name">Zwergen-Spitzhacke</string>
-    <string name="item_dwarven_platebody_name">Dwarven Platebody</string> <!-- untranslated -->
-    <string name="item_dwarven_platelegs_name">Dwarven Platelegs</string> <!-- untranslated -->
+    <string name="item_dwarven_platebody_name">Zwergen Plattenpanzer</string>
+    <string name="item_dwarven_platelegs_name">Zergen-Beinschienen</string>
     <string name="item_dwarven_scimitar_name">Zwergen-Krummsäbel</string>
     <string name="item_dwarven_shield_name">Zwergenschild</string>
     <string name="item_dwarven_sword_name">Zwergenschwert</string>
@@ -869,12 +871,12 @@
     <string name="item_iron_arrow_tip_name">Eisenpfeilspitzen</string>
     <string name="item_iron_boots_name">Eisenstiefel</string>
     <string name="item_iron_chainbody_name">Eisen-Kettenhemd</string>
-    <string name="item_iron_full_helmet_name">Iron Full Helmet</string> <!-- untranslated -->
+    <string name="item_iron_full_helmet_name">Eisen-Vollvisierhelm</string>
     <string name="item_iron_kiteshield_name">Eisen-Langspitzschild</string>
     <string name="item_iron_longsword_name">Eisernes Langschwert</string>
     <string name="item_iron_med_helmet_name">Iron Med Helmet</string> <!-- untranslated -->
-    <string name="item_iron_plateskirt_name">Iron Plateskirt</string> <!-- untranslated -->
-    <string name="item_iron_square_shield_name">Iron Square Shield</string> <!-- untranslated -->
+    <string name="item_iron_plateskirt_name">Eisen-Plattenrock</string>
+    <string name="item_iron_square_shield_name">Quadratischer Eisen-Schild</string>
     <string name="item_ironwood_axe_name">Eisenholzaxt</string>
     <string name="item_king_black_dragon_name">König Schwarzer Drache</string>
     <string name="item_kraken_name">Krake</string>
@@ -883,8 +885,8 @@
     <string name="item_magic_cape_name">Magieumhang</string>
     <string name="item_magic_longbow_name">Magischer Langbogen</string>
     <string name="item_magic_shortbow_name">Magischer Kurzbogen</string>
-    <string name="item_elven_shortbow_name">Elven Shortbow</string> <!-- untranslated -->
-    <string name="item_elven_longbow_name">Elven Longbow</string> <!-- untranslated -->
+    <string name="item_elven_shortbow_name">Elfen-Kurzbogen</string>
+    <string name="item_elven_longbow_name">Elfen-Langbogen</string>
     <string name="item_maple_shortbow_name">Ahorn-Kurzbogen</string>
     <string name="item_mercantile_guild_cape_name">Handelsgildenumhang</string>
     <string name="item_mining_cape_name">Bergbauumhang</string>
@@ -893,12 +895,12 @@
     <string name="item_mithril_boots_name">Mithril-Stiefel</string>
     <string name="item_mithril_chainbody_name">Mithril-Kettenhemd</string>
     <string name="item_mithril_dagger_name">Mithril-Dolch</string>
-    <string name="item_mithril_full_helmet_name">Mithril Full Helmet</string> <!-- untranslated -->
+    <string name="item_mithril_full_helmet_name">Mithril-Vollvisierhelm</string>
     <string name="item_mithril_kiteshield_name">Mithril-Langspitzschild</string>
     <string name="item_mithril_longsword_name">Mithril-Langschwert</string>
     <string name="item_mithril_med_helmet_name">Mithril Med Helmet</string> <!-- untranslated -->
-    <string name="item_mithril_plateskirt_name">Mithril Plateskirt</string> <!-- untranslated -->
-    <string name="item_mithril_square_shield_name">Mithril Square Shield</string> <!-- untranslated -->
+    <string name="item_mithril_plateskirt_name">Mithril-Plattenrock</string>
+    <string name="item_mithril_square_shield_name">Quadratischer Mithril-Schild</string>
     <string name="item_mutton_name">Gekochter Hammel</string>
     <string name="item_necklace_of_anguish_name">Halskette der Qual</string>
     <string name="item_necklace_of_anguish_desc">Bietet ausgezeichnete Boni für Fernkampfangriffe. Zum Kauf ist Handel-Level 99 erforderlich.</string>
@@ -918,57 +920,57 @@
     <string name="item_ring_of_wealth_desc">Erhöht die Anzahl der fallengelassenen Münzen geringfügig. Zum Kauf ist Handel-Level 40 erforderlich.</string>
     <string name="item_rock_golem_name">Steingolem</string>
     <string name="item_rogues_lockpick_name">Gaunerdietrich</string>
-    <string name="item_runecrafting_cape_name">Runecrafting Cape</string> <!-- untranslated -->
-    <string name="item_runecrafting_guild_cape_name">Runecrafting Guild Cape</string> <!-- untranslated -->
+    <string name="item_runecrafting_cape_name">Umhang der Runenherstellung</string>
+    <string name="item_runecrafting_guild_cape_name">Umhang der Runenhersteller Gilde</string>
     <string name="item_runite_arrow_tip_name">Runitpfeilspitzen</string>
     <string name="item_runite_boots_name">Runit-Stiefel</string>
-    <string name="item_runite_chainbody_name">Runite Chainbody</string> <!-- untranslated -->
+    <string name="item_runite_chainbody_name">Runit-Kettenhemd</string>
     <string name="item_runite_dagger_name">Runit-Dolch</string>
-    <string name="item_runite_full_helmet_name">Runite Full Helmet</string> <!-- untranslated -->
+    <string name="item_runite_full_helmet_name">Runit-Vollvisierhelm</string>
     <string name="item_runite_kiteshield_name">Runit-Langspitzschild</string>
     <string name="item_runite_longsword_name">Runit-Langschwert</string>
     <string name="item_runite_med_helmet_name">Runite Med Helmet</string> <!-- untranslated -->
-    <string name="item_runite_plateskirt_name">Runite Plateskirt</string> <!-- untranslated -->
-    <string name="item_runite_square_shield_name">Runite Square Shield</string> <!-- untranslated -->
-    <string name="item_sanctum_axe_name">Sanctum Axe</string> <!-- untranslated -->
+    <string name="item_runite_plateskirt_name">Runit-Plattenrock</string>
+    <string name="item_runite_square_shield_name">Quadratischer Runit-Schild</string>
+    <string name="item_sanctum_axe_name">Heilige Axt</string>
     <string name="item_seers_ring_name">Ring des Sehers</string>
     <string name="item_seers_ring_desc">Erhöht die Magie-Zielgenauigkeit. Zum Kauf ist Handel-Level 60 erforderlich.</string>
     <string name="item_shadow_dagger_name">Schattendolch</string>
     <string name="item_shadow_grappling_hook_name">Greifhaken der Schatten</string>
     <string name="item_shadow_lockpick_name">Dietrich der Schatten</string>
-    <string name="item_shortbow_name">Shortbow</string> <!-- untranslated -->
-    <string name="item_silver_diamond_necklace_name">Silver Diamond Necklace</string> <!-- untranslated -->
-    <string name="item_silver_diamond_ring_name">Silver Diamond Ring</string> <!-- untranslated -->
-    <string name="item_silver_emerald_necklace_name">Silver Emerald Necklace</string> <!-- untranslated -->
-    <string name="item_silver_emerald_ring_name">Silver Emerald Ring</string> <!-- untranslated -->
-    <string name="item_silver_ruby_necklace_name">Silver Ruby Necklace</string> <!-- untranslated -->
-    <string name="item_silver_ruby_ring_name">Silver Ruby Ring</string> <!-- untranslated -->
-    <string name="item_slayer_guild_cape_name">Slayer Guild Cape</string> <!-- untranslated -->
-    <string name="item_smithing_cape_name">Smithing Cape</string> <!-- untranslated -->
-    <string name="item_smithing_guild_cape_name">Smithing Guild Cape</string> <!-- untranslated -->
+    <string name="item_shortbow_name">Kurzbogen</string>
+    <string name="item_silver_diamond_necklace_name">Silberne Diamanthals</string>
+    <string name="item_silver_diamond_ring_name">Silberner Diamantring</string>
+    <string name="item_silver_emerald_necklace_name">Silberne Smaragd-Halskette</string>
+    <string name="item_silver_emerald_ring_name">Silberner Smaragd-Ring</string>
+    <string name="item_silver_ruby_necklace_name">Silberne Rubin-Halskette</string>
+    <string name="item_silver_ruby_ring_name">Silberner Rubin-Ring</string>
+    <string name="item_slayer_guild_cape_name">Umhang der Trophäenjägergilde</string>
+    <string name="item_smithing_cape_name">Schmiedeumhang</string>
+    <string name="item_smithing_guild_cape_name">Schmiedegildenumhang</string>
     <string name="item_steel_arrow_tip_name">Stahlpfeilspitzen</string>
     <string name="item_steel_boots_name">Stahl-Stiefel</string>
-    <string name="item_steel_chainbody_name">Steel Chainbody</string> <!-- untranslated -->
+    <string name="item_steel_chainbody_name">Stahl-Kettenhemd</string>
     <string name="item_steel_dagger_name">Stahldolch</string>
-    <string name="item_steel_full_helmet_name">Steel Full Helmet</string> <!-- untranslated -->
+    <string name="item_steel_full_helmet_name">Stahl-Vollvisierhelm</string>
     <string name="item_steel_kiteshield_name">Stahl-Langspitzschild</string>
     <string name="item_steel_longsword_name">Steel Longsword</string> <!-- untranslated -->
     <string name="item_steel_med_helmet_name">Steel Med Helmet</string> <!-- untranslated -->
-    <string name="item_steel_plateskirt_name">Steel Plateskirt</string> <!-- untranslated -->
-    <string name="item_steel_square_shield_name">Steel Square Shield</string> <!-- untranslated -->
-    <string name="item_strength_cape_name">Strength Cape</string> <!-- untranslated -->
+    <string name="item_steel_plateskirt_name">Stahl-Plattenrock</string>
+    <string name="item_steel_square_shield_name">Quadratischer Stahl-Schild</string>
+    <string name="item_strength_cape_name">Umhang der Stärke</string>
     <string name="item_tangleroot_name">Tangleroot</string> <!-- untranslated -->
-    <string name="item_thieving_guild_cape_name">Thieving Guild Cape</string> <!-- untranslated -->
-    <string name="item_tiny_templar_name">Tiny Templar</string> <!-- untranslated -->
+    <string name="item_thieving_guild_cape_name">Umhang der Diebesgilde</string>
+    <string name="item_tiny_templar_name">Kleiner Templer</string>
     <string name="item_tormented_necklace_name">Halskette der Pein</string>
     <string name="item_tormented_necklace_desc">Bietet außergewöhnliche Magie-Boni. Zum Kauf ist Handel-Level 99 erforderlich.</string>
-    <string name="item_trident_of_the_seas_name">Trident Of The Seas</string> <!-- untranslated -->
-    <string name="item_warriors_guild_cape_name">Warriors Guild Cape</string> <!-- untranslated -->
-    <string name="item_willow_shortbow_name">Willow Shortbow</string> <!-- untranslated -->
-    <string name="item_woodcutting_cape_name">Woodcutting Cape</string> <!-- untranslated -->
-    <string name="item_woodcutting_guild_cape_name">Woodcutting Guild Cape</string> <!-- untranslated -->
-    <string name="item_yew_longbow_name">Yew Longbow</string> <!-- untranslated -->
-    <string name="item_yew_shortbow_name">Yew Shortbow</string> <!-- untranslated -->
+    <string name="item_trident_of_the_seas_name">Dreizack der Meere</string>
+    <string name="item_warriors_guild_cape_name">Umhang der Kriegergilde</string>
+    <string name="item_willow_shortbow_name">Weiden-Kurzbogen</string>
+    <string name="item_woodcutting_cape_name">Umhang der Holzfällerei</string>
+    <string name="item_woodcutting_guild_cape_name">Umhang der Holzfällergilde</string>
+    <string name="item_yew_longbow_name">Eiben-Langbogen</string>
+    <string name="item_yew_shortbow_name">Eiben-Kurzbogen</string>
     <string name="item_void_reaver_name">Leeren-Spalter</string>
     <string name="item_void_reaver_desc">Eine aus kristallisierter Leerenenergie geschmiedete Klinge. Ihre Schneide durchdringt Rüstungen wie Stoff.</string>
     <string name="item_sovereign_crown_name">Krone des Gebieters der Leere</string>
@@ -998,16 +1000,16 @@
     <string name="item_divine_sword_desc">Eine Klinge aus reinem göttlichem Licht, die angeblich nur von den Auserwählten geführt wird.</string>
     <string name="item_divine_greatblade_name">Göttliches Großschwert</string>
     <string name="item_divine_greatblade_desc">Ein gewaltiges göttliches Schwert, das bei jedem Hieb rohe Kraft entfesselt.</string>
-    <string name="item_shortbow_desc">A shortbow crafted from regular logs.</string> <!-- untranslated -->
-    <string name="item_oak_shortbow_desc">A shortbow crafted from oak logs.</string> <!-- untranslated -->
-    <string name="item_willow_shortbow_desc">A shortbow crafted from willow logs.</string> <!-- untranslated -->
-    <string name="item_maple_shortbow_desc">A shortbow crafted from maple logs.</string> <!-- untranslated -->
-    <string name="item_yew_shortbow_desc">A shortbow crafted from yew logs.</string> <!-- untranslated -->
-    <string name="item_yew_longbow_desc">A longbow crafted from yew logs.</string> <!-- untranslated -->
-    <string name="item_magic_shortbow_desc">A shortbow crafted from magic logs.</string> <!-- untranslated -->
-    <string name="item_magic_longbow_desc">A longbow crafted from magic logs.</string> <!-- untranslated -->
-    <string name="item_elven_shortbow_desc">A swift bow strung with elven silk. Only elven hands know the fletching.</string> <!-- untranslated -->
-    <string name="item_elven_longbow_desc">A tall elven warbow of layered redwood. Only elven hands know the fletching.</string> <!-- untranslated -->
+    <string name="item_shortbow_desc">Ein Kurzbogen, der aus gewöhnlichen Holzstämmen gefertigt wurde.</string>
+    <string name="item_oak_shortbow_desc">Ein Kurzbogen, der aus Eichenholz gefertigt wurde.</string>
+    <string name="item_willow_shortbow_desc">Ein Kurzbogen, der aus Weidenholz gefertigt wurde.</string>
+    <string name="item_maple_shortbow_desc">Ein Kurzbogen, der aus Ahornholz gefertigt wurde.</string>
+    <string name="item_yew_shortbow_desc">Ein Kurzbogen, der aus Eibenholz gefertigt wurde.</string>
+    <string name="item_yew_longbow_desc">Ein Langboge, der aus Eibenholz gefertigt wurde.</string>
+    <string name="item_magic_shortbow_desc">Ein Kurzbogen, der aus magischem Holz gefertigt wurde.</string>
+    <string name="item_magic_longbow_desc">Ein Langboge, der aus magischem Holz gefertigt wurde.</string>
+    <string name="item_elven_shortbow_desc">Ein schneller Bogen, bespannt mit Elfenseide. Nur Elfenhände kennen die Kunst der Befiederung.</string>
+    <string name="item_elven_longbow_desc">Ein hoher Elfen-Kriegsbogen aus geschichtetem Mammutbaumholz. Nur Elfenhände kennen die Befiederung.</string>
     <string name="item_tower_crossbow_name">Armbrust des Turms</string>
     <string name="item_tower_crossbow_desc">Eine Präzisionsarmbrust aus Turmmetall.</string>
     <string name="item_arcane_staff_desc">Ein Stab, der aus den Arkanen Ruinen geborgen wurde und noch immer vor gebündelter magischer Energie brummt – ein Überbleibsel der Katastrophe, die den Turm darüber zerstört hat.</string>
@@ -1016,50 +1018,50 @@
     <string name="item_void_staff_desc">Ein Stab aus reiner Energie der Leere. Gewährt unbegrenzte Runen für alle Zaubersprüche.</string>
     <string name="item_trident_of_the_seas_desc">A fearsome trident imbued with the power of the deep, taken from the Kraken\'s lair.</string> <!-- untranslated -->
     <string name="item_bronze_med_helmet_desc">A bronze med helmet.</string> <!-- untranslated -->
-    <string name="item_bronze_full_helmet_desc">A bronze full helmet.</string> <!-- untranslated -->
-    <string name="item_bronze_chainbody_desc">A bronze chainbody.</string> <!-- untranslated -->
-    <string name="item_bronze_plateskirt_desc">A bronze plateskirt.</string> <!-- untranslated -->
+    <string name="item_bronze_full_helmet_desc">Ein Vollvisierhelm aus Bronze.</string>
+    <string name="item_bronze_chainbody_desc">Ein Kettenhemd aus Bronze.</string>
+    <string name="item_bronze_plateskirt_desc">Ein Plattenrock aus Bronze.</string>
     <string name="item_bronze_boots_desc">Ein Paar Stiefel aus Bronze.</string>
-    <string name="item_bronze_square_shield_desc">A bronze square shield.</string> <!-- untranslated -->
+    <string name="item_bronze_square_shield_desc">Ein quadratischer Schild aus Bronze.</string>
     <string name="item_bronze_kiteshield_desc">Bronze-Langspitzschild</string>
     <string name="item_iron_med_helmet_desc">A iron med helmet.</string> <!-- untranslated -->
-    <string name="item_iron_full_helmet_desc">A iron full helmet.</string> <!-- untranslated -->
-    <string name="item_iron_chainbody_desc">A iron chainbody.</string> <!-- untranslated -->
-    <string name="item_iron_plateskirt_desc">A iron plateskirt.</string> <!-- untranslated -->
+    <string name="item_iron_full_helmet_desc">Ein Vollvisierhelm aus Eisen.</string>
+    <string name="item_iron_chainbody_desc">Ein Kettenhemd aus Eisen.</string>
+    <string name="item_iron_plateskirt_desc">Ein Plattenrock aus Eisen.</string>
     <string name="item_iron_boots_desc">Ein Paar Stiefel aus Eisen.</string>
-    <string name="item_iron_square_shield_desc">A iron square shield.</string> <!-- untranslated -->
+    <string name="item_iron_square_shield_desc">Ein quadratischer Schild aus Eisen.</string>
     <string name="item_iron_kiteshield_desc">Eisen-Langspitzschild</string>
     <string name="item_steel_med_helmet_desc">A steel med helmet.</string> <!-- untranslated -->
-    <string name="item_steel_full_helmet_desc">A steel full helmet.</string> <!-- untranslated -->
-    <string name="item_steel_chainbody_desc">A steel chainbody.</string> <!-- untranslated -->
-    <string name="item_steel_plateskirt_desc">A steel plateskirt.</string> <!-- untranslated -->
+    <string name="item_steel_full_helmet_desc">Ein Vollvisierhelm aus Stahl.</string>
+    <string name="item_steel_chainbody_desc">Ein Kettenhemd aus Stahl.</string>
+    <string name="item_steel_plateskirt_desc">Ein Plattenrock aus Stahl.</string>
     <string name="item_steel_boots_desc">Ein Paar Stiefel aus Stahl.</string>
-    <string name="item_steel_square_shield_desc">A steel square shield.</string> <!-- untranslated -->
+    <string name="item_steel_square_shield_desc">Ein quadratischer Schild aus Stahl.</string>
     <string name="item_steel_kiteshield_desc">Stahl-Langspitzschild</string>
     <string name="item_mithril_med_helmet_desc">A mithril med helmet.</string> <!-- untranslated -->
-    <string name="item_mithril_full_helmet_desc">A mithril full helmet.</string> <!-- untranslated -->
-    <string name="item_mithril_chainbody_desc">A mithril chainbody.</string> <!-- untranslated -->
-    <string name="item_mithril_plateskirt_desc">A mithril plateskirt.</string> <!-- untranslated -->
+    <string name="item_mithril_full_helmet_desc">Ein Vollvisierhelm aus Mithril.</string>
+    <string name="item_mithril_chainbody_desc">Ein Kettenhemd aus Mithril.</string>
+    <string name="item_mithril_plateskirt_desc">Ein Plattenrock aus Mithril.</string>
     <string name="item_mithril_boots_desc">Ein Paar Stiefel aus Mithril.</string>
-    <string name="item_mithril_square_shield_desc">A mithril square shield.</string> <!-- untranslated -->
+    <string name="item_mithril_square_shield_desc">Ein quadratischer Schild aus Mithril.</string>
     <string name="item_mithril_kiteshield_desc">Mithril-Langspitzschild</string>
     <string name="item_adamantite_med_helmet_desc">A adamantite med helmet.</string> <!-- untranslated -->
-    <string name="item_adamantite_full_helmet_desc">A adamantite full helmet.</string> <!-- untranslated -->
-    <string name="item_adamantite_chainbody_desc">A adamantite chainbody.</string> <!-- untranslated -->
-    <string name="item_adamantite_plateskirt_desc">A adamantite plateskirt.</string> <!-- untranslated -->
+    <string name="item_adamantite_full_helmet_desc">Ein Vollvisierhelm aus Adamantit.</string>
+    <string name="item_adamantite_chainbody_desc">Ein Kettenhemd aus Adamantit.</string>
+    <string name="item_adamantite_plateskirt_desc">Ein Plattenrock aus Adamantit.</string>
     <string name="item_adamantite_boots_desc">Ein Paar Stiefel aus Admantit.</string>
-    <string name="item_adamantite_square_shield_desc">A adamantite square shield.</string> <!-- untranslated -->
+    <string name="item_adamantite_square_shield_desc">Ein quadratischer Schild aus Adamantit.</string>
     <string name="item_adamantite_kiteshield_desc">Adamantit-Langspitzschild</string>
     <string name="item_runite_med_helmet_desc">A runite med helmet.</string> <!-- untranslated -->
-    <string name="item_runite_full_helmet_desc">A runite full helmet.</string> <!-- untranslated -->
-    <string name="item_runite_chainbody_desc">A runite chainbody.</string> <!-- untranslated -->
-    <string name="item_runite_plateskirt_desc">A runite plateskirt.</string> <!-- untranslated -->
+    <string name="item_runite_full_helmet_desc">Ein Vollvisierhelm aus Runit.</string>
+    <string name="item_runite_chainbody_desc">Ein Kettenhemd aus Runit.</string>
+    <string name="item_runite_plateskirt_desc">Ein Plattenrock aus Runit.</string>
     <string name="item_runite_boots_desc">Ein Paar Stiefel aus Runit.</string>
-    <string name="item_runite_square_shield_desc">A runite square shield.</string> <!-- untranslated -->
+    <string name="item_runite_square_shield_desc">Ein quadratischer Schild aus Runit.</string>
     <string name="item_runite_kiteshield_desc">Runit-Langspitzschild</string>
     <string name="item_dwarven_helm_desc">Ein robuster Zwergenhelm, geschmiedet aus uralten Metallen.</string>
     <string name="item_dwarven_platebody_desc">Eine uralte Zwergenrüstung, die nahezu undurchdringlich ist.</string>
-    <string name="item_dwarven_platelegs_desc">Dwarven leg armor, perfectly balanced for combat.</string> <!-- untranslated -->
+    <string name="item_dwarven_platelegs_desc">Eine Beinschutz der Zwerge, perfekt auf den Kampf abgestimmt.</string>
     <string name="item_dwarven_boots_desc">Meisterhaft gefertigte Zwergenstiefel, schwerer als Stahl, aber nahezu unzerstörbar.</string>
     <string name="item_dwarven_shield_desc">Ein Zwergenschild, das unzählige Schlachten überstanden hat.</string>
     <string name="item_dragon_boots_desc">Ein Paar Drachenstiefel</string>
@@ -1069,107 +1071,107 @@
     <string name="item_tower_body_desc">Impenetrable armour from the tower\'s inner sanctum.</string> <!-- untranslated -->
     <string name="item_tower_legs_name">Beinschienen des Turms</string>
     <string name="item_tower_legs_desc">Beinschienen, geschmiedet in der tiefsten Schmiede des Turms.</string>
-    <string name="item_tower_plateskirt_name">Tower Plateskirt</string> <!-- untranslated -->
-    <string name="item_tower_plateskirt_desc">A plateskirt forged in the tower\'s deepest forge.</string> <!-- untranslated -->
+    <string name="item_tower_plateskirt_name">Plattenrock des Turms</string>
+    <string name="item_tower_plateskirt_desc">Ein Plattenrock, geschmiedet in der tiefsten Schmiede des Turms.</string>
     <string name="item_tower_boots_name">Stiefel des Turms</string>
     <string name="item_tower_boots_desc">Stiefel, geschmiedet in der tiefsten Schmiede des Turms.</string>
     <string name="item_tower_shield_name">Schild des Turms</string>
     <string name="item_tower_shield_desc">Ein massiver Schild, aus Turmstein gehauen.</string>
-    <string name="item_balrog_wings_desc">The mighty wings of the Gothic Ember, imbued with dark power. The ultimate armor.</string> <!-- untranslated -->
+    <string name="item_balrog_wings_desc">Die mächtigen Flügel der Gothischen Glut, erfüllt von dunkler Macht. Die ultimative Rüstung.</string>
     <string name="item_divine_helm_name">Göttlicher Helm</string>
     <string name="item_divine_helm_desc">Ein strahlender Helm, von den Göttern gesegnet. Er wehrt Schläge ab, die jeden Sterblichen zu Fall bringen würden.</string>
-    <string name="item_divine_platebody_name">Divine Platebody</string> <!-- untranslated -->
-    <string name="item_divine_platebody_desc">Armour forged from celestial metal. Said to be nearly indestructible.</string> <!-- untranslated -->
-    <string name="item_divine_platelegs_name">Divine Platelegs</string> <!-- untranslated -->
-    <string name="item_divine_platelegs_desc">Leg armour of divine craft. Heavier than it looks, lighter than it should be.</string> <!-- untranslated -->
+    <string name="item_divine_platebody_name">Göttlicher Plattenpanzer</string>
+    <string name="item_divine_platebody_desc">Eine Rüstung aus himmlischem Metall. Sie gilt als nahezu unzerstörbar.</string>
+    <string name="item_divine_platelegs_name">Göttliche Beinschienen</string>
+    <string name="item_divine_platelegs_desc">Beinschutz von göttlicher Machart. Schwerer, als er aussieht, leichter, als er sein sollte.</string>
     <string name="item_divine_boots_name">Göttliche Stiefel</string>
     <string name="item_divine_boots_desc">Stiefel göttlicher Machart. Hinterlassen keine Fußspuren.</string>
     <string name="item_divine_shield_name">Göttliches Schild</string>
     <string name="item_divine_shield_desc">Ein gesegneter Schild, der ein schwaches goldenes Licht ausstrahlt.</string>
-    <string name="item_silver_emerald_necklace_desc">A silver necklace with an emerald. Enhances ranged.</string> <!-- untranslated -->
-    <string name="item_silver_ruby_necklace_desc">A silver necklace with a ruby. Enhances melee.</string> <!-- untranslated -->
-    <string name="item_silver_diamond_necklace_desc">A silver necklace with a diamond. Balanced combat.</string> <!-- untranslated -->
+    <string name="item_silver_emerald_necklace_desc">Eine silberne Halskette mit einem Smaragd. Verbessert Fernkampf.</string>
+    <string name="item_silver_ruby_necklace_desc">Eine silberne Halskette mit einem Rubin. Verbessert den Nahkampf.</string>
+    <string name="item_silver_diamond_necklace_desc">Eine silberne Halskette mit einem Diamanten. Für einen ausgewogenen Kampf.</string>
     <string name="item_tower_amulet_name">Amulett des Turms</string>
     <string name="item_tower_amulet_desc">Ein Amulett, das vor der uralten Kraft des Turms nur so strotzt.</string>
-    <string name="item_dragon_amulet_desc">A powerful amulet forged from dragon scales. Enhances all combat styles.</string> <!-- untranslated -->
-    <string name="item_flame_heart_amulet_desc">The crystallized heart of an ancient flame demon. Radiates immense power.</string> <!-- untranslated -->
-    <string name="item_amulet_of_the_kraken_desc">A dark amulet pulsing with the Kraken\'s magical energy.</string> <!-- untranslated -->
-    <string name="item_silver_emerald_ring_desc">A silver ring with an emerald. Enhances ranged.</string> <!-- untranslated -->
-    <string name="item_silver_ruby_ring_desc">A silver ring with a ruby. Enhances melee.</string> <!-- untranslated -->
-    <string name="item_silver_diamond_ring_desc">A silver ring with a diamond. Balanced combat.</string> <!-- untranslated -->
+    <string name="item_dragon_amulet_desc">Ein mächtiges Amulett, geschmiedet aus Drachenschuppen. Verbessert alle Kampfstile.</string>
+    <string name="item_flame_heart_amulet_desc">Das kristallisierte Herz eines uralten Flammendämons. Es strahlt ungeheure Kraft aus.</string>
+    <string name="item_amulet_of_the_kraken_desc">Ein dunkles Amulett, das vor der magischen Energie des Kraken nur so pulsiert.</string>
+    <string name="item_silver_emerald_ring_desc">Ein silberner Ring mit einem Smaragd. Verbessert Fernkampf.</string>
+    <string name="item_silver_ruby_ring_desc">Ein silberner Ring mit einem Rubin. Verbessert den Nahkampf.</string>
+    <string name="item_silver_diamond_ring_desc">Ein silberner Ring mit einem Diamanten. Für einen ausgewogenen Kampf.</string>
     <string name="item_tower_ring_name">Ring des Turms</string>
     <string name="item_tower_ring_desc">Ein Ring, geschmiedet aus dem Stein des unendlichen Turms.</string>
-    <string name="item_ring_of_flame_desc">Forged in the fires of the deep earth. Those who wear it feel the Gothic Ember\'s strength.</string> <!-- untranslated -->
-    <string name="item_ring_of_dragons_might_desc">A ring imbued with dragonfire. Greatly increases melee strength.</string> <!-- untranslated -->
-    <string name="item_ring_of_the_seas_desc">A ring blessed by the deep sea. Enhances ranged precision and power.</string> <!-- untranslated -->
-    <string name="item_kraken_tentacle_desc">A coiling tentacle ring that channels the Kraken\'s arcane power.</string> <!-- untranslated -->
-    <string name="item_tower_cape_name">Tower Cape</string> <!-- untranslated -->
-    <string name="item_tower_cape_desc">A flowing cape that radiates the tower\'s energy.</string> <!-- untranslated -->
-    <string name="item_mining_cape_desc" formatted="false">Awarded for reaching level 99 Mining. Grants 10% more ore per session.</string> <!-- untranslated -->
-    <string name="item_construction_guild_cape_desc" formatted="false">Awarded for reaching Builders Guild level 10. Grants 5% more furniture per session.</string> <!-- untranslated -->
-    <string name="item_mining_guild_cape_desc" formatted="false">Awarded for reaching Mining Guild level 10. Grants 5% more ore per session.</string> <!-- untranslated -->
-    <string name="item_fishing_cape_desc" formatted="false">Awarded for reaching level 99 Fishing. Grants 10% more fish per session.</string> <!-- untranslated -->
-    <string name="item_fishing_guild_cape_desc" formatted="false">Awarded for reaching Fishing Guild level 10. Grants 5% more fish per session.</string> <!-- untranslated -->
-    <string name="item_woodcutting_cape_desc" formatted="false">Awarded for reaching level 99 Woodcutting. Grants 10% more logs per session.</string> <!-- untranslated -->
-    <string name="item_woodcutting_guild_cape_desc" formatted="false">Awarded for reaching Woodcutting Guild level 10. Grants 5% more logs per session.</string> <!-- untranslated -->
-    <string name="item_farming_cape_desc" formatted="false">Awarded for reaching level 99 Farming. Grants 10% more harvest per session.</string> <!-- untranslated -->
-    <string name="item_farming_guild_cape_desc" formatted="false">Awarded for reaching Farming Guild level 10. Grants 5% more harvest per session.</string> <!-- untranslated -->
-    <string name="item_thieving_cape_name">Thieving Cape</string> <!-- untranslated -->
-    <string name="item_thieving_cape_desc" formatted="false">Awarded for reaching level 99 Thieving. Grants 10% more successful pickpockets per session.</string> <!-- untranslated -->
-    <string name="item_thieving_guild_cape_desc" formatted="false">Awarded for reaching Thieves Guild level 10. Grants 5% more successful pickpockets per session.</string> <!-- untranslated -->
-    <string name="item_smithing_cape_desc" formatted="false">Awarded for reaching level 99 Smithing. Grants 10% more items per session.</string> <!-- untranslated -->
-    <string name="item_smithing_guild_cape_desc" formatted="false">Awarded for reaching Smithing Guild level 10. Grants 5% more items per session.</string> <!-- untranslated -->
-    <string name="item_cooking_cape_desc" formatted="false">Awarded for reaching level 99 Cooking. Grants 10% more food per session.</string> <!-- untranslated -->
-    <string name="item_cooking_guild_cape_desc" formatted="false">Awarded for reaching Cooking Guild level 10. Grants 5% more food per session.</string> <!-- untranslated -->
-    <string name="item_fletching_cape_desc" formatted="false">Awarded for reaching level 99 Fletching. Grants 10% more arrows per session.</string> <!-- untranslated -->
-    <string name="item_fletching_guild_cape_desc" formatted="false">Awarded for reaching Fletching Guild level 10. Grants 5% more arrows per session.</string> <!-- untranslated -->
-    <string name="item_crafting_cape_desc" formatted="false">Awarded for reaching level 99 Crafting. Grants 10% more items per session.</string> <!-- untranslated -->
-    <string name="item_crafting_guild_cape_desc" formatted="false">Awarded for reaching Crafting Guild level 10. Grants 5% more items per session.</string> <!-- untranslated -->
-    <string name="item_firemaking_cape_desc" formatted="false">Awarded for reaching level 99 Firemaking. Grants 10% more ashes per session.</string> <!-- untranslated -->
-    <string name="item_firemaking_guild_cape_desc" formatted="false">Awarded for reaching Firemaking Guild level 10. Grants 5% more ashes per session.</string> <!-- untranslated -->
-    <string name="item_runecrafting_cape_desc" formatted="false">Awarded for reaching level 99 Runecrafting. Grants 10% more runes per session.</string> <!-- untranslated -->
-    <string name="item_runecrafting_guild_cape_desc" formatted="false">Awarded for reaching Runecrafting Guild level 10. Grants 5% more runes per session.</string> <!-- untranslated -->
-    <string name="item_herblore_cape_name">Herblore Cape</string> <!-- untranslated -->
-    <string name="item_herblore_cape_desc" formatted="false">Awarded for reaching level 99 Herblore. Grants 10% more potions per session.</string> <!-- untranslated -->
-    <string name="item_herblore_guild_cape_desc" formatted="false">Awarded for reaching Herblore Guild level 10. Grants 5% more potions per session.</string> <!-- untranslated -->
-    <string name="item_construction_cape_name">Construction Cape</string> <!-- untranslated -->
-    <string name="item_construction_cape_desc" formatted="false">Awarded for reaching level 99 Construction. Grants 10% more items per session.</string> <!-- untranslated -->
-    <string name="item_prayer_cape_desc" formatted="false">Awarded for reaching level 99 Prayer. Strengthens your active blessing by 10%.</string> <!-- untranslated -->
-    <string name="item_prayer_guild_cape_desc" formatted="false">Awarded for reaching Prayer Guild level 10. Strengthens your active blessing by 5%.</string> <!-- untranslated -->
-    <string name="item_mercantile_cape_name">Mercantile Cape</string> <!-- untranslated -->
-    <string name="item_mercantile_cape_desc" formatted="false">Awarded for reaching level 99 Mercantile. Grants 10% better shop prices and trade returns.</string> <!-- untranslated -->
-    <string name="item_mercantile_guild_cape_desc" formatted="false">Awarded for reaching Merchants Guild level 10. Grants 5% better shop prices and trade returns.</string> <!-- untranslated -->
-    <string name="item_agility_cape_desc" formatted="false">Awarded for reaching level 99 Agility. Grants 10% more XP per session.</string> <!-- untranslated -->
-    <string name="item_agility_guild_cape_desc" formatted="false">Awarded for reaching Agility Guild level 10. Grants 5% more XP per session.</string> <!-- untranslated -->
-    <string name="item_slayer_cape_name">Slayer Cape</string> <!-- untranslated -->
-    <string name="item_slayer_cape_desc" formatted="false">Awarded for reaching level 99 Slayer. Grants 10% more Slayer points.</string> <!-- untranslated -->
-    <string name="item_attack_cape_desc" formatted="false">Awarded for reaching level 99 Attack. Grants 10% bonus Attack XP.</string> <!-- untranslated -->
-    <string name="item_strength_cape_desc" formatted="false">Awarded for reaching level 99 Strength. Grants 10% bonus Strength XP.</string> <!-- untranslated -->
-    <string name="item_defense_cape_desc" formatted="false">Awarded for reaching level 99 Defense. Grants 10% bonus Defense XP.</string> <!-- untranslated -->
-    <string name="item_warriors_guild_cape_desc" formatted="false">Awarded for reaching Warriors Guild level 10. Grants 5% bonus Attack, Strength, and Defense XP.</string> <!-- untranslated -->
-    <string name="item_ranged_cape_desc" formatted="false">Awarded for reaching level 99 Ranged. Grants 10% bonus Ranged XP.</string> <!-- untranslated -->
-    <string name="item_archers_guild_cape_desc" formatted="false">Awarded for reaching Archers Guild level 10. Grants 5% bonus Ranged XP.</string> <!-- untranslated -->
-    <string name="item_magic_cape_desc" formatted="false">Awarded for reaching level 99 Magic. Grants 10% bonus Magic XP.</string> <!-- untranslated -->
-    <string name="item_mages_guild_cape_desc" formatted="false">Awarded for reaching Mages Guild level 10. Grants 5% bonus Magic XP.</string> <!-- untranslated -->
-    <string name="item_slayer_guild_cape_desc" formatted="false">Awarded for reaching Slayers Guild level 10. Grants 5% bonus Slayer XP.</string> <!-- untranslated -->
-    <string name="item_hp_cape_desc" formatted="false">Awarded for reaching level 99 HP. Grants 10% bonus Hitpoints XP.</string> <!-- untranslated -->
-    <string name="item_deep_iron_pickaxe_desc">Forged from ore found in the Collapsed Mine\'s deepest shafts. Strikes with uncanny precision.</string> <!-- untranslated -->
+    <string name="item_ring_of_flame_desc">Geschmiedet im Feuer der Tiefen der Erde. Wer es trägt, spürt die Kraft der Gothischen Glut.</string>
+    <string name="item_ring_of_dragons_might_desc">Ein Ring, der mit Drachenfeuer erfüllt ist. Erhöht die Nahkampfstärke erheblich.</string>
+    <string name="item_ring_of_the_seas_desc">Ein Ring, der von der Tiefsee gesegnet wurde. Verbessert die Präzision und Kraft bei Fernangriffen.</string>
+    <string name="item_kraken_tentacle_desc">Ein sich windender Tentakelring, der die arkane Kraft des Kraken bündelt.</string>
+    <string name="item_tower_cape_name">Umhang des Turms</string>
+    <string name="item_tower_cape_desc">Ein fließender Umhang, der die Energie des Turms ausstrahlt.</string>
+    <string name="item_mining_cape_desc" formatted="false">Umhang des Bergbau</string>
+    <string name="item_construction_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Baumeistergilde verliehen. Gewährt 5% mehr Möbel pro Aktivität.</string>
+    <string name="item_mining_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Bergbaugilde verliehen. Gewährt 5% mehr Erz pro Aktivität.</string>
+    <string name="item_fishing_cape_desc" formatted="false">Umhang der Anglerei</string>
+    <string name="item_fishing_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Anglergilde vergeben. Gewährt 5% mehr Fisch pro Aktivität.</string>
+    <string name="item_woodcutting_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 im Holzfällen vergeben. Gewährt 10% mehr Holzscheite pro Aktivität.</string>
+    <string name="item_woodcutting_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Holzfällergilde vergeben. Gewährt 5% mehr Holz pro Aktivität.</string>
+    <string name="item_farming_cape_desc" formatted="false">Wird für das Erreichen von Level 99 in Landwirtschaft verliehen. Gewährt 10% mehr Ernte pro Aktivität.</string>
+    <string name="item_farming_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Bauerngilde verliehen. Gewährt 5% mehr Ertrag pro Ernte.</string>
+    <string name="item_thieving_cape_name">Umhang des Diebstahls</string>
+    <string name="item_thieving_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Stehlen vergeben. Gewährt 10% mehr erfolgreiche Taschendiebstähle pro Aktivität.</string>
+    <string name="item_thieving_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Diebesgilde vergeben. Gewährt 5% mehr erfolgreiche Taschendiebstähle pro Aktivität.</string>
+    <string name="item_smithing_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Schmieden vergeben. Gewährt 10% mehr Gegenstände pro Aktivität.</string>
+    <string name="item_smithing_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Schmiedegilde vergeben. Gewährt 5% mehr Gegenstände pro Aktivität.</string>
+    <string name="item_cooking_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Kochen vergeben. Gewährt 10% mehr Nahrung pro Aktivität.</string>
+    <string name="item_cooking_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Küchengilde vergeben. Gewährt 5% mehr Nahrung pro Aktivität.</string>
+    <string name="item_fletching_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Pfeilbau vergeben. Gewährt 10% mehr Pfeile pro Aktivität.</string>
+    <string name="item_fletching_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Gilde der Pfeilmacher vergeben. Gewährt 5% mehr Pfeile pro Aktivität.</string>
+    <string name="item_crafting_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Schmuckfertigung vergeben. Gewährt 10% mehr Gegenstände pro Aktivität.</string>
+    <string name="item_crafting_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Kunsthandwerksgilde vergeben. Gewährt 5% mehr Pfeile pro Aktivität.</string>
+    <string name="item_firemaking_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Feuermachen vergeben. Gewährt 10% mehr Asche pro Aktivität.</string>
+    <string name="item_firemaking_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Gilde der Feuermacher vergeben. Gewährt 5% mehr Asche pro Aktivität.</string>
+    <string name="item_runecrafting_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in der Runenherstellung vergeben. Gewährt 10% mehr Runen pro Aktivität.</string>
+    <string name="item_runecrafting_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 in der Gilde der Runenhersteller vergeben. Gewährt 5% mehr Runen pro Aktivität.</string>
+    <string name="item_herblore_cape_name">Umhang der Kräuterkunde</string>
+    <string name="item_herblore_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Kräuterkunde vergeben. Gewährt 10% mehr Tränke pro Sitzung.</string>
+    <string name="item_herblore_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 in der Alchemistengilde vergeben. Gewährt 5% mehr Tränke pro Aktivität.</string>
+    <string name="item_construction_cape_name">Umhang des Bauen</string>
+    <string name="item_construction_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Bauen vergeben. Gewährt 10% mehr Gegenstände pro Aktivität.</string>
+    <string name="item_prayer_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Gebete vergeben. Verstärkt deinen aktiven Segen um 10%.</string>
+    <string name="item_prayer_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Gilde der Betenden vergeben. Verstärkt deinen aktiven Segen um 5%.</string>
+    <string name="item_mercantile_cape_name">Umhang der Händler</string>
+    <string name="item_mercantile_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 im Handel vergeben. Gewährt 10% bessere Ladenpreise und Handelserträge.</string>
+    <string name="item_mercantile_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Handelsgilde verliehen. Gewährt 5% bessere Ladenpreise und Handelserträge.</string>
+    <string name="item_agility_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Beweglichkeit vergeben. Gewährt 10% mehr EP pro Aktivität.</string>
+    <string name="item_agility_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Gilde der Geschickten vergeben. Gewährt 5% mehr EP pro Aktivität.</string>
+    <string name="item_slayer_cape_name">Umhang der Trophäenjäger</string>
+    <string name="item_slayer_cape_desc" formatted="false">Wird für das Erreichen von Level 99 in Trophäenjagd vergeben. Gewährt 10% mehr Trophäenjagd-Punkte.</string>
+    <string name="item_attack_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Angriff vergeben. Gewährt 10% mehr Angriff-EP pro Aktivität.</string>
+    <string name="item_strength_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Stärke vergeben. Gewährt 10% mehr Stärke-EP pro Aktivität.</string>
+    <string name="item_defense_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Verteidung vergeben. Gewährt 10% mehr Verteidigung-EP pro Aktivität.</string>
+    <string name="item_warriors_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Kriegergilde vergeben. Gewährt einen Bonus von 5% auf Angriff-, Stärke- und Verteidigung-EP.</string>
+    <string name="item_ranged_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 im Fernkampf vergeben. Gewährt einen Bonus von 10% auf die Fernkampf-EP.</string>
+    <string name="item_archers_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Gilde der Bogenschützen verliehen. Gewährt einen Bonus von 5% auf Fernkampf-EP.</string>
+    <string name="item_magic_cape_desc" formatted="false">Wird für das Erreichen von Stufe 99 in Magie vergeben. Gewährt einen Bonus von 10% auf Magie-EP.</string>
+    <string name="item_mages_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Magiergilde vergeben. Gewährt einen Bonus von 5% auf Magie-EP.</string>
+    <string name="item_slayer_guild_cape_desc" formatted="false">Wird für das Erreichen von Stufe 10 der Trophäenjägergilde vergeben. Gewährt einen Bonus von 5% auf Trophäenjagd-EP.</string>
+    <string name="item_hp_cape_desc" formatted="false">Wird für das Erreichen von 99 in Lebenspunkte vergeben. Gewährt einen Bonus von 10% auf die Lebenspunkte-EP.</string>
+    <string name="item_deep_iron_pickaxe_desc">Geschmiedet aus Erz, das in den tiefsten Schächten des eingestürzten Bergwerks gefunden wurde. Trifft mit unheimlicher Präzision.</string>
     <string name="item_dwarven_pickaxe_desc">Eine meisterhaft gefertigte Zwergen-Spitzhacke. Das beste Bergbauwerkzeug, das je hergestellt wurde.</string>
-    <string name="item_forge_pickaxe_desc">Tempered in the flames of the Ancient Forge itself. The rarest and most powerful pickaxe in existence.</string> <!-- untranslated -->
-    <string name="item_ironwood_axe_desc">Hewn from the ironwood trees that once stood in the Ancient Forest Ruins. Exceptionally durable.</string> <!-- untranslated -->
+    <string name="item_forge_pickaxe_desc">Gehärtet in den Flammen der Uralten Schmiede selbst. Die seltenste und mächtigste Spitzhacke, die es gibt.</string>
+    <string name="item_ironwood_axe_desc">Geschnitzt aus dem Holz der Eisenbäume, die einst in den Ruinen des Urwalds standen. Außergewöhnlich langlebig.</string>
     <string name="item_dwarven_axe_desc">Eine legendäre Zwergenaxe. Durchschneidet jeden Baum mühelos.</string>
-    <string name="item_sanctum_axe_desc">Forged in the shadow of the Corrupted Sanctum. Its blade cuts through even magic logs with ease.</string> <!-- untranslated -->
-    <string name="item_blessed_fishing_rod_desc">Crafted from driftwood recovered from the Drowned Temple, blessed by ancient sea rites.</string> <!-- untranslated -->
-    <string name="item_dwarven_fishing_rod_desc">A dwarven-crafted fishing rod. Practically hauls fish out of the water.</string> <!-- untranslated -->
-    <string name="item_abyssal_rod_desc">Woven from void-touched filament recovered from the Abyssal Ruins. Fish practically leap onto it.</string> <!-- untranslated -->
-    <string name="item_bronze_hoe_desc">A basic bronze hoe. Slightly increases harvest yield.</string> <!-- untranslated -->
-    <string name="item_iron_hoe_desc">An iron hoe. Increases harvest yield.</string> <!-- untranslated -->
-    <string name="item_steel_hoe_desc">A steel hoe. Noticeably increases harvest yield.</string> <!-- untranslated -->
-    <string name="item_mithril_hoe_desc">A mithril hoe. Greatly increases harvest yield.</string> <!-- untranslated -->
-    <string name="item_adamantite_hoe_desc">An adamantite hoe. Substantially increases harvest yield.</string> <!-- untranslated -->
-    <string name="item_runite_hoe_desc">A runite hoe. The finest farming tool available.</string> <!-- untranslated -->
-    <string name="item_dwarven_hoe_desc">A legendary dwarven hoe. Doubles the harvest of any crop.</string> <!-- untranslated -->
-    <string name="item_divine_hoe_desc">A hoe blessed by divine light. Crops flourish at its touch.</string> <!-- untranslated -->
+    <string name="item_sanctum_axe_desc">Geschmiedet im Schatten des verdorbenen Heiligtums. Seine Klinge durchschneidet selbst magische Holzscheite mit Leichtigkeit.</string>
+    <string name="item_blessed_fishing_rod_desc">Hergestellt aus Treibholz, das aus dem versunkenen Tempel geborgen wurde, und durch uralte Meeresrituale gesegnet.</string>
+    <string name="item_dwarven_fishing_rod_desc">Eine von Zwergen gefertigte Angelrute. Zieht Fische geradezu aus dem Wasser.</string>
+    <string name="item_abyssal_rod_desc">Gewebt aus einem vom Void berührten Filament, das aus den Abyssal-Ruinen geborgen wurde. Fische springen geradezu darauf.</string>
+    <string name="item_bronze_hoe_desc">Eine einfache Hacke aus Bronze. Erhöht den Ernteertrag geringfügig.</string>
+    <string name="item_iron_hoe_desc">Eine Eisenhacke. Erhöht den Ernteertrag.</string>
+    <string name="item_steel_hoe_desc">Eine Stahlhacke. Steigert den Ernteertrag spürbar.</string>
+    <string name="item_mithril_hoe_desc">Eine Mithril-Hacke. Erhöht den Ernteertrag erheblich.</string>
+    <string name="item_adamantite_hoe_desc">Eine Hacke aus Adamantit. Erhöht den Ernteertrag erheblich.</string>
+    <string name="item_runite_hoe_desc">Eine Runite-Hacke. Das beste landwirtschaftliche Werkzeug, das es gibt.</string>
+    <string name="item_dwarven_hoe_desc">Eine legendäre Zwergenhacke. Verdoppelt die Ernte jeder Kulturpflanze.</string>
+    <string name="item_divine_hoe_desc">Eine Hacke, die vom göttlichen Licht gesegnet ist. Durch ihre Berührung gedeihen die Feldfrüchte.</string>
     <string name="item_bronze_hammer_desc">Ein bronzener Hammer zum Schmieden.</string>
     <string name="item_iron_hammer_desc">Ein eiserner Hammer zum Schmieden.</string>
     <string name="item_steel_hammer_desc">Ein stählerner Hammer zum Schmieden.</string>
@@ -1177,7 +1179,7 @@
     <string name="item_adamantite_hammer_desc">Ein Adamantit-Hammer zum Schmieden.</string>
     <string name="item_runite_hammer_desc">Ein Runit-Hammer zum Schmieden.</string>
     <string name="item_dwarven_hammer_desc">Ein von Zwergen geschmiedeter Hammer. Trifft jedes Mal ins Schwarze.</string>
-    <string name="item_divine_hammer_desc">A hammer touched by divine light. Metal bends to its will.</string> <!-- untranslated -->
+    <string name="item_divine_hammer_desc">Ein Hammer, von göttlichem Licht berührt. Das Metall beugt sich seinem Willen.</string>
     <string name="item_bronze_tinderbox_desc">Ein bronzene Zunderbüchse zum Feuermachen.</string>
     <string name="item_iron_tinderbox_desc">Ein eiserne Zunderbüchse zum Feuermachen.</string>
     <string name="item_steel_tinderbox_desc">Ein stählerne Zunderbüchse zum Feuermachen.</string>
@@ -1185,17 +1187,17 @@
     <string name="item_adamantite_tinderbox_desc">Ein Zunderbüchse aus Adamantit zum Feuermachen.</string>
     <string name="item_runite_tinderbox_desc">Ein Zunderbüchse aus Runit zum Feuermachen.</string>
     <string name="item_dwarven_tinderbox_desc">Ein von Zwergen geschmiedeter Zunderbüchse. Entzündet augenblicklich eine lodernde Flamme.</string>
-    <string name="item_divine_tinderbox_desc">A tinderbox touched by divine light. Kindles flame from the faintest spark.</string> <!-- untranslated -->
-    <string name="item_bronze_grappling_hook_desc">A bronze grappling hook for agility.</string> <!-- untranslated -->
-    <string name="item_iron_grappling_hook_desc">An iron grappling hook for agility.</string> <!-- untranslated -->
-    <string name="item_steel_grappling_hook_desc">A steel grappling hook for agility.</string> <!-- untranslated -->
-    <string name="item_mithril_grappling_hook_desc">A mithril grappling hook for agility.</string> <!-- untranslated -->
-    <string name="item_adamantite_grappling_hook_desc">An adamantite grappling hook for agility.</string> <!-- untranslated -->
-    <string name="item_runite_grappling_hook_desc">A runite grappling hook for agility.</string> <!-- untranslated -->
-    <string name="item_shadow_grappling_hook_desc">A grappling hook woven from shadow. Grips even where there\'s nothing to grip.</string> <!-- untranslated -->
-    <string name="item_dwarven_grappling_hook_desc">A dwarven-forged grappling hook. Never slips.</string> <!-- untranslated -->
-    <string name="item_arcane_grappling_hook_desc">A grappling hook humming with arcane energy. Pulls you across gaps in an instant.</string> <!-- untranslated -->
-    <string name="item_divine_grappling_hook_desc">A grappling hook touched by divine light. Finds purchase anywhere it\'s thrown.</string> <!-- untranslated -->
+    <string name="item_divine_tinderbox_desc">Eine Zunderbüchse, von göttlichem Licht berührt. Entzündet die Flamme schon beim schwächsten Funken.</string>
+    <string name="item_bronze_grappling_hook_desc">Ein bronzener Greifhaken für die Beweglichkeit.</string>
+    <string name="item_iron_grappling_hook_desc">Ein eisener Greifhaken für die Beweglichkeit.</string>
+    <string name="item_steel_grappling_hook_desc">Ein Greifhaken aus Stahl für die Beweglichkeit.</string>
+    <string name="item_mithril_grappling_hook_desc">Ein Greifhaken aus Mithril für die Beweglichkeit.</string>
+    <string name="item_adamantite_grappling_hook_desc">Ein Greifhaken aus Adamantit für die Beweglichkeit.</string>
+    <string name="item_runite_grappling_hook_desc">Ein Greifhaken aus Runit für die Beweglichkeit.</string>
+    <string name="item_shadow_grappling_hook_desc">Ein aus Schatten gewebter Greifhaken. Er findet Halt, selbst wo es nichts zu greifen gibt.</string>
+    <string name="item_dwarven_grappling_hook_desc">Ein von Zwergen geschmiedeter Greifhaken. Rutscht niemals ab.</string>
+    <string name="item_arcane_grappling_hook_desc">Ein Greifhaken, der vor arkaner Energie nur so brummt. Er zieht dich im Handumdrehen über Abgründe hinweg.</string>
+    <string name="item_divine_grappling_hook_desc">Ein Greifhaken, der von göttlichem Licht umhüllt ist. Er findet überall Halt, wohin er auch geworfen wird.</string>
     <string name="item_bronze_frying_pan_desc">Eine bronzene Bratpfanne zum Kochen.</string>
     <string name="item_iron_frying_pan_desc">Eine eiserne Bratpfanne zum Kochen.</string>
     <string name="item_steel_frying_pan_desc">Eine stählerne Bratpfanne zum Kochen.</string>
@@ -1203,87 +1205,87 @@
     <string name="item_adamantite_frying_pan_desc">Eine Bratpfanne aus Adamantit zum Kochen.</string>
     <string name="item_runite_frying_pan_desc">Eine Bratpfanne aus Runit zum Kochen.</string>
     <string name="item_dwarven_frying_pan_desc">Eine von Zwergen geschmiedete Bratpfanne. Damit gelingt das Essen jedes Mal perfekt.</string>
-    <string name="item_divine_frying_pan_desc">A frying pan touched by divine light. Never burns a single meal.</string> <!-- untranslated -->
-    <string name="item_bronze_lockpick_desc">A basic bronze lockpick for thieving.</string> <!-- untranslated -->
-    <string name="item_iron_lockpick_desc">An iron lockpick for thieving.</string> <!-- untranslated -->
-    <string name="item_steel_lockpick_desc">A steel lockpick for thieving.</string> <!-- untranslated -->
-    <string name="item_mithril_lockpick_desc">A mithril lockpick for thieving.</string> <!-- untranslated -->
-    <string name="item_adamantite_lockpick_desc">An adamantite lockpick for thieving.</string> <!-- untranslated -->
-    <string name="item_runite_lockpick_desc">A runite lockpick for thieving.</string> <!-- untranslated -->
-    <string name="item_rogues_lockpick_desc">A well-worn lockpick favored by the guild\'s rogues. Slips into any lock.</string> <!-- untranslated -->
-    <string name="item_dwarven_lockpick_desc">A dwarven-forged lockpick. Finds the tumblers instantly.</string> <!-- untranslated -->
-    <string name="item_shadow_lockpick_desc">A lockpick forged from shadow. No lock can resist it for long.</string> <!-- untranslated -->
-    <string name="item_divine_lockpick_desc">A lockpick touched by divine light. Every lock yields to it.</string> <!-- untranslated -->
-    <string name="item_wraithbone_ring_desc">A pale ring carved from wight bone during the Gloomharvest. Steadies the hand and the heart.</string> <!-- untranslated -->
+    <string name="item_divine_frying_pan_desc">Eine Bratpfanne, die von göttlichem Licht berührt wurde. Damit brennt nie auch nur eine einzige Mahlzeit an.</string>
+    <string name="item_bronze_lockpick_desc">Ein einfaches Dietrich aus Bronze zum Einbrechen.</string>
+    <string name="item_iron_lockpick_desc">Ein eiserner Dietrich zum Einbrechen.</string>
+    <string name="item_steel_lockpick_desc">Ein Dietrich aus Stahl zum Einbrechen.</string>
+    <string name="item_mithril_lockpick_desc">Ein Dietrich aus Mithril zum Einbrechen.</string>
+    <string name="item_adamantite_lockpick_desc">Ein Dietrich aus Adamantit zum Einbrechen.</string>
+    <string name="item_runite_lockpick_desc">Ein Dietrich aus Runit zum Einbrechen.</string>
+    <string name="item_rogues_lockpick_desc">Ein abgenutzter Dietrich, der bei den Schurken der Gilde sehr beliebt ist. Lässt sich in jedes Schloss einschieben.</string>
+    <string name="item_dwarven_lockpick_desc">Ein von Zwergen geschmiedeter Dietrich. Er erkennt die Zuhaltungen sofort.</string>
+    <string name="item_shadow_lockpick_desc">Ein aus Schatten geschmiedeter Dietrich. Kein Schloss kann ihm lange standhalten.</string>
+    <string name="item_divine_lockpick_desc">Ein Dietrich, der von göttlichem Licht berührt wurde. Jedes Schloss gibt ihm nach.</string>
+    <string name="item_wraithbone_ring_desc">Ein blasser Ring, der während der Düsterernte aus Wight-Knochen geschnitzt wurde. Er verleiht der Hand und dem Herzen Festigkeit.</string>
     <string name="item_reaper_scythe_desc">The Hollow King\'s own harvest tool. It reaps more than wheat.</string> <!-- untranslated -->
-    <string name="item_gloomweave_cape_desc">Woven from dusk and lantern smoke at the Night Market. Only sold during the Gloomharvest.</string> <!-- untranslated -->
-    <string name="item_gilded_full_helmet_desc">A runite full helmet wrapped in monument gold. Dropped by the Vault Guardian.</string> <!-- untranslated -->
-    <string name="item_gilded_platebody_desc">A runite platebody wrapped in monument gold. Dropped by the Vault Guardian.</string> <!-- untranslated -->
-    <string name="item_gilded_kiteshield_desc">A runite kiteshield wrapped in monument gold. Dropped by the Vault Guardian.</string> <!-- untranslated -->
-    <string name="item_wind_strike_name">Wind Strike</string> <!-- untranslated -->
-    <string name="item_wind_strike_desc">A basic air spell that strikes your foe.</string> <!-- untranslated -->
-    <string name="item_wind_bolt_name">Wind Bolt</string> <!-- untranslated -->
-    <string name="item_wind_bolt_desc">A moderate air spell that bolts your foe.</string> <!-- untranslated -->
-    <string name="item_wind_blast_name">Wind Blast</string> <!-- untranslated -->
-    <string name="item_wind_blast_desc">A powerful air spell that blasts your foe.</string> <!-- untranslated -->
-    <string name="item_wind_wave_name">Wind Wave</string> <!-- untranslated -->
-    <string name="item_wind_wave_desc">A devastating air spell that waves across your foe.</string> <!-- untranslated -->
-    <string name="item_water_strike_name">Water Strike</string> <!-- untranslated -->
-    <string name="item_water_strike_desc">A basic water spell that strikes your foe.</string> <!-- untranslated -->
-    <string name="item_water_bolt_name">Water Bolt</string> <!-- untranslated -->
-    <string name="item_water_bolt_desc">A moderate water spell that bolts your foe.</string> <!-- untranslated -->
-    <string name="item_water_blast_name">Water Blast</string> <!-- untranslated -->
-    <string name="item_water_blast_desc">A powerful water spell that blasts your foe.</string> <!-- untranslated -->
-    <string name="item_water_wave_name">Water Wave</string> <!-- untranslated -->
-    <string name="item_water_wave_desc">A devastating water spell that waves across your foe.</string> <!-- untranslated -->
-    <string name="item_earth_strike_name">Earth Strike</string> <!-- untranslated -->
-    <string name="item_earth_strike_desc">A basic earth spell that strikes your foe.</string> <!-- untranslated -->
-    <string name="item_earth_bolt_name">Earth Bolt</string> <!-- untranslated -->
-    <string name="item_earth_bolt_desc">A moderate earth spell that bolts your foe.</string> <!-- untranslated -->
-    <string name="item_earth_blast_name">Earth Blast</string> <!-- untranslated -->
-    <string name="item_earth_blast_desc">A powerful earth spell that blasts your foe.</string> <!-- untranslated -->
-    <string name="item_earth_wave_name">Earth Wave</string> <!-- untranslated -->
-    <string name="item_earth_wave_desc">A devastating earth spell that waves across your foe.</string> <!-- untranslated -->
-    <string name="item_fire_strike_name">Fire Strike</string> <!-- untranslated -->
-    <string name="item_fire_strike_desc">A basic fire spell that strikes your foe.</string> <!-- untranslated -->
-    <string name="item_fire_bolt_name">Fire Bolt</string> <!-- untranslated -->
-    <string name="item_fire_bolt_desc">A moderate fire spell that bolts your foe.</string> <!-- untranslated -->
-    <string name="item_fire_blast_name">Fire Blast</string> <!-- untranslated -->
-    <string name="item_fire_blast_desc">A powerful fire spell that blasts your foe.</string> <!-- untranslated -->
-    <string name="item_fire_wave_name">Fire Wave</string> <!-- untranslated -->
-    <string name="item_fire_wave_desc">A devastating fire spell that waves across your foe.</string> <!-- untranslated -->
-    <string name="item_mind_strike_name">Mind Strike</string> <!-- untranslated -->
-    <string name="item_mind_strike_desc">A basic mind spell that strikes your foe.</string> <!-- untranslated -->
-    <string name="item_mind_bolt_name">Mind Bolt</string> <!-- untranslated -->
-    <string name="item_mind_bolt_desc">A moderate mind spell that bolts your foe.</string> <!-- untranslated -->
-    <string name="item_mind_blast_name">Mind Blast</string> <!-- untranslated -->
-    <string name="item_mind_blast_desc">A powerful mind spell that blasts your foe.</string> <!-- untranslated -->
-    <string name="item_mind_wave_name">Mind Wave</string> <!-- untranslated -->
-    <string name="item_mind_wave_desc">A devastating mind spell that waves across your foe.</string> <!-- untranslated -->
-    <string name="item_chaos_strike_name">Chaos Strike</string> <!-- untranslated -->
-    <string name="item_chaos_strike_desc">A basic chaos spell that strikes your foe.</string> <!-- untranslated -->
-    <string name="item_chaos_bolt_name">Chaos Bolt</string> <!-- untranslated -->
-    <string name="item_chaos_bolt_desc">A moderate chaos spell that bolts your foe.</string> <!-- untranslated -->
-    <string name="item_chaos_blast_name">Chaos Blast</string> <!-- untranslated -->
-    <string name="item_chaos_blast_desc">A powerful chaos spell that blasts your foe.</string> <!-- untranslated -->
-    <string name="item_chaos_wave_name">Chaos Wave</string> <!-- untranslated -->
-    <string name="item_chaos_wave_desc">A devastating chaos spell that waves across your foe.</string> <!-- untranslated -->
-    <string name="item_death_strike_name">Death Strike</string> <!-- untranslated -->
-    <string name="item_death_strike_desc">A basic death spell that strikes your foe.</string> <!-- untranslated -->
-    <string name="item_death_bolt_name">Death Bolt</string> <!-- untranslated -->
-    <string name="item_death_bolt_desc">A moderate death spell that bolts your foe.</string> <!-- untranslated -->
-    <string name="item_death_blast_name">Death Blast</string> <!-- untranslated -->
-    <string name="item_death_blast_desc">A powerful death spell that blasts your foe.</string> <!-- untranslated -->
-    <string name="item_death_wave_name">Death Wave</string> <!-- untranslated -->
-    <string name="item_death_wave_desc">A devastating death spell that waves across your foe.</string> <!-- untranslated -->
-    <string name="item_blood_strike_name">Blood Strike</string> <!-- untranslated -->
-    <string name="item_blood_strike_desc">A basic blood spell that strikes your foe.</string> <!-- untranslated -->
-    <string name="item_blood_bolt_name">Blood Bolt</string> <!-- untranslated -->
-    <string name="item_blood_bolt_desc">A moderate blood spell that bolts your foe.</string> <!-- untranslated -->
-    <string name="item_blood_blast_name">Blood Blast</string> <!-- untranslated -->
-    <string name="item_blood_blast_desc">A powerful blood spell that blasts your foe.</string> <!-- untranslated -->
-    <string name="item_blood_wave_name">Blood Wave</string> <!-- untranslated -->
-    <string name="item_blood_wave_desc">A devastating blood spell that waves across your foe.</string> <!-- untranslated -->
+    <string name="item_gloomweave_cape_desc">Gewebt aus der Abenddämmerung und dem Rauch der Laternen auf dem Nachtmarkt. Wird nur während der Düsterernte verkauft.</string>
+    <string name="item_gilded_full_helmet_desc">Ein Runite-Vollvisierhelm umhüllt von Monumentgold. Wird vom Tresorwächter fallen gelassen.</string>
+    <string name="item_gilded_platebody_desc">Ein Runit-Plattenpanzer, umhüllt von Monumentgold. Wird vom Tresorwächter fallen gelassen.</string>
+    <string name="item_gilded_kiteshield_desc">Ein Runit-Langspitzschild, umhüllt von Monumentgold. Wird vom Tresorwächter fallen gelassen.</string>
+    <string name="item_wind_strike_name">Windstoß</string>
+    <string name="item_wind_strike_desc">Ein einfacher Luftzauber, der deinen Gegner trifft.</string>
+    <string name="item_wind_bolt_name">Windblitz</string>
+    <string name="item_wind_bolt_desc">Ein moderater Luftzauber, der deinen Gegner durchbohrt.</string>
+    <string name="item_wind_blast_name">Windsturm</string>
+    <string name="item_wind_blast_desc">Ein mächtiger Luftzauber, der deinen Gegner wegfegt.</string>
+    <string name="item_wind_wave_name">Windwelle</string>
+    <string name="item_wind_wave_desc">Ein verheerender Luftzauber, der über deinen Gegner hinwegfegt.</string>
+    <string name="item_water_strike_name">Sturmflut</string>
+    <string name="item_water_strike_desc">Ein einfacher Wasserzauber, der deinen Gegner trifft.</string>
+    <string name="item_water_bolt_name">Wasserblitz</string>
+    <string name="item_water_bolt_desc">Ein moderater Wasserzauber, der deinen Gegner durchbohrt.</string>
+    <string name="item_water_blast_name">Wassersturm</string>
+    <string name="item_water_blast_desc">Ein mächtiger Wasserzauber, der deinen Gegner wegfegt.</string>
+    <string name="item_water_wave_name">Wasserwelle</string>
+    <string name="item_water_wave_desc">Ein verheerender Wasserzauber, der über deinen Gegner hinwegfegt.</string>
+    <string name="item_earth_strike_name">Erdstoß</string>
+    <string name="item_earth_strike_desc">Ein einfacher Erdzauber, der deinen Gegner trifft.</string>
+    <string name="item_earth_bolt_name">Erdblitz</string>
+    <string name="item_earth_bolt_desc">Ein moderater Erdzauber, der deinen Gegner durchbohrt.</string>
+    <string name="item_earth_blast_name">Erdsturm</string>
+    <string name="item_earth_blast_desc">Ein mächtiger Erdzauber, der deinen Gegner wegfegt.</string>
+    <string name="item_earth_wave_name">Erdwelle</string>
+    <string name="item_earth_wave_desc">Ein verheerender Erdzauber, der über deinen Gegner hinwegfegt.</string>
+    <string name="item_fire_strike_name">Feuerstoß</string>
+    <string name="item_fire_strike_desc">Ein einfacher Feuerzauber, der deinen Gegner trifft.</string>
+    <string name="item_fire_bolt_name">Feuerblitz</string>
+    <string name="item_fire_bolt_desc">Ein moderater Feuerzauber, der deinen Gegner durchbohrt.</string>
+    <string name="item_fire_blast_name">Feuersturm</string>
+    <string name="item_fire_blast_desc">Ein mächtiger Feuerzauber, der deinen Gegner wegfegt.</string>
+    <string name="item_fire_wave_name">Feuerwelle</string>
+    <string name="item_fire_wave_desc">Ein verheerender Feuerzauber, der über deinen Gegner hinwegfegt.</string>
+    <string name="item_mind_strike_name">Schlag des Verstandes</string>
+    <string name="item_mind_strike_desc">Ein einfacher Gendakenzauber, der deinen Gegner trifft.</string>
+    <string name="item_mind_bolt_name">Blitz des Verstandes</string>
+    <string name="item_mind_bolt_desc">Ein moderater Gedankenzauber, der deinen Gegner durchbohrt.</string>
+    <string name="item_mind_blast_name">Sturm des Verstandes</string>
+    <string name="item_mind_blast_desc">Ein mächtiger Gedankenzauber, der deinen Gegner wegfegt.</string>
+    <string name="item_mind_wave_name">Welle des Verstandes</string>
+    <string name="item_mind_wave_desc">Ein verheerender Gedankenzauber, der über deinen Gegner hinwegfegt.</string>
+    <string name="item_chaos_strike_name">Chaosstoß</string>
+    <string name="item_chaos_strike_desc">Ein einfacher Chaoszauber, der deinen Gegner trifft.</string>
+    <string name="item_chaos_bolt_name">Chaosblitz</string>
+    <string name="item_chaos_bolt_desc">Ein moderater Chaoszauber, der deinen Gegner durchbohrt.</string>
+    <string name="item_chaos_blast_name">Chaossturm</string>
+    <string name="item_chaos_blast_desc">Ein mächtiger Chaoszauber, der deinen Gegner wegfegt.</string>
+    <string name="item_chaos_wave_name">Chaoswelle</string>
+    <string name="item_chaos_wave_desc">Ein verheerender Chaoszauber, der über deinen Gegner hinwegfegt.</string>
+    <string name="item_death_strike_name">Todesstoß</string>
+    <string name="item_death_strike_desc">Ein einfacher Todeszauber, der deinen Gegner trifft.</string>
+    <string name="item_death_bolt_name">Todesblitz</string>
+    <string name="item_death_bolt_desc">Ein moderater Todeszauber, der deinen Gegner durchbohrt.</string>
+    <string name="item_death_blast_name">Todessturm</string>
+    <string name="item_death_blast_desc">Ein mächtiger Todeszauber, der deinen Gegner wegfegt.</string>
+    <string name="item_death_wave_name">Todeswelle</string>
+    <string name="item_death_wave_desc">Ein verheerender Todeszauber, der über deinen Gegner hinwegfegt.</string>
+    <string name="item_blood_strike_name">Blutschlag</string>
+    <string name="item_blood_strike_desc">Ein einfacher Blutzauber, der deinen Gegner trifft.</string>
+    <string name="item_blood_bolt_name">Blutblitz</string>
+    <string name="item_blood_bolt_desc">Ein moderater Blutzauber, der deinen Gegner durchbohrt.</string>
+    <string name="item_blood_blast_name">Blutsturm</string>
+    <string name="item_blood_blast_desc">Ein mächtiger Blutzauber, der deinen Gegner wegfegt.</string>
+    <string name="item_blood_wave_name">Blutwelle</string>
+    <string name="item_blood_wave_desc">Ein verheerender Blutzauber, der über deinen Gegner hinwegfegt.</string>
     <string name="item_spirit_herb_name">Heilkraut</string>
     <string name="item_spirit_herb_desc">Ein seltenes Kraut, das in der fortgeschrittenen Kräuterkunde verwendet wird. Zum Kauf ist Handel-Level 20 erforderlich.</string>
     <string name="item_celestial_bloom_name">Himmlische Blüte</string>

@@ -13,9 +13,9 @@ import kotlin.random.Random
 enum class MercHireResult { SUCCESS, NOT_IN_POOL, PARTY_FULL, ALREADY_HIRED, NOT_ENOUGH_COINS }
 
 /**
- * Raid mercenary contracts. Hiring lasts until the next daily reset (contract expiry is
- * stamped at hire time, so later reset-hour changes never retro-shift it), the pool of
- * candidates rotates daily, and up to [MAX_PARTY] contracts run concurrently. Hiring is
+ * Raid mercenary contracts. Hiring lasts [CONTRACT_DURATION_MS] from hire time (a late-day
+ * hire is not cut short by the daily reset, issue: PR #1583), the pool of candidates
+ * rotates daily, and up to [MAX_PARTY] contracts run concurrently. Hiring is
  * deliberately NOT ironman-gated: raid bosses are unbeatable solo by design, and coins
  * are self-earned.
  */
@@ -23,11 +23,11 @@ enum class MercHireResult { SUCCESS, NOT_IN_POOL, PARTY_FULL, ALREADY_HIRED, NOT
 class MercenaryRepository @Inject constructor(
     private val playerRepo: PlayerRepository,
     private val gameData: GameDataRepository,
-    private val dailyQuestRepo: DailyQuestRepository,
 ) {
     companion object {
         const val MAX_PARTY = 3
         const val POOL_SIZE = 6
+        const val CONTRACT_DURATION_MS = 24 * 60 * 60 * 1000L
         private const val POOL_SEED_SALT = 68_111L
     }
 
@@ -60,7 +60,7 @@ class MercenaryRepository @Inject constructor(
         if (active.any { it.mercId == mercId }) return MercHireResult.ALREADY_HIRED
         if (active.size >= MAX_PARTY) return MercHireResult.PARTY_FULL
         if (!playerRepo.spendCoins(merc.hireCost)) return MercHireResult.NOT_ENOUGH_COINS
-        val expiresAt = dailyQuestRepo.nextResetMs(resetHour = flags.dailyResetHour)
+        val expiresAt = now + CONTRACT_DURATION_MS
         playerRepo.updateFlags(
             playerRepo.getFlags().copy(hiredMercenaries = active + HiredMercenary(mercId, expiresAt))
         )

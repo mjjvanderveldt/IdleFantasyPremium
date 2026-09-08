@@ -153,7 +153,7 @@
     <string name="item_bronze_sword_desc">Lama basilare in bronzo, impegna una sola mano.</string>
     <string name="item_bronze_scimitar_name">Scimitarra di Bronzo</string>
     <string name="item_bronze_scimitar_desc">Lama curva in bronzo, impegna una sola mano. Ha un buon bonus di forza.</string>
-    <string name="item_bronze_2h_sword_name">Spadone di Bronzo</string>
+    <string name="item_bronze_2h_sword_name">Flamberga di Bronzo</string>
     <string name="item_bronze_2h_sword_desc">Spada di bronzo, impegna entrambe le mani. Danno elevato, velocità bassa.</string>
     <string name="item_bronze_warhammer_name">Martellone di Bronzo</string>
     <string name="item_bronze_warhammer_desc">Un pesante martello da guerra di bronzo, impegna una sola mano.</string>
@@ -167,7 +167,7 @@
     <string name="item_iron_sword_desc">Lama in ferro, impegna una sola mano.</string>
     <string name="item_iron_scimitar_name">Scimitarra in Ferro</string>
     <string name="item_iron_scimitar_desc">Lama curva di ferro, impegna una sola mano. Ha un buon bonus di forza.</string>
-    <string name="item_iron_2h_sword_name">Spadone di Ferro</string>
+    <string name="item_iron_2h_sword_name">Flamberga di Ferro</string>
     <string name="item_iron_2h_sword_desc">Spada di ferro, impegna entrambe le mani.</string>
     <string name="item_iron_warhammer_name">Martellone di Ferro</string>
     <string name="item_iron_warhammer_desc">Un pesante martello da guerra di ferro, impegna una sola mano.</string>
@@ -181,7 +181,7 @@
     <string name="item_steel_sword_desc">Lama in acciaio, impegna una sola mano.</string>
     <string name="item_steel_scimitar_name">Scimitarra di Acciaio</string>
     <string name="item_steel_scimitar_desc">Lama curva in acciaio. Ha un buon bonus di forza.</string>
-    <string name="item_steel_2h_sword_name">Spadone d\'Acciaio</string>
+    <string name="item_steel_2h_sword_name">Flamberga d\'Acciaio</string>
     <string name="item_steel_2h_sword_desc">Spada in acciaio, impegna entrambe le mani.</string>
     <string name="item_steel_warhammer_name">Martellone d\'Acciaio</string>
     <string name="item_steel_warhammer_desc">Un pesante martello da guerra in acciaio, impegna una sola mano.</string>
@@ -193,7 +193,7 @@
     <string name="item_mithril_sword_desc">Leggera spada magica, impegna una sola mano.</string>
     <string name="item_mithril_scimitar_name">Scimitarra di Mithril</string>
     <string name="item_mithril_scimitar_desc">Lama curva di mithril, estremamente affilata.</string>
-    <string name="item_mithril_2h_sword_name">Spadone di Mithril</string>
+    <string name="item_mithril_2h_sword_name">Flamberga di Mithril</string>
     <string name="item_mithril_2h_sword_desc">Spada di mithril, impegna entrambe le mani.</string>
     <string name="item_mithril_warhammer_name">Martellone di Mithril</string>
     <string name="item_mithril_warhammer_desc">Un leggero martello da guerra magico.</string>
@@ -205,7 +205,7 @@
     <string name="item_adamantite_sword_desc">Spada straordinariamente resistente, impegna una sola mano.</string>
     <string name="item_adamantite_scimitar_name">Scimitarra di Adamantio</string>
     <string name="item_adamantite_scimitar_desc">Lama curva incredibilmente resistente. Ha un eccellente bonus di forza.</string>
-    <string name="item_adamantite_2h_sword_name">Spadone di Adamantio</string>
+    <string name="item_adamantite_2h_sword_name">Flamberga di Adamantio</string>
     <string name="item_adamantite_2h_sword_desc">Una spada a due mani forgiata in adamantio.</string>
     <string name="item_adamantite_warhammer_name">Martellone di Adamantio</string>
     <string name="item_adamantite_warhammer_desc">Un martello da guerra straordinariamente pesante e resistente.</string>
@@ -217,7 +217,7 @@
     <string name="item_runite_sword_desc">La più raffinata spada a una mano disponibile.</string>
     <string name="item_runite_scimitar_name">Scimitarra di Runite</string>
     <string name="item_runite_scimitar_desc">La più raffinata scimitarra disponibile. Ha un eccezionale bonus di forza.</string>
-    <string name="item_runite_2h_sword_name">Spadone di Runite</string>
+    <string name="item_runite_2h_sword_name">Flamberga di Runite</string>
     <string name="item_runite_2h_sword_desc">La più raffinata spada a due mani disponibile.</string>
     <string name="item_runite_warhammer_name">Martellone di Runite</string>
     <string name="item_runite_warhammer_desc">Il più raffinato martello da guerra disponibile.</string>
@@ -243,7 +243,7 @@
     <string name="item_staff_of_earth_desc">Un bastone elementale infuso con il potere della terra.</string>
     <string name="item_staff_of_fire_name">Bastone del Fuoco</string>
     <string name="item_staff_of_fire_desc">Un bastone elementale infuso con il potere del fuoco.</string>
-    <string name="item_staff_of_mind_name">Bastone della Mente</string>
+    <string name="item_staff_of_mind_name">Bastone della Psiche</string>
     <string name="item_staff_of_mind_desc">Un bastone infuso con energia psichica.</string>
     <string name="item_staff_of_chaos_name">Bastone del Caos</string>
     <string name="item_staff_of_chaos_desc">Un bastone caotico pulsante di incontrollabile energia magica.</string>
@@ -475,7 +475,9 @@
     <string name="item_diamond_necklace_name">Collana di Diamanti</string>
     <string name="item_ancient_treasure_name">Tesoro Antico</string>
     <string name="item_seaweed_name">Alga</string>
+    <string name="item_old_boot_name">Vecchio Scarpone</string>
     <string name="item_pearl_name">Perla</string>
+    <string name="item_black_pearl_name">Perla Nera</string>
     <string name="item_nature_rune_name">Runa della Natura</string>
     <string name="item_herb_name">Pianta Officinale</string>
     <string name="item_mahogany_log_name">Legno di Mogano</string>
@@ -773,17 +775,17 @@
 
 
     <!-- Additional item/boss/food names (English placeholders) -->
-    <string name="item_abyssal_rod_name">Asta Abissale</string>
+    <string name="item_abyssal_rod_name">Canna da Pesca Abissale</string>
     <string name="item_adamantite_arrow_tip_name">Punte di Freccia in Adamantio</string>
     <string name="item_adamantite_boots_name">Stivali in Adamantio</string>
     <string name="item_adamantite_chainbody_name">Cotta di Maglia in Adamantio</string>
     <string name="item_adamantite_dagger_name">Pugnale in Adamantio</string>
     <string name="item_adamantite_full_helmet_name">Elmo in Adamantio</string>
-    <string name="item_adamantite_kiteshield_name">Scudo di Adamantio</string>
+    <string name="item_adamantite_kiteshield_name">Granscudo di Adamantio</string>
     <string name="item_adamantite_longsword_name">Spadone in Adamantio</string>
     <string name="item_adamantite_med_helmet_name">Elmetto in Adamantio</string>
     <string name="item_adamantite_plateskirt_name">Armatura a Piastre in Adamantio</string>
-    <string name="item_adamantite_square_shield_name">Scudo Quadrato di Adamantio</string>
+    <string name="item_adamantite_square_shield_name">Scudo di Adamantio</string>
     <string name="item_agility_cape_name">Mantello Agile</string>
     <string name="item_agility_guild_cape_name">Mantello degli Atleti</string>
     <string name="item_amulet_of_fury_name">Amuleto Della Furia</string>
@@ -809,11 +811,11 @@
     <string name="item_bronze_boots_name">Stivali in Bronzo</string>
     <string name="item_bronze_chainbody_name">Cotta di Maglia in Bronzo</string>
     <string name="item_bronze_full_helmet_name">Elmo di Bronzo</string>
-    <string name="item_bronze_kiteshield_name">Scudo di Bronzo</string>
+    <string name="item_bronze_kiteshield_name">Granscudo di Bronzo</string>
     <string name="item_bronze_longsword_name">Spadone di Bronzo</string>
     <string name="item_bronze_med_helmet_name">Elmetto di Bronzo</string>
     <string name="item_bronze_plateskirt_name">Armatura a Piastre di Bronzo</string>
-    <string name="item_bronze_square_shield_name">Scudo Quadrato di Bronzo</string>
+    <string name="item_bronze_square_shield_name">Scudo di Bronzo</string>
     <string name="item_chicken_name">Pollo</string>
     <string name="item_construction_guild_cape_name">Mantello dei Costruttori</string>
     <string name="item_cooking_cape_name">Mantello da Cucina</string>
@@ -870,11 +872,11 @@
     <string name="item_iron_boots_name">Stivali in Ferro</string>
     <string name="item_iron_chainbody_name">Cotta di Maglia di Ferro</string>
     <string name="item_iron_full_helmet_name">Elmo di Ferro</string>
-    <string name="item_iron_kiteshield_name">Scudo di Ferro</string>
+    <string name="item_iron_kiteshield_name">Granscudo di Ferro</string>
     <string name="item_iron_longsword_name">Spadone di Ferro</string>
     <string name="item_iron_med_helmet_name">Elmetto di Ferro</string>
     <string name="item_iron_plateskirt_name">Armatura a Piastre di Ferro</string>
-    <string name="item_iron_square_shield_name">Scudo Quadrato di Ferro</string>
+    <string name="item_iron_square_shield_name">Scudo di Ferro</string>
     <string name="item_ironwood_axe_name">Ascia in Metallegno</string>
     <string name="item_king_black_dragon_name">Re Drago Nero</string>
     <string name="item_kraken_name">Kraken</string>
@@ -883,8 +885,8 @@
     <string name="item_magic_cape_name">Mantello Magico</string>
     <string name="item_magic_longbow_name">Arco Lungo Magico</string>
     <string name="item_magic_shortbow_name">Arco Magico</string>
-    <string name="item_elven_shortbow_name">Elven Shortbow</string> <!-- untranslated -->
-    <string name="item_elven_longbow_name">Elven Longbow</string> <!-- untranslated -->
+    <string name="item_elven_shortbow_name">Arco Corto Elfico</string>
+    <string name="item_elven_longbow_name">Arco Lungo Elfico</string>
     <string name="item_maple_shortbow_name">Arco d\'Acero</string>
     <string name="item_mercantile_guild_cape_name">Mantello dei Mercanti</string>
     <string name="item_mining_cape_name">Mantello Minerario</string>
@@ -894,15 +896,15 @@
     <string name="item_mithril_chainbody_name">Cotta di Maglia di Mithril</string>
     <string name="item_mithril_dagger_name">Pugnale di Mithril</string>
     <string name="item_mithril_full_helmet_name">Elmo di Mithril</string>
-    <string name="item_mithril_kiteshield_name">Scudo di Mithril</string>
+    <string name="item_mithril_kiteshield_name">Granscudo di Mithril</string>
     <string name="item_mithril_longsword_name">Spadone di Mithril</string>
     <string name="item_mithril_med_helmet_name">Elmetto di Mithril</string>
     <string name="item_mithril_plateskirt_name">Armatura a Piastre di Mithril</string>
-    <string name="item_mithril_square_shield_name">Scudo Quadrato di Mithril</string>
+    <string name="item_mithril_square_shield_name">Scudo di Mithril</string>
     <string name="item_mutton_name">Carne di Montone</string>
     <string name="item_necklace_of_anguish_name">Collana dello Strazio</string>
     <string name="item_necklace_of_anguish_desc">Affina la tua mira e i tuoi sensi. Richiede Mercantile lv. 99.</string>
-    <string name="item_oak_shortbow_name">Arco di Quercia</string>
+    <string name="item_oak_shortbow_name">Arco Corto di Quercia</string>
     <string name="item_prayer_cape_name">Mantello della Preghiera</string>
     <string name="item_prayer_guild_cape_name">Mantello dei Devoti</string>
     <string name="item_ranged_cape_name">Mantello da Cecchino</string>
@@ -925,11 +927,11 @@
     <string name="item_runite_chainbody_name">Cotta di Maglia in Runite</string>
     <string name="item_runite_dagger_name">Pugnale di Runite</string>
     <string name="item_runite_full_helmet_name">Elmo di Runite</string>
-    <string name="item_runite_kiteshield_name">Scudo di Runite</string>
+    <string name="item_runite_kiteshield_name">Granscudo di Runite</string>
     <string name="item_runite_longsword_name">Spadone di Runite</string>
     <string name="item_runite_med_helmet_name">Elmetto di Runite</string>
     <string name="item_runite_plateskirt_name">Armatura a Piastre di Runite</string>
-    <string name="item_runite_square_shield_name">Scudo Quadrato di Runite</string>
+    <string name="item_runite_square_shield_name">Scudo di Runite</string>
     <string name="item_sanctum_axe_name">Ascia del Santuario</string>
     <string name="item_seers_ring_name">Anello del Veggente</string>
     <string name="item_seers_ring_desc">Migliora la precisione delle tue magie. Richiede Mercantile lv. 60.</string>
@@ -951,11 +953,11 @@
     <string name="item_steel_chainbody_name">Cotta di Maglia in Acciaio</string>
     <string name="item_steel_dagger_name">Pugnale d\'Acciaio</string>
     <string name="item_steel_full_helmet_name">Elmo d\'Acciaio</string>
-    <string name="item_steel_kiteshield_name">Scudo d\'Acciaio</string>
+    <string name="item_steel_kiteshield_name">Granscudo d\'Acciaio</string>
     <string name="item_steel_longsword_name">Spadone d\'Acciaio</string>
     <string name="item_steel_med_helmet_name">Elmetto d\'Acciaio</string>
     <string name="item_steel_plateskirt_name">Armatura a Piastre d\'Acciaio</string>
-    <string name="item_steel_square_shield_name">Scudo Quadrato d\'Acciaio</string>
+    <string name="item_steel_square_shield_name">Scudo d\'Acciaio</string>
     <string name="item_strength_cape_name">Mantello della Forza</string>
     <string name="item_tangleroot_name">Radicroviglio</string>
     <string name="item_thieving_guild_cape_name">Mantello dei Briganti</string>
@@ -1006,8 +1008,8 @@
     <string name="item_yew_longbow_desc">Grande arco in tasso.</string>
     <string name="item_magic_shortbow_desc">Piccolo arco in legno magico.</string>
     <string name="item_magic_longbow_desc">Grande arco in legno magico.</string>
-    <string name="item_elven_shortbow_desc">A swift bow strung with elven silk. Only elven hands know the fletching.</string> <!-- untranslated -->
-    <string name="item_elven_longbow_desc">A tall elven warbow of layered redwood. Only elven hands know the fletching.</string> <!-- untranslated -->
+    <string name="item_elven_shortbow_desc">Un arco tirato con seta elfica. Solo le sapienti mani elfiche possono costruirlo.</string>
+    <string name="item_elven_longbow_desc">Un grande arco di sequoia. Solo le sapienti mani elfiche possono costruirlo.</string>
     <string name="item_tower_crossbow_name">Balestra della Torre</string>
     <string name="item_tower_crossbow_desc">Balestra altamente efficiente, in metallo estratto dalla Torre.</string>
     <string name="item_arcane_staff_desc">Bastone trovato nelle Rovine Arcane, impregnato del potere magico che ha annientato gli abitanti di questo luogo.</string>
@@ -1020,43 +1022,43 @@
     <string name="item_bronze_chainbody_desc">Cotta di maglia in bronzo.</string>
     <string name="item_bronze_plateskirt_desc">Armatura a piastre di bronzo.</string>
     <string name="item_bronze_boots_desc">Un paio di stivali in bronzo.</string>
-    <string name="item_bronze_square_shield_desc">Uno scudo Quadrato in bronzo.</string>
+    <string name="item_bronze_square_shield_desc">Uno scudo in bronzo in grado di proteggere tutto il corpo.</string>
     <string name="item_bronze_kiteshield_desc">Grande scudo in bronzo.</string>
     <string name="item_iron_med_helmet_desc">Un elmetto in ferro.</string>
     <string name="item_iron_full_helmet_desc">Un elmo in ferro.</string>
     <string name="item_iron_chainbody_desc">Cotta di maglia di ferro.</string>
     <string name="item_iron_plateskirt_desc">Armatura a piastre di ferro.</string>
     <string name="item_iron_boots_desc">Un paio di stivali in ferro.</string>
-    <string name="item_iron_square_shield_desc">Uno scudo quadrato in ferro.</string>
+    <string name="item_iron_square_shield_desc">Uno scudo in ferro in grado di proteggere tutto il corpo.</string>
     <string name="item_iron_kiteshield_desc">Grande scudo in ferro.</string>
     <string name="item_steel_med_helmet_desc">Un elmetto in acciaio.</string>
     <string name="item_steel_full_helmet_desc">Un elmo in acciaio.</string>
     <string name="item_steel_chainbody_desc">Una cotta di maglia in acciaio.</string>
     <string name="item_steel_plateskirt_desc">Un\'armatura a piastre d\'acciaio.</string>
     <string name="item_steel_boots_desc">Degli stivali rafforzati in acciaio.</string>
-    <string name="item_steel_square_shield_desc">Uno scudo quadrato in acciaio.</string>
-    <string name="item_steel_kiteshield_desc">Uno scudo d\'acciaio.</string>
+    <string name="item_steel_square_shield_desc">Uno scudo in acciaio in grado di proteggere tutto il corpo.</string>
+    <string name="item_steel_kiteshield_desc">Grande scudo d\'acciaio.</string>
     <string name="item_mithril_med_helmet_desc">Un elmetto di mithril.</string>
     <string name="item_mithril_full_helmet_desc">Un elmo di mithril.</string>
     <string name="item_mithril_chainbody_desc">Una cotta di maglia in mithril.</string>
     <string name="item_mithril_plateskirt_desc">Un\'armatura a piastre di mithril.</string>
     <string name="item_mithril_boots_desc">Un paio di stivali in mithril.</string>
-    <string name="item_mithril_square_shield_desc">Uno scudo quadrato in mithril.</string>
-    <string name="item_mithril_kiteshield_desc">Uno scudo in mithril.</string>
+    <string name="item_mithril_square_shield_desc">Uno scudo in mithirl in grado di proteggere tutto il corpo.</string>
+    <string name="item_mithril_kiteshield_desc">Grande scudo in mithril.</string>
     <string name="item_adamantite_med_helmet_desc">Un elmetto in adamantio.</string>
     <string name="item_adamantite_full_helmet_desc">Un elmo in adamantio.</string>
     <string name="item_adamantite_chainbody_desc">Una cotta di maglia in adamantio.</string>
     <string name="item_adamantite_plateskirt_desc">Un\'armatura a piastre di adamantio.</string>
     <string name="item_adamantite_boots_desc">Un paio di stivali in adamantio.</string>
-    <string name="item_adamantite_square_shield_desc">Uno scudo quadrato in adamantio.</string>
-    <string name="item_adamantite_kiteshield_desc">Uno scudo in adamantio.</string>
+    <string name="item_adamantite_square_shield_desc">Uno scudo in adamantio in grado di proteggere tutto il corpo.</string>
+    <string name="item_adamantite_kiteshield_desc">Grande scudo in adamantio.</string>
     <string name="item_runite_med_helmet_desc">Un elmetto in runite.</string>
     <string name="item_runite_full_helmet_desc">Un elmo in runite.</string>
     <string name="item_runite_chainbody_desc">Una cotta di maglia di runite.</string>
     <string name="item_runite_plateskirt_desc">Un\'armatura a piastre di runite.</string>
     <string name="item_runite_boots_desc">Un paio di stivali in runite.</string>
-    <string name="item_runite_square_shield_desc">Uno scudo quadrato di runite.</string>
-    <string name="item_runite_kiteshield_desc">Uno scudo di runite.</string>
+    <string name="item_runite_square_shield_desc">Uno scudo in runite in grado di proteggere tutto il corpo.</string>
+    <string name="item_runite_kiteshield_desc">Grande scudo di runite.</string>
     <string name="item_dwarven_helm_desc">Un elmetto di pregiata fattura, forgiato con antichi metalli.</string>
     <string name="item_dwarven_platebody_desc">Storica armatura nanica, quasi impenetrabile ai colpi.</string>
     <string name="item_dwarven_platelegs_desc">Protezione per le gambe di fattura nanica, adatta a ogni tipo di manovra.</string>
@@ -1106,7 +1108,7 @@
     <string name="item_tower_cape_name">Mantello della Torre</string>
     <string name="item_tower_cape_desc">Mantello tessuto dal potere della Torre.</string>
     <string name="item_mining_cape_desc" formatted="false">Ricompensa per aver raggiunto il livello 99 come minatore. Fornisce un bonus del 10% per sessione.</string>
-    <string name="item_construction_guild_cape_desc" formatted="false">Ricompensa per aver raggiunto il massimo rango della gilda. Fornice un bonus di 5% per sessione.</string>
+    <string name="item_construction_guild_cape_desc" formatted="false">Ricompensa per aver raggiunto il massimo rango della gilda. Fornisce un bonus di 5% per sessione.</string>
     <string name="item_mining_guild_cape_desc" formatted="false">Ricompensa per aver raggiunto il massimo rango della gilda. Fornisce un bonus di 5% per sessione.</string>
     <string name="item_fishing_cape_desc" formatted="false">Ricompensa per aver raggiunto il livello 99 come pescatore. Fornisce un bonus del 10% per sessione.</string>
     <string name="item_fishing_guild_cape_desc" formatted="false">Ricompensa per aver raggiunto il massimo rango della gilda. Fornisce un bonus di 5% per sessione.</string>
@@ -1143,83 +1145,83 @@
     <string name="item_agility_guild_cape_desc" formatted="false">Ricompensa per aver raggiunto il massimo rango della gilda. Fornisce un bonus di 5% all\'XP per sessione.</string>
     <string name="item_slayer_cape_name">Mantello Mercenario</string>
     <string name="item_slayer_cape_desc" formatted="false">Ricompensa per aver raggiunto il livello 99 come sicario. Fornisce un bonus di 10% ai punti ricevuti.</string>
-    <string name="item_attack_cape_desc" formatted="false">Awarded for reaching level 99 Attack. Grants 10% bonus Attack XP.</string> <!-- untranslated -->
-    <string name="item_strength_cape_desc" formatted="false">Awarded for reaching level 99 Strength. Grants 10% bonus Strength XP.</string> <!-- untranslated -->
-    <string name="item_defense_cape_desc" formatted="false">Awarded for reaching level 99 Defense. Grants 10% bonus Defense XP.</string> <!-- untranslated -->
-    <string name="item_warriors_guild_cape_desc" formatted="false">Awarded for reaching Warriors Guild level 10. Grants 5% bonus Attack, Strength, and Defense XP.</string> <!-- untranslated -->
-    <string name="item_ranged_cape_desc" formatted="false">Awarded for reaching level 99 Ranged. Grants 10% bonus Ranged XP.</string> <!-- untranslated -->
-    <string name="item_archers_guild_cape_desc" formatted="false">Awarded for reaching Archers Guild level 10. Grants 5% bonus Ranged XP.</string> <!-- untranslated -->
-    <string name="item_magic_cape_desc" formatted="false">Awarded for reaching level 99 Magic. Grants 10% bonus Magic XP.</string> <!-- untranslated -->
-    <string name="item_mages_guild_cape_desc" formatted="false">Awarded for reaching Mages Guild level 10. Grants 5% bonus Magic XP.</string> <!-- untranslated -->
-    <string name="item_slayer_guild_cape_desc" formatted="false">Awarded for reaching Slayers Guild level 10. Grants 5% bonus Slayer XP.</string> <!-- untranslated -->
-    <string name="item_hp_cape_desc" formatted="false">Awarded for reaching level 99 HP. Grants 10% bonus Hitpoints XP.</string> <!-- untranslated -->
-    <string name="item_deep_iron_pickaxe_desc">Forged from ore found in the Collapsed Mine\'s deepest shafts. Strikes with uncanny precision.</string> <!-- untranslated -->
-    <string name="item_dwarven_pickaxe_desc">A masterwork dwarven pickaxe. The finest mining tool ever crafted.</string> <!-- untranslated -->
-    <string name="item_forge_pickaxe_desc">Tempered in the flames of the Ancient Forge itself. The rarest and most powerful pickaxe in existence.</string> <!-- untranslated -->
-    <string name="item_ironwood_axe_desc">Hewn from the ironwood trees that once stood in the Ancient Forest Ruins. Exceptionally durable.</string> <!-- untranslated -->
-    <string name="item_dwarven_axe_desc">A legendary dwarven axe. Cuts through any tree with ease.</string> <!-- untranslated -->
-    <string name="item_sanctum_axe_desc">Forged in the shadow of the Corrupted Sanctum. Its blade cuts through even magic logs with ease.</string> <!-- untranslated -->
-    <string name="item_blessed_fishing_rod_desc">Crafted from driftwood recovered from the Drowned Temple, blessed by ancient sea rites.</string> <!-- untranslated -->
-    <string name="item_dwarven_fishing_rod_desc">A dwarven-crafted fishing rod. Practically hauls fish out of the water.</string> <!-- untranslated -->
-    <string name="item_abyssal_rod_desc">Woven from void-touched filament recovered from the Abyssal Ruins. Fish practically leap onto it.</string> <!-- untranslated -->
-    <string name="item_bronze_hoe_desc">A basic bronze hoe. Slightly increases harvest yield.</string> <!-- untranslated -->
-    <string name="item_iron_hoe_desc">An iron hoe. Increases harvest yield.</string> <!-- untranslated -->
-    <string name="item_steel_hoe_desc">A steel hoe. Noticeably increases harvest yield.</string> <!-- untranslated -->
-    <string name="item_mithril_hoe_desc">A mithril hoe. Greatly increases harvest yield.</string> <!-- untranslated -->
-    <string name="item_adamantite_hoe_desc">An adamantite hoe. Substantially increases harvest yield.</string> <!-- untranslated -->
-    <string name="item_runite_hoe_desc">A runite hoe. The finest farming tool available.</string> <!-- untranslated -->
-    <string name="item_dwarven_hoe_desc">A legendary dwarven hoe. Doubles the harvest of any crop.</string> <!-- untranslated -->
-    <string name="item_divine_hoe_desc">A hoe blessed by divine light. Crops flourish at its touch.</string> <!-- untranslated -->
-    <string name="item_bronze_hammer_desc">A bronze hammer for smithing.</string> <!-- untranslated -->
-    <string name="item_iron_hammer_desc">An iron hammer for smithing.</string> <!-- untranslated -->
-    <string name="item_steel_hammer_desc">A steel hammer for smithing.</string> <!-- untranslated -->
-    <string name="item_mithril_hammer_desc">A mithril hammer for smithing.</string> <!-- untranslated -->
-    <string name="item_adamantite_hammer_desc">An adamantite hammer for smithing.</string> <!-- untranslated -->
-    <string name="item_runite_hammer_desc">A runite hammer for smithing.</string> <!-- untranslated -->
-    <string name="item_dwarven_hammer_desc">A dwarven-forged hammer. Strikes true every time.</string> <!-- untranslated -->
-    <string name="item_divine_hammer_desc">A hammer touched by divine light. Metal bends to its will.</string> <!-- untranslated -->
-    <string name="item_bronze_tinderbox_desc">A bronze tinderbox for firemaking.</string> <!-- untranslated -->
-    <string name="item_iron_tinderbox_desc">An iron tinderbox for firemaking.</string> <!-- untranslated -->
-    <string name="item_steel_tinderbox_desc">A steel tinderbox for firemaking.</string> <!-- untranslated -->
-    <string name="item_mithril_tinderbox_desc">A mithril tinderbox for firemaking.</string> <!-- untranslated -->
-    <string name="item_adamantite_tinderbox_desc">An adamantite tinderbox for firemaking.</string> <!-- untranslated -->
-    <string name="item_runite_tinderbox_desc">A runite tinderbox for firemaking.</string> <!-- untranslated -->
-    <string name="item_dwarven_tinderbox_desc">A dwarven-forged tinderbox. Sparks a roaring flame instantly.</string> <!-- untranslated -->
-    <string name="item_divine_tinderbox_desc">A tinderbox touched by divine light. Kindles flame from the faintest spark.</string> <!-- untranslated -->
-    <string name="item_bronze_grappling_hook_desc">A bronze grappling hook for agility.</string> <!-- untranslated -->
-    <string name="item_iron_grappling_hook_desc">An iron grappling hook for agility.</string> <!-- untranslated -->
-    <string name="item_steel_grappling_hook_desc">A steel grappling hook for agility.</string> <!-- untranslated -->
-    <string name="item_mithril_grappling_hook_desc">A mithril grappling hook for agility.</string> <!-- untranslated -->
-    <string name="item_adamantite_grappling_hook_desc">An adamantite grappling hook for agility.</string> <!-- untranslated -->
-    <string name="item_runite_grappling_hook_desc">A runite grappling hook for agility.</string> <!-- untranslated -->
-    <string name="item_shadow_grappling_hook_desc">A grappling hook woven from shadow. Grips even where there\'s nothing to grip.</string> <!-- untranslated -->
-    <string name="item_dwarven_grappling_hook_desc">A dwarven-forged grappling hook. Never slips.</string> <!-- untranslated -->
-    <string name="item_arcane_grappling_hook_desc">A grappling hook humming with arcane energy. Pulls you across gaps in an instant.</string> <!-- untranslated -->
-    <string name="item_divine_grappling_hook_desc">A grappling hook touched by divine light. Finds purchase anywhere it\'s thrown.</string> <!-- untranslated -->
+    <string name="item_attack_cape_desc" formatted="false">Ricompensa per aver raggiunto il liv. 99 in combattimento di mischia. Fornisce un bonus del 10% all\'XP guadagnata.</string>
+    <string name="item_strength_cape_desc" formatted="false">Ricompensa per aver raggiunto il liv. 99 in forza. Fornisce un bonus del 10% all\'XP guadagnata.</string>
+    <string name="item_defense_cape_desc" formatted="false">Ricompensa per aver raggiunto il liv. 99 in difesa. Fornisce un bonus del 10% all\'XP guadagnata.</string>
+    <string name="item_warriors_guild_cape_desc" formatted="false">Ricompensa per aver raggiunto il massimo rango della gilda. Fornisce un bonus del 5% all\'XP guadagnata per Mischia, Forza e Difesa.</string>
+    <string name="item_ranged_cape_desc" formatted="false">Ricompensa per aver raggiunto il liv. 99 in attacco a distanza. Fornisce un bonus del 10% all\'XP guadagnata.</string>
+    <string name="item_archers_guild_cape_desc" formatted="false">Ricompensa per aver raggiunto il massimo rango della gilda. Fornisce un bonus di 5% all\'XP guadagnata.</string>
+    <string name="item_magic_cape_desc" formatted="false">Ricompensa per aver raggiunto il liv. 99 in magia. Fornisce un bonus del 10% all\'XP guadagnata.</string>
+    <string name="item_mages_guild_cape_desc" formatted="false">Ricompensa per aver raggiunto il massimo rango della gilda. Fornisce un bonus di 5% all\'XP guadagnata.</string>
+    <string name="item_slayer_guild_cape_desc" formatted="false">Ricompensa per aver raggiunto il massimo rango della gilda. Fornisce un bonus di 5% all\'XP guadagnata.</string>
+    <string name="item_hp_cape_desc" formatted="false">Ricompensa per aver raggiunto il liv. 99 in salute. Fornisce un bonus del 10% all\'XP guadagnata.</string>
+    <string name="item_deep_iron_pickaxe_desc">Forgiato dal metallo degli anfratti più profondi della Miniera Crollata. Nessun colpo va a vuoto.</string>
+    <string name="item_dwarven_pickaxe_desc">Un capolavoro della maestria nanica. Il miglior piccone mai creato.</string>
+    <string name="item_forge_pickaxe_desc">Rinforzato dalle fiamme dell\'Antica Fucina, niente può superare questo piccone unico nel suo genere.</string>
+    <string name="item_ironwood_axe_desc">Costruita con il legno degli alberi della Foresta Antica, più resistente di qualsiasi metallo.</string>
+    <string name="item_dwarven_axe_desc">Leggendaria ascia nanica. Taglia ogni albero come fosse di burro.</string>
+    <string name="item_sanctum_axe_desc">Creata all\'interno del Santuario Corrotto, la sua lama non incontra resistenza alcuna.</string>
+    <string name="item_blessed_fishing_rod_desc">Il suo corpo proviene da legno sacro del Tempio Sommerso, che le correnti hanno trasportato per tutto il mondo.</string>
+    <string name="item_dwarven_fishing_rod_desc">Canna da pesca di fattura nanica. Nessun pesce è troppo pesante.</string>
+    <string name="item_abyssal_rod_desc">Ogni componente ha in sé una parte di potere del Vuoto. Costruita da entità ormai perdute nelle Rovine Abissali.</string>
+    <string name="item_bronze_hoe_desc">Una zappa per i campi.</string>
+    <string name="item_iron_hoe_desc">Una zappa con punta di ferro. Migliora il raccolto.</string>
+    <string name="item_steel_hoe_desc">Una zappa con punta d\'acciaio. Migliora considerevolmente il raccolto.</string>
+    <string name="item_mithril_hoe_desc">Una zappa con punta di mithril. Migliora il raccolto in gran quantità.</string>
+    <string name="item_adamantite_hoe_desc">Una zappa con punta di adamantio. Migliora la resa dei campi come non mai.</string>
+    <string name="item_runite_hoe_desc">Una zappa con punta di runite. Il miglior strumento che puoi desiderare.</string>
+    <string name="item_dwarven_hoe_desc">Leggendaria zappa dei nani. Raddoppia la resa di ogni coltura.</string>
+    <string name="item_divine_hoe_desc">Zappa benedetta da luce divina. Le piante straripano di energia vitale.</string>
+    <string name="item_bronze_hammer_desc">Martello in bronzo per fabbri.</string>
+    <string name="item_iron_hammer_desc">Martello in ferro per fabbri.</string>
+    <string name="item_steel_hammer_desc">Martello in acciaio per fabbri.</string>
+    <string name="item_mithril_hammer_desc">Martello in mithril per fabbri.</string>
+    <string name="item_adamantite_hammer_desc">Martello in adamantio per fabbri.</string>
+    <string name="item_runite_hammer_desc">Martello in runite per fabbri.</string>
+    <string name="item_dwarven_hammer_desc">Martello per fabbri di fattura nanica. Usato dai suoi creatori per forgiare armi leggendarie.</string>
+    <string name="item_divine_hammer_desc">Martello per fabbri benedetto da luce divina. Il metallo sembra quasi piegarsi da solo al suo cospetto.</string>
+    <string name="item_bronze_tinderbox_desc">Acciarino in bronzo.</string>
+    <string name="item_iron_tinderbox_desc">Acciarino in ferro.</string>
+    <string name="item_steel_tinderbox_desc">Acciarino in acciaio.</string>
+    <string name="item_mithril_tinderbox_desc">Acciarino in mithril.</string>
+    <string name="item_adamantite_tinderbox_desc">Acciarino in adamantio.</string>
+    <string name="item_runite_tinderbox_desc">Acciarino in runite.</string>
+    <string name="item_dwarven_tinderbox_desc">Acciarino creato da esperti fabbri nani. Ogni fiamma si accende istantaneamente.</string>
+    <string name="item_divine_tinderbox_desc">Acciarino benedetto da luce divina. Anche la più piccola scintilla accende un fuoco.</string>
+    <string name="item_bronze_grappling_hook_desc">Un rampino di bronzo per gli esercizi.</string>
+    <string name="item_iron_grappling_hook_desc">Un rampino di ferro per gli esercizi.</string>
+    <string name="item_steel_grappling_hook_desc">Un rampino in acciaio per gli esercizi.</string>
+    <string name="item_mithril_grappling_hook_desc">Un rampino di mithril per gli esercizi.</string>
+    <string name="item_adamantite_grappling_hook_desc">Un rampino in adamantio per gli esercizi.</string>
+    <string name="item_runite_grappling_hook_desc">Un rampino in runite per gli esercizi.</string>
+    <string name="item_shadow_grappling_hook_desc">Un rampino con il potere delle ombre. Si aggrappa anche dove non potrebbe.</string>
+    <string name="item_dwarven_grappling_hook_desc">Un rampino di fattura nanica. Non perde mai la presa.</string>
+    <string name="item_arcane_grappling_hook_desc">Un rampino pieno di energia arcana. Sembra quasi teletrasportarti.</string>
+    <string name="item_divine_grappling_hook_desc">Un rampino benedetto da luce divina. Trova sempre presa una volta lanciato.</string>
     <string name="item_bronze_frying_pan_desc">Una padella di bronzo per cucinare.</string>
     <string name="item_iron_frying_pan_desc">Una padella di ferro per cucinare.</string>
     <string name="item_steel_frying_pan_desc">Una padella in acciaio per cucinare.</string>
     <string name="item_mithril_frying_pan_desc">Una padella di mithril per cucinare.</string>
-    <string name="item_adamantite_frying_pan_desc">Una padella di adamantite per cucinare.</string>
+    <string name="item_adamantite_frying_pan_desc">Una padella di adamantio per cucinare.</string>
     <string name="item_runite_frying_pan_desc">Una padella in runite per cucinare.</string>
-    <string name="item_dwarven_frying_pan_desc">A dwarven-forged frying pan. Cooks food to perfection every time.</string> <!-- untranslated -->
-    <string name="item_divine_frying_pan_desc">A frying pan touched by divine light. Never burns a single meal.</string> <!-- untranslated -->
-    <string name="item_bronze_lockpick_desc">A basic bronze lockpick for thieving.</string> <!-- untranslated -->
-    <string name="item_iron_lockpick_desc">An iron lockpick for thieving.</string> <!-- untranslated -->
-    <string name="item_steel_lockpick_desc">A steel lockpick for thieving.</string> <!-- untranslated -->
-    <string name="item_mithril_lockpick_desc">A mithril lockpick for thieving.</string> <!-- untranslated -->
-    <string name="item_adamantite_lockpick_desc">An adamantite lockpick for thieving.</string> <!-- untranslated -->
-    <string name="item_runite_lockpick_desc">A runite lockpick for thieving.</string> <!-- untranslated -->
-    <string name="item_rogues_lockpick_desc">A well-worn lockpick favored by the guild\'s rogues. Slips into any lock.</string> <!-- untranslated -->
-    <string name="item_dwarven_lockpick_desc">A dwarven-forged lockpick. Finds the tumblers instantly.</string> <!-- untranslated -->
-    <string name="item_shadow_lockpick_desc">A lockpick forged from shadow. No lock can resist it for long.</string> <!-- untranslated -->
-    <string name="item_divine_lockpick_desc">A lockpick touched by divine light. Every lock yields to it.</string> <!-- untranslated -->
+    <string name="item_dwarven_frying_pan_desc">Una padella di fattura nanica. Cuoce tutto alla perfezione.</string>
+    <string name="item_divine_frying_pan_desc">Una padella benedetta da luce divina. Niente brucerà più.</string>
+    <string name="item_bronze_lockpick_desc">Un grimaldello in bronzo per atti loschi.</string>
+    <string name="item_iron_lockpick_desc">Un grimaldello in ferro per atti loschi.</string>
+    <string name="item_steel_lockpick_desc">Un grimaldello in acciaio per atti loschi.</string>
+    <string name="item_mithril_lockpick_desc">Un grimaldello in mithril per atti loschi.</string>
+    <string name="item_adamantite_lockpick_desc">Un grimaldello in adamantio per atti loschi.</string>
+    <string name="item_runite_lockpick_desc">Un grimaldello in runite per atti loschi.</string>
+    <string name="item_rogues_lockpick_desc">Tipo di grimaldello molto in voga tra i furfanti. Sblocca ogni serratura con facilità.</string>
+    <string name="item_dwarven_lockpick_desc">Grimaldello di fattura nanica. Nessun meccanismo è troppo difficile.</string>
+    <string name="item_shadow_lockpick_desc">Grimaldello con il potere delle ombre. Nessuna serratura può resistergli.</string>
+    <string name="item_divine_lockpick_desc">Grimaldello benedetto da luce divina. Ogni serratura si apre al suo cospetto.</string>
     <string name="item_wraithbone_ring_desc">Spettrale anello d\'osso maledetto dal Raccolto Oscuro. Nonostante l\'aspetto ti rende più impavido.</string>
     <string name="item_reaper_scythe_desc">Lo strumento prediletto dal Re Vacuo. Non miete solo grano.</string>
     <string name="item_gloomweave_cape_desc">Tessuto con fumo delle lanterne e luce del crepuscolo. Venduto durante il Mercato Notturo del Raccolto Oscuro.</string>
-    <string name="item_gilded_full_helmet_desc">A runite full helmet wrapped in monument gold. Dropped by the Vault Guardian.</string> <!-- untranslated -->
-    <string name="item_gilded_platebody_desc">A runite platebody wrapped in monument gold. Dropped by the Vault Guardian.</string> <!-- untranslated -->
-    <string name="item_gilded_kiteshield_desc">A runite kiteshield wrapped in monument gold. Dropped by the Vault Guardian.</string> <!-- untranslated -->
+    <string name="item_gilded_full_helmet_desc">Un elmo di runite decorato con oro del monumento. Il Guardiano del Caveau lo porta con sé.</string>
+    <string name="item_gilded_platebody_desc">Una corazza di runite decorata con oro del monumento. Il Guardiano del Caveau la porta con sé.</string>
+    <string name="item_gilded_kiteshield_desc">Uno scudo di runite decorato con oro del monumento. Il Guardiano del Caveau lo porta con sé.</string>
     <string name="item_wind_strike_name">Colpo dell\'Aria</string>
     <string name="item_wind_strike_desc">Semplice magia d\'elemento Aria.</string>
     <string name="item_wind_bolt_name">Dardo dell\'Aria</string>
@@ -1237,53 +1239,53 @@
     <string name="item_water_wave_name">Ondata dell\'Acqua</string>
     <string name="item_water_wave_desc">Sferra una potente onda d\'urto di elemento Acqua.</string>
     <string name="item_earth_strike_name">Colpo della Terra</string>
-    <string name="item_earth_strike_desc">A basic earth spell that strikes your foe.</string> <!-- untranslated -->
+    <string name="item_earth_strike_desc">Semplice magia d\'elemento Terra.</string>
     <string name="item_earth_bolt_name">Dardo della Terra</string>
-    <string name="item_earth_bolt_desc">A moderate earth spell that bolts your foe.</string> <!-- untranslated -->
+    <string name="item_earth_bolt_desc">Magia d\'elemento Terra intermedia.</string>
     <string name="item_earth_blast_name">Esplosione della Terra</string>
-    <string name="item_earth_blast_desc">A powerful earth spell that blasts your foe.</string> <!-- untranslated -->
+    <string name="item_earth_blast_desc">Potente magia d\\\'elemento Terra.</string>
     <string name="item_earth_wave_name">Ondata della Terra</string>
-    <string name="item_earth_wave_desc">A devastating earth spell that waves across your foe.</string> <!-- untranslated -->
+    <string name="item_earth_wave_desc">Sferra una potente onda d\\\'urto di elemento Terra.</string>
     <string name="item_fire_strike_name">Colpo del Fuoco</string>
-    <string name="item_fire_strike_desc">A basic fire spell that strikes your foe.</string> <!-- untranslated -->
+    <string name="item_fire_strike_desc">Semplice magia d\'elemento Fuoco.</string>
     <string name="item_fire_bolt_name">Dardo del Fuoco</string>
-    <string name="item_fire_bolt_desc">A moderate fire spell that bolts your foe.</string> <!-- untranslated -->
+    <string name="item_fire_bolt_desc">Magia d\\\'elemento Fuoco intermedia.</string>
     <string name="item_fire_blast_name">Esplosione del Fuoco</string>
-    <string name="item_fire_blast_desc">A powerful fire spell that blasts your foe.</string> <!-- untranslated -->
+    <string name="item_fire_blast_desc">Potente magia d\\\'elemento Fuoco.</string>
     <string name="item_fire_wave_name">Ondata del Fuoco</string>
-    <string name="item_fire_wave_desc">A devastating fire spell that waves across your foe.</string> <!-- untranslated -->
+    <string name="item_fire_wave_desc">Sferra una potente onda d\\\'urto di elemento Fuoco.</string>
     <string name="item_mind_strike_name">Colpo della Psiche</string>
-    <string name="item_mind_strike_desc">A basic mind spell that strikes your foe.</string> <!-- untranslated -->
+    <string name="item_mind_strike_desc">Semplice magia d\'elemento Psiche.</string>
     <string name="item_mind_bolt_name">Dardo della Psiche</string>
-    <string name="item_mind_bolt_desc">A moderate mind spell that bolts your foe.</string> <!-- untranslated -->
+    <string name="item_mind_bolt_desc">Magia d\\\'elemento Psiche intermedia.</string>
     <string name="item_mind_blast_name">Esplosione della Psiche</string>
-    <string name="item_mind_blast_desc">A powerful mind spell that blasts your foe.</string> <!-- untranslated -->
+    <string name="item_mind_blast_desc">Potente magia d\\\'elemento Psiche.</string>
     <string name="item_mind_wave_name">Ondata della Psiche</string>
-    <string name="item_mind_wave_desc">A devastating mind spell that waves across your foe.</string> <!-- untranslated -->
+    <string name="item_mind_wave_desc">Sferra una potente onda d\\\'urto di elemento Psiche.</string>
     <string name="item_chaos_strike_name">Colpo del Caos</string>
-    <string name="item_chaos_strike_desc">A basic chaos spell that strikes your foe.</string> <!-- untranslated -->
+    <string name="item_chaos_strike_desc">Semplice magia d\'elemento Caos.</string>
     <string name="item_chaos_bolt_name">Dardo del Caos</string>
-    <string name="item_chaos_bolt_desc">A moderate chaos spell that bolts your foe.</string> <!-- untranslated -->
+    <string name="item_chaos_bolt_desc">Magia d\\\'elemento Caos intermedia.</string>
     <string name="item_chaos_blast_name">Esplosione del Caos</string>
-    <string name="item_chaos_blast_desc">A powerful chaos spell that blasts your foe.</string> <!-- untranslated -->
+    <string name="item_chaos_blast_desc">Potente magia d\\\'elemento Caos.</string>
     <string name="item_chaos_wave_name">Ondata del Caos</string>
-    <string name="item_chaos_wave_desc">A devastating chaos spell that waves across your foe.</string> <!-- untranslated -->
+    <string name="item_chaos_wave_desc">Sferra una potente onda d\\\'urto di elemento Caos.</string>
     <string name="item_death_strike_name">Colpo della Morte</string>
-    <string name="item_death_strike_desc">A basic death spell that strikes your foe.</string> <!-- untranslated -->
+    <string name="item_death_strike_desc">Semplice magia d\'elemento Morte.</string>
     <string name="item_death_bolt_name">Dardo della Morte</string>
-    <string name="item_death_bolt_desc">A moderate death spell that bolts your foe.</string> <!-- untranslated -->
+    <string name="item_death_bolt_desc">Magia d\\\'elemento Morte intermedia.</string>
     <string name="item_death_blast_name">Esplosione della Morte</string>
-    <string name="item_death_blast_desc">A powerful death spell that blasts your foe.</string> <!-- untranslated -->
+    <string name="item_death_blast_desc">Potente magia d\\\'elemento Morte.</string>
     <string name="item_death_wave_name">Ondata della Morte</string>
-    <string name="item_death_wave_desc">A devastating death spell that waves across your foe.</string> <!-- untranslated -->
+    <string name="item_death_wave_desc">Sferra una potente onda d\\\'urto di elemento Morte.</string>
     <string name="item_blood_strike_name">Colpo del Sangue</string>
-    <string name="item_blood_strike_desc">A basic blood spell that strikes your foe.</string> <!-- untranslated -->
+    <string name="item_blood_strike_desc">Semplice magia d\'elemento Sangue.</string>
     <string name="item_blood_bolt_name">Dardo del Sangue</string>
-    <string name="item_blood_bolt_desc">A moderate blood spell that bolts your foe.</string> <!-- untranslated -->
+    <string name="item_blood_bolt_desc">Magia d\\\'elemento Sangue intermedia.</string>
     <string name="item_blood_blast_name">Esplosione del Sangue</string>
-    <string name="item_blood_blast_desc">A powerful blood spell that blasts your foe.</string> <!-- untranslated -->
+    <string name="item_blood_blast_desc">Potente magia d\\\'elemento Sangue.</string>
     <string name="item_blood_wave_name">Ondata del Sangue</string>
-    <string name="item_blood_wave_desc">A devastating blood spell that waves across your foe.</string> <!-- untranslated -->
+    <string name="item_blood_wave_desc">Sferra una potente onda d\\\'urto di elemento Sangue.</string>
     <string name="item_spirit_herb_name">Erba dello Spirito</string>
     <string name="item_spirit_herb_desc">Erba rara necessaria per pozioni d\'alto rango. Richiede Mercantile livello 20 per l\'acquisto.</string>
     <string name="item_celestial_bloom_name">Fioritura Celestiale</string>

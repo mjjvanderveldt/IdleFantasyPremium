@@ -94,6 +94,7 @@
     <string name="equip_slot_weapon_str">Silah (Güç)</string>
     <string name="equip_slot_weapon_ranged">Silah (Menzilli)</string>
     <string name="equip_slot_weapon_magic">Silah (Büyü)</string>
+    <string name="equip_slot_weapon">Weapons</string> <!-- untranslated -->
     <string name="equip_slot_head">Kafa</string>
     <string name="equip_slot_body">Gövde</string>
     <string name="equip_slot_legs">Bacaklar</string>

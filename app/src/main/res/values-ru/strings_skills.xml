@@ -102,4 +102,5 @@
     <string name="skill_expedition_name">Экспедиция</string>
     <string name="skill_boss_name">Босс</string>
     <string name="skill_mercantile_name">Торговля</string>
+    <string name="skill_mercantile_desc">Отправляйте торговые караваны по маршрутам за монеты и опыт. Более высокие уровни повышают цены на покупку и продажу в магазинах и открывают доступ к эксклюзивным товарам Гильдии торговцев.</string>
 </resources>

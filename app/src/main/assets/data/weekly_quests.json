@@ -226,7 +226,7 @@
     "type": "boss",
     "target": "any",
     "amount": 10,
-    "description": "Defeat 10 raid bosses this week.",
+    "description": "Defeat 10 bosses this week.",
     "level_required": 50
   },
   {

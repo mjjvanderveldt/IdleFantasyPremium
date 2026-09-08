@@ -67,7 +67,7 @@ import com.fantasyidler.util.formatCoins
 import com.fantasyidler.util.formatXp
 import com.fantasyidler.util.toClockTime
 
-private val TAB_GROUPS = listOf("Timed", "Gathering", "Crafting", "Combat", "Special")
+private val TAB_GROUPS = listOf("Daily", "Weekly", "Gathering", "Crafting", "Combat", "Special")
 
 @Composable
 private fun tabGroupLabel(group: String): String = when (group) {
@@ -75,7 +75,6 @@ private fun tabGroupLabel(group: String): String = when (group) {
     "Crafting"  -> stringResource(R.string.label_crafting_skills)
     "Combat"    -> stringResource(R.string.label_combat)
     "Special"   -> stringResource(R.string.label_special)
-    "Timed"     -> stringResource(R.string.label_timed)
     "Daily"     -> stringResource(R.string.label_daily)
     "Weekly"    -> stringResource(R.string.label_weekly)
     else        -> group
@@ -143,8 +142,9 @@ fun QuestsScreen(
         ) {
             ScrollableTabRow(selectedTabIndex = pagerState.currentPage, edgePadding = 0.dp) {
                 TAB_GROUPS.forEachIndexed { index, group ->
-                    val claimableInGroup = if (group == "Timed") {
-                        state.dailyQuests.count { it.progress >= it.template.amount && !it.claimed } +
+                    val claimableInGroup = if (group == "Daily") {
+                        state.dailyQuests.count { it.progress >= it.template.amount && !it.claimed }
+                    } else if (group == "Weekly") {
                         state.weeklyQuests.count { it.progress >= it.template.amount && !it.claimed }
                     } else {
                         (state.questsByGroup[group] ?: emptyList()).count { it.isClaimable }
@@ -166,19 +166,23 @@ fun QuestsScreen(
 
             HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
                 val currentGroup = TAB_GROUPS[page]
-                if (currentGroup == "Timed") {
-                    TimedQuestsContent(
-                        dailyQuests         = state.dailyQuests,
-                        weeklyQuests        = state.weeklyQuests,
-                        nextDailyReset      = state.nextDailyReset,
-                        nextWeeklyReset     = state.nextWeeklyReset,
+                if (currentGroup == "Daily") {
+                    DailyQuestsContent(
+                        quests         = state.dailyQuests,
+                        nextReset      = state.nextDailyReset,
+                        hideCompleted       = state.hideCompleted,
+                        dropDenominator = state.dwarvenDropDenominator,
+                        onClaimQuest   = { viewModel.claimDailyQuest(it) },
+                    )
+                } else if (currentGroup == "Weekly") {
+                    WeeklyQuestsContent(
+                        quests        = state.weeklyQuests,
+                        nextReset     = state.nextWeeklyReset,
                         hideCompleted       = state.hideCompleted,
                         weeklyBonusClaimed  = state.weeklyBonusClaimed,
                         divineDropChance    = state.divineDropChance,
-                        dwarvenDropDenominator = state.dwarvenDropDenominator,
-                        onClaimDailyQuest   = { viewModel.claimDailyQuest(it) },
-                        onClaimWeeklyQuest  = { viewModel.claimWeeklyQuest(it) },
-                        onClaimWeeklyBonus  = { viewModel.claimWeeklyBonus() },
+                        onClaimQuest  = { viewModel.claimWeeklyQuest(it) },
+                        onClaimBonus  = { viewModel.claimWeeklyBonus() },
                     )
                 } else {
                     val quests = state.questsByGroup[currentGroup] ?: emptyList()
@@ -210,67 +214,6 @@ fun QuestsScreen(
                     }
                 }
             }
-        }
-    }
-}
-
-// ---------------------------------------------------------------------------
-// Timed quests container (Daily + Weekly sub-tabs)
-// ---------------------------------------------------------------------------
-
-@Composable
-private fun TimedQuestsContent(
-    dailyQuests: List<DailyQuestWithProgress>,
-    weeklyQuests: List<WeeklyQuestWithProgress>,
-    nextDailyReset: Long,
-    nextWeeklyReset: Long,
-    hideCompleted: Boolean,
-    weeklyBonusClaimed: Boolean = false,
-    divineDropChance: Double? = null,
-    dwarvenDropDenominator: Int? = null,
-    onClaimDailyQuest: (String) -> Unit,
-    onClaimWeeklyQuest: (String) -> Unit,
-    onClaimWeeklyBonus: () -> Unit,
-) {
-    val dailyLabel  = stringResource(R.string.label_daily)
-    val weeklyLabel = stringResource(R.string.label_weekly)
-    var selectedSubTab by remember { mutableIntStateOf(0) }
-
-    Column(Modifier.fillMaxSize()) {
-        TabRow(selectedTabIndex = selectedSubTab) {
-            listOf(dailyLabel, weeklyLabel).forEachIndexed { index, title ->
-                val claimable = when (index) {
-                    0 -> dailyQuests.count { it.progress >= it.template.amount && !it.claimed }
-                    1 -> weeklyQuests.count { it.progress >= it.template.amount && !it.claimed }
-                    else -> 0
-                }
-                Tab(
-                    selected = selectedSubTab == index,
-                    onClick  = { selectedSubTab = index },
-                    text = {
-                        val label = if (claimable > 0) "$title ($claimable)" else title
-                        Text(text = label, style = MaterialTheme.typography.labelMedium)
-                    },
-                )
-            }
-        }
-        when (selectedSubTab) {
-            0 -> DailyQuestsContent(
-                quests          = dailyQuests,
-                nextReset       = nextDailyReset,
-                hideCompleted   = hideCompleted,
-                dropDenominator = dwarvenDropDenominator,
-                onClaimQuest    = onClaimDailyQuest,
-            )
-            1 -> WeeklyQuestsContent(
-                quests             = weeklyQuests,
-                nextReset          = nextWeeklyReset,
-                hideCompleted      = hideCompleted,
-                weeklyBonusClaimed = weeklyBonusClaimed,
-                divineDropChance   = divineDropChance,
-                onClaimQuest       = onClaimWeeklyQuest,
-                onClaimBonus       = onClaimWeeklyBonus,
-            )
         }
     }
 }
@@ -534,7 +477,7 @@ private fun DailyQuestCard(
                 Icon(
                     imageVector        = Icons.Filled.CheckCircle,
                     contentDescription = stringResource(R.string.label_completed),
-                    tint               = Color(0xFF4CAF50),
+                    tint               = MaterialTheme.colorScheme.tertiary,
                     modifier           = Modifier
                         .height(18.dp)
                         .width(18.dp),
@@ -543,7 +486,7 @@ private fun DailyQuestCard(
                 Text(
                     text       = stringResource(R.string.label_completed),
                     style      = MaterialTheme.typography.labelMedium,
-                    color      = Color(0xFF4CAF50),
+                    color      = MaterialTheme.colorScheme.tertiary,
                     fontWeight = FontWeight.SemiBold,
                 )
             }
@@ -637,7 +580,7 @@ private fun QuestRow(
                 Icon(
                     imageVector      = Icons.Filled.CheckCircle,
                     contentDescription = stringResource(R.string.label_completed),
-                    tint             = Color(0xFF4CAF50),
+                    tint             = MaterialTheme.colorScheme.tertiary,
                     modifier         = Modifier
                         .height(18.dp)
                         .width(18.dp),
@@ -646,7 +589,7 @@ private fun QuestRow(
                 Text(
                     text  = stringResource(R.string.label_completed),
                     style = MaterialTheme.typography.labelMedium,
-                    color = Color(0xFF4CAF50),
+                    color = MaterialTheme.colorScheme.tertiary,
                     fontWeight = FontWeight.SemiBold,
                 )
             }
@@ -742,7 +685,7 @@ private fun WeeklyQuestCard(
                 Icon(
                     imageVector        = Icons.Filled.CheckCircle,
                     contentDescription = stringResource(R.string.label_completed),
-                    tint               = Color(0xFF4CAF50),
+                    tint               = MaterialTheme.colorScheme.tertiary,
                     modifier           = Modifier
                         .height(18.dp)
                         .width(18.dp),
@@ -751,7 +694,7 @@ private fun WeeklyQuestCard(
                 Text(
                     text       = stringResource(R.string.label_completed),
                     style      = MaterialTheme.typography.labelMedium,
-                    color      = Color(0xFF4CAF50),
+                    color      = MaterialTheme.colorScheme.tertiary,
                     fontWeight = FontWeight.SemiBold,
                 )
             }

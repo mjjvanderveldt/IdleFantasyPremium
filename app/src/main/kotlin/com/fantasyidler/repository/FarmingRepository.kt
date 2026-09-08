@@ -9,6 +9,7 @@ import com.fantasyidler.data.db.AppDatabase
 import com.fantasyidler.data.db.dao.FarmingPatchDao
 import com.fantasyidler.data.json.CropData
 import com.fantasyidler.data.model.EquipSlot
+import com.fantasyidler.util.toolEfficiency
 import com.fantasyidler.data.model.FarmingPatch
 import com.fantasyidler.data.model.Skills
 import com.fantasyidler.receiver.FarmPatchAlarmReceiver
@@ -51,7 +52,7 @@ class FarmingRepository @Inject constructor(
     suspend fun plantCrop(patchNumber: Int, crop: CropData, ashKey: String? = null): Boolean {
         val success = playerRepo.withLock {
             val player = playerRepo.getOrCreatePlayer()
-            val inventory: Map<String, Int> = kotlinx.serialization.json.Json.decodeFromString(player.inventory)
+            val inventory: Map<String, Int> = Json.decodeFromString(player.inventory)
             if ((inventory[crop.seedName] ?: 0) < 1) return@withLock false
             if (ashKey != null && (inventory[ashKey] ?: 0) < 1) return@withLock false
             
@@ -77,10 +78,13 @@ class FarmingRepository @Inject constructor(
         patchDao.upsert(FarmingPatch(patchNumber = patchNumber, cropType = crop.id, plantedAt = plantedAt))
 
         if (crop.plantingXp > 0) {
+            // Raw XP so clearPatch's base-value deduction reverses it exactly; boosted
+            // planting XP made plant-and-clear cycles net positive (issue #1645).
             playerRepo.applySessionResults(
-                skillName   = Skills.FARMING,
-                xpGained    = crop.plantingXp.toLong(),
-                itemsGained = emptyMap(),
+                skillName     = Skills.FARMING,
+                xpGained      = crop.plantingXp.toLong(),
+                itemsGained   = emptyMap(),
+                applyXpBoosts = false,
             )
         }
 
@@ -129,10 +133,10 @@ class FarmingRepository @Inject constructor(
 
         val player   = playerRepo.getOrCreatePlayer()
         val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
-
-        val hoeMult = equipped[EquipSlot.HOE]?.let { gameData.equipment[it]?.farmingEfficiency } ?: 1f
-
         val flags = playerRepo.getFlags()
+
+        val levels: Map<String, Int> = json.decodeFromString(player.skillLevels)
+        val hoeMult = gameData.toolEfficiency(equipped[EquipSlot.HOE], EquipSlot.HOE, skillLevels = levels, heirloomXp = flags.heirloomXp)
         // Cape rack tier 1 applies owned gathering capes passively (ironman excluded),
         // mirroring resolveCapeMultiplier's gates (issue #1483).
         val inventory: Map<String, Int> = json.decodeFromString(player.inventory)
@@ -150,7 +154,7 @@ class FarmingRepository @Inject constructor(
         val rotationMult  = 1.0 + boostRepo.cropRotationBonusPct(flags, rotated) / 100.0
         val prestigeYield = boostRepo.yieldMultiplier(Skills.FARMING, flags)
 
-        var yield = kotlin.random.Random.nextInt(crop.yieldMin, crop.yieldMax + 1)
+        var yield = Random.nextInt(crop.yieldMin, crop.yieldMax + 1)
         yield = (yield * hoeMult * ashMult * prestigeYield * rotationMult).roundToInt()
         if (capedDouble) yield *= 2
 
@@ -172,7 +176,7 @@ class FarmingRepository @Inject constructor(
         seasonalEventRepo.recordGathering(items)
 
         val farmingPet = gameData.pets.values.firstOrNull { it.boostedSkill == Skills.FARMING }
-        if (farmingPet != null && kotlin.random.Random.nextDouble() < 1.0 / 1000.0) {
+        if (farmingPet != null && Random.nextDouble() < 1.0 / 1000.0) {
             playerRepo.addPetIfNew(farmingPet.id, farmingPet.boostPercent)
         }
 
@@ -184,7 +188,7 @@ class FarmingRepository @Inject constructor(
             }
             
             val inv = playerRepo.getInventoryUnlocked()
-            if (!newFlags.magicBeanPlanted && (inv["magic_bean"] ?: 0) == 0 && kotlin.random.Random.nextInt(100) == 0) {
+            if (!newFlags.magicBeanPlanted && (inv["magic_bean"] ?: 0) == 0 && Random.nextInt(100) == 0) {
                 playerRepo.addItemUnlocked("magic_bean", 1)
             }
             
