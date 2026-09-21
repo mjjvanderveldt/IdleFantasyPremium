@@ -51,7 +51,7 @@
     <string name="item_emerald_desc">Una gema verde de rareza moderada.</string>
     <string name="item_ruby_name">Ruby</string> <!-- untranslated -->
     <string name="item_ruby_desc">Una gema roja. Rara y valiosa.</string>
-    <string name="item_diamond_name">Diamond</string> <!-- untranslated -->
+    <string name="item_diamond_name">Diamante</string>
     <string name="item_diamond_desc">La gema más rara y valiosa.</string>
 
     <!-- ===== Logs ===== -->
@@ -465,7 +465,7 @@
     <string name="item_shadow_signet_desc">Un anillo con el sello del Gremio de las Sombras. Solo los operativos más peligrosos del gremio lo llevaban.</string>
 
     <!-- Junk items -->
-    <string name="item_bread_name">Bread</string> <!-- untranslated -->
+    <string name="item_bread_name">Pan</string>
     <string name="item_leather_name">Leather</string> <!-- untranslated -->
     <string name="item_flour_name">Flour</string> <!-- untranslated -->
     <string name="item_cooked_trout_name">Cooked Trout</string> <!-- untranslated -->
@@ -512,7 +512,7 @@
     <string name="item_dragon_bone_desc">Huesos de dragón antiguos. Otorgan la mayor cantidad de XP de Oración al ser enterrados.</string>
     <string name="item_dragon_scale_name">Dragon Scale</string> <!-- untranslated -->
     <string name="item_dragon_scale_desc">Una escama resistente de un dragón verde. Rara y valiosa.</string>
-    <string name="item_coins_name">Coins</string> <!-- untranslated -->
+    <string name="item_coins_name">Monedas</string>
     <string name="item_coins_desc">La moneda del reino. Gástala en la tienda.</string>
     <string name="item_goblin_mail_name">Goblin Mail</string> <!-- untranslated -->
     <string name="item_goblin_mail_desc">Armadura maltrecha que sueltan los goblins. Se vende bien.</string>

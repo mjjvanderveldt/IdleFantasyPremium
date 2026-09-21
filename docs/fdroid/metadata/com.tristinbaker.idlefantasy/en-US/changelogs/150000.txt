@@ -1,0 +1,10 @@
+• Elder Isle: sail from your Dock at Construction 90, defeat the Sea Serpent, and unlock a second region with its own separate skill tracks, dungeons, and story arc
+• Elder skills level on their own XP pool that starts fresh at 1 and stays untouched by mainland prestige, boosts, gear, and pets
+• 12-quest main story chain across 4 acts, auto-completing as you meet each objective; 13 lore fragments unlock in the Lore Master as you progress
+• 8-piece Elder set is the isle's BIS armor, crafted from Elder Smithing plus Ancient Sigils looted rarely from isle dungeons and the Last Elder boss
+• Sigil Embedder in the Elder Armor Master sockets six colors of sigil stones into Elder gear for permanent XP, coin, loot, essence, Ancient Sigil, and Elder Bone bonuses that apply everywhere, isle and mainland alike
+• Elder Agility is trainable on the isle across four new courses; leveling it shortens isle session times from 60 down to 45 minutes at max
+• Assemble the full Elder set to unlock the Last Elder boss fight, which drops the Ancient Signet accessory (a new equipment slot) and awards the "Champion of the Elder Isle" title on first kill
+• 7 new elder pets drop across the isle dungeons and one from the Last Elder himself
+• Profile Skills tab gains a Mainland / Elder toggle once you have visited the isle
+• New sprites for Brood Empress, Obsidian Colossus, and the World Ender raid bosses

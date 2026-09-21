@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
-enum class ArmoryFilter { ALL, WEAPONS, ARMOR, ACCESSORIES, TOOLS }
+enum class ArmoryFilter { ALL, MISSING, WEAPONS, ARMOR, ACCESSORIES, TOOLS }
 enum class ArmorySort   { DEFAULT, ATTACK, STRENGTH, DEFENSE, REQUIREMENT }
 
 data class ArmoryEntry(
@@ -97,17 +97,24 @@ class ArmoryViewModel @Inject constructor(
         val equippedValues = equipped.values.filterNotNull().toSet()
         val flags: PlayerFlags = json.decodeFromString(player.flags)
 
-        val allEntries = sortedEquipment.map { (key, item) ->
-            ArmoryEntry(
-                key    = key,
-                item   = item,
-                owned  = (inventory[key] ?: 0) > 0 || key in equippedValues || key in flags.seenItemKeys,
-                source = sourceMap[key] ?: item.description.takeIf { it.isNotBlank() } ?: "Unknown source",
-            )
-        }
+        // Isle-only gear stays hidden from the armory (and out of the "N / M" total at the
+        // top) until the isle is unlocked. Includes the tiered Elder armor set (Coastal,
+        // Grove, Volcanic, Elder pieces + accessories) and the Ancient Signet.
+        val hideElder = !flags.elderIsleUnlocked
+        val allEntries = sortedEquipment
+            .filterNot { (key, _) -> hideElder && key in ELDER_ISLE_ITEM_KEYS }
+            .map { (key, item) ->
+                ArmoryEntry(
+                    key    = key,
+                    item   = item,
+                    owned  = (inventory[key] ?: 0) > 0 || key in equippedValues || key in flags.seenItemKeys,
+                    source = sourceMap[key] ?: item.description.takeIf { it.isNotBlank() } ?: "Unknown source",
+                )
+            }
 
         val filtered = when (filter) {
             ArmoryFilter.ALL         -> allEntries
+            ArmoryFilter.MISSING     -> allEntries.filter { !it.owned }
             ArmoryFilter.WEAPONS     -> allEntries.filter { it.item.slot == "weapon" }
             ArmoryFilter.ARMOR       -> allEntries.filter { it.item.slot in ARMOR_SLOTS }
             ArmoryFilter.ACCESSORIES -> allEntries.filter { it.item.slot in ACCESSORY_SLOTS }
@@ -233,6 +240,17 @@ class ArmoryViewModel @Inject constructor(
         val ARMOR_SLOTS     = setOf("head", "body", "legs", "boots", "shield")
         val ACCESSORY_SLOTS = setOf("ring", "necklace", "cape")
         val TOOL_SLOTS      = setOf("pickaxe", "axe", "fishing_rod", "hoe", "hammer", "tinderbox", "grappling_hook", "frying_pan", "lockpick")
+
+        /** Isle-only equipment (tiered armor + Ancient Signet). Hidden from the armory
+         *  list AND excluded from the collection total until the isle is unlocked. */
+        val ELDER_ISLE_ITEM_KEYS = setOf(
+            "coastal_helm", "coastal_platebody", "coastal_platelegs", "coastal_boots",
+            "grove_helm",   "grove_platebody",   "grove_platelegs",   "grove_boots",
+            "volcanic_helm","volcanic_platebody","volcanic_platelegs","volcanic_boots",
+            "elder_helm",   "elder_platebody",   "elder_platelegs",   "elder_boots",
+            "elder_cape",   "elder_shield",      "elder_signet_ring", "elder_amulet",
+            "ancient_signet",
+        )
 
         fun formatChancePct(chance: Double): String {
             if (chance >= 1.0) return "Always"

@@ -83,6 +83,7 @@ import com.fantasyidler.data.json.DungeonData
 import com.fantasyidler.data.json.EquipmentData
 import com.fantasyidler.data.json.SpellData
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.only
@@ -94,7 +95,10 @@ import com.fantasyidler.ui.theme.ScaledSheetContent
 import com.fantasyidler.ui.viewmodel.CombatViewModel
 import com.fantasyidler.ui.viewmodel.InventoryViewModel
 import com.fantasyidler.ui.viewmodel.combatLevelFrom
+import com.fantasyidler.ui.viewmodel.nextLevelThreshold
 import com.fantasyidler.ui.viewmodel.xpProgressFraction
+import com.fantasyidler.ui.viewmodel.xpToMaxLevel
+import com.fantasyidler.ui.viewmodel.xpToNextLevel
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.formatXp
 
@@ -119,12 +123,12 @@ fun CombatScreen(
     val invState         by inventoryVm.uiState.collectAsState()
     val context           = LocalContext.current
     var showMercCamp     by remember { mutableStateOf(false) }
-    val visibleDungeons   = remember(state.unlockedDungeons, viewModel.dungeonList) {
-        viewModel.dungeonList.filter { !it.loreUnlockOnly || it.name in state.unlockedDungeons }
+    val visibleDungeons   = remember(state.unlockedDungeons, state.onElderIsle) {
+        viewModel.dungeonList(state.onElderIsle).filter { !it.loreUnlockOnly || it.name in state.unlockedDungeons }
     }
     LaunchedEffect(initialDungeonKey, initialBossKey) {
-        initialDungeonKey?.let { key -> viewModel.dungeonList.firstOrNull { it.name == key }?.let(viewModel::selectDungeon) }
-        initialBossKey?.let { key -> viewModel.bossList(state.monumentComplete).firstOrNull { it.id == key }?.let(viewModel::selectBoss) }
+        initialDungeonKey?.let { key -> viewModel.dungeonList(state.onElderIsle).firstOrNull { it.name == key }?.let(viewModel::selectDungeon) }
+        initialBossKey?.let { key -> viewModel.bossList(state.monumentComplete, state.dockBuilt, state.totalLevel, state.onElderIsle, state.hasFullElderSet).firstOrNull { it.id == key }?.let(viewModel::selectBoss) }
     }
 
     AppBannerEffect(state.snackbarMessage, viewModel::snackbarConsumed)
@@ -219,7 +223,7 @@ fun CombatScreen(
                             dungeons       = visibleDungeons,
                             // Raid bosses included: the banner resolves the boss's name,
                             // emoji, and HP panel from this list.
-                            bosses         = viewModel.bossList(state.monumentComplete) + viewModel.raidBossList(),
+                            bosses         = viewModel.bossList(state.monumentComplete, state.dockBuilt, state.totalLevel, state.onElderIsle, state.hasFullElderSet) + (if (state.onElderIsle) emptyList() else viewModel.raidBossList()),
                             hiredMercs     = state.hiredMercs,
                             enemies        = viewModel.enemyMap,
                             skillLevels    = state.skillLevels,
@@ -239,7 +243,7 @@ fun CombatScreen(
                         )
                         1 -> CombatSelectionList(
                             dungeons            = visibleDungeons,
-                            bosses              = viewModel.bossList(state.monumentComplete),
+                            bosses              = viewModel.bossList(state.monumentComplete, state.dockBuilt, state.totalLevel, state.onElderIsle, state.hasFullElderSet),
                             skillLevels         = state.skillLevels,
                             survivalRatings     = state.dungeonSurvivalRatings,
                             dungeonRuns         = state.dungeonRuns,
@@ -248,13 +252,15 @@ fun CombatScreen(
                             towerBestFloor      = state.towerBestFloor,
                             bossKillCounts      = state.bossKillCounts,
                             isQueueFull         = state.isQueueFull,
-                            raidBosses          = viewModel.raidBossList(),
+                            raidBosses          = (if (state.onElderIsle) emptyList() else viewModel.raidBossList()),
                             hiredMercCount      = state.hiredMercs.size,
                             maxParty            = MercenaryRepository.MAX_PARTY,
                             onDungeon           = viewModel::selectDungeon,
                             onBoss              = viewModel::selectBoss,
                             onTower             = onNavigateToTower,
                             onOpenMercCamp      = { showMercCamp = true },
+                            onElderIsle         = state.onElderIsle,
+                            hasFullElderSet     = state.hasFullElderSet,
                         )
                         2 -> CombatGearTab(
                             equipped       = invState.equipped,
@@ -265,6 +271,9 @@ fun CombatScreen(
                             allEquipment   = invState.resolvedEquipment(inventoryVm.allEquipment),
                             heirloomXp     = invState.heirloomXp,
                             context        = context,
+                            totalAttack    = state.totalAttack,
+                            totalStrength  = state.totalStrength,
+                            totalDefense   = state.totalDefense,
                             activeWeaponSlot    = state.selectedWeaponSlot,
                             foodEatThresholdPct = invState.foodEatThresholdPct,
                             foodEatOrder        = invState.foodEatOrder,
@@ -282,6 +291,7 @@ fun CombatScreen(
                             onSpellSelected = viewModel::selectSpell,
                             onFoodThresholdChanged = inventoryVm::setFoodEatThresholdPct,
                             onFoodOrderChanged     = inventoryVm::setFoodEatOrder,
+                            ancientSignetSeen      = invState.ancientSignetSeen,
                         )
                         else -> CombatSkillsTab(
                             skillLevels         = state.skillLevels,
@@ -291,6 +301,7 @@ fun CombatScreen(
                             totalDefenseBonus   = state.totalDefenseBonus,
                             skillPrestigeLevels = state.skillPrestigeLevels,
                             combatPrestigeBonus = state.combatPrestigeBonus,
+                            prestigeMaxedSkills = state.prestigeMaxedSkills,
                             onOpenPrestige      = onNavigateToPrestige,
                         )
                     }
@@ -331,7 +342,7 @@ fun CombatScreen(
                     when (page) {
                         0 -> CombatSelectionList(
                             dungeons            = visibleDungeons,
-                            bosses              = viewModel.bossList(state.monumentComplete),
+                            bosses              = viewModel.bossList(state.monumentComplete, state.dockBuilt, state.totalLevel, state.onElderIsle, state.hasFullElderSet),
                             skillLevels         = state.skillLevels,
                             survivalRatings     = state.dungeonSurvivalRatings,
                             dungeonRuns         = state.dungeonRuns,
@@ -340,13 +351,15 @@ fun CombatScreen(
                             towerBestFloor      = state.towerBestFloor,
                             bossKillCounts      = state.bossKillCounts,
                             isQueueFull         = state.isQueueFull,
-                            raidBosses          = viewModel.raidBossList(),
+                            raidBosses          = (if (state.onElderIsle) emptyList() else viewModel.raidBossList()),
                             hiredMercCount      = state.hiredMercs.size,
                             maxParty            = MercenaryRepository.MAX_PARTY,
                             onDungeon           = viewModel::selectDungeon,
                             onBoss              = viewModel::selectBoss,
                             onTower             = onNavigateToTower,
                             onOpenMercCamp      = { showMercCamp = true },
+                            onElderIsle         = state.onElderIsle,
+                            hasFullElderSet     = state.hasFullElderSet,
                         )
                         1 -> CombatGearTab(
                             equipped       = invState.equipped,
@@ -357,6 +370,9 @@ fun CombatScreen(
                             allEquipment   = invState.resolvedEquipment(inventoryVm.allEquipment),
                             heirloomXp     = invState.heirloomXp,
                             context        = context,
+                            totalAttack    = state.totalAttack,
+                            totalStrength  = state.totalStrength,
+                            totalDefense   = state.totalDefense,
                             activeWeaponSlot    = state.selectedWeaponSlot,
                             foodEatThresholdPct = invState.foodEatThresholdPct,
                             foodEatOrder        = invState.foodEatOrder,
@@ -374,6 +390,7 @@ fun CombatScreen(
                             onSpellSelected = viewModel::selectSpell,
                             onFoodThresholdChanged = inventoryVm::setFoodEatThresholdPct,
                             onFoodOrderChanged     = inventoryVm::setFoodEatOrder,
+                            ancientSignetSeen      = invState.ancientSignetSeen,
                         )
                         else -> CombatSkillsTab(
                             skillLevels         = state.skillLevels,
@@ -383,6 +400,7 @@ fun CombatScreen(
                             totalDefenseBonus   = state.totalDefenseBonus,
                             skillPrestigeLevels = state.skillPrestigeLevels,
                             combatPrestigeBonus = state.combatPrestigeBonus,
+                            prestigeMaxedSkills = state.prestigeMaxedSkills,
                             onOpenPrestige      = onNavigateToPrestige,
                         )
                     }
@@ -546,12 +564,18 @@ private fun CombatSelectionList(
     onBoss: (BossData) -> Unit,
     onTower: () -> Unit = {},
     onOpenMercCamp: () -> Unit = {},
+    onElderIsle: Boolean = false,
+    hasFullElderSet: Boolean = false,
 ) {
     val combatLvl = combatLevelFrom(skillLevels)
 
     LazyColumn(modifier.fillMaxSize()) {
         item { CombatSectionHeader(stringResource(R.string.label_dungeons_tab)) }
-        item { TowerEntryRow(bestFloor = towerBestFloor, isQueueFull = isQueueFull, onTap = onTower) }
+        // Infinite Tower is a mainland-only endgame; the isle Combat tab has its own
+        // dungeons + boss chain and doesn't participate in tower progression.
+        if (!onElderIsle) {
+            item { TowerEntryRow(bestFloor = towerBestFloor, isQueueFull = isQueueFull, onTap = onTower) }
+        }
         items(dungeons) { dungeon ->
             // Lore dungeons need discovery on top of the level gate, not instead of it,
             // or a prestiged player keeps access far below the requirement (issue #1542).
@@ -571,12 +595,18 @@ private fun CombatSelectionList(
         }
         item { CombatSectionHeader(stringResource(R.string.combat_solo_bosses)) }
         items(bosses) { boss ->
+            // Last Elder shows as a "???" row on the isle Combat tab until the full 8-piece
+            // Elder set has been crafted; the row stays visible so the finale has a place in
+            // the list to chase toward.
+            val elderMasked = boss.id == "last_elder" && !hasFullElderSet
             BossRow(
                 boss     = boss,
                 unlocked = combatLvl >= boss.combatLevelRequired,
                 runCount = bossKillCounts[boss.id] ?: 0,
                 onTap    = { onBoss(boss) },
                 isQueueFull = isQueueFull,
+                masked   = elderMasked,
+                maskedDescRes = if (elderMasked) R.string.boss_last_elder_masked_desc else null,
             )
         }
         if (raidBosses.isNotEmpty()) {
@@ -632,6 +662,9 @@ private fun CombatGearTab(
     allEquipment: Map<String, EquipmentData>,
     heirloomXp: Map<String, Long>,
     context: Context,
+    totalAttack: Int,
+    totalStrength: Int,
+    totalDefense: Int,
     activeWeaponSlot: String?,
     foodEatThresholdPct: Int,
     foodEatOrder: String,
@@ -649,7 +682,11 @@ private fun CombatGearTab(
     onSpellSelected: (SpellData?) -> Unit,
     onFoodThresholdChanged: (Int) -> Unit,
     onFoodOrderChanged: (String) -> Unit,
+    ancientSignetSeen: Boolean = false,
 ) {
+    val visibleArmorSlots = remember(ancientSignetSeen) {
+        if (ancientSignetSeen) EquipSlot.ARMOR_SLOTS else EquipSlot.ARMOR_SLOTS - EquipSlot.SIGNET
+    }
     val cookedItemKeys = remember(cookingRecipes) {
         cookingRecipes.values.map { it.cookedItem }.toSet()
     }
@@ -694,6 +731,16 @@ private fun CombatGearTab(
                 }
             }
         }
+        item {
+            Text(
+                text = "${stringResource(R.string.combat_atk)} $totalAttack  " +
+                    "${stringResource(R.string.combat_str)} $totalStrength  " +
+                    "${stringResource(R.string.combat_def)} $totalDefense",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            )
+        }
         // Only the active style's own weapon is shown/selectable here — never another
         // style's weapon, since each style has its own separate weapon slot.
         item {
@@ -735,7 +782,7 @@ private fun CombatGearTab(
             }
         }
         item { SlotSectionHeader(stringResource(R.string.profile_combat_gear)) }
-        items(EquipSlot.ARMOR_SLOTS) { slot ->
+        items(visibleArmorSlots) { slot ->
             EquipSlotRow(
                 slotName  = GameStrings.slotName(context, slot),
                 itemKey   = equipped[slot],
@@ -835,6 +882,7 @@ private fun CombatSkillsTab(
     totalDefenseBonus: Int,
     skillPrestigeLevels: Map<String, Int> = emptyMap(),
     combatPrestigeBonus: Map<String, Int> = emptyMap(),
+    prestigeMaxedSkills: Set<String> = emptySet(),
     onOpenPrestige: (String) -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -879,6 +927,7 @@ private fun CombatSkillsTab(
                 gearBonus     = gearBonus,
                 prestigeLevel = skillPrestigeLevels[key] ?: 0,
                 prestigeBonus = combatPrestigeBonus[key] ?: 0,
+                isPrestigeMaxed = key in prestigeMaxedSkills,
                 onOpenPrestige = onOpenPrestige.let { cb -> { cb(key) } },
                 onClick       = { tappedSkill = key },
             )
@@ -887,6 +936,7 @@ private fun CombatSkillsTab(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CombatSkillRow(
     skillKey: String,
@@ -895,6 +945,7 @@ private fun CombatSkillRow(
     gearBonus: Int = 0,
     prestigeLevel: Int = 0,
     prestigeBonus: Int = 0,
+    isPrestigeMaxed: Boolean = false,
     onOpenPrestige: (() -> Unit)? = null,
     onClick: () -> Unit = {},
 ) {
@@ -951,29 +1002,26 @@ private fun CombatSkillRow(
         Column(Modifier.weight(1f)) {
             Row(
                 modifier              = Modifier.fillMaxWidth(),
+                verticalAlignment     = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(name, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
-                    if (gearBonus > 0) {
-                        Spacer(Modifier.width(6.dp))
-                        Text(
-                            text  = stringResource(R.string.combat_gear_bonus, gearBonus),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
-                    }
-                    if (prestigeBonus > 0) {
-                        Spacer(Modifier.width(6.dp))
-                        Text(
-                            text  = stringResource(R.string.combat_prestige_bonus, prestigeBonus),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
-                    }
+                Text(
+                    text       = name,
+                    style      = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    modifier   = Modifier.weight(1f, fill = false),
+                )
+                Spacer(Modifier.width(8.dp))
+                val remainingToCap = xpToMaxLevel(xp)
+                val xpText = when {
+                    remainingToCap in 1 until 100_000L ->
+                        stringResource(R.string.xp_to_99, remainingToCap.formatXp())
+                    xpToNextLevel(xp) > 0L ->
+                        "${xp.formatXp()} / ${nextLevelThreshold(xp).formatXp()} XP"
+                    else -> "${xp.formatXp()} ${stringResource(R.string.label_xp)}"
                 }
                 Text(
-                    text  = "${xp.formatXp()} ${stringResource(R.string.label_xp)}",
+                    text  = xpText,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -990,15 +1038,37 @@ private fun CombatSkillRow(
                 color            = MaterialTheme.colorScheme.primary,
                 trackColor       = MaterialTheme.colorScheme.surfaceVariant,
             )
+            if (gearBonus > 0 || prestigeBonus > 0) {
+                Spacer(Modifier.height(6.dp))
+                FlowRow(
+                    modifier              = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    if (gearBonus > 0) {
+                        Text(
+                            text  = stringResource(R.string.combat_gear_bonus, gearBonus),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                    if (prestigeBonus > 0) {
+                        Text(
+                            text  = stringResource(R.string.combat_prestige_bonus, prestigeBonus),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
+            }
             if (prestigeLevel > 0 || (onOpenPrestige != null && level >= 99)) {
-                Spacer(Modifier.height(4.dp))
                 Row(
                     modifier              = Modifier.fillMaxWidth(),
                     verticalAlignment     = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text  = "★×$prestigeLevel",
+                        text  = if (isPrestigeMaxed) stringResource(R.string.skills_prestige_max, prestigeLevel)
+                                else "★×$prestigeLevel",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.primary,
                     )
@@ -1041,14 +1111,17 @@ private fun BossRow(
     unlocked: Boolean,
     isQueueFull: Boolean,
     runCount: Int = 0,
+    masked: Boolean = false,
+    maskedDescRes: Int? = null,
     onTap: () -> Unit,
 ) {
     val context  = LocalContext.current
     val dimColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+    val clickable = unlocked && !masked
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(enabled = unlocked, onClick = onTap)
+            .clickable(enabled = clickable, onClick = onTap)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -1056,30 +1129,45 @@ private fun BossRow(
             modifier         = Modifier.size(36.dp),
             contentAlignment = Alignment.Center,
         ) {
-            BossIcon(
-                bossId        = boss.id,
-                modifier      = Modifier
-                    .size(36.dp)
-                    .then(if (unlocked) Modifier else Modifier.alpha(0.38f)),
-                fallbackEmoji = boss.emoji,
-            )
+            if (masked) {
+                // Silhouette-style placeholder so the row keeps a slot without showing
+                // the actual boss art before the player unlocks the encounter.
+                Text(
+                    text  = "?",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = dimColor,
+                )
+            } else {
+                BossIcon(
+                    bossId        = boss.id,
+                    modifier      = Modifier
+                        .size(36.dp)
+                        .then(if (unlocked) Modifier else Modifier.alpha(0.38f)),
+                    fallbackEmoji = boss.emoji,
+                )
+            }
         }
         Spacer(Modifier.width(8.dp))
         Column(Modifier.weight(1f)) {
             Text(
-                text       = GameStrings.bossName(context, boss.id),
+                text       = if (masked) stringResource(R.string.boss_masked_name)
+                             else GameStrings.bossName(context, boss.id),
                 style      = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium,
-                color      = if (unlocked) MaterialTheme.colorScheme.onSurface else dimColor,
+                color      = if (unlocked && !masked) MaterialTheme.colorScheme.onSurface else dimColor,
             )
             Text(
-                text     = GameStrings.bossDesc(context, boss.id).takeIf { it.isNotBlank() } ?: boss.description,
+                text     = when {
+                    masked && maskedDescRes != null -> stringResource(maskedDescRes)
+                    else -> GameStrings.bossDesc(context, boss.id).takeIf { it.isNotBlank() } ?: boss.description
+                },
                 style    = MaterialTheme.typography.bodySmall,
-                color    = if (unlocked) MaterialTheme.colorScheme.onSurfaceVariant else dimColor,
-                maxLines = 1,
+                color    = if (unlocked && !masked) MaterialTheme.colorScheme.onSurfaceVariant else dimColor,
+                maxLines = if (masked) 2 else 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            if (runCount > 0) {
+            if (runCount > 0 && !masked) {
                 Text(
                     text  = stringResource(R.string.combat_dungeon_runs, runCount),
                     style = MaterialTheme.typography.labelSmall,
@@ -1090,10 +1178,10 @@ private fun BossRow(
         Spacer(Modifier.width(12.dp))
         Column(horizontalAlignment = Alignment.End) {
             Text(
-                text       = "Lv. ${boss.combatLevelRequired}",
+                text       = if (masked) "Lv. ??" else "Lv. ${boss.combatLevelRequired}",
                 style      = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold,
-                color      = if (unlocked) MaterialTheme.colorScheme.primary else dimColor,
+                color      = if (unlocked && !masked) MaterialTheme.colorScheme.primary else dimColor,
             )
             if (isQueueFull) {
                 Text(

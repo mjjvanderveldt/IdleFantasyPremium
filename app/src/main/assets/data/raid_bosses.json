@@ -2,7 +2,7 @@
   "king_black_dragon": {
     "id": "king_black_dragon",
     "display_name": "King Black Dragon",
-    "emoji": "🐉",
+    "emoji": "\ud83d\udc09",
     "description": "The legendary three-headed dragon, feared across the realm.",
     "combat_level_required": 50,
     "duration_minutes": 45,
@@ -80,7 +80,7 @@
     "pet": {
       "id": "dragon_whelp",
       "display_name": "Dragon Whelp",
-      "emoji": "🐉",
+      "emoji": "\ud83d\udc09",
       "chance": 0.01,
       "comment": "1/100 per kill"
     },
@@ -91,7 +91,7 @@
   "demon_lord": {
     "id": "demon_lord",
     "display_name": "Demon Lord",
-    "emoji": "😈",
+    "emoji": "\ud83d\ude08",
     "description": "An ancient demon from the abyss, master of dark magic.",
     "combat_level_required": 70,
     "duration_minutes": 60,
@@ -174,7 +174,7 @@
     "pet": {
       "id": "imp_pet",
       "display_name": "Imp Pet",
-      "emoji": "😈",
+      "emoji": "\ud83d\ude08",
       "chance": 0.01,
       "comment": "1/100 per kill"
     },
@@ -185,7 +185,7 @@
   "kraken": {
     "id": "kraken",
     "display_name": "Kraken",
-    "emoji": "🦑",
+    "emoji": "\ud83e\udd91",
     "description": "The terror of the deep seas, a colossal sea monster.",
     "combat_level_required": 90,
     "duration_minutes": 90,
@@ -271,7 +271,7 @@
     "pet": {
       "id": "baby_kraken",
       "display_name": "Baby Kraken",
-      "emoji": "🦑",
+      "emoji": "\ud83e\udd91",
       "chance": 0.01,
       "comment": "1/100 per kill"
     }
@@ -279,7 +279,7 @@
   "balrog": {
     "id": "balrog",
     "display_name": "Gothic Ember, Ancient Flame of the Deep",
-    "emoji": "🔥",
+    "emoji": "\ud83d\udd25",
     "tags": [
       "demon"
     ],
@@ -369,7 +369,7 @@
     "pet": {
       "id": "baby_balrog",
       "display_name": "Gothic Emberling",
-      "emoji": "🔥",
+      "emoji": "\ud83d\udd25",
       "chance": 0.005,
       "comment": "1/200 per kill"
     }
@@ -377,7 +377,7 @@
   "void_sovereign": {
     "id": "void_sovereign",
     "display_name": "The Void Sovereign",
-    "emoji": "🌑",
+    "emoji": "\ud83c\udf11",
     "description": "The primordial entity behind the void rifts. Ancient beyond reckoning, it regards mortal challengers with contempt.",
     "combat_level_required": 110,
     "duration_minutes": 150,
@@ -459,7 +459,7 @@
     "pet": {
       "id": "void_wisp",
       "display_name": "Void Wisp",
-      "emoji": "💫",
+      "emoji": "\ud83d\udcab",
       "chance": 0.003,
       "comment": "1/333 per kill"
     }
@@ -467,7 +467,7 @@
   "sol_invictus": {
     "id": "sol_invictus",
     "display_name": "Sol Invictus, the Sundered Flame",
-    "emoji": "☀️",
+    "emoji": "\u2600\ufe0f",
     "description": "A shard of the sun itself, torn loose from the Sunspire ruin. Only the boldest warriors dare approach.",
     "combat_level_required": 65,
     "duration_minutes": 50,
@@ -521,7 +521,7 @@
     "pet": {
       "id": "solstice_sprite",
       "display_name": "Solstice Sprite",
-      "emoji": "🔥",
+      "emoji": "\ud83d\udd25",
       "chance": 0.01,
       "comment": "1/100 per kill"
     },
@@ -530,7 +530,7 @@
   "the_hollow_king": {
     "id": "the_hollow_king",
     "display_name": "The Hollow King",
-    "emoji": "🎃",
+    "emoji": "\ud83c\udf83",
     "description": "The headless sovereign of the Gloomharvest, riding out from the Blightwood to reap what the living have sown.",
     "combat_level_required": 70,
     "duration_minutes": 55,
@@ -584,7 +584,7 @@
     "pet": {
       "id": "lantern_wisp",
       "display_name": "Lantern Wisp",
-      "emoji": "🎃",
+      "emoji": "\ud83c\udf83",
       "chance": 0.01,
       "comment": "1/100 per kill"
     },
@@ -593,7 +593,7 @@
   "the_vault_guardian": {
     "id": "the_vault_guardian",
     "display_name": "The Vault Guardian",
-    "emoji": "🏆",
+    "emoji": "\ud83c\udfc6",
     "description": "A colossus of living gold, woken by the lighting of the Eternal Flame. Only patrons of the Grand Monument may face it.",
     "combat_level_required": 100,
     "duration_minutes": 90,
@@ -665,7 +665,7 @@
   "obsidian_colossus": {
     "id": "obsidian_colossus",
     "display_name": "Obsidian Colossus",
-    "emoji": "🗿",
+    "emoji": "\ud83d\uddff",
     "description": "A mountain given wrath. No lone hero has ever chipped more than a scar into it. Bring a party.",
     "combat_level_required": 130,
     "duration_minutes": 60,
@@ -746,7 +746,7 @@
   "brood_empress": {
     "id": "brood_empress",
     "display_name": "Brood Empress",
-    "emoji": "👁️",
+    "emoji": "\ud83d\udc41\ufe0f",
     "description": "Mother of the swarm between the stars. Her brood has ended armies; yours had better be paid well.",
     "combat_level_required": 140,
     "duration_minutes": 60,
@@ -832,7 +832,7 @@
   "the_world_ender": {
     "id": "the_world_ender",
     "display_name": "The World Ender",
-    "emoji": "🌋",
+    "emoji": "\ud83c\udf0b",
     "description": "When it stirs, kingdoms write their wills. Four names on the contract or none return.",
     "combat_level_required": 150,
     "duration_minutes": 60,
@@ -918,5 +918,126 @@
       }
     ],
     "raid": true
+  },
+  "last_elder": {
+    "id": "last_elder",
+    "display_name": "The Last Elder",
+    "emoji": "\ud83d\udd6f\ufe0f",
+    "description": "The last of the Elders, sealed at the bottom of the Abyssal Depths. Only a full Elder set can survive the fight.",
+    "combat_level_required": 99,
+    "duration_minutes": 120,
+    "hp": 40000,
+    "combat_stats": {
+      "attack_level": 99,
+      "strength_level": 99,
+      "defense_level": 99,
+      "attack_bonus": 320,
+      "strength_bonus": 130
+    },
+    "defensive_stats": {
+      "attack_defense": 1350,
+      "strength_defense": 1350,
+      "ranged_defense": 1350,
+      "magic_defense": 1350
+    },
+    "xp_rewards": {
+      "attack": 20000,
+      "strength": 20000,
+      "defense": 20000,
+      "hitpoints": 15000,
+      "magic": 12000,
+      "ranged": 12000
+    },
+    "common_loot": {
+      "coins_min": 100000,
+      "coins_max": 200000,
+      "items": {
+        "elder_essence": {
+          "min": 50,
+          "max": 120
+        },
+        "elder_bone": {
+          "min": 20,
+          "max": 40
+        }
+      }
+    },
+    "rare_drops": [
+      {
+        "item": "ancient_signet",
+        "chance": 1.0,
+        "comment": "guaranteed on kill"
+      }
+    ],
+    "tags": [
+      "elder"
+    ],
+    "pet": {
+      "id": "elder_familiar",
+      "display_name": "Elder Familiar",
+      "emoji": "\ud83d\udd6f\ufe0f",
+      "chance": 0.02,
+      "comment": "1/50 legendary drop from Last Elder"
+    }
+  },
+  "sea_serpent": {
+    "id": "sea_serpent",
+    "display_name": "Sea Serpent",
+    "emoji": "\ud83d\udc0d",
+    "description": "A vast coiling terror of the deep sea that has drowned every prior voyage to the Elder Isle. Slay it and the passage opens.",
+    "combat_level_required": 90,
+    "duration_minutes": 60,
+    "hp": 12000,
+    "combat_stats": {
+      "attack_level": 90,
+      "strength_level": 88,
+      "defense_level": 80,
+      "attack_bonus": 140,
+      "strength_bonus": 90
+    },
+    "defensive_stats": {
+      "attack_defense": 120,
+      "strength_defense": 120,
+      "ranged_defense": 60,
+      "magic_defense": 140
+    },
+    "xp_rewards": {
+      "attack": 5000,
+      "strength": 5000,
+      "defense": 5000,
+      "hitpoints": 3500,
+      "magic": 2500,
+      "ranged": 2500
+    },
+    "common_loot": {
+      "coins_min": 40000,
+      "coins_max": 80000,
+      "items": {
+        "shark": {
+          "min": 20,
+          "max": 40
+        },
+        "sea_turtle": {
+          "min": 10,
+          "max": 20
+        },
+        "manta_ray": {
+          "min": 5,
+          "max": 10
+        }
+      }
+    },
+    "rare_drops": [
+      {
+        "item": "race_change_token",
+        "chance": 0.01,
+        "comment": "1/100"
+      }
+    ],
+    "tags": [
+      "dragon"
+    ],
+    "requires_dock": true,
+    "total_level_required": 0
   }
 }

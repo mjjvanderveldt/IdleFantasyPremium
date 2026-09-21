@@ -103,5 +103,33 @@
     "level_required": 90,
     "xp_per_success": 1000,
     "description": "The ultimate test of agility, transcending mortal limits."
+  },
+  "elder_coastal_run": {
+    "name": "elder_coastal_run",
+    "display_name": "Coastal Run",
+    "level_required": 1,
+    "xp_per_success": 17,
+    "description": "A jog along the isle's wave-scarred beach. Rocks shift underfoot with the tide."
+  },
+  "elder_grove_traverse": {
+    "name": "elder_grove_traverse",
+    "display_name": "Grove Traverse",
+    "level_required": 30,
+    "xp_per_success": 60,
+    "description": "A rope-and-ledge circuit through the rune-lit canopy of the Ancient Forest."
+  },
+  "elder_volcano_scramble": {
+    "name": "elder_volcano_scramble",
+    "display_name": "Volcano Scramble",
+    "level_required": 60,
+    "xp_per_success": 160,
+    "description": "A climb across the smoking flanks of the peak. The stone remembers being an altar."
+  },
+  "elder_abyssal_ascent": {
+    "name": "elder_abyssal_ascent",
+    "display_name": "Abyssal Ascent",
+    "level_required": 85,
+    "xp_per_success": 300,
+    "description": "A vertical route up the pressure-cracked walls of the Abyssal Depths. Few make the top."
   }
 }

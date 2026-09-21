@@ -4819,5 +4819,236 @@
       "magic_attack_bonus": 7,
       "magic_damage_bonus": 2
     }
+  },
+  "coastal_helm": {
+    "name": "coastal_helm",
+    "display_name": "Coastal Helm",
+    "slot": "head",
+    "combat_style": null,
+    "description": "Salt-crusted helm of the isle's landing.",
+    "attack_bonus": 3,
+    "strength_bonus": 6,
+    "defense_bonus": 85,
+    "requirements": {}
+  },
+  "coastal_platebody": {
+    "name": "coastal_platebody",
+    "display_name": "Coastal Platebody",
+    "slot": "body",
+    "combat_style": null,
+    "description": "Barnacle-grey plate. Cold, heavy, honest.",
+    "attack_bonus": 4,
+    "strength_bonus": 7,
+    "defense_bonus": 160,
+    "requirements": {}
+  },
+  "coastal_platelegs": {
+    "name": "coastal_platelegs",
+    "display_name": "Coastal Platelegs",
+    "slot": "legs",
+    "combat_style": null,
+    "description": "Barnacle-grey plate for the legs.",
+    "attack_bonus": 4,
+    "strength_bonus": 7,
+    "defense_bonus": 148,
+    "requirements": {}
+  },
+  "coastal_boots": {
+    "name": "coastal_boots",
+    "display_name": "Coastal Boots",
+    "slot": "boots",
+    "combat_style": null,
+    "description": "Boots that keep the tide out.",
+    "attack_bonus": 4,
+    "strength_bonus": 5,
+    "defense_bonus": 73,
+    "requirements": {}
+  },
+  "grove_helm": {
+    "name": "grove_helm",
+    "display_name": "Grove Helm",
+    "slot": "head",
+    "combat_style": null,
+    "description": "Antler-crowned helm hollowed from grove oak.",
+    "attack_bonus": 7,
+    "strength_bonus": 11,
+    "defense_bonus": 118,
+    "requirements": {}
+  },
+  "grove_platebody": {
+    "name": "grove_platebody",
+    "display_name": "Grove Platebody",
+    "slot": "body",
+    "combat_style": null,
+    "description": "Bark-armour reinforced with abyssal thread.",
+    "attack_bonus": 8,
+    "strength_bonus": 13,
+    "defense_bonus": 210,
+    "requirements": {}
+  },
+  "grove_platelegs": {
+    "name": "grove_platelegs",
+    "display_name": "Grove Platelegs",
+    "slot": "legs",
+    "combat_style": null,
+    "description": "Bark-armour for the legs.",
+    "attack_bonus": 8,
+    "strength_bonus": 13,
+    "defense_bonus": 200,
+    "requirements": {}
+  },
+  "grove_boots": {
+    "name": "grove_boots",
+    "display_name": "Grove Boots",
+    "slot": "boots",
+    "combat_style": null,
+    "description": "Rooted boots \u2014 silent on any forest floor.",
+    "attack_bonus": 7,
+    "strength_bonus": 13,
+    "defense_bonus": 115,
+    "requirements": {}
+  },
+  "volcanic_helm": {
+    "name": "volcanic_helm",
+    "display_name": "Volcanic Helm",
+    "slot": "head",
+    "combat_style": null,
+    "description": "Obsidian-plated visor. Warm to the touch.",
+    "attack_bonus": 12,
+    "strength_bonus": 20,
+    "defense_bonus": 163,
+    "requirements": {}
+  },
+  "volcanic_platebody": {
+    "name": "volcanic_platebody",
+    "display_name": "Volcanic Platebody",
+    "slot": "body",
+    "combat_style": null,
+    "description": "Molten steel folded a thousand times.",
+    "attack_bonus": 13,
+    "strength_bonus": 20,
+    "defense_bonus": 290,
+    "requirements": {}
+  },
+  "volcanic_platelegs": {
+    "name": "volcanic_platelegs",
+    "display_name": "Volcanic Platelegs",
+    "slot": "legs",
+    "combat_style": null,
+    "description": "Molten steel for the legs.",
+    "attack_bonus": 13,
+    "strength_bonus": 20,
+    "defense_bonus": 278,
+    "requirements": {}
+  },
+  "volcanic_boots": {
+    "name": "volcanic_boots",
+    "display_name": "Volcanic Boots",
+    "slot": "boots",
+    "combat_style": null,
+    "description": "Basalt-soled boots. Impervious to heat.",
+    "attack_bonus": 12,
+    "strength_bonus": 20,
+    "defense_bonus": 153,
+    "requirements": {}
+  },
+  "elder_helm": {
+    "name": "elder_helm",
+    "display_name": "Elder Helm",
+    "slot": "head",
+    "combat_style": null,
+    "description": "Crown of the Elders. Woven from ancient sigils.",
+    "attack_bonus": 18,
+    "strength_bonus": 29,
+    "defense_bonus": 200,
+    "requirements": {}
+  },
+  "elder_platebody": {
+    "name": "elder_platebody",
+    "display_name": "Elder Platebody",
+    "slot": "body",
+    "combat_style": null,
+    "description": "The Elders' body armour. Sigil-bound, weightless in wear.",
+    "attack_bonus": 20,
+    "strength_bonus": 32,
+    "defense_bonus": 350,
+    "requirements": {}
+  },
+  "elder_platelegs": {
+    "name": "elder_platelegs",
+    "display_name": "Elder Platelegs",
+    "slot": "legs",
+    "combat_style": null,
+    "description": "Sigil-bound plate for the legs.",
+    "attack_bonus": 20,
+    "strength_bonus": 32,
+    "defense_bonus": 338,
+    "requirements": {}
+  },
+  "elder_boots": {
+    "name": "elder_boots",
+    "display_name": "Elder Boots",
+    "slot": "boots",
+    "combat_style": null,
+    "description": "Sigil-bound boots. Silent as absence.",
+    "attack_bonus": 18,
+    "strength_bonus": 29,
+    "defense_bonus": 193,
+    "requirements": {}
+  },
+  "elder_cape": {
+    "name": "elder_cape",
+    "display_name": "Elder Cape",
+    "slot": "cape",
+    "combat_style": null,
+    "description": "Cloak of woven abyssal thread.",
+    "attack_bonus": 10,
+    "strength_bonus": 10,
+    "defense_bonus": 40,
+    "requirements": {}
+  },
+  "elder_shield": {
+    "name": "elder_shield",
+    "display_name": "Elder Shield",
+    "slot": "shield",
+    "combat_style": null,
+    "description": "Sigil-etched shield of the Elders.",
+    "attack_bonus": 0,
+    "strength_bonus": 0,
+    "defense_bonus": 200,
+    "requirements": {}
+  },
+  "elder_signet_ring": {
+    "name": "elder_signet_ring",
+    "display_name": "Elder Ring",
+    "slot": "ring",
+    "combat_style": null,
+    "description": "A ring of sealed abyssal thread. Isle-forged.",
+    "attack_bonus": 15,
+    "strength_bonus": 20,
+    "defense_bonus": 40,
+    "requirements": {}
+  },
+  "elder_amulet": {
+    "name": "elder_amulet",
+    "display_name": "Elder Amulet",
+    "slot": "necklace",
+    "combat_style": null,
+    "description": "Amulet holding a shard of an Elder sigil.",
+    "attack_bonus": 15,
+    "strength_bonus": 20,
+    "defense_bonus": 30,
+    "requirements": {}
+  },
+  "ancient_signet": {
+    "name": "ancient_signet",
+    "display_name": "Ancient Signet",
+    "slot": "signet",
+    "combat_style": null,
+    "description": "A sigil-etched signet ring pried from the Last Elder's chamber. It hums.",
+    "attack_bonus": 25,
+    "strength_bonus": 30,
+    "defense_bonus": 25,
+    "requirements": {}
   }
 }

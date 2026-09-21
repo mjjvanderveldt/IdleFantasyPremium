@@ -10,11 +10,11 @@
     <string name="quest_weekly_runite_miner_name">Tiefenbergmann</string>
     <string name="quest_weekly_runite_miner_desc">Baut diese Woche 150 Runiterz ab.</string>
     <string name="quest_weekly_oak_logger_name">Eichenfäller</string>
-    <string name="quest_weekly_oak_logger_desc">Fällt diese Woche 600 Eichenholzscheite.</string>
+    <string name="quest_weekly_oak_logger_desc">Fällt diese Woche 600 Eichenstämme.</string>
     <string name="quest_weekly_yew_logger_name">Eibenfäller</string>
-    <string name="quest_weekly_yew_logger_desc">Fällt diese Woche 300 Eibenholzscheite.</string>
+    <string name="quest_weekly_yew_logger_desc">Fällt diese Woche 300 Eibenstämme.</string>
     <string name="quest_weekly_magic_logger_name">Arkaner Holzfäller</string>
-    <string name="quest_weekly_magic_logger_desc">Fällt diese Woche 150 Magische Holzscheite.</string>
+    <string name="quest_weekly_magic_logger_desc">Fällt diese Woche 150 Magische Baumstämme.</string>
     <string name="quest_weekly_trout_fisher_name">Flussangler</string>
     <string name="quest_weekly_trout_fisher_desc">Fangt diese Woche 600 Forellen.</string>
     <string name="quest_weekly_swordfish_fisher_name">Tiefseefischer</string>
@@ -46,7 +46,7 @@
     <string name="quest_weekly_demon_slayer_name">Dämonentöter</string>
     <string name="quest_weekly_demon_slayer_desc">Tötet diese Woche 225 Kleine Dämonen.</string>
     <string name="quest_weekly_boss_hunter_name">Jagd auf die Endgegner</string>
-    <string name="quest_weekly_boss_hunter_desc">Defeat 10 bosses this week.</string> <!-- untranslated -->
+    <string name="quest_weekly_boss_hunter_desc">Besiege 10 Bosse diese Woche.</string>
     <string name="quest_weekly_kbd_slayer_name">Drachenfluch</string>
     <string name="quest_weekly_kbd_slayer_desc">Besiegt den König der Schwarzdrachen 5-mal.</string>
     <string name="quest_weekly_void_champion_name">Leerenchampion</string>

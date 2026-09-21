@@ -1,3 +1,58 @@
+v1.15.3
+• Isle dungeon clears now correctly count toward story quest counters. Fought Beach & Cliffs but the "First Steps" quest stayed 0/8? Fixed — every successful isle dungeon run now increments the counter the way mainland dungeons already did.
+• Sea Serpent is now available on the Combat tab the moment the Dock is built, instead of also requiring Grand Monument tier 5 and total level 1500. The Dock (Construction 90) is a heavy enough gate on its own.
+• Isle skill sessions queued on the island no longer route their XP to the mainland pool if you sail back before the session actually fires. The isle flag is now stamped onto the queue entry at enqueue time, so a Coastal Run (or any isle activity) queued on the isle still pays into the elder pool even if the player returns to the mainland while it's waiting to start.
+
+v1.15.2
+• Isle dungeon clears now correctly count toward story quest counters. Fought Beach & Cliffs but the "First Steps" quest stayed 0/8? Fixed — every successful isle dungeon run now increments the counter the way mainland dungeons already did.
+• Sea Serpent is now available on the Combat tab the moment the Dock is built, instead of also requiring Grand Monument tier 5 and total level 1500. The Dock (Construction 90) is a heavy enough gate on its own.
+
+v1.15.1
+• Workers can no longer be assigned Elder Isle activities. Elder ores, trees, fish, agility courses, bars, and cooked food are now hidden from the worker skill sheets, closing an exploit where a mainland worker could mine Starforged Ore (and other isle-tier resources) for isle XP into the mainland pool.
+
+v1.15.0
+• Elder Isle: sail from your Dock at Construction 90, defeat the Sea Serpent, and unlock a second region with its own separate skill tracks, dungeons, and story arc
+• Elder skills level on their own XP pool that starts fresh at 1 and stays untouched by mainland prestige, boosts, gear, and pets
+• 12-quest main story chain across 4 acts, auto-completing as you meet each objective; 13 lore fragments unlock in the Lore Master as you progress
+• 8-piece Elder set is the isle's BIS armor, crafted from Elder Smithing plus Ancient Sigils looted rarely from isle dungeons and the Last Elder boss
+• Sigil Embedder in the Elder Armor Master sockets six colors of sigil stones into Elder gear for permanent XP, coin, loot, essence, Ancient Sigil, and Elder Bone bonuses that apply everywhere, isle and mainland alike
+• Elder Agility is trainable on the isle across four new courses; leveling it shortens isle session times from 60 down to 45 minutes at max
+• Assemble the full Elder set to unlock the Last Elder boss fight, which drops the Ancient Signet accessory (a new equipment slot) and awards the "Champion of the Elder Isle" title on first kill
+• 7 new elder pets drop across the isle dungeons and one from the Last Elder himself
+• Profile Skills tab gains a Mainland / Elder toggle once you have visited the isle
+• New sprites for Brood Empress, Obsidian Colossus, and the World Ender raid bosses
+
+v1.14.14
+• The Runecrafting sheet now shows the total runes a session will produce and correctly factors the level and ash catalyst multipliers into the projected XP, so a redwood-ashes run no longer under-reports either
+• Rotating a piece of furniture in the house editor no longer treats it as a new purchase; rotation variants share ownership and storage with the base piece
+• The Herblore potion sheet now lists every ash tier the player owns, dimming ones that don't cover the current quantity with an "owned / needed" indicator, instead of hiding them entirely
+• Character save-slot switching is now crash-safe: switches are serialized, a switch interrupted mid-way is automatically completed on the next app start, and starting a session collect while a switch is running is blocked with a "please wait" message
+
+v1.14.13
+• Bannered Feast tokens no longer climb past the feast's token goal
+• Boss fight timers on the Home and Skills screens now match the Combat screen's full-length fight clock
+• Session complete dialogs and queue previews now include prestige XP bonuses, matching the XP actually paid out (no XP was ever lost)
+• Fixed the first tap after scrolling in a bottom sheet being swallowed; sheet content no longer drags the sheet itself, and flinging down from the top of a list still closes it
+• New: choose how many backup files to keep per character (1 to 30); older backups are only pruned after the new one is written and verified
+• Combat screen skill rows now show XP as current / next-level like the Skills screen, with gear and prestige bonuses on their own row
+• Skills within 100k XP of level 99 now show the remaining XP to 99
+• Czech and French translation updates
+
+v1.14.12
+• Fix: the app now removes unreadable oversized sessions written by old versions (e.g. burying thousands of bones before 1.8.6) on startup, ending the permanent crash loop on opening
+• Fix: XP previews on the Home screen queue and worker cards now update live when XP boosts, blessings, or prestige bonuses change, instead of showing the value frozen when the session was queued
+• Fix: the queue end time now includes the remaining runs of an active multi-run dungeon or boss session, instead of counting only the current run
+• Fix: taps on skill sheet lists (thieving, crafting, runecrafting, mercantile, and the rest) no longer go dead for a moment after scrolling; the invisible tail of a scroll fling was swallowing the first tap
+• Performance: reordering or removing items in the Home screen queue is now instant; each change previously rewrote the entire save row twice and refreshed the UI twice
+• Fix: equipment picker rows and the combat skills header no longer break in languages with longer text (Italian etc.); the Equip button and XP values were being squeezed out of view and rows stretched tall
+• Fix: queueing a guild daily for a recipe above your level now says which level is required instead of the misleading "Not enough materials"
+• Fix: the Home screen boost list no longer collapses when it would hide only a single boost; with exactly 4 boosts all four are shown instead of a "+1 more" toggle that saved no space
+• New: sort the Shop's Sell tab by quantity or price in addition to the default name order
+• New: Missing filters in the Armory and Bestiary show only gear you haven't collected and enemies you haven't encountered
+• New: skills with fully maxed prestige now show (Max) beside their prestige stars on the Skills and Battle screens
+• New: the Combat Gear tab shows your total attack, strength, and defense for the selected combat style
+• French translations for the heirloom items and Midas Band
+
 v1.14.11
 • Fixed the Armory freezing the app for a few seconds when opened and on every filter tab change
 • Made 219 guild quest names translatable that were previously stuck in English

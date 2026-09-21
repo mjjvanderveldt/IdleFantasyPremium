@@ -1,0 +1,8 @@
+• Bannered Feast tokens no longer climb past the feast's token goal
+• Boss fight timers on the Home and Skills screens now match the Combat screen's full-length fight clock
+• Session complete dialogs and queue previews now include prestige XP bonuses, matching the XP actually paid out (no XP was ever lost)
+• Fixed the first tap after scrolling in a bottom sheet being swallowed; sheet content no longer drags the sheet itself, and flinging down from the top of a list still closes it
+• New: choose how many backup files to keep per character (1 to 30); older backups are only pruned after the new one is written and verified
+• Combat screen skill rows now show XP as current / next-level like the Skills screen, with gear and prestige bonuses on their own row
+• Skills within 100k XP of level 99 now show the remaining XP to 99
+• Czech and French translation updates

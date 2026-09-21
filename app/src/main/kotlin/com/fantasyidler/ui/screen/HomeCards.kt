@@ -137,6 +137,7 @@ internal fun HomeSessionCard(
     sessionXpGain: Long,
     showEndTime: Boolean = true,
     bossEmoji: String? = null,
+    bossDurationMinutes: Int? = null,
     repeatIndex: Int = 0,
     repeatTotal: Int = 0,
     assignedItems: Map<String, Int> = emptyMap(),
@@ -242,7 +243,11 @@ internal fun HomeSessionCard(
             if (!isDone) {
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text  = remember(now, showEndTime) { endsAt.toCountdown(context, showEndTime) },
+                    text  = remember(now, showEndTime) {
+                        if (session.skillName == "boss" && bossDurationMinutes != null)
+                            bossFightCountdown(context, session.startedAt, endsAt, bossDurationMinutes, now, showEndTime)
+                        else endsAt.toCountdown(context, showEndTime)
+                    },
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSecondaryContainer,

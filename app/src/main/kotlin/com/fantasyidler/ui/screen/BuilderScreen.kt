@@ -11,12 +11,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,11 +38,36 @@ import com.fantasyidler.ui.viewmodel.BuilderViewModel
 @Composable
 fun BuilderScreen(
     onBack: () -> Unit = {},
+    onNavigateToSeaSerpent: () -> Unit = {},
     viewModel: BuilderViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
 
     AppBannerEffect(state.snackbarMessage, viewModel::snackbarConsumed)
+
+    if (state.showDockUnlockedDialog) {
+        AlertDialog(
+            onDismissRequest = viewModel::dismissDockUnlockedDialog,
+            title = { Text(stringResource(R.string.elder_isle_dock_unlocked_title), fontWeight = FontWeight.Bold) },
+            text  = {
+                Text(
+                    text     = stringResource(R.string.elder_isle_dock_unlocked_body),
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.dismissDockUnlockedDialog()
+                    onNavigateToSeaSerpent()
+                }) { Text(stringResource(R.string.elder_isle_dock_unlocked_cta)) }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::dismissDockUnlockedDialog) {
+                    Text(stringResource(R.string.elder_isle_dock_unlocked_later))
+                }
+            },
+        )
+    }
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top),
@@ -177,6 +207,20 @@ fun BuilderScreen(
                     coins             = state.coins,
                     inventory         = state.inventory,
                     onUpgrade         = { viewModel.upgrade("chronos_spire") },
+                )
+            }
+            item {
+                Spacer(Modifier.height(16.dp))
+                BuildingUpgradeCard(
+                    buildingKey       = "dock",
+                    currentTier       = state.dockTier,
+                    buildingDef       = viewModel.gameData.townBuildings["dock"],
+                    townRepository    = viewModel.townRepo,
+                    constructionLevel = state.constructionLevel,
+                    extraDiscountPerMille = state.extraDiscountPerMille,
+                    coins             = state.coins,
+                    inventory         = state.inventory,
+                    onUpgrade         = { viewModel.upgrade("dock") },
                 )
                 Spacer(Modifier.height(16.dp))
             }

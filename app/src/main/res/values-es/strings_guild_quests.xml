@@ -99,7 +99,7 @@
     <string name="quest_herblore_guild_5_name">Magic Potions</string> <!-- untranslated -->
     <string name="quest_herblore_guild_6_name">Super Brews</string> <!-- untranslated -->
     <string name="quest_herblore_guild_7_name">Super Ranging</string> <!-- untranslated -->
-    <string name="quest_herblore_guild_8_name">Super Magic</string> <!-- untranslated -->
+    <string name="quest_herblore_guild_8_name">Super Magia</string>
     <string name="quest_herblore_guild_9_name">Overload Stockpile</string> <!-- untranslated -->
     <string name="quest_mages_guild_1_name">Apprentice Spellcaster</string> <!-- untranslated -->
     <string name="quest_mages_guild_10_name">Grand Magus</string> <!-- untranslated -->
@@ -139,8 +139,8 @@
     <string name="quest_prayer_guild_5_name">Holy</string> <!-- untranslated -->
     <string name="quest_prayer_guild_6_name">Sacred</string> <!-- untranslated -->
     <string name="quest_prayer_guild_7_name">Blessed</string> <!-- untranslated -->
-    <string name="quest_prayer_guild_8_name">Divine</string> <!-- untranslated -->
-    <string name="quest_prayer_guild_9_name">Transcendent</string> <!-- untranslated -->
+    <string name="quest_prayer_guild_8_name">Divino</string>
+    <string name="quest_prayer_guild_9_name">Transcendente</string>
     <string name="quest_runecrafting_guild_1_name">Air Supply</string> <!-- untranslated -->
     <string name="quest_runecrafting_guild_10_name">Master Runecraftsman</string> <!-- untranslated -->
     <string name="quest_runecrafting_guild_2_name">Earth Batch</string> <!-- untranslated -->
@@ -190,7 +190,7 @@
     <string name="quest_warriors_guild_6_name">Battlefield Legend</string> <!-- untranslated -->
     <string name="quest_warriors_guild_7_name">Champion</string> <!-- untranslated -->
     <string name="quest_warriors_guild_8_name">Warlord</string> <!-- untranslated -->
-    <string name="quest_warriors_guild_9_name">Conqueror</string> <!-- untranslated -->
+    <string name="quest_warriors_guild_9_name">Conqueror</string>
     <string name="quest_woodcutting_guild_1_name">Normal Logs</string> <!-- untranslated -->
     <string name="quest_woodcutting_guild_10_name">Master Woodcutter</string> <!-- untranslated -->
     <string name="quest_woodcutting_guild_2_name">Oak Delivery</string> <!-- untranslated -->

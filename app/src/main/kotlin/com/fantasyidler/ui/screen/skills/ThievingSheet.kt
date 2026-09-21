@@ -56,7 +56,7 @@ internal fun ThievingSheet(
             )
         }
         HorizontalDivider()
-        Column(Modifier.verticalScroll(scrollState)) {
+        Column(Modifier.verticalScroll(scrollState, flingBehavior = rememberTapFriendlyFlingBehavior())) {
             npcs.values
                 .sortedBy { it.levelRequired }
                 .forEach { npc ->

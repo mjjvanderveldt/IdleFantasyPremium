@@ -418,6 +418,12 @@ private fun PathBranch(
                     MaterialTheme.colorScheme.onSurfaceVariant
                 else MaterialTheme.colorScheme.onSurface,
             )
+            Spacer(Modifier.width(6.dp))
+            Text(
+                text  = "${path.nodes.count { it.owned }}/${path.nodes.size}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
             if (path.auto) {
                 Spacer(Modifier.width(6.dp))
                 Text(

@@ -70,5 +70,29 @@
     "level_required": 10,
     "xp_per_ore": 12,
     "time_per_ore": 1
+  },
+  "mythrite_ore": {
+    "display_name": "Mythrite Ore",
+    "level_required": 1,
+    "xp_per_ore": 120,
+    "time_per_ore": 1
+  },
+  "abyssal_ore": {
+    "display_name": "Abyssal Ore",
+    "level_required": 30,
+    "xp_per_ore": 270,
+    "time_per_ore": 1
+  },
+  "voidsteel_ore": {
+    "display_name": "Voidsteel Ore",
+    "level_required": 60,
+    "xp_per_ore": 480,
+    "time_per_ore": 1
+  },
+  "starforged_ore": {
+    "display_name": "Starforged Ore",
+    "level_required": 85,
+    "xp_per_ore": 750,
+    "time_per_ore": 1
   }
 }

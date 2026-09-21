@@ -25,6 +25,7 @@ import com.fantasyidler.data.json.TradeRouteData
 import com.fantasyidler.data.json.TreeData
 import android.content.Context
 import com.fantasyidler.BuildConfig
+import com.fantasyidler.data.json.BlessingData
 import com.fantasyidler.data.json.BlessingType
 import com.fantasyidler.data.model.EquipSlot
 import com.fantasyidler.data.model.PlayerFlags
@@ -112,6 +113,7 @@ class InventoryViewModel @Inject constructor(
         val prestigeXpBoosts: Map<String, Long> = emptyMap(),
         val ironman: Boolean = false,
         val activeBlessingKey: String = "",
+        val allBlessings: List<BlessingData> = emptyList(),
         val activeBlessingExpiresAt: Long = 0L,
         val activeBlessingXpPct: Int = 0,
         val prayerCapeMult: Float = 1f,
@@ -120,6 +122,9 @@ class InventoryViewModel @Inject constructor(
         val towerHpBonus: Int = 0,
         val skillPrestige: Map<String, Int> = emptyMap(),
         val capeScalingBySkill: Map<String, Int> = emptyMap(),
+        val elderIsleUnlocked: Boolean = false,
+        val elderSkillLevels: Map<String, Int> = emptyMap(),
+        val elderSkillXp: Map<String, Long> = emptyMap(),
         val prestigeUnspentBySkill: Map<String, Int> = emptyMap(),
         val ironmanRaceLocked: Boolean = false,
         val raceChangeTokens: Int = 0,
@@ -139,6 +144,9 @@ class InventoryViewModel @Inject constructor(
         val foodEatOrder: String = "descending",
         /** Heirloom item key -> accumulated item XP. */
         val heirloomXp: Map<String, Long> = emptyMap(),
+        /** True once an ancient_signet has ever entered inventory. Gates the Signet
+         *  armor slot in the gear picker, so it stays hidden for every pre-drop player. */
+        val ancientSignetSeen: Boolean = false,
     ) {
         val totalLevel: Int get() = totalLevelFrom(skillLevels)
 
@@ -198,6 +206,9 @@ class InventoryViewModel @Inject constructor(
                     .associate { it.key to it.value },
                 skillLevels = json.decodeFromString(player.skillLevels),
                 skillXp     = json.decodeFromString(player.skillXp),
+                elderIsleUnlocked = flags.elderIsleUnlocked,
+                elderSkillLevels  = flags.elderSkillLevels,
+                elderSkillXp      = flags.elderSkillXp,
                 equipped    = json.decodeFromString(player.equipped),
                 ownedPetIds = pets.map { it.id }.toSet(),
                 equippedFood          = flags.equippedFood,
@@ -216,9 +227,10 @@ class InventoryViewModel @Inject constructor(
                 prestigeXpBoosts        = flags.prestigeXpBoosts,
                 ironman                 = flags.ironman,
                 activeBlessingKey       = flags.activeBlessingKey,
+                allBlessings            = gameData.blessings,
                 activeBlessingExpiresAt = flags.activeBlessingExpiresAt,
                 activeBlessingXpPct     = run {
-                    val b = ChurchRepository.activeBlessing(flags) ?: return@run 0
+                    val b = ChurchRepository.activeBlessing(flags, gameData.blessings) ?: return@run 0
                     if (b.type != BlessingType.XP) return@run 0
                     val mult = blessingPrayerCapeMult(player, flags, gameData)
                     ((ChurchRepository.effectiveMagnitude(b, mult) - 1f) * 100 + 0.5f).toInt()
@@ -242,6 +254,7 @@ class InventoryViewModel @Inject constructor(
                 foodEatThresholdPct     = flags.foodEatThresholdPct,
                 foodEatOrder            = flags.foodEatOrder,
                 heirloomXp              = flags.heirloomXp,
+                ancientSignetSeen       = "ancient_signet" in flags.seenItemKeys,
                 displayName             = run {
                     val baseName = flags.characterName.ifBlank { context.withAppLocale().getString(R.string.profile_unnamed) }
                     val titleName = titleRepo.displayName(context, flags.equippedTitle, flags)

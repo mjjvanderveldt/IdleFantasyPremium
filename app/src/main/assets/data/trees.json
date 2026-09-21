@@ -54,5 +54,37 @@
     "level_required": 90,
     "xp_per_log": 380,
     "time_per_log": 1
+  },
+  "coastal_pine": {
+    "display_name": "Coastal Pine",
+    "log_name": "coastal_pine_log",
+    "log_display_name": "Coastal Pine Log",
+    "level_required": 1,
+    "xp_per_log": 135,
+    "time_per_log": 1
+  },
+  "grove_oak": {
+    "display_name": "Grove Oak",
+    "log_name": "grove_oak_log",
+    "log_display_name": "Grove Oak Log",
+    "level_required": 30,
+    "xp_per_log": 330,
+    "time_per_log": 1
+  },
+  "abyssal_tree": {
+    "display_name": "Abyssal Tree",
+    "log_name": "abyssal_log",
+    "log_display_name": "Abyssal Log",
+    "level_required": 60,
+    "xp_per_log": 600,
+    "time_per_log": 1
+  },
+  "starwood_tree": {
+    "display_name": "Starwood Tree",
+    "log_name": "starwood_log",
+    "log_display_name": "Starwood Log",
+    "level_required": 85,
+    "xp_per_log": 960,
+    "time_per_log": 1
   }
 }

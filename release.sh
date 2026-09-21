@@ -136,6 +136,29 @@ fi
 git tag "$TAG"
 echo "==> Tagged $TAG"
 
+# Reconcile with remote commits (translations, other PRs) that landed while we were
+# preparing this release. Rebase our release commit + retag on top so the push
+# fast-forwards cleanly. This is idempotent when already up-to-date.
+echo "==> Fetching origin to check for divergence..."
+git fetch origin main
+LOCAL=$(git rev-parse HEAD)
+REMOTE=$(git rev-parse origin/main)
+BASE=$(git merge-base HEAD origin/main)
+if [[ "$LOCAL" != "$REMOTE" && "$BASE" != "$REMOTE" && "$BASE" == "$LOCAL" ]]; then
+    # Only remote has new commits — trivially fast-forward'able, but "we're behind"
+    # means our commit wasn't the tip. Rebase to bring us forward.
+    echo "==> Remote is ahead; rebasing..."
+    git pull --rebase origin main
+    git tag -f "$TAG"
+    echo "==> Retagged $TAG at rebased commit"
+elif [[ "$LOCAL" != "$REMOTE" && "$BASE" != "$REMOTE" && "$BASE" != "$LOCAL" ]]; then
+    # True divergence — both sides have commits the other doesn't.
+    echo "==> Local and remote main have diverged; rebasing local commits on top..."
+    git pull --rebase origin main
+    git tag -f "$TAG"
+    echo "==> Retagged $TAG at rebased commit"
+fi
+
 git push origin main
 git push origin "$TAG"
 echo "==> Pushed main + $TAG"

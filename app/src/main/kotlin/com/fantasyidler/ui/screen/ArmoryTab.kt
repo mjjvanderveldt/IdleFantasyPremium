@@ -413,6 +413,7 @@ private fun buildSlotGroups(context: Context, entries: List<ArmoryEntry>): List<
 @Composable
 private fun filterLabel(filter: ArmoryFilter): String = when (filter) {
     ArmoryFilter.ALL         -> stringResource(R.string.armory_filter_all)
+    ArmoryFilter.MISSING     -> stringResource(R.string.armory_filter_missing)
     ArmoryFilter.WEAPONS     -> stringResource(R.string.armory_filter_weapons)
     ArmoryFilter.ARMOR       -> stringResource(R.string.armory_filter_armor)
     ArmoryFilter.ACCESSORIES -> stringResource(R.string.armory_filter_accessories)

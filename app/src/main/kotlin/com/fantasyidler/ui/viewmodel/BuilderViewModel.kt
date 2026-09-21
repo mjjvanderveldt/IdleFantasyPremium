@@ -40,7 +40,11 @@ data class BuilderUiState(
     val capeRackTier: Int = 0,
     val artisansWorkshopTier: Int = 0,
     val chronosSpireTier: Int = 0,
+    val dockTier: Int = 0,
     val snackbarMessage: String? = null,
+    /** True after the Dock is first built (tier 0 → 1), until the player dismisses the
+     *  Sea Serpent lore prompt. Consumed only via [BuilderViewModel.dismissDockUnlockedDialog]. */
+    val showDockUnlockedDialog: Boolean = false,
 )
 
 @HiltViewModel
@@ -78,6 +82,7 @@ class BuilderViewModel @Inject constructor(
             capeRackTier      = flags.townBuildingTiers["cape_rack"] ?: 0,
             artisansWorkshopTier = flags.townBuildingTiers["artisans_workshop"] ?: 0,
             chronosSpireTier  = flags.townBuildingTiers["chronos_spire"] ?: 0,
+            dockTier          = flags.townBuildingTiers["dock"] ?: 0,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), BuilderUiState())
 
@@ -92,12 +97,18 @@ class BuilderViewModel @Inject constructor(
                 "cape_rack"         -> uiState.value.capeRackTier
                 "artisans_workshop" -> uiState.value.artisansWorkshopTier
                 "chronos_spire"     -> uiState.value.chronosSpireTier
+                "dock"              -> uiState.value.dockTier
                 else                -> uiState.value.churchTier
             }
             val def = gameData.townBuildings[buildingKey]
             when (townRepo.upgradeBuilding(buildingKey)) {
                 UpgradeBuildingResult.Success ->
-                    _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.town_upgrade_success)) }
+                    _extra.update { it.copy(
+                        snackbarMessage = context.withAppLocale().getString(R.string.town_upgrade_success),
+                        // First-time Dock build fires the Sea Serpent lore prompt so the
+                        // gate to Elder Isle is spelled out at the moment the Dock unlocks.
+                        showDockUnlockedDialog = it.showDockUnlockedDialog || (buildingKey == "dock" && currentTier == 0),
+                    ) }
                 UpgradeBuildingResult.InsufficientLevel -> {
                     val req = def?.tiers?.getOrNull(currentTier)?.constructionLevelRequired ?: 0
                     _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.town_upgrade_fail_level, req)) }
@@ -112,4 +123,6 @@ class BuilderViewModel @Inject constructor(
     }
 
     fun snackbarConsumed() = _extra.update { it.copy(snackbarMessage = null) }
+
+    fun dismissDockUnlockedDialog() = _extra.update { it.copy(showDockUnlockedDialog = false) }
 }

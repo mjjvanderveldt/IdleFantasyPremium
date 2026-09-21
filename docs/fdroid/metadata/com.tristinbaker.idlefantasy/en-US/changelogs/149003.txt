@@ -1,0 +1,13 @@
+• Fix: the app now removes unreadable oversized sessions written by old versions (e.g. burying thousands of bones before 1.8.6) on startup, ending the permanent crash loop on opening
+• Fix: XP previews on the Home screen queue and worker cards now update live when XP boosts, blessings, or prestige bonuses change, instead of showing the value frozen when the session was queued
+• Fix: the queue end time now includes the remaining runs of an active multi-run dungeon or boss session, instead of counting only the current run
+• Fix: taps on skill sheet lists (thieving, crafting, runecrafting, mercantile, and the rest) no longer go dead for a moment after scrolling; the invisible tail of a scroll fling was swallowing the first tap
+• Performance: reordering or removing items in the Home screen queue is now instant; each change previously rewrote the entire save row twice and refreshed the UI twice
+• Fix: equipment picker rows and the combat skills header no longer break in languages with longer text (Italian etc.); the Equip button and XP values were being squeezed out of view and rows stretched tall
+• Fix: queueing a guild daily for a recipe above your level now says which level is required instead of the misleading "Not enough materials"
+• Fix: the Home screen boost list no longer collapses when it would hide only a single boost; with exactly 4 boosts all four are shown instead of a "+1 more" toggle that saved no space
+• New: sort the Shop's Sell tab by quantity or price in addition to the default name order
+• New: Missing filters in the Armory and Bestiary show only gear you haven't collected and enemies you haven't encountered
+• New: skills with fully maxed prestige now show (Max) beside their prestige stars on the Skills and Battle screens
+• New: the Combat Gear tab shows your total attack, strength, and defense for the selected combat style
+• French translations for the heirloom items and Midas Band

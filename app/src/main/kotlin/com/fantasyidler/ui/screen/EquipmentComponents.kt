@@ -248,7 +248,15 @@ internal fun EquipPickerSheet(
         } else {
             items(
                 candidates.sortedWith(
-                    compareBy({ it.requirements.values.maxOrNull() ?: 0 }, { it.name })
+                    compareBy(
+                        { it.requirements.values.maxOrNull() ?: 0 },
+                        {
+                            it.attackBonus + it.strengthBonus + it.defenseBonus +
+                                (it.rangedAttackBonus ?: 0) + (it.rangedStrengthBonus ?: 0) +
+                                (it.magicAttackBonus ?: 0) + (it.magicDamageBonus ?: 0)
+                        },
+                        { it.name },
+                    )
                 )
             ) { item ->
                 val xpLabel = weaponXpLabel(item.combatStyle, context).takeIf { item.slot == EquipSlot.WEAPON || EquipSlot.combatStyleForSlot(item.slot) != null }
@@ -264,7 +272,10 @@ internal fun EquipPickerSheet(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment     = Alignment.CenterVertically,
                 ) {
-                    Column {
+                    // weight(1f) keeps the Equip label at intrinsic width; without it a long
+                    // localised detail line starved the label into a one-letter-per-line
+                    // sliver that stretched the row several hundred px tall (issue #1765).
+                    Column(Modifier.weight(1f)) {
                         Text(
                             displayName,
                             style = MaterialTheme.typography.bodyLarge,
@@ -278,6 +289,7 @@ internal fun EquipPickerSheet(
                             )
                         }
                     }
+                    Spacer(Modifier.width(8.dp))
                     Text(
                         text  = stringResource(R.string.btn_equip),
                         style = MaterialTheme.typography.labelMedium,

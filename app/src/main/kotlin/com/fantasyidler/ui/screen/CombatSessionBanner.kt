@@ -1,5 +1,6 @@
 package com.fantasyidler.ui.screen
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -64,6 +65,26 @@ internal fun combatXpBreakdownText(total: Long, bonus: Long, boostWasActive: Boo
     val blessStr = "%.2f".format(blessMult).trimEnd('0').trimEnd('.')
     return if (boostWasActive) "(${base.formatXp()} × 2 × $blessStr)"
            else "(${base.formatXp()} × $blessStr)"
+}
+
+/**
+ * Countdown text for an in-flight boss session. Agility/Chronospire compress the playback,
+ * but the boss always gets its full durationMinutes of simulated fight: every screen shows
+ * the full-length fight clock so a shorter playback doesn't read as less time to beat the
+ * boss (issues #1590, #1788). The real completion time stays in the parentheses.
+ */
+internal fun bossFightCountdown(
+    context: Context,
+    startedAt: Long,
+    endsAt: Long,
+    durationMinutes: Int,
+    now: Long,
+    showEndTime: Boolean,
+): String {
+    val actualMs = (endsAt - startedAt).coerceAtLeast(1L)
+    val fightRemainingMs = (endsAt - now).coerceAtLeast(0L) * (durationMinutes * 60_000L) / actualMs
+    return (now + fightRemainingMs).toCountdown(context, showEndTime = false) +
+        if (showEndTime) " (${endsAt.toClockTime(context)})" else ""
 }
 
 // ---------------------------------------------------------------------------
@@ -252,15 +273,7 @@ internal fun CombatSessionBanner(
             Text(
                 text       = remember(now, showEndTime) {
                     if (isBoss && sessionBoss != null) {
-                        // Agility/Chronospire compress the playback, but the boss always gets
-                        // its full durationMinutes of simulated fight: show the fight clock so
-                        // a shorter playback doesn't read as less time to beat the boss
-                        // (issue #1590). The real completion time stays in the parentheses.
-                        val actualMs = (endsAt - session.startedAt).coerceAtLeast(1L)
-                        val fightRemainingMs = (endsAt - now).coerceAtLeast(0L) *
-                            (sessionBoss.durationMinutes * 60_000L) / actualMs
-                        (now + fightRemainingMs).toCountdown(context, showEndTime = false) +
-                            if (showEndTime) " (${endsAt.toClockTime(context)})" else ""
+                        bossFightCountdown(context, session.startedAt, endsAt, sessionBoss.durationMinutes, now, showEndTime)
                     } else endsAt.toCountdown(context, showEndTime)
                 },
                 style      = MaterialTheme.typography.displaySmall,

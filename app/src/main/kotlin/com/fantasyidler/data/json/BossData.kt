@@ -23,6 +23,10 @@ data class BossData(
     @SerialName("event_key") val eventKey: String? = null,
     /** True for bosses only unlocked by completing the Grand Monument (Eternal Flame lit). */
     @SerialName("requires_monument") val requiresMonument: Boolean = false,
+    /** True for bosses only unlocked once the town Dock has been built (Construction 90). */
+    @SerialName("requires_dock") val requiresDock: Boolean = false,
+    /** Bosses that require a minimum total level to unlock. 0 = no total-level gate. */
+    @SerialName("total_level_required") val totalLevelRequired: Int = 0,
     /** Raid-tier boss: tuned to be unbeatable solo, fought with hired mercenaries. */
     val raid: Boolean = false,
 )

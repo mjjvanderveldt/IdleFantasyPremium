@@ -248,5 +248,13 @@
     "effect_type": "coin_boost",
     "boosted_skill": "coins",
     "boost_percent": 10
-  }
+  },
+  "tidal_sprite":       {"id":"tidal_sprite",       "display_name":"Tidal Sprite",       "emoji":"🌊", "description":"A shy tide-spirit that follows the isle's cooler currents.",           "source":"Beach elder-tier drop",              "effect_type":"xp_boost", "boosted_skill":"fishing",     "boost_percent":10},
+  "grove_fawn":         {"id":"grove_fawn",         "display_name":"Grove Fawn",         "emoji":"🦌", "description":"A silent fawn of the abyssal grove. Softens every axe fall.",            "source":"Ancient Forest elder-tier drop",     "effect_type":"xp_boost", "boosted_skill":"woodcutting", "boost_percent":10},
+  "magma_salamander":   {"id":"magma_salamander",   "display_name":"Magma Salamander",   "emoji":"🦎", "description":"A hot-blooded lizard that basks in Volcano Peak's vents.",              "source":"Volcano Peak elder-tier drop",       "effect_type":"xp_boost", "boosted_skill":"combat",      "boost_percent":10},
+  "abyss_wisp":         {"id":"abyss_wisp",         "display_name":"Abyss Wisp",         "emoji":"🕳️", "description":"A drifting mote from the caldera's darkest layer.",                     "source":"Abyssal Depths elder-tier drop",     "effect_type":"xp_boost", "boosted_skill":"crafting",    "boost_percent":10},
+  "ancient_turtle":     {"id":"ancient_turtle",     "display_name":"Ancient Turtle",     "emoji":"🐢", "description":"A slow, patient shell-back that has seen a hundred voyages fail.",       "source":"Beach elder-tier rare drop",         "effect_type":"xp_boost", "boosted_skill":"hitpoints",   "boost_percent":10},
+  "cinder_hawk":        {"id":"cinder_hawk",        "display_name":"Cinder Hawk",        "emoji":"🦅", "description":"A raptor whose feathers hold the volcano's heat.",                       "source":"Volcano Peak elder-tier rare drop",  "effect_type":"xp_boost", "boosted_skill":"ranged",      "boost_percent":10},
+  "deepwater_serpent":  {"id":"deepwater_serpent",  "display_name":"Deepwater Serpent",  "emoji":"🐍", "description":"A slender coil of the deepest reef. Rarely surfaces.",                  "source":"Abyssal Depths elder-tier ultra-rare drop", "effect_type":"xp_boost", "boosted_skill":"magic", "boost_percent":10},
+  "elder_familiar":     {"id":"elder_familiar",     "display_name":"Elder Familiar",     "emoji":"🕯️", "description":"A soft-glowing shape that follows the Elder's final chamber home.",       "source":"The Last Elder — legendary drop",    "effect_type":"xp_boost", "boosted_skill":"combat",      "boost_percent":15}
 }

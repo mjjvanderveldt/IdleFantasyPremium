@@ -68,7 +68,7 @@ class SeasonalEventViewModel @Inject constructor(
             extra.copy(
                 isLoading          = false,
                 event              = event,
-                tokens             = flags.seasonalTokensByEvent[event.id] ?: 0,
+                tokens             = (flags.seasonalTokensByEvent[event.id] ?: 0).coerceAtMost(event.tokenGoal),
                 bountyTasks        = seasonalEventRepo.bountyTasksWithProgress(event, flags, inventory),
                 minigameCooldownAt = flags.seasonalMinigameCooldownAt,
                 minigameEasyMode   = flags.seasonalMinigameEasyMode,

@@ -26,7 +26,7 @@ Before you publish, it's worth getting a second opinion on your guide. You could
 
 ## Adding guides to the wiki
 
-So you've written your guide and (hopefully) used some feedback to polish it - nice work! The next step is adding it to the wiki itself, which starts with creating a fork of the repo. If you're not familiar with forking and pull requests, [GitHub's quickstart guide](https://docs.github.com/en/pull-requests/get-started/pull-request-quickstart) is a good place to start, or you can find a how-to video that walks through the process.
+So you've written your guide and (hopefully) used some feedback to polish it - nice work! The next step is adding it to the wiki itself, which starts with creating a fork of the repo. If you're not familiar with forking and pull requests, [GitHub's quickstart guide](https://docs.github.com/en/pull-requests/get-started/pull-request-quickstart) is a good place to start.
 
 Once you've forked the repo, you'll have two options for making your wiki guide to choose from:
 

@@ -1,5 +1,5 @@
 # {icon} Crafting
 
-Create jewellery and other items from precious materials.
+Create jewellery from precious materials.
 
 {item_table}

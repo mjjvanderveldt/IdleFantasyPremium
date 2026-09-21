@@ -21,3 +21,4 @@ out
 keystore.p12
 scripts/release_apk.sh
 *.md.backup
+/_verify_i18n.py

@@ -80,7 +80,7 @@ internal fun MiningSheet(
             )
         }
         HorizontalDivider()
-        Column(Modifier.verticalScroll(scrollState)) {
+        Column(Modifier.verticalScroll(scrollState, flingBehavior = rememberTapFriendlyFlingBehavior())) {
             ores.entries
                 .sortedBy { it.value.levelRequired }
                 .forEach { (key, ore) ->
@@ -141,7 +141,7 @@ internal fun WoodcuttingSheet(
             )
         }
         HorizontalDivider()
-        Column(Modifier.verticalScroll(scrollState)) {
+        Column(Modifier.verticalScroll(scrollState, flingBehavior = rememberTapFriendlyFlingBehavior())) {
             trees.entries
                 .sortedBy { it.value.levelRequired }
                 .forEach { (key, tree) ->
@@ -202,7 +202,7 @@ internal fun FishingSheet(
             )
         }
         HorizontalDivider()
-        Column(Modifier.verticalScroll(scrollState)) {
+        Column(Modifier.verticalScroll(scrollState, flingBehavior = rememberTapFriendlyFlingBehavior())) {
             fish.entries
                 .sortedBy { it.value.levelRequired }
                 .forEach { (key, f) ->

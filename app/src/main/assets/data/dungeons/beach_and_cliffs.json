@@ -1,0 +1,24 @@
+{
+  "name": "beach_and_cliffs",
+  "display_name": "Beach & Cliffs",
+  "description": "The isle's landing zone. Coastal enemies fresh off the wreck of prior voyages.",
+  "recommended_level": 1,
+  "encounter_rate": 0.5,
+  "enemy_spawns": [
+    {
+      "enemy": "beach_marauder",
+      "weight": 3
+    },
+    {
+      "enemy": "beach_leviathan",
+      "weight": 2
+    }
+  ],
+  "rare_drops": [
+    {
+      "chance": 0.4,
+      "comment": "40% chance per clear",
+      "item": "ancient_sigil"
+    }
+  ]
+}

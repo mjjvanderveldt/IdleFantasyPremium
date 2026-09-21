@@ -51,10 +51,10 @@
     <string name="enemy_ember_hound_name">Chien de Braise</string>
     <string name="enemy_cinder_colossus_name">Colosse d\'Escarbille</string>
     <string name="enemy_will_o_wisp_name">Feu Follet</string>
-    <string name="enemy_grave_ghoul_name">Goule de Tombe</string>
+    <string name="enemy_grave_ghoul_name">Goule des Tombes</string>
     <string name="enemy_husk_horror_name">Horreur Desséchée</string>
-    <string name="enemy_barrow_wight_name">Créature de Tertre</string>
-    <string name="enemy_shade_stalker_name">Traqueur d\'Ombre</string>
+    <string name="enemy_barrow_wight_name">Revenant des Tertres</string>
+    <string name="enemy_shade_stalker_name">Traqueur des Ombres</string>
     <string name="enemy_bone_colossus_name">Colosse d\'Os</string>
     <string name="enemy_dread_dullahan_name">Dullahan Redoutable</string>
     <string name="enemy_void_stalker_name">Traqueur du Vide</string>
@@ -162,4 +162,30 @@
     <string name="dungeon_rogue_sanctum_desc">Le refuge intérieur de la guilde, accessible uniquement aux membres éprouvés.</string>
     <string name="dungeon_guild_of_shadows_name">Guilde des Ombres</string>
     <string name="dungeon_guild_of_shadows_desc">Le sanctuaire le plus profond de la guilde des voleurs, gardé par ses exécuteurs les plus redoutables.</string>
+
+    <!-- Elder Isle enemies (two per dungeon) -->
+    <string name="enemy_beach_marauder_name">Beach Marauder</string> <!-- untranslated -->
+    <string name="enemy_beach_leviathan_name">Beach Leviathan</string> <!-- untranslated -->
+    <string name="enemy_grove_stalker_name">Grove Stalker</string> <!-- untranslated -->
+    <string name="enemy_grove_dryad_name">Grove Dryad</string> <!-- untranslated -->
+    <string name="enemy_ash_beast_name">Ash Beast</string> <!-- untranslated -->
+    <string name="enemy_lava_wraith_name">Lava Wraith</string> <!-- untranslated -->
+    <string name="enemy_abyssal_horror_name">Abyssal Horror</string> <!-- untranslated -->
+    <string name="enemy_void_seraph_name">Void Seraph</string> <!-- untranslated -->
+
+    <!-- Elder Isle dungeons -->
+    <string name="dungeon_beach_and_cliffs_name">Beach &amp; Cliffs</string> <!-- untranslated -->
+    <string name="dungeon_beach_and_cliffs_desc">The isle\'s landing zone. Coastal enemies scavenge the wrecks of prior voyages. Every clear drops one Ancient Sigil.</string> <!-- untranslated -->
+    <string name="dungeon_ancient_forest_name">Ancient Forest</string> <!-- untranslated -->
+    <string name="dungeon_ancient_forest_desc">A rune-laced jungle grown over an old library. Grove stalkers and rune-touched dryads keep visitors from the ruins beneath. One Ancient Sigil per clear.</string> <!-- untranslated -->
+    <string name="dungeon_volcano_peak_name">Volcano Peak</string> <!-- untranslated -->
+    <string name="dungeon_volcano_peak_desc">The isle\'s smoking spine, once an Elder altar. Ash beasts and lava wraiths guard the sealing site. Two Ancient Sigils per clear.</string> <!-- untranslated -->
+    <string name="dungeon_abyssal_depths_name">Abyssal Depths</string> <!-- untranslated -->
+    <string name="dungeon_abyssal_depths_desc">A flooded pressure-chamber at the foot of the isle, where the Last Elder waits. Abyssal horrors and void seraphs patrol the approach. Three Ancient Sigils per clear.</string> <!-- untranslated -->
+
+    <!-- Elder Isle raid bosses -->
+    <string name="boss_sea_serpent_name">Sea Serpent</string> <!-- untranslated -->
+    <string name="boss_sea_serpent_desc">The voyage boss. A rune-scarred serpent that circles the isle and turns back everyone it doesn\'t drown. Defeat once to permanently enable Set Sail.</string> <!-- untranslated -->
+    <string name="boss_last_elder_name">The Last Elder</string> <!-- untranslated -->
+    <string name="boss_last_elder_desc">The last of the Elders, sealed at the bottom of the Abyssal Depths. Only a full Elder set can survive the fight.</string> <!-- untranslated -->
 </resources>

@@ -193,6 +193,24 @@ sealed class Screen(
         icon     = Icons.Filled.Star,
     )
 
+    object ElderIsleShop : Screen(
+        route    = "elder_isle_shop",
+        labelRes = R.string.elder_isle_shop_title,
+        icon     = Icons.Filled.ShoppingCart,
+    )
+
+    object ElderArmorMaster : Screen(
+        route    = "elder_armor_master",
+        labelRes = R.string.elder_isle_armor_master_title,
+        icon     = Icons.Filled.Shield,
+    )
+
+    object LoreMaster : Screen(
+        route    = "lore_master",
+        labelRes = R.string.elder_isle_lore_master_title,
+        icon     = Icons.AutoMirrored.Filled.MenuBook,
+    )
+
     companion object {
         val bottomNavItems = listOf(Skills, Combat, Home, Quests, Profile)
     }

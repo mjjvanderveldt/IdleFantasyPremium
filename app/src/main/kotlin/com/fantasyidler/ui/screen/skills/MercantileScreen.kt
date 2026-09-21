@@ -66,7 +66,7 @@ fun MercantileSheetContent(
     }
 
     Box(Modifier.fillMaxWidth()) {
-        LazyColumn(Modifier.fillMaxWidth()) {
+        LazyColumn(Modifier.fillMaxWidth(), flingBehavior = rememberTapFriendlyFlingBehavior()) {
             item { MercantileStatsHeader(state) }
             item {
                 Text(

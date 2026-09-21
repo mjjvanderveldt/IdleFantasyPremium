@@ -84,7 +84,14 @@ private fun tabGroupLabel(group: String): String = when (group) {
 @Composable
 fun QuestsScreen(
     viewModel: QuestsViewModel = hiltViewModel(),
+    isleLocationVm: com.fantasyidler.ui.viewmodel.ElderIsleLocationViewModel = hiltViewModel(),
 ) {
+    val isleState by isleLocationVm.state.collectAsState()
+    if (isleState.onElderIsle) {
+        // On isle, Quests tab renders as "Lore" — the four-act story.
+        ElderIsleQuestsScreen(isleLocationVm = isleLocationVm)
+        return
+    }
     val state by viewModel.uiState.collectAsState()
 
     AppBannerEffect(state.snackbarMessage, viewModel::snackbarConsumed)

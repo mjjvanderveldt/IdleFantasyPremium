@@ -82,6 +82,9 @@ data class CombatUiState(
     val snackbarMessage: String? = null,
     /** Non-null when a new pet was found; drives the pet-found dialog. Consumed by the UI. */
     val petFoundName: String? = null,
+    val totalAttack: Int = 0,
+    val totalStrength: Int = 0,
+    val totalDefense: Int = 0,
     val totalAttackBonus: Int = 0,
     val totalStrengthBonus: Int = 0,
     val totalDefenseBonus: Int = 0,
@@ -98,6 +101,7 @@ data class CombatUiState(
     val combatPrestigeBonus: Map<String, Int> = emptyMap(),
     /** Combat skills at 99+ where another prestige still earns points or an XP tier. */
     val prestigeReadySkills: Set<String> = emptySet(),
+    val prestigeMaxedSkills: Set<String> = emptySet(),
     val ironman: Boolean = false,
     val showPrestigeNotifications: Boolean = true,
     val towerHpBonus: Int = 0,
@@ -120,6 +124,16 @@ data class CombatUiState(
     val bossFullCoinKillsLeft: Int = PlayerRepository.BOSS_FULL_COIN_KILLS_PER_DAY,
     /** True once the Grand Monument's Eternal Flame is lit (unlocks monument-gated bosses). */
     val monumentComplete: Boolean = false,
+    /** True once the town Dock has been built (unlocks the Voyage / Elder Isle path). */
+    val dockBuilt: Boolean = false,
+    /** Player total level across all Skills.ALL, used to gate dock-side bosses. */
+    val totalLevel: Int = 0,
+    /** True when the player is currently sailed to the Elder Isle. */
+    val onElderIsle: Boolean = false,
+    /** True once every Elder BIS piece (8 total) has been crafted at least once. Gates
+     *  the Last Elder boss card so it stays hidden on the isle Combat tab until the
+     *  full set is assembled. Matches the story chain's IV.2 requirement. */
+    val hasFullElderSet: Boolean = false,
     val isQueueFull: Boolean = false,
     /** Today's hireable raid mercenaries (rotates at the daily reset). */
     val mercPool: List<MercenaryData> = emptyList(),
@@ -179,6 +193,16 @@ class CombatViewModel @Inject constructor(
 
         /** Randomized runs per dungeon for the safety rating, rated by survival percentage rather than a single fixed-seed pass. */
         const val SURVIVAL_SIM_RUNS = 30
+
+        /** Elder Isle dungeons — swapped in for the mainland list when the player is sailed. */
+        val ELDER_DUNGEON_KEYS = setOf("beach_and_cliffs", "ancient_forest", "volcano_peak", "abyssal_depths")
+        /** Elder Isle bosses — same swap treatment. */
+        val ELDER_BOSS_KEYS    = setOf("last_elder")
+        /** The 8 Elder BIS pieces. Owning all of them opens the Last Elder fight. */
+        val ELDER_PIECE_KEYS   = setOf(
+            "elder_helm", "elder_platebody", "elder_platelegs", "elder_boots",
+            "elder_cape", "elder_shield", "elder_signet_ring", "elder_amulet",
+        )
     }
 
     private val _extra = MutableStateFlow(CombatUiState())
@@ -222,11 +246,16 @@ class CombatViewModel @Inject constructor(
         if (player == null) {
             extra.copy(combatSession = combatSession)
         } else {
-            val levels:   Map<String, Int>    = json.decodeFromString(player.skillLevels)
-            val xpMap:    Map<String, Long>   = json.decodeFromString(player.skillXp)
+            val mainlandLevels: Map<String, Int>  = json.decodeFromString(player.skillLevels)
+            val mainlandXp:     Map<String, Long> = json.decodeFromString(player.skillXp)
             val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
             val inventory: Map<String, Int>    = json.decodeFromString(player.inventory)
             val flags: PlayerFlags         = try { json.decodeFromString(player.flags) } catch (_: Exception) { PlayerFlags() }
+            // On isle: swap the combat skill pool this whole VM reads from over to elder
+            // levels/XP. Every downstream calc (max hit, hit chance, gear-tab stat lines,
+            // combat level headline, session banner) uses elder values while sailed.
+            val levels: Map<String, Int> = if (flags.onElderIsle) mainlandLevels.mapValues { flags.elderSkillLevels[it.key] ?: 1 } else mainlandLevels
+            val xpMap:  Map<String, Long> = if (flags.onElderIsle) mainlandXp.mapValues { flags.elderSkillXp[it.key] ?: 0L }    else mainlandXp
             val equipMap = HeirloomStats.resolveAll(gameData.equipment, levels, flags.heirloomXp)
             val activeWeaponSlot = extra.selectedWeaponSlot
                 ?: flags.activeWeaponSlot
@@ -261,6 +290,18 @@ class CombatViewModel @Inject constructor(
                 else     -> equippedWeapon?.strengthBonus ?: 0
             }
             val totalDef = armorDef + (equippedWeapon?.defenseBonus  ?: 0)
+            val potionKey = extra.selectedPotionKey ?: flags.activePotionKey
+            val potionBonuses = potionKey?.takeIf { (inventory[it] ?: 0) > 0 }
+                ?.let { boostRepo.boostedPotionEffects(flags, gameData.potionEffects[it] ?: emptyMap()) } ?: emptyMap()
+            fun effectiveLevel(skill: String): Int = (levels[skill] ?: 1) +
+                boostRepo.combatStatBonus(skill, flags, levels[skill] ?: 1) +
+                (potionBonuses[skill] ?: 0)
+            val attackSkill = when (displayStyle) {
+                "ranged" -> Skills.RANGED
+                "magic" -> Skills.MAGIC
+                else -> Skills.ATTACK
+            }
+            val spell = extra.selectedSpell ?: flags.activeSpell?.let { gameData.spells[it] }
             val skillLevels = playerRepo.getSkillLevels()
             extra.copy(
                 isLoading               = false,
@@ -272,6 +313,15 @@ class CombatViewModel @Inject constructor(
                 equippedWeapons         = equippedWeapons,
                 selectedWeaponSlot      = activeWeaponSlot,
                 combatSession           = combatSession,
+                totalAttack             = effectiveLevel(attackSkill) + totalAtk,
+                totalStrength           = when (displayStyle) {
+                    "ranged" -> effectiveLevel(Skills.RANGED) + totalStr
+                    "magic" -> (spell?.maxHit ?: 0) + (equippedWeapon?.magicDamageBonus ?: 0) +
+                        EquipSlot.ARMOR_SLOTS.sumOf { equipMap[equipped[it]]?.magicDamageBonus ?: 0 }
+                    else -> effectiveLevel(Skills.STRENGTH) + totalStr
+                },
+                totalDefense            = effectiveLevel(Skills.DEFENSE) + totalDef +
+                    ChurchRepository.defBonus(flags, blessingPrayerCapeMult(flags, equipped, inventory.keys, gameData), gameData.blessings),
                 totalAttackBonus        = totalAtk,
                 totalStrengthBonus      = totalStr,
                 totalDefenseBonus       = totalDef,
@@ -289,8 +339,11 @@ class CombatViewModel @Inject constructor(
                 combatPrestigeBonus     = Skills.COMBAT.associateWithTo(mutableMapOf()) {
                     boostRepo.combatStatBonus(it, flags, skillLevels[it] ?: 0)
                 },
-                prestigeReadySkills     = Skills.ALL.filterTo(mutableSetOf()) {
+                prestigeReadySkills     = if (flags.onElderIsle) emptySet() else Skills.ALL.filterTo(mutableSetOf()) {
                     (levels[it] ?: 1) >= 99 && PrestigeBoosts.prestigeHasReward(gameData.prestigeTrees, flags, it)
+                },
+                prestigeMaxedSkills     = Skills.ALL.filterTo(mutableSetOf()) {
+                    !PrestigeBoosts.prestigeHasReward(gameData.prestigeTrees, flags, it)
                 },
                 ironman                 = flags.ironman,
                 showPrestigeNotifications = flags.showPrestigeNotifications,
@@ -306,6 +359,10 @@ class CombatViewModel @Inject constructor(
                 activeDungeonRepeatTotal = flags.activeDungeonRepeatTotal,
                 bossFullCoinKillsLeft   = playerRepo.bossFullCoinKillsLeft(flags, extra.selectedBoss?.id ?: ""),
                 monumentComplete        = flags.monumentTier >= 5,
+                dockBuilt               = (flags.townBuildingTiers["dock"] ?: 0) >= 1,
+                totalLevel              = Skills.ALL.sumOf { levels[it] ?: 1 },
+                onElderIsle             = flags.onElderIsle,
+                hasFullElderSet         = ELDER_PIECE_KEYS.all { (inventory[it] ?: 0) >= 1 },
                 isQueueFull             = flags.sessionQueue.size >= playerRepo.maxQueueSize(flags),
                 mercPool                = mercRepo.dailyPool(flags),
                 hiredMercs              = mercRepo.activeContracts(flags).map { (m, h) -> MercContract(m, h.expiresAt) },
@@ -315,22 +372,32 @@ class CombatViewModel @Inject constructor(
 
     // Re-read per access, not lazy: the ViewModel outlives a seasonal event switch while
     // the app stays open, and a cached list kept serving the old event's dungeon (issue #1651).
-    val dungeonList: List<DungeonData>
-        get() {
-            val activeEventId = seasonalEventRepo.activeEvent()?.id
-            return gameData.dungeons.values
-                .filter { it.eventKey == null || it.eventKey == activeEventId }
-                .sortedBy { it.recommendedLevel }
-        }
+    fun dungeonList(onElderIsle: Boolean = false): List<DungeonData> {
+        val activeEventId = seasonalEventRepo.activeEvent()?.id
+        return gameData.dungeons.values
+            .filter { it.eventKey == null || it.eventKey == activeEventId }
+            .filter { (it.name in ELDER_DUNGEON_KEYS) == onElderIsle }
+            .sortedBy { it.recommendedLevel }
+    }
+
+    /** Backwards-compatible getter (defaults to mainland list); prefer the `onElderIsle` overload. */
+    val dungeonList: List<DungeonData> get() = dungeonList(onElderIsle = false)
 
     /** Monument-gated bosses appear only once the Eternal Flame is lit, so this reads flags per call. */
-    fun bossList(monumentComplete: Boolean): List<BossData> {
+    fun bossList(monumentComplete: Boolean, dockBuilt: Boolean = false, totalLevel: Int = 0, onElderIsle: Boolean = false, hasFullElderSet: Boolean = false): List<BossData> {
         val activeEventId = seasonalEventRepo.activeEvent()?.id
         return gameData.bosses.values
             .filter { !it.raid }
             .filter { it.eventKey == null || it.eventKey == activeEventId }
             .filter { !it.requiresMonument || monumentComplete }
+            .filter { !it.requiresDock || dockBuilt }
+            .filter { it.totalLevelRequired == 0 || totalLevel >= it.totalLevelRequired }
+            .filter { (it.id in ELDER_BOSS_KEYS) == onElderIsle }
             .sortedBy { it.combatLevelRequired }
+        // Last Elder stays in the list even without the full Elder set — the row is rendered
+        // as a "???" masked entry (BossRow.masked). The full-set check gates tap/preview
+        // instead of dropping the row entirely, so the isle boss list stays two entries and
+        // the finale has a visible slot to chase.
     }
 
     /** Raid-tier bosses: unbeatable solo, fought with a hired mercenary party. */
@@ -529,10 +596,12 @@ class CombatViewModel @Inject constructor(
             try {
                 val dungeon   = gameData.dungeons[dungeonKey] ?: error("Unknown dungeon: $dungeonKey")
                 val player    = playerRepo.getOrCreatePlayer()
-                val levels:   Map<String, Int>     = json.decodeFromString(player.skillLevels)
+                val mainlandLevels: Map<String, Int> = json.decodeFromString(player.skillLevels)
+                val flags: PlayerFlags = json.decodeFromString(player.flags)
+                // Elder Isle sessions use elder combat levels for damage/hit-chance/HP calcs.
+                val levels: Map<String, Int> = if (flags.onElderIsle) mainlandLevels.mapValues { flags.elderSkillLevels[it.key] ?: 1 } else mainlandLevels
                 val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
                 val inventory: Map<String, Int>    = json.decodeFromString(player.inventory)
-                val flags: PlayerFlags = json.decodeFromString(player.flags)
                 val equipMap = HeirloomStats.resolveAll(gameData.equipment, levels, flags.heirloomXp)
 
                 val activeWeaponSlot = _extra.value.selectedWeaponSlot
@@ -628,7 +697,7 @@ class CombatViewModel @Inject constructor(
                     playerAttack        = (levels[Skills.ATTACK]    ?: 1) + boostRepo.combatStatBonus(Skills.ATTACK, flags, levels[Skills.ATTACK] ?: 1),
                     playerStrength      = (levels[Skills.STRENGTH]  ?: 1) + boostRepo.combatStatBonus(Skills.STRENGTH, flags, levels[Skills.STRENGTH] ?: 1),
                     playerDefence       = (levels[Skills.DEFENSE]   ?: 1) + totalDefenseBonus + boostRepo.combatStatBonus(Skills.DEFENSE, flags, levels[Skills.DEFENSE] ?: 1),
-                    blessingDefBonus    = ChurchRepository.defBonus(flags, blessingPrayerCapeMult(flags, equipped, inventory.keys, gameData)),
+                    blessingDefBonus    = ChurchRepository.defBonus(flags, blessingPrayerCapeMult(flags, equipped, inventory.keys, gameData), gameData.blessings),
                     playerHp            = (levels[Skills.HITPOINTS] ?: 1) + boostRepo.combatStatBonus(Skills.HITPOINTS, flags, levels[Skills.HITPOINTS] ?: 1) + flags.towerHpBonus,
                     weaponAttackBonus   = totalAttackBonus,
                     weaponStrengthBonus = totalStrengthBonus,
@@ -669,6 +738,7 @@ class CombatViewModel @Inject constructor(
                     skillDisplayName = GameStrings.dungeonName(context, dungeonKey),
                     alarmOffsetMs    = alarmOffsetMs,
                     weaponSlot       = activeWeaponSlot,
+                    isElderSession   = flags.onElderIsle,
                 )
                 if (repeatCount > 1) {
                     val dungeonSnapshot = QueuedAction(
@@ -760,10 +830,12 @@ class CombatViewModel @Inject constructor(
             try {
                 val boss    = gameData.bosses[bossKey] ?: error("Unknown boss: $bossKey")
                 val player  = playerRepo.getOrCreatePlayer()
-                val levels: Map<String, Int>       = json.decodeFromString(player.skillLevels)
+                val mainlandLevels: Map<String, Int> = json.decodeFromString(player.skillLevels)
+                val flags: PlayerFlags = try { json.decodeFromString(player.flags) } catch (_: Exception) { PlayerFlags() }
+                // Elder boss fights read elder combat levels.
+                val levels: Map<String, Int> = if (flags.onElderIsle) mainlandLevels.mapValues { flags.elderSkillLevels[it.key] ?: 1 } else mainlandLevels
                 val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
                 val inventory: Map<String, Int>    = json.decodeFromString(player.inventory)
-                val flags: PlayerFlags = try { json.decodeFromString(player.flags) } catch (_: Exception) { PlayerFlags() }
                 val equipMap = HeirloomStats.resolveAll(gameData.equipment, levels, flags.heirloomXp)
                 val activeWeaponSlot = _extra.value.selectedWeaponSlot
                     ?: flags.activeWeaponSlot
@@ -850,7 +922,7 @@ class CombatViewModel @Inject constructor(
                     arrowStrengthBonuses = ARROW_STRENGTH_BONUS,
                     equippedFood       = availableFood,
                     foodHealValues     = boostRepo.boostedFoodHeal(flags, gameData.foodHealValues),
-                    blessingDefBonus   = ChurchRepository.defBonus(flags, blessingPrayerCapeMult(flags, equipped, inventory.keys, gameData)),
+                    blessingDefBonus   = ChurchRepository.defBonus(flags, blessingPrayerCapeMult(flags, equipped, inventory.keys, gameData), gameData.blessings),
                     runeKey            = bossRuneKey,
                     runeCostPerAttack  = bossRuneCost,
                     availableRunes     = if (bossRuneKey != null) inventory[bossRuneKey] ?: 0 else Int.MAX_VALUE,
@@ -880,6 +952,7 @@ class CombatViewModel @Inject constructor(
                     // ends the session at the exact death tick within the final frame.
                     alarmOffsetMs    = CombatSimulator.bossEndAlarmOffsetMs(bossFrames, boss.durationMinutes, frameMs),
                     weaponSlot       = activeWeaponSlot,
+                    isElderSession   = flags.onElderIsle,
                 )
                 if (repeatCount > 1) {
                     val bossSnapshot = QueuedAction(
@@ -1070,7 +1143,7 @@ class CombatViewModel @Inject constructor(
                     playerAttack        = atk,
                     playerStrength      = str,
                     playerDefence       = def,
-                    blessingDefBonus    = ChurchRepository.defBonus(flags, blessingPrayerCapeMult(flags, equipped, inventory.keys, gameData)),
+                    blessingDefBonus    = ChurchRepository.defBonus(flags, blessingPrayerCapeMult(flags, equipped, inventory.keys, gameData), gameData.blessings),
                     playerHp            = hp,
                     weaponAttackBonus   = totalAtk,
                     weaponStrengthBonus = totalStr,
@@ -1209,7 +1282,7 @@ class CombatViewModel @Inject constructor(
             arrowStrengthBonuses = ARROW_STRENGTH_BONUS,
             equippedFood       = flags.equippedFood.keys.associateWith { Int.MAX_VALUE },
             foodHealValues     = gameData.foodHealValues,
-            blessingDefBonus   = ChurchRepository.defBonus(flags, blessingPrayerCapeMult(flags, equipped, inventory.keys, gameData)),
+            blessingDefBonus   = ChurchRepository.defBonus(flags, blessingPrayerCapeMult(flags, equipped, inventory.keys, gameData), gameData.blessings),
             runeKey            = bossRuneKey,
             runeCostPerAttack  = selectedSpell?.runeCost ?: 1,
             availableRunes     = Int.MAX_VALUE,

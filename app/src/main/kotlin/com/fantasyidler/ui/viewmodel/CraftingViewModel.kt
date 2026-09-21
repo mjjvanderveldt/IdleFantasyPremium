@@ -140,6 +140,9 @@ data class CraftingUiState(
     val craftXpMult: Double = 1.0,
     /** Recipe keys gated behind prestige unlock nodes the player does not own. */
     val hiddenRecipeKeys: Set<String> = emptySet(),
+    /** True when the player is currently on Elder Isle. CraftSkillSheet filters the recipe
+     *  list to isle-only entries when this is true. */
+    val onElderIsle: Boolean = false,
 ) {
     /** Returns how many times [recipe] can be crafted given [effectiveInventory]. */
     fun maxCraftable(recipe: CraftableRecipe): Int {
@@ -196,8 +199,13 @@ class CraftingViewModel @Inject constructor(
         if (player == null) {
             extra
         } else {
-            val levels: Map<String, Int> = json.decodeFromString(player.skillLevels)
-            val xp: Map<String, Long> = json.decodeFromString(player.skillXp)
+            val mainlandLevels: Map<String, Int> = json.decodeFromString(player.skillLevels)
+            val mainlandXp: Map<String, Long> = json.decodeFromString(player.skillXp)
+            val flagsForLevels: PlayerFlags = try { json.decodeFromString(player.flags) } catch (_: Exception) { PlayerFlags() }
+            // On isle, all skill-level and XP reads swap to the elder pool so recipes gate
+            // on elder levels and the Crafting sheet displays elder progress.
+            val levels: Map<String, Int> = if (flagsForLevels.onElderIsle) mainlandLevels.mapValues { flagsForLevels.elderSkillLevels[it.key] ?: 1 } else mainlandLevels
+            val xp: Map<String, Long>    = if (flagsForLevels.onElderIsle) mainlandXp.mapValues { flagsForLevels.elderSkillXp[it.key] ?: 0L }    else mainlandXp
             val inventory: Map<String, Int> = json.decodeFromString(player.inventory)
             val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
             val flags: PlayerFlags = json.decodeFromString(player.flags)
@@ -210,7 +218,7 @@ class CraftingViewModel @Inject constructor(
             } else 0L
             val xpMult = if (selectedRecipe != null) {
                 val boostMult = if (flags.ironman) 1.0
-                                else (if (flags.xpBoostExpiresAt > System.currentTimeMillis()) 2.0 else 1.0) * ChurchRepository.xpMultiplier(flags, blessingPrayerCapeMult(player, flags, gameData))
+                                else (if (flags.xpBoostExpiresAt > System.currentTimeMillis()) 2.0 else 1.0) * ChurchRepository.xpMultiplier(flags, blessingPrayerCapeMult(player, flags, gameData), gameData.blessings)
                 val petPct = petBoostFor(player.pets, selectedRecipe.skillName, flags.ironman)
                 selectedEff * boostMult * (1.0 + petPct / 100.0)
             } else 1.0
@@ -232,6 +240,7 @@ class CraftingViewModel @Inject constructor(
                 isQueueFull        = flags.sessionQueue.size >= playerRepo.maxQueueSize(flags),
                 craftXpMult        = xpMult,
                 hiddenRecipeKeys   = boostRepo.gatedRecipeKeys - boostRepo.unlockedRecipeKeys(flags),
+                onElderIsle        = flags.onElderIsle,
             )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CraftingUiState())
@@ -421,7 +430,12 @@ class CraftingViewModel @Inject constructor(
         val recipe = allRecipes.firstOrNull { it.outputKey == targetKey } ?: return false
         val state  = uiState.value
         val max    = state.maxCraftable(recipe)
-        if ((state.skillLevels[recipe.skillName] ?: 1) < recipe.levelRequired || max <= 0) {
+        if ((state.skillLevels[recipe.skillName] ?: 1) < recipe.levelRequired) {
+            _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(
+                R.string.format_level_requirement, recipe.levelRequired, GameStrings.skillName(context, recipe.skillName))) }
+            return true
+        }
+        if (max <= 0) {
             _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.skill_not_enough_materials)) }
             return true
         }
@@ -447,7 +461,7 @@ class CraftingViewModel @Inject constructor(
                 val toolEff   = craftToolEfficiency(recipe, json.decodeFromString(player.equipped), state.skillLevels, flags)
                 val perItemMs = (SkillSimulator.sessionDurationMs(agility, boostRepo.sessionFloorReductionMin(flags), townRepo.playerSessionDurationMultiplier(flags)) / 60 / toolEff).toLong()
                 val totalOutput = qty * recipe.outputQty
-                val xpQueueMult = if (flags.ironman) 1.0 else (if (flags.xpBoostExpiresAt > System.currentTimeMillis()) 2.0 else 1.0) * ChurchRepository.xpMultiplier(flags, blessingPrayerCapeMult(player, flags, gameData))
+                val xpQueueMult = if (flags.ironman) 1.0 else (if (flags.xpBoostExpiresAt > System.currentTimeMillis()) 2.0 else 1.0) * ChurchRepository.xpMultiplier(flags, blessingPrayerCapeMult(player, flags, gameData), gameData.blessings)
                 val queuePetPct = petBoostFor(player.pets, recipe.skillName, flags.ironman)
                 val action = QueuedAction(
                     skillName           = recipe.skillName,
@@ -457,6 +471,7 @@ class CraftingViewModel @Inject constructor(
                     outputQty           = if (totalOutput != qty) totalOutput else 0,
                     estimatedXpGain     = (qty * recipe.xpPerItem * xpQueueMult * toolEff * (1.0 + queuePetPct / 100.0)).toLong(),
                     estimatedDurationMs = qty.toLong() * perItemMs,
+                    xpBoostMultAtQueue  = xpQueueMult,
                     catalystKey         = ashKey,
                     catalystQty         = ashQtyToConsume,
                 )

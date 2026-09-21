@@ -11,6 +11,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -73,6 +75,15 @@ class SaveSlotRepository @Inject constructor(
 
     private fun slotFile(slot: Int) = File(slotsDir, "slot_$slot.json")
     private fun metaFile(slot: Int) = File(slotsDir, "slot_$slot.meta.json")
+    // Marker written before a switch begins and deleted on success. Its presence at startup
+    // means an earlier switch crashed mid-way; recovery re-imports the target slot's file.
+    private fun pendingSwitchFile() = File(slotsDir, "pending_switch.marker")
+
+    // Serializes concurrent switches and lets other code (e.g. HomeViewModel.collectSession)
+    // refuse to start work while a switch is running.
+    private val switchMutex = Mutex()
+    @Volatile var switchInProgress: Boolean = false
+        private set
 
     // ------------------------------------------------------------------
     // Full-save export/import — shared with SettingsViewModel
@@ -183,38 +194,80 @@ class SaveSlotRepository @Inject constructor(
 
     suspend fun switchTo(targetSlot: Int, createIronman: Boolean = false): Boolean = withContext(Dispatchers.IO) {
         require(targetSlot in 1..MAX_SLOTS) { "Invalid slot $targetSlot" }
-        val current = globalStateRepo.getActiveSaveSlot()
-        if (targetSlot == current) return@withContext false
+        switchMutex.withLock {
+            val current = globalStateRepo.getActiveSaveSlot()
+            if (targetSlot == current) return@withLock false
 
-        // Back up the outgoing character to its own external file while it is still live,
-        // so an inactive character always has a fresh backup to restore from (issue #1640:
-        // a cleared app storage lost the character whose backup never fired while active).
-        backupScheduler.performBackup(playerRepo)
+            // Back up the outgoing character to its own external file while it is still live,
+            // so an inactive character always has a fresh backup to restore from (issue #1640:
+            // a cleared app storage lost the character whose backup never fired while active).
+            backupScheduler.performBackup(playerRepo)
 
-        snapshotCurrent(current)
+            switchInProgress = true
+            try {
+                slotsDir.mkdirs()
+                writeAtomic(pendingSwitchFile(), targetSlot.toString())
 
-        val target = slotFile(targetSlot)
-        var ironmanDemoted = false
-        if (target.exists()) {
-            ironmanDemoted = importFullSave(target.readText(), freezeSessionTimers = false)
-        } else {
-            sessionRepo.deleteAllSessions()
-            sessionRepo.deleteAllWorkerSessions()
-            questRepo.resetAllProgress()
-            farmingRepo.resetAllPatches()
-            playerRepo.resetProgression(ironman = createIronman)
-            rescheduleAlarmsFromFlags()
+                snapshotCurrent(current)
+
+                val target = slotFile(targetSlot)
+                var ironmanDemoted = false
+                if (target.exists()) {
+                    ironmanDemoted = importFullSave(target.readText(), freezeSessionTimers = false)
+                } else {
+                    sessionRepo.deleteAllSessions()
+                    sessionRepo.deleteAllWorkerSessions()
+                    questRepo.resetAllProgress()
+                    farmingRepo.resetAllPatches()
+                    playerRepo.resetProgression(ironman = createIronman)
+                    rescheduleAlarmsFromFlags()
+                }
+                globalStateRepo.setActiveSaveSlot(targetSlot)
+                pendingSwitchFile().delete()
+                _switchEvents.tryEmit(Unit)
+                ironmanDemoted
+            } finally {
+                switchInProgress = false
+            }
         }
-        globalStateRepo.setActiveSaveSlot(targetSlot)
-        _switchEvents.tryEmit(Unit)
-        ironmanDemoted
+    }
+
+    /**
+     * If a previous switch crashed between overwriting Room and updating the active-slot pointer,
+     * the pending-switch marker will still be on disk. Complete that switch here so Room and the
+     * pointer end up consistent — otherwise the next snapshotCurrent would write the incoming
+     * character's data into the outgoing slot's file (issue #1839).
+     */
+    suspend fun recoverInterruptedSwitch(): Boolean = withContext(Dispatchers.IO) {
+        val marker = pendingSwitchFile()
+        if (!marker.exists()) return@withContext false
+        val targetSlot = try { marker.readText().trim().toIntOrNull() } catch (_: Exception) { null }
+        if (targetSlot == null || targetSlot !in 1..MAX_SLOTS) {
+            marker.delete()
+            return@withContext false
+        }
+        switchMutex.withLock {
+            switchInProgress = true
+            try {
+                val target = slotFile(targetSlot)
+                if (target.exists()) importFullSave(target.readText(), freezeSessionTimers = false)
+                globalStateRepo.setActiveSaveSlot(targetSlot)
+                pendingSwitchFile().delete()
+                _switchEvents.tryEmit(Unit)
+            } finally {
+                switchInProgress = false
+            }
+        }
+        true
     }
 
     /** Deletes an INACTIVE slot's files permanently. The active slot cannot be deleted here. */
     suspend fun deleteSlot(slot: Int) = withContext(Dispatchers.IO) {
-        if (slot == globalStateRepo.getActiveSaveSlot()) return@withContext
-        slotFile(slot).delete()
-        metaFile(slot).delete()
+        switchMutex.withLock {
+            if (slot == globalStateRepo.getActiveSaveSlot()) return@withLock
+            slotFile(slot).delete()
+            metaFile(slot).delete()
+        }
     }
 
     // ------------------------------------------------------------------

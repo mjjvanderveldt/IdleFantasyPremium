@@ -2,6 +2,7 @@
 <resources>
 
 
+
     <!-- ===== Bottom navigation ===== -->
     <string name="nav_skills">Aptitudes</string>
     <string name="nav_combat">Combat</string>
@@ -57,7 +58,7 @@
     <string name="label_hitpoints">Points de vie</string>
     <string name="label_inventory">Inventaire</string>
     <string name="label_equipment">Équipement</string>
-    <string name="label_combat_equipment">Gear</string>
+    <string name="label_combat_equipment">Équipement</string>
     <string name="label_pets">Familiers</string>
     <string name="label_achievements">Réalisations</string>
     <string name="label_locations">Lieux</string>
@@ -66,6 +67,8 @@
     <string name="label_bosses">Boss</string>
     <string name="label_by_location">Par lieu</string>
     <string name="bestiary_not_encountered">Pas encore rencontré</string>
+    <string name="bestiary_filter_all">Tout</string>
+    <string name="bestiary_filter_missing">Manquant</string>
     <string name="bestiary_qty_header">Qté</string>
     <string name="bestiary_chance_header">Chance</string>
     <string name="label_completion_progress">%1$d / %2$d %3$s</string>
@@ -83,19 +86,19 @@
     <string name="label_session_active">Session active</string>
     <string name="label_no_active_session">Aucune session active</string>
     <string name="label_session_complete">Session terminée !</string>
-    <string name="home_sessions_complete_title">%1$d sessions finies !</string>
+    <string name="home_sessions_complete_title">%1$d sessions terminées !</string>
     <string name="home_boss_defeated_title">%1$s vaincu !</string>
     <string name="home_boss_defeated_by_title">Vaincu par %1$s.</string>
     <string name="home_dungeon_died_title">%1$s — Vous êtes mort</string>
     <string name="home_dungeon_complete_title">%1$s finie !</string>
-    <string name="home_expedition_complete_title">%1$s Expédition finie</string>
-    <string name="home_skill_session_complete_title">%1$s Session finie</string>
+    <string name="home_expedition_complete_title">%1$s Expédition terminée</string>
+    <string name="home_skill_session_complete_title">%1$s Session terminée</string>
     <string name="home_bones_buried_row">%1$s enterré(s)</string>
-    <string name="worker_sessions_complete_title">Ouvrier : %1$d sessions finies !</string>
+    <string name="worker_sessions_complete_title">Ouvrier : %1$d sessions terminées !</string>
     <string name="worker_boss_defeated_title">Ouvrier : %1$s vaincu !</string>
     <string name="worker_dungeon_died_title">Ouvrier : %1$s — mort</string>
-    <string name="worker_dungeon_complete_title">Ouvrier : %1$s finie !</string>
-    <string name="worker_skill_complete_title">Ouvrier : %1$s finie</string>
+    <string name="worker_dungeon_complete_title">Ouvrier : %1$s terminée !</string>
+    <string name="worker_skill_complete_title">Ouvrier : %1$s terminée</string>
     <string name="label_training">Entraînement</string>
     <string name="label_gathering_skills">Collecte</string>
     <string name="label_crafting_skills">Fabrication</string>
@@ -110,7 +113,7 @@
     <string name="duration_hours">%1$dh</string>
     <string name="duration_minutes">%1$dm</string>
     <string name="duration_seconds">%1$ds</string>
-    <string name="duration_complete">Finie</string>
+    <string name="duration_complete">Terminée</string>
     <string name="label_session_results">Résultats de la session</string>
     <string name="label_xp_gained">XP gagnés</string>
     <string name="label_items_collected">Articles collectés</string>
@@ -200,6 +203,8 @@
     <string name="format_level_xp">Niveau %1$d — %2$s XP</string>
     <!-- Translator note: %1$s = formatted XP amount, %2$d = target level number -->
     <string name="format_xp_to_next">%1$s pour atteindre le niveau %2$d</string>
+    <!-- Translator note: %1$s = formatted XP amount remaining to reach the level cap (99) -->
+    <string name="xp_to_99">%1$s XP à 99</string>
     <!-- Translator note: %1$s = time string (e.g. "42m 10s") -->
     <string name="format_time_remaining">%1$s restante(s)</string>
     <!-- Translator note: %1$s = relative time (e.g. "5m ago") -->
@@ -488,6 +493,7 @@
     <string name="settings_backup_no_folder">Aucun dossier sélectionné</string>
     <string name="settings_backup_choose">Choisir</string>
     <string name="settings_backup_frequency">Fréquence</string>
+    <string name="settings_backup_count">Nombre de sauvegardes</string>
     <string name="settings_backup_off">Désactivé</string>
     <string name="settings_backup_hourly">chaque heure</string>
     <string name="settings_backup_daily">chaque jour</string>
@@ -635,10 +641,10 @@
     <string name="profile_food_dungeon">Nourriture (Donjon)</string>
     <string name="profile_no_food">Aucune nourriture cuite dans l\'inventaire</string>
     <string name="profile_food_threshold">Commencer à manger à</string>
-    <string name="profile_food_order">Eating order</string> <!-- untranslated -->
-    <string name="food_order_descending">Highest Heal Value First</string> <!-- untranslated -->
-    <string name="food_order_ascending">Lowest Heal Value First</string> <!-- untranslated -->
-    <string name="food_order_least_quantity">Least Quantity First</string> <!-- untranslated -->
+    <string name="profile_food_order">Ordre de consommation</string>
+    <string name="food_order_descending">Priorité à forte valeur de soin</string>
+    <string name="food_order_ascending">Priorité à faible valeur de soin</string>
+    <string name="food_order_least_quantity">Priorité à faible quantité</string>
     <string name="profile_combat_style">Style de combat</string>
     <!-- Translator note: %1$d = quantity, %2$d = heal value -->
     <string name="profile_food_desc">×%1$d  •  soigne %2$d PV</string>
@@ -714,6 +720,9 @@
     <string name="shop_keep_one_toggle">Garder un objet de chaque</string>
     <string name="shop_search_hint">Chercher les objets</string>
     <string name="shop_filter_all">Tout</string>
+    <string name="shop_order_default">Par défaut</string>
+    <string name="shop_order_highest_amount">Quantité</string>
+    <string name="shop_order_highest_price">Prix</string>
     <string name="shop_sell_blocked_equipped">%1$s est équipé. Déséquipez-le d\'abord pour le vendre.</string>
     <string name="shop_sell_blocked_reserved">%1$s est réservé pour une tâche en attente.</string>
     <string name="shop_sell_blocked_keep_one">Gardez votre dernière %1$s (Garder un objet de chaque est activé).</string>
@@ -975,7 +984,7 @@
     <string name="guild_no_dailies">Terminez des quêtes de guilde pour débloquer les requêtes quotidiennes.</string>
     <string name="guild_dailies_all_done">Toutes les requêtes quotidiennes sont finies. Revenez après la réinitialisation quotidienne.</string>
     <string name="guild_contribute_inventory">Contribuer depuis l\'inventaire (%1$d disponible)</string>
-    <string name="guild_go_to_skill">Accéder à la compétence</string>
+    <string name="guild_go_to_skill">Aller à l\'aptitude</string>
     <string name="guild_quest_desc_gather">%1$s %2$d %3$s pour la %4$s.</string>
     <string name="guild_quest_desc_kill">Éliminez %1$d ennemis en combat %2$s.</string>
     <string name="guild_quest_desc_prayer">Enterrez %1$d os pour la %2$s.</string>
@@ -1482,6 +1491,7 @@
     <string name="catalyst_enhanced_output">Produit une potion améliorée</string>
     <string name="catalyst_rune_bonus">%1$d runes par essence</string>
     <string name="catalyst_none">Sans catalyseur</string>
+    <string name="skills_rune_output">Produces %1$d runes</string> <!-- untranslated -->
 
     <!-- Construction skill -->
     <string name="skill_construction_name">Construction</string>
@@ -1554,6 +1564,148 @@
     <string name="town_artisans_workshop_no_bonus">Améliorez pour avoir une chance de préserver des matériaux de fabrication secondaires</string>
     <string name="town_artisans_workshop_active_bonus">%1$d%% chance de préserver des matériaux de fabrication secondaires</string>
     <string name="town_building_chronos_spire_name">Flèche du Chrono</string>
+    <string name="town_building_dock_name">Dock</string> <!-- untranslated -->
+    <string name="elder_isle_title">Elder Isle</string> <!-- untranslated -->
+    <string name="elder_isle_sail_title">Sail to Elder Isle</string> <!-- untranslated -->
+    <string name="elder_isle_zone_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
+    <string name="elder_isle_zone_forest">Ancient Forest</string> <!-- untranslated -->
+    <string name="elder_isle_zone_volcano">Volcano Peak</string> <!-- untranslated -->
+    <string name="elder_isle_zone_abyss">Abyssal Depths</string> <!-- untranslated -->
+    <string name="elder_isle_zone_locked">Locked</string> <!-- untranslated -->
+    <string name="elder_isle_coming_soon">Elder Isle is barely charted. Return once the isle has been built out.</string> <!-- untranslated -->
+    <string name="elder_isle_boss_sea_serpent">Sea Serpent</string> <!-- untranslated -->
+    <string name="elder_isle_set_sail">Set sail for Elder Isle</string> <!-- untranslated -->
+    <string name="elder_isle_return">Return to the mainland</string> <!-- untranslated -->
+    <string name="elder_isle_sail_blocked_by_session">Finish your active session before setting sail.</string> <!-- untranslated -->
+    <string name="elder_isle_sail_blocked_locked">Elder Isle is not yet unlocked.</string> <!-- untranslated -->
+    <string name="elder_isle_sail_blocked_serpent">The Sea Serpent guards the passage. Defeat it to reach Elder Isle.</string> <!-- untranslated -->
+    <string name="elder_isle_dock_unlocked_title">The Dock stands ready</string> <!-- untranslated -->
+    <string name="elder_isle_dock_unlocked_body">The pier is complete and the boats are waiting, but no crew will make the crossing until the Sea Serpent that has drowned every prior voyage lies dead. Find it in the mainland Combat tab under Bosses. The passage opens the moment it falls.</string> <!-- untranslated -->
+    <string name="elder_isle_dock_unlocked_cta">Face the Sea Serpent</string> <!-- untranslated -->
+    <string name="elder_isle_dock_unlocked_later">Later</string> <!-- untranslated -->
+    <string name="boss_masked_name">\?\?\?</string> <!-- untranslated -->
+    <string name="boss_last_elder_masked_desc">Something ancient stirs at the bottom of the isle. Assemble the full Elder set to face it.</string> <!-- untranslated -->
+    <string name="elder_isle_welcome_title">Landfall on Elder Isle</string> <!-- untranslated -->
+    <string name="elder_isle_welcome_body">The salt spray fades and the fog lifts. Ahead: a bone-white shore, a jungle laced with pale runes, and further in, smoke curling from a peak that shouldn\'t be smoking. The old sailors were right. Something ancient still lives here.\n\nYour mainland skills, boosts, and gear stay on the ship. Everything you level or craft on the isle grows a separate track of its own. Elder gear will carry back to the mainland; mainland power will not carry here.\n\nStart with the Skills tab. Head to Mining or Woodcutting to gather isle materials. Then check the Quests tab for your first objective, and open the Lore Master in town whenever a new fragment unlocks.</string> <!-- untranslated -->
+    <string name="elder_isle_welcome_cta">Step ashore</string> <!-- untranslated -->
+    <string name="elder_isle_stub_skills">Elder skills are being charted. Full skill tracks arrive in a later build.</string> <!-- untranslated -->
+    <string name="elder_isle_stub_combat">Elder dungeons and the Last Elder fight are being drawn up. Later build.</string> <!-- untranslated -->
+    <string name="elder_isle_stub_quests">Isle quests will appear here once the story chain lands.</string> <!-- untranslated -->
+    <string name="elder_isle_stub_profile">Isle stats and gear layout land with the skill-tracks build.</string> <!-- untranslated -->
+    <string name="elder_isle_skills_title">Elder Skills</string> <!-- untranslated -->
+    <string name="elder_isle_total_level_label">Total Elder Level</string> <!-- untranslated -->
+    <string name="elder_isle_total_level_value">%1$d / %2$d</string> <!-- untranslated -->
+    <string name="elder_isle_skill_activities_title">%1$s activities</string> <!-- untranslated -->
+    <string name="elder_isle_no_activities">No activities yet in this build.</string> <!-- untranslated -->
+    <string name="elder_isle_start_session">Start session</string> <!-- untranslated -->
+    <string name="elder_isle_session_started">Session started.</string> <!-- untranslated -->
+    <string name="elder_isle_session_start_failed">Could not start session: %1$s</string> <!-- untranslated -->
+    <string name="elder_isle_activity_level">Level %1$d required</string> <!-- untranslated -->
+    <string name="elder_isle_combat_title">Elder Dungeons</string> <!-- untranslated -->
+    <string name="elder_isle_profile_title">Isle Profile</string> <!-- untranslated -->
+    <string name="elder_isle_dungeon_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
+    <string name="elder_isle_dungeon_forest">Ancient Forest</string> <!-- untranslated -->
+    <string name="elder_isle_dungeon_volcano">Volcano Peak</string> <!-- untranslated -->
+    <string name="elder_isle_dungeon_abyss">Abyssal Depths</string> <!-- untranslated -->
+    <string name="elder_isle_dungeon_boss">The Last Elder</string> <!-- untranslated -->
+    <string name="elder_isle_tab_dungeons">Dungeons</string> <!-- untranslated -->
+    <string name="elder_isle_tab_bosses">Bosses</string> <!-- untranslated -->
+    <string name="elder_isle_shop_title">Isle Shop</string> <!-- untranslated -->
+    <string name="elder_isle_shop_buy">Buy</string> <!-- untranslated -->
+    <string name="elder_isle_shop_soon">Coming later</string> <!-- untranslated -->
+    <string name="elder_isle_shop_insufficient">Not enough Elder Essence.</string> <!-- untranslated -->
+    <string name="elder_isle_shop_purchased">Purchased %1$s.</string> <!-- untranslated -->
+    <string name="elder_isle_shop_button">Visit Isle Shop</string> <!-- untranslated -->
+    <string name="elder_isle_armor_master_title">Elder Armor Master</string> <!-- untranslated -->
+    <string name="elder_isle_lore_master_title">Lore Master</string> <!-- untranslated -->
+    <string name="elder_armor_missing_mats">Not enough materials.</string> <!-- untranslated -->
+    <string name="elder_armor_crafted">Crafted %1$s.</string> <!-- untranslated -->
+    <string name="elder_armor_queue_full">Craft queue is full (3).</string> <!-- untranslated -->
+    <string name="elder_armor_missing_stone">You don\'t own that sigil stone.</string> <!-- untranslated -->
+    <string name="elder_armor_stone_embedded">Embedded %1$s in %2$s.</string> <!-- untranslated -->
+    <string name="elder_armor_sigil_embedder">Sigil Embedder</string> <!-- untranslated -->
+    <string name="elder_armor_sigil_empty">Empty socket</string> <!-- untranslated -->
+    <string name="elder_armor_sigil_change">Change</string> <!-- untranslated -->
+    <string name="elder_armor_sigil_embed">Embed</string> <!-- untranslated -->
+    <string name="elder_armor_sigil_remove">Remove</string> <!-- untranslated -->
+    <string name="elder_armor_pick_stone">Pick a sigil stone</string> <!-- untranslated -->
+    <string name="item_mythrite_ore_name">Mythrite Ore</string> <!-- untranslated -->
+    <string name="item_abyssal_ore_name">Abyssal Ore</string> <!-- untranslated -->
+    <string name="item_voidsteel_ore_name">Voidsteel Ore</string> <!-- untranslated -->
+    <string name="item_starforged_ore_name">Starforged Ore</string> <!-- untranslated -->
+    <string name="item_mythrite_bar_name">Mythrite Bar</string> <!-- untranslated -->
+    <string name="item_abyssal_bar_name">Abyssal Bar</string> <!-- untranslated -->
+    <string name="item_voidsteel_bar_name">Voidsteel Bar</string> <!-- untranslated -->
+    <string name="item_starforged_bar_name">Starforged Bar</string> <!-- untranslated -->
+    <string name="item_coastal_pine_log_name">Coastal Pine Log</string> <!-- untranslated -->
+    <string name="item_grove_oak_log_name">Grove Oak Log</string> <!-- untranslated -->
+    <string name="item_abyssal_log_name">Abyssal Log</string> <!-- untranslated -->
+    <string name="item_starwood_log_name">Starwood Log</string> <!-- untranslated -->
+    <string name="item_raw_tidepool_crab_name">Tidepool Crab (raw)</string> <!-- untranslated -->
+    <string name="item_raw_grove_bass_name">Grove Bass (raw)</string> <!-- untranslated -->
+    <string name="item_raw_lavafin_name">Lavafin (raw)</string> <!-- untranslated -->
+    <string name="item_raw_deepwater_ray_name">Deepwater Ray (raw)</string> <!-- untranslated -->
+    <string name="item_tidepool_crab_name">Tidepool Crab</string> <!-- untranslated -->
+    <string name="item_grove_bass_name">Grove Bass</string> <!-- untranslated -->
+    <string name="item_lavafin_name">Lavafin</string> <!-- untranslated -->
+    <string name="item_deepwater_ray_name">Deepwater Ray</string> <!-- untranslated -->
+    <string name="item_elder_bone_name">Elder Bone</string> <!-- untranslated -->
+    <string name="item_elder_essence_name">Elder Essence</string> <!-- untranslated -->
+    <string name="item_ancient_sigil_name">Ancient Sigil</string> <!-- untranslated -->
+    <string name="item_sacred_wood_name">Sacred Wood</string> <!-- untranslated -->
+
+    <!-- Elder Isle: gathering targets (trees) -->
+    <string name="item_coastal_pine_name">Coastal Pine</string> <!-- untranslated -->
+    <string name="item_grove_oak_name">Grove Oak</string> <!-- untranslated -->
+    <string name="item_abyssal_tree_name">Abyssal Tree</string> <!-- untranslated -->
+    <string name="item_starwood_tree_name">Starwood Tree</string> <!-- untranslated -->
+
+    <!-- Elder Isle: crafted armor pieces (tier progression Coastal → Grove → Volcanic → Elder) -->
+    <string name="item_coastal_helm_name">Coastal Helm</string> <!-- untranslated -->
+    <string name="item_coastal_platebody_name">Coastal Platebody</string> <!-- untranslated -->
+    <string name="item_coastal_platelegs_name">Coastal Platelegs</string> <!-- untranslated -->
+    <string name="item_coastal_boots_name">Coastal Boots</string> <!-- untranslated -->
+    <string name="item_grove_helm_name">Grove Helm</string> <!-- untranslated -->
+    <string name="item_grove_platebody_name">Grove Platebody</string> <!-- untranslated -->
+    <string name="item_grove_platelegs_name">Grove Platelegs</string> <!-- untranslated -->
+    <string name="item_grove_boots_name">Grove Boots</string> <!-- untranslated -->
+    <string name="item_volcanic_helm_name">Volcanic Helm</string> <!-- untranslated -->
+    <string name="item_volcanic_platebody_name">Volcanic Platebody</string> <!-- untranslated -->
+    <string name="item_volcanic_platelegs_name">Volcanic Platelegs</string> <!-- untranslated -->
+    <string name="item_volcanic_boots_name">Volcanic Boots</string> <!-- untranslated -->
+    <string name="item_elder_helm_name">Elder Helm</string> <!-- untranslated -->
+    <string name="item_elder_platebody_name">Elder Platebody</string> <!-- untranslated -->
+    <string name="item_elder_platelegs_name">Elder Platelegs</string> <!-- untranslated -->
+    <string name="item_elder_boots_name">Elder Boots</string> <!-- untranslated -->
+    <string name="item_elder_cape_name">Elder Cape</string> <!-- untranslated -->
+    <string name="item_elder_shield_name">Elder Shield</string> <!-- untranslated -->
+    <string name="item_elder_signet_ring_name">Elder Signet Ring</string> <!-- untranslated -->
+    <string name="item_elder_amulet_name">Elder Amulet</string> <!-- untranslated -->
+    <string name="item_ancient_signet_name">Ancient Signet</string> <!-- untranslated -->
+
+    <!-- Elder Isle: sigil stones (four wired, two shipped-but-cosmetic) -->
+    <string name="item_elder_sapphire_name">Sapphire Sigil Stone</string> <!-- untranslated -->
+    <string name="item_elder_ruby_name">Ruby Sigil Stone</string> <!-- untranslated -->
+    <string name="item_elder_emerald_name">Emerald Sigil Stone</string> <!-- untranslated -->
+    <string name="item_elder_amethyst_name">Amethyst Sigil Stone</string> <!-- untranslated -->
+    <string name="item_elder_topaz_name">Topaz Sigil Stone</string> <!-- untranslated -->
+    <string name="item_elder_diamond_name">Diamond Sigil Stone</string> <!-- untranslated -->
+
+    <!-- Elder Isle: pet item entries (parallel to pet_* below; used by drop tables and inventory) -->
+    <string name="item_tidal_sprite_name">Tidal Sprite</string> <!-- untranslated -->
+    <string name="item_grove_fawn_name">Grove Fawn</string> <!-- untranslated -->
+    <string name="item_magma_salamander_name">Magma Salamander</string> <!-- untranslated -->
+    <string name="item_abyss_wisp_name">Abyss Wisp</string> <!-- untranslated -->
+    <string name="item_ancient_turtle_name">Ancient Turtle</string> <!-- untranslated -->
+    <string name="item_cinder_hawk_name">Cinder Hawk</string> <!-- untranslated -->
+    <string name="item_deepwater_serpent_name">Deepwater Serpent</string> <!-- untranslated -->
+    <string name="item_elder_familiar_name">Elder Familiar</string> <!-- untranslated -->
+
+    <!-- Elder Isle: ore descriptions -->
+    <string name="item_mythrite_ore_desc">Silvery isle ore. Smelts into Mythrite Bars, the base metal of the Coastal armor tier.</string> <!-- untranslated -->
+    <string name="item_abyssal_ore_desc">Dark isle ore laced with pressure-cracked veins. Smelts into Abyssal Bars for Grove-tier gear.</string> <!-- untranslated -->
+    <string name="item_voidsteel_ore_desc">Isle ore that hums faintly under pressure. Smelts into Voidsteel Bars for Volcanic-tier gear.</string> <!-- untranslated -->
+    <string name="item_starforged_ore_desc">The isle\'s rarest ore, said to be shed from the seal itself. Smelts into Starforged Bars for the Elder set.</string> <!-- untranslated -->
     <string name="town_chronos_spire_no_bonus">Améliorez pour réduire le temps des sessions du joueur</string>
     <string name="town_chronos_spire_active_bonus">%1$d%% de réduction du temps des sessions du joueur</string>
 
@@ -1691,6 +1843,7 @@
     <string name="armory_how_to_obtain">Comment obtenir</string>
     <string name="armory_no_stats">Aucun bonus de statistiques.</string>
     <string name="armory_filter_all">Tous</string>
+    <string name="armory_filter_missing">Manquant</string>
     <string name="armory_filter_weapons">Armes</string>
     <string name="armory_filter_armor">Armure</string>
     <string name="armory_filter_accessories">Accessoires</string>
@@ -1828,7 +1981,7 @@
     <string name="monument_stage_2_reward">Débloque le toucher quotidien du monument</string>
     <string name="monument_stage_3_reward">Les bénédictions durent 6 heures de plus</string>
     <string name="monument_stage_4_reward" formatted="false">+1 emplacement de file, et l\'Oie Dorée s\'installe (+10% de pièces)</string>
-    <string name="monument_stage_5_reward">Débloque le boss Gardien du coffre-fort et le titre Protecteur du Royaume</string>
+    <string name="monument_stage_5_reward">Débloque le boss Gardien de la Chambre Forte et le titre Mécène du Royaume</string>
     <string name="monument_built">Construit</string>
     <string name="monument_build_btn">Construire (%1$s)</string>
     <string name="monument_contribute_label">Nourrissez la Flamme Éternelle</string>
@@ -1850,6 +2003,8 @@
     <string name="monument_not_enough_coins">Pas assez de pièces.</string>
     <string name="title_patron_of_the_realm_name">Mécène du Royaume</string>
     <string name="title_patron_of_the_realm_requirement">Achevez le Grand Monument</string>
+    <string name="title_isle_champion_name">Isle Champion</string> <!-- untranslated -->
+    <string name="title_isle_champion_requirement">Defeat the Last Elder on Elder Isle</string> <!-- untranslated -->
     <string name="item_gilded_full_helmet_name">Heaume Doré</string>
     <string name="item_gilded_platebody_name">Plastron Doré</string>
     <string name="item_gilded_kiteshield_name">Écu Doré</string>
@@ -1872,7 +2027,7 @@
     <string name="raid_no_mercs">Pas de mercenaires sous contrat.</string>
     <string name="merc_camp_open">Engager des Mercenaires</string>
     <string name="merc_camp_title">Camp de Mercenaires</string>
-    <string name="merc_camp_desc">Contracts last for 24 hours after hiring. A new pool of mercenaries arrives each day.</string> <!-- untranslated -->
+    <string name="merc_camp_desc">Les contrats durent 24 heures après engagement. Une nouvelle poule de mercenaires arrive chaque jour.</string>
     <string name="merc_hire">Engager</string>
     <string name="merc_dismiss">Virer</string>
     <string name="merc_hired">%1$s rejoins votre groupe pour 24 heures.</string>
@@ -1952,8 +2107,8 @@
     <string name="treasure_open_all">Tout ouvrir (%1$d)</string>
     <string name="treasure_open_result">%1$d révèle : +%2$s pièces</string>
     <string name="treasure_open_result_gems">%1$d révèle : +%2$s pièces et %3$d gemmes</string>
-    <string name="seasonal_expedition_token_hint">Each run grants 1 token.</string> <!-- untranslated -->
-    <string name="seasonal_boss_token_hint">Each kill grants 1 token, up to %1$d per day.</string> <!-- untranslated -->
+    <string name="seasonal_expedition_token_hint">Chaque partie donne 1 jeton.</string>
+    <string name="seasonal_boss_token_hint">Chaque tué donne 1 jeton, jusqu\'à %1$d par jour.</string>
     <string name="seasonal_minigame_hint">Touchez %1$d braises sur %2$d avant qu\'elles ne s\'éteignent !</string>
     <string name="seasonal_minigame_round">Manche %1$d / %2$d — Réussites : %3$d</string>
     <string name="seasonal_minigame_mode_label">Mode</string>
@@ -1965,8 +2120,8 @@
     <string name="seasonal_tap">Appuyez !</string>
     <string name="seasonal_claim">Réclamer</string>
     <string name="seasonal_bounty_cooldown">Nouvelle prime dans %1$dm %2$ds</string>
-    <string name="seasonal_bounty_reroll">Reroll bounty</string> <!-- untranslated -->
-    <string name="seasonal_bounty_reroll_confirm">Swap this bounty for a different one for %1$s coins? Progress on it is lost.</string> <!-- untranslated -->
+    <string name="seasonal_bounty_reroll">Relancer les primes</string>
+    <string name="seasonal_bounty_reroll_confirm">Échanger cette prime avec une autre pour %1$s pièces? Tout progrès sera perdu.</string>
     <string name="seasonal_go">Aller</string>
     <string name="seasonal_event_sunspire_solstice_2026_name">Solstice de la Flèche du Soleil</string>
     <string name="seasonal_event_sunspire_solstice_2026_banner">A participé au Solstice de la Flèche du Soleil 2026</string>
@@ -2004,7 +2159,7 @@
     <string name="seasonal_event_gloomharvest_2026_banner">A participé à la Sombre Moisson 2026</string>
     <string name="seasonal_minigame_lantern_lights_name">Lumières des Lanternes</string>
     <string name="seasonal_minigame_sequence_hint">Observez les lanternes puis répétez l\'ordre. Atteignez la manche %1$d sur %2$d pour gagner un jeton !</string>
-    <string name="seasonal_minigame_sequence_success">Well remembered! +1 token.</string> <!-- untranslated -->
+    <string name="seasonal_minigame_sequence_success">Bonne mémoire ! +1 jeton.</string>
     <string name="seasonal_minigame_sequence_round">Manche %1$d / %2$d</string>
     <string name="seasonal_minigame_watch">Observez bien !</string>
     <string name="seasonal_minigame_your_turn">À vous !</string>
@@ -2044,9 +2199,9 @@
     <string name="seasonal_bounty_gloom_wisps_hint">Disponible uniquement dans le Marais Creux</string>
     <string name="seasonal_bounty_gloom_ghouls_name">Éliminez les Goules des Tombes</string>
     <string name="seasonal_bounty_gloom_ghouls_hint">Disponible uniquement dans le Marais Creux</string>
-    <string name="seasonal_bounty_gloom_husks_name">Abattez les Horreurs de Paille</string>
+    <string name="seasonal_bounty_gloom_husks_name">Abattez les Horreurs Desséchées</string>
     <string name="seasonal_bounty_gloom_husks_hint">Disponible uniquement dans le Marais Creux</string>
-    <string name="seasonal_bounty_gloom_stalkers_name">Traquez les Rôdeurs de l\'Ombre</string>
+    <string name="seasonal_bounty_gloom_stalkers_name">Chassez les Traqueurs des Ombres</string>
     <string name="seasonal_bounty_gloom_stalkers_hint">Disponible uniquement dans le Bois Flétri</string>
     <string name="seasonal_bounty_gloom_wights_name">Renversez les Revenants des Tertres</string>
     <string name="seasonal_bounty_gloom_wights_hint">Disponible uniquement dans le Marais Creux (rare)</string>
@@ -2181,6 +2336,24 @@
     <string name="pet_golden_goose_name">Oie Dorée</string>
     <string name="pet_golden_goose_desc">Une oie majestueuse qui perche au sommet du Monument doré. Les pièces semblent tout naturellement trouver le chemin de son gardien.</string>
 
+    <!-- Elder Isle pets: 7 dungeon drops + 1 raid-boss drop -->
+    <string name="pet_tidal_sprite_name">Tidal Sprite</string> <!-- untranslated -->
+    <string name="pet_tidal_sprite_desc">A shimmering water spirit born from the surf of Beach &amp; Cliffs. Never seems to fully dry.</string> <!-- untranslated -->
+    <string name="pet_grove_fawn_name">Grove Fawn</string> <!-- untranslated -->
+    <string name="pet_grove_fawn_desc">A young forest creature with rune-patterned fur, found among the ancient trees.</string> <!-- untranslated -->
+    <string name="pet_magma_salamander_name">Magma Salamander</string> <!-- untranslated -->
+    <string name="pet_magma_salamander_desc">A heat-forged lizard that thrives in Volcano Peak\'s cracks. Its skin is always faintly warm.</string> <!-- untranslated -->
+    <string name="pet_abyss_wisp_name">Abyss Wisp</string> <!-- untranslated -->
+    <string name="pet_abyss_wisp_desc">A cold silver light that drifted up from the Abyssal Depths and refused to sink back.</string> <!-- untranslated -->
+    <string name="pet_ancient_turtle_name">Ancient Turtle</string> <!-- untranslated -->
+    <string name="pet_ancient_turtle_desc">A tiny turtle whose shell bears the same runes as the isle\'s seal. Older than it looks.</string> <!-- untranslated -->
+    <string name="pet_cinder_hawk_name">Cinder Hawk</string> <!-- untranslated -->
+    <string name="pet_cinder_hawk_desc">A bird of banked embers that circles the volcano and roosts on your shoulder between fights.</string> <!-- untranslated -->
+    <string name="pet_deepwater_serpent_name">Deepwater Serpent</string> <!-- untranslated -->
+    <string name="pet_deepwater_serpent_desc">A miniature cousin of the Sea Serpent, coiled around your wrist like a living bracelet.</string> <!-- untranslated -->
+    <string name="pet_elder_familiar_name">Elder Familiar</string> <!-- untranslated -->
+    <string name="pet_elder_familiar_desc">The Last Elder\'s dying companion, bound now to whoever felled its master. Its eyes still remember.</string> <!-- untranslated -->
+
     <!-- Save slots / character manager -->
     <string name="settings_characters">Personnages</string>
     <string name="settings_characters_desc">Jusqu\'à 3 emplacements de sauvegarde. Créez, changez ou supprimez des personnages.</string>
@@ -2204,6 +2377,7 @@
     <string name="save_slot_delete_body">Supprimer définitivement %1$s ? Cette action est irréversible.</string>
     <string name="save_slot_delete_btn">Supprimer</string>
     <string name="save_slot_switch_failed">Impossible de changer de personnage.</string>
+    <string name="collect_blocked_switching">Character switch in progress. Please wait and try again.</string> <!-- untranslated -->
 
     <!-- Ironman mode -->
     <string name="character_ironman_title">Mode Ironman</string>
@@ -2233,7 +2407,10 @@
     <string name="carnival_stat_atk">ATQ +%1$d</string>
     <string name="carnival_stat_str">FOR +%1$d</string>
     <string name="carnival_stat_def">DEF +%1$d</string>
-    <string name="carnival_stat_yield">Rendement</string>
+    <!-- Translator note: %1$s = "${skill name} ", %2$d = percentage bonus -->
+    <string name="carnival_stat_xp">%1$sXP +%2$d%%</string> <!-- untranslated -->
+    <!-- Translator note: %1$s = "${skill name} ", %2$d = percentage bonus -->
+    <string name="carnival_stat_yield">%1$sYield +%2$d%%</string> <!-- untranslated -->
     <string name="carnival_potion_letter_green">V</string>
     <string name="carnival_potion_letter_blue">B</string>
     <string name="carnival_potion_letter_red">R</string>
@@ -2254,6 +2431,7 @@
     <!-- Translator note: %1$d = current skill level -->
     <string name="prestige_requires_99">Atteignez le niveau 99 pour obtenir le prestige (actuellement %1$d).</string>
     <string name="prestige_maxed_cap">Prestige maximum atteint. Vous avez obtenu tous les points que cette aptitude peut rapporter.</string>
+    <string name="skills_prestige_max">★×%1$d (Max)</string>
     <!-- Translator note: %1$s = skill name, %2$d = points awarded -->
     <string name="prestige_confirm_message_points">Votre niveau %1$s sera réinitialisé à 1 et vous gagnerez %2$d points de prestige à dépenser dans l\'arbre d\'aptitude correspondant. L\'équipement qui ne répondra plus aux prérequis sera remplacé, et la progression non récupérée des quêtes quotidiennes de %1$s sera réinitialisée. Vous bénéficierez également de 2× l\'XP de %1$s pendant 48 heures pour accélérer votre remontée en niveau.</string>
     <string name="prestige_respec">Réinitialiser les points</string>
@@ -2398,40 +2576,40 @@
     <string name="race_proficiency_human">Bonus de race: un palier de maîtrise exclusif d\'XP pour chaque aptitude.</string>
     <string name="race_change_confirm_message">Votre race donne des améliorations de prestige uniques. Changer de race rembourse tous les points dépensés dans les branches des autres races, et vous pouvez uniquement changer de race toute les 24 heures.</string>
     <!-- Heirloom items (raid boss rare drops that level up with use) -->
-    <string name="item_heirloom_pickaxe_name">Heirloom Pickaxe</string> <!-- untranslated -->
-    <string name="item_heirloom_pickaxe_desc">A family pickaxe passed down through generations. It remembers every ore its bearers ever broke.</string> <!-- untranslated -->
-    <string name="item_heirloom_axe_name">Heirloom Axe</string> <!-- untranslated -->
-    <string name="item_heirloom_axe_desc">A woodsman\'s axe worn smooth by a hundred hands. Every felled tree sharpens it a little more.</string> <!-- untranslated -->
-    <string name="item_heirloom_fishing_rod_name">Heirloom Fishing Rod</string> <!-- untranslated -->
-    <string name="item_heirloom_fishing_rod_desc">An old rod that has landed catches beyond counting. It learns the water with every cast.</string> <!-- untranslated -->
-    <string name="item_heirloom_hoe_name">Heirloom Hoe</string> <!-- untranslated -->
-    <string name="item_heirloom_hoe_desc">A humble hoe that has turned soil for generations. Each harvest leaves it keener than before.</string> <!-- untranslated -->
-    <string name="item_heirloom_hammer_name">Heirloom Hammer</string> <!-- untranslated -->
-    <string name="item_heirloom_hammer_desc">A smith\'s hammer black with the soot of a thousand forges. It grows truer with every strike.</string> <!-- untranslated -->
-    <string name="item_heirloom_tinderbox_name">Heirloom Tinderbox</string> <!-- untranslated -->
-    <string name="item_heirloom_tinderbox_desc">A battered tinderbox that has never failed to spark. Every fire it lights burns a little brighter.</string> <!-- untranslated -->
-    <string name="item_heirloom_grappling_hook_name">Heirloom Grappling Hook</string> <!-- untranslated -->
-    <string name="item_heirloom_grappling_hook_desc">A climber\'s hook that has held on ledges beyond counting. It grows surer with every course.</string> <!-- untranslated -->
-    <string name="item_heirloom_frying_pan_name">Heirloom Frying Pan</string> <!-- untranslated -->
-    <string name="item_heirloom_frying_pan_desc">A seasoned pan handed down through a family of cooks. Every meal deepens its seasoning.</string> <!-- untranslated -->
-    <string name="item_heirloom_lockpick_name">Heirloom Lockpick</string> <!-- untranslated -->
-    <string name="item_heirloom_lockpick_desc">A thief\'s pick that has whispered open countless locks. It grows subtler with every job.</string> <!-- untranslated -->
-    <string name="item_midas_band_name">Midas Band</string> <!-- untranslated -->
-    <string name="item_midas_band_desc">A sliver of the Vault Guardian\'s living gold. It drinks in a little of every battle its wearer survives.</string> <!-- untranslated -->
-    <string name="item_heirloom_blade_name">Heirloom Blade</string> <!-- untranslated -->
-    <string name="item_heirloom_blade_desc">An ancestral blade that wakes a little more with every battle its line survives.</string> <!-- untranslated -->
-    <string name="item_heirloom_greathammer_name">Heirloom Greathammer</string> <!-- untranslated -->
-    <string name="item_heirloom_greathammer_desc">A colossal warhammer of forgotten make. Each blow it lands adds to its legend.</string> <!-- untranslated -->
-    <string name="item_heirloom_longbow_name">Heirloom Longbow</string> <!-- untranslated -->
-    <string name="item_heirloom_longbow_desc">A bow strung and restrung across generations of archers. Every arrow teaches it something.</string> <!-- untranslated -->
-    <string name="item_heirloom_staff_name">Heirloom Staff</string> <!-- untranslated -->
-    <string name="item_heirloom_staff_desc">A staff steeped in the castings of every mage who ever bore it. Its power still deepens.</string> <!-- untranslated -->
-    <string name="heirloom_section_title">Heirloom</string> <!-- untranslated -->
+    <string name="item_heirloom_pickaxe_name">Pioche Ancestrale de Famille</string>
+    <string name="item_heirloom_pickaxe_desc">Une pioche familiale transmise à travers les générations. Elle se rappelle de chaque minerai que ses détenteurs ont brisé.</string>
+    <string name="item_heirloom_axe_name">Hache Ancestrale de Famille</string>
+    <string name="item_heirloom_axe_desc">Une hache de bûcheron lissée par l\'usure de centaines de mains. Chaque arbre tombé l\'aiguise un peu plus.</string>
+    <string name="item_heirloom_fishing_rod_name">Canne à Pêche Ancestrale de Famille</string>
+    <string name="item_heirloom_fishing_rod_desc">Une vieille canne qui a remonté tellement de prises qu\'on ne peut les compter. Elle a connu l\'eau à chaque lancé.</string>
+    <string name="item_heirloom_hoe_name">Houe Ancestrale de Famille</string>
+    <string name="item_heirloom_hoe_desc">Une humble houe qui a retourné la terre pour des générations. Chaque récolte la rends plus assidue que jamais.</string>
+    <string name="item_heirloom_hammer_name">Marteau Ancestral de Famille</string>
+    <string name="item_heirloom_hammer_desc">Un marteau de forgeron noircit par la suie de mille forges. Chaque coup le rapproche de la perfection.</string>
+    <string name="item_heirloom_tinderbox_name">Briquet à Amadou Ancestral de Famille</string>
+    <string name="item_heirloom_tinderbox_desc">Un briquet à amadou abimé qui n\'a jamais failli d\'étinceler. Chaque flamme il allume brûle plus vivement.</string>
+    <string name="item_heirloom_grappling_hook_name">Grappin Ancestral de Famille</string>
+    <string name="item_heirloom_grappling_hook_desc">Un grappin de grimpeur qui s\'est tenu à un nombre incalculable de parois. Il devient de plus en plus fiable à chaque course.</string>
+    <string name="item_heirloom_frying_pan_name">Poêle à Frire Ancestrale de Famille</string>
+    <string name="item_heirloom_frying_pan_desc">Un poêle culottée transmise à travers une famille de grands cuisiniers. Chaque plat renforce son assaisonnement.</string>
+    <string name="item_heirloom_lockpick_name">Rossignol Ancestral de Famille</string>
+    <string name="item_heirloom_lockpick_desc">Un rossignol de voleur qui a silencieusement ouvert un nombre incalculable de verrous. Il devient de plus en plus subtile à chaque réussite.</string>
+    <string name="item_midas_band_name">Anneau de Midas</string>
+    <string name="item_midas_band_desc">Un fragment de l\'or vivant du Gardien de la Chambre Forte. Il s\'imprègne un peu de chaque bataille que son porteur survit.</string>
+    <string name="item_heirloom_blade_name">Épée Ancestrale de Famille</string>
+    <string name="item_heirloom_blade_desc">Une épée ancestrale qui se réveille un peu plus à chaque bataille que sa lignée survit.</string>
+    <string name="item_heirloom_greathammer_name">Grand Marteau Ancestral de Famille</string>
+    <string name="item_heirloom_greathammer_desc">Un marteau de guerre colossal d\'une fabrication oubliée. Chaque coup qu\'il porte marque davantage sa légende.</string>
+    <string name="item_heirloom_longbow_name">Arc Long Ancestral de Famille</string>
+    <string name="item_heirloom_longbow_desc">Un arc tendu et détendu sur des générations d\'archers. Chaque flèche lui apprends quelque chose.</string>
+    <string name="item_heirloom_staff_name">Bâton Ancestral de Famille</string>
+    <string name="item_heirloom_staff_desc">Un bâton imprégné des incantations de chaque mage qui l\'a arboré. Son pouvoir se renforce encore.</string>
+    <string name="heirloom_section_title">Objet Ancestral de Famille</string>
     <!-- Translator note: %1$d = the heirloom item\'s current level (1-99) -->
-    <string name="heirloom_level_label">Heirloom Lv. %1$d</string> <!-- untranslated -->
+    <string name="heirloom_level_label">Objet Ancestral de Famille Niv. %1$d</string>
     <!-- Translator note: %1$s = a skill name, used twice -->
-    <string name="heirloom_desc">Grows with %1$s XP up to Lv. 99. Its power also scales with your %1$s level, reaching full effect at level 85. Stats shown are its full potential.</string> <!-- untranslated -->
-    <string name="shop_sell_blocked_heirloom">%1$s is an heirloom and cannot be sold.</string> <!-- untranslated -->
+    <string name="heirloom_desc">Grandit avec l\'XP de %1$s jusqu\'au Niv. 99. Son pouvoir grandit aussi avec votre niveau de %1$s, arrivant à son plein potentiel au niveau 85. Ses stats correspondent à quand le plein potentiel est exploitable.</string>
+    <string name="shop_sell_blocked_heirloom">%1$s est un objet ancestral de famille et ne peut être vendu.</string>
     <!-- Translator note: %1$s = a dungeon or boss name -->
     <string name="repeat_blocked_level">Votre niveau de combat est trop faible pour répéter %1$s.</string>
 </resources>

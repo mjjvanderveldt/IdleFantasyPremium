@@ -201,7 +201,7 @@ fun CarnivalScreen(
                 modifier = Modifier.fillMaxSize(),
             ) { page ->
                 when (page) {
-                    0 -> IdleGamesTab(state.skillLevels, state.tierBonus, state.queueSize, state.maxQueueSize, viewModel)
+                    0 -> IdleGamesTab(state.skillLevels, state.tierBonus, state.capeMultiplier, state.queueSize, state.maxQueueSize, viewModel)
                     1 -> ActiveGamesTab(state, viewModel)
                     2 -> PrizeShopTab(state, viewModel)
                 }
@@ -230,6 +230,7 @@ private val IDLE_GAMES = listOf(
 private fun IdleGamesTab(
     skillLevels: Map<String, Int>,
     tierBonus: Float,
+    capeMultiplier: Float,
     queueSize: Int,
     maxQueueSize: Int,
     viewModel: CarnivalViewModel,
@@ -249,7 +250,7 @@ private fun IdleGamesTab(
         )
         IDLE_GAMES.forEach { game ->
             val skillLevel  = skillLevels[game.skillKey] ?: 1
-            val myTickets = CarnivalSimulator.estimateTickets(skillLevel, tierBonus)
+            val myTickets = CarnivalSimulator.estimateTickets(skillLevel, tierBonus, capeMultiplier)
             Surface(
                 shape    = RoundedCornerShape(12.dp),
                 color    = MaterialTheme.colorScheme.surfaceVariant,
@@ -1038,9 +1039,13 @@ private fun PrizeRow(
                     if (equipData.strengthBonus > 0) add(stringResource(R.string.carnival_stat_str, equipData.strengthBonus))
                     if (equipData.defenseBonus  > 0) add(stringResource(R.string.carnival_stat_def, equipData.defenseBonus))
                     if ((equipData.capeBonus) > 0f) {
-                        val capeLabel = if (equipData.capeSkill in COMBAT_CAPE_SKILLS) stringResource(R.string.bestiary_stat_xp)
-                                        else stringResource(R.string.carnival_stat_yield)
-                        add("$capeLabel +${(equipData.capeBonus * 100).toInt()}%")
+                        val skillName = if (equipData.capeSkill != null) "${GameStrings.skillName(context, equipData.capeSkill)} " else ""
+                        val bonus = (equipData.capeBonus * 100).toInt()
+                        val label = when(equipData.capeSkill) {
+                            in COMBAT_CAPE_SKILLS -> stringResource(R.string.carnival_stat_xp, skillName, bonus)
+                            else -> stringResource(R.string.carnival_stat_yield, skillName, bonus)
+                        }
+                        add(label)
                     }
                 }
                 if (statParts.isNotEmpty()) {

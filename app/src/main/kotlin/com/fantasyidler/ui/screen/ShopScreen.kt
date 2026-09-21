@@ -356,6 +356,12 @@ private fun BuyList(
 
 private val SELL_CATEGORY_ORDER = listOf("Weapons", "Armor", "Tools", "Food", "Materials", "Misc")
 
+private enum class SellOrder(val labelRes: Int) {
+    DEFAULT(R.string.shop_order_default),
+    HIGHEST_AMOUNT(R.string.shop_order_highest_amount),
+    HIGHEST_PRICE(R.string.shop_order_highest_price),
+}
+
 @OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun SellList(
@@ -376,6 +382,7 @@ private fun SellList(
 ) {
     var query by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<String?>(null) }
+    var selectedOrder by remember { mutableStateOf(SellOrder.DEFAULT) }
     var showReceipts by remember { mutableStateOf(false) }
 
     if (showReceipts) {
@@ -417,7 +424,12 @@ private fun SellList(
         )
     }
 
-    val grouped = remember(inventory, query, selectedCategory) {
+    val grouped = remember(inventory, query, selectedCategory, selectedOrder) {
+        val comparator = when (selectedOrder) {
+            SellOrder.DEFAULT -> compareBy<Triple<String, Int, String>> { it.third }
+            SellOrder.HIGHEST_AMOUNT -> compareByDescending<Triple<String, Int, String>> { it.second }
+            SellOrder.HIGHEST_PRICE -> compareByDescending<Triple<String, Int, String>> { priceFor(it.first) }
+        }
         inventory.entries
             .filter { it.key != "coins" }
             .map { Triple(it.key, it.value, GameStrings.itemName(context, it.key)) }
@@ -426,7 +438,9 @@ private fun SellList(
             .filterKeys { selectedCategory == null || it == selectedCategory }
             .entries
             .sortedBy { SELL_CATEGORY_ORDER.indexOf(it.key).let { i -> if (i < 0) Int.MAX_VALUE else i } }
-            .map { (category, entries) -> category to entries.sortedBy { (_, _, name) -> name } }
+            .map { (category, entries) ->
+                category to entries.sortedWith(comparator.thenBy { it.third }.thenBy { it.first })
+            }
     }
     val presentCategories = remember(inventory) {
         inventory.keys.filter { it != "coins" }.map(categoryFor).distinct()
@@ -497,6 +511,21 @@ private fun SellList(
                         selected = selectedCategory == category,
                         onClick  = { selectedCategory = if (selectedCategory == category) null else category },
                         label    = { Text(localizedCategory(context, category)) },
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                SellOrder.entries.forEach { order ->
+                    FilterChip(
+                        selected = selectedOrder == order,
+                        onClick = { selectedOrder = order },
+                        label = { Text(stringResource(order.labelRes)) },
                     )
                 }
             }

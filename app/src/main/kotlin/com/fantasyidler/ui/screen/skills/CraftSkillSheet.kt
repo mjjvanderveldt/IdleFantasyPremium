@@ -86,7 +86,21 @@ internal fun CraftSkillSheet(
         Skills.HERBLORE      -> craftingViewModel.herbloreRecipes
         Skills.CONSTRUCTION  -> craftingViewModel.constructionRecipes
         else                 -> craftingViewModel.jewelleryRecipes
-    }.filter { it.key !in craftState.hiddenRecipeKeys }
+    }
+    .filter { it.key !in craftState.hiddenRecipeKeys }
+    // Isle recipes on isle, mainland recipes on mainland — never mixed.
+    .let { list ->
+        val elderAllowlist = when (skillName) {
+            Skills.SMITHING     -> com.fantasyidler.data.model.ElderContent.SMITHING_RECIPES
+            Skills.COOKING      -> com.fantasyidler.data.model.ElderContent.COOKING_RECIPES
+            Skills.FLETCHING    -> com.fantasyidler.data.model.ElderContent.FLETCHING_RECIPES
+            Skills.HERBLORE     -> com.fantasyidler.data.model.ElderContent.HERBLORE_RECIPES
+            Skills.CRAFTING     -> com.fantasyidler.data.model.ElderContent.CRAFTING_RECIPES
+            else                -> emptySet()
+        }
+        if (craftState.onElderIsle) list.filter { it.key in elderAllowlist }
+        else                        list.filter { it.key !in elderAllowlist }
+    }
 
     var onlyCraftable    by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf<String?>(null) }
@@ -223,7 +237,7 @@ internal fun CraftSkillSheet(
                     }
                 }
             }
-            LazyColumn(state = recipeListState, modifier = Modifier.fillMaxWidth()) {
+            LazyColumn(state = recipeListState, modifier = Modifier.fillMaxWidth(), flingBehavior = rememberTapFriendlyFlingBehavior()) {
                 items(recipes, key = { it.key }) { recipe ->
                     CraftRecipeRow(
                         recipe     = recipe,
@@ -403,7 +417,7 @@ private fun CraftQuantityContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState(), flingBehavior = rememberTapFriendlyFlingBehavior())
             .imePadding()
             .padding(horizontal = 24.dp)
             .padding(bottom = 40.dp),
@@ -505,17 +519,22 @@ private fun CraftQuantityContent(
         }
         if (isHerblore && onSetAsh != null) {
             val ashTiers = listOf("ashes","oak_ashes","willow_ashes","maple_ashes","yew_ashes","magic_ashes","redwood_ashes")
-            val availableAshes = ashTiers.filter { (state.inventory[it] ?: 0) >= qty }
-            if (availableAshes.isNotEmpty()) {
+            val ownedAshes = ashTiers.filter { (state.inventory[it] ?: 0) > 0 }
+            val selectedAsh = state.herbloreAshKey
+            LaunchedEffect(qty, state.inventory, selectedAsh) {
+                if (selectedAsh != null && (state.inventory[selectedAsh] ?: 0) < qty) onSetAsh(null)
+            }
+            if (ownedAshes.isNotEmpty()) {
                 Spacer(Modifier.height(12.dp))
                 Text(stringResource(R.string.catalyst_optional), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(Modifier.height(4.dp))
-                val selectedAsh = state.herbloreAshKey
-                (listOf(null) + availableAshes).forEach { ashKey ->
+                (listOf(null) + ownedAshes).forEach { ashKey ->
+                    val owned      = ashKey?.let { state.inventory[it] ?: 0 } ?: 0
+                    val affordable = ashKey == null || owned >= qty
                     Row(
                         modifier          = Modifier
                             .fillMaxWidth()
-                            .clickable { onSetAsh(ashKey) }
+                            .clickable(enabled = affordable) { onSetAsh(ashKey) }
                             .padding(vertical = 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
@@ -523,15 +542,27 @@ private fun CraftQuantityContent(
                         Text(
                             text  = if (ashKey == null) stringResource(R.string.catalyst_none) else GameStrings.itemName(context, ashKey),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = if (selectedAsh == ashKey) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                            color = when {
+                                !affordable              -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                selectedAsh == ashKey    -> MaterialTheme.colorScheme.primary
+                                else                     -> MaterialTheme.colorScheme.onSurface
+                            },
                             fontWeight = if (selectedAsh == ashKey) FontWeight.SemiBold else FontWeight.Normal,
                         )
                         if (ashKey != null) {
-                            Text(
-                                text  = "×${state.inventory[ashKey] ?: 0}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                            if (affordable) {
+                                Text(
+                                    text  = "×$owned",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            } else {
+                                Text(
+                                    text  = "$owned / $qty",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
                         }
                     }
                 }

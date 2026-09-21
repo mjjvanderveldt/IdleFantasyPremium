@@ -3724,5 +3724,441 @@
         "quantity_max": 1
       }
     ]
+  },
+  "beach_marauder": {
+    "name": "beach_marauder",
+    "display_name": "Beach Marauder",
+    "hp": 200,
+    "combat_stats": {
+      "attack_level": 55,
+      "strength_level": 45,
+      "attack_bonus": 208,
+      "strength_bonus": 115,
+      "defense_level": 55
+    },
+    "defensive_stats": {
+      "attack_defense": 100,
+      "strength_defense": 100,
+      "ranged_defense": 100,
+      "magic_defense": 100
+    },
+    "xp_drops": {
+      "combat": 1400
+    },
+    "drop_table": [
+      {
+        "item": "elder_bone",
+        "chance": 0.6,
+        "quantity_min": 1,
+        "quantity_max": 2
+      },
+      {
+        "item": "elder_essence",
+        "chance": 0.3,
+        "quantity_min": 1,
+        "quantity_max": 2
+      },
+      {
+        "item": "coins",
+        "chance": 0.9,
+        "quantity_min": 500,
+        "quantity_max": 1200
+      },
+      {
+        "item": "tidal_sprite",
+        "chance": 0.002,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "ancient_turtle",
+        "chance": 0.0005,
+        "quantity_min": 1,
+        "quantity_max": 1
+      }
+    ]
+  },
+  "beach_leviathan": {
+    "name": "beach_leviathan",
+    "display_name": "Beach Leviathan",
+    "hp": 240,
+    "combat_stats": {
+      "attack_level": 60,
+      "strength_level": 50,
+      "attack_bonus": 223,
+      "strength_bonus": 130,
+      "defense_level": 60
+    },
+    "defensive_stats": {
+      "attack_defense": 110,
+      "strength_defense": 110,
+      "ranged_defense": 110,
+      "magic_defense": 110
+    },
+    "xp_drops": {
+      "combat": 1800
+    },
+    "drop_table": [
+      {
+        "item": "elder_bone",
+        "chance": 0.6,
+        "quantity_min": 1,
+        "quantity_max": 3
+      },
+      {
+        "item": "elder_essence",
+        "chance": 0.4,
+        "quantity_min": 1,
+        "quantity_max": 3
+      },
+      {
+        "item": "coins",
+        "chance": 0.9,
+        "quantity_min": 800,
+        "quantity_max": 1500
+      },
+      {
+        "item": "tidal_sprite",
+        "chance": 0.002,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "ancient_turtle",
+        "chance": 0.0008,
+        "quantity_min": 1,
+        "quantity_max": 1
+      }
+    ]
+  },
+  "grove_stalker": {
+    "name": "grove_stalker",
+    "display_name": "Grove Stalker",
+    "hp": 280,
+    "combat_stats": {
+      "attack_level": 65,
+      "strength_level": 55,
+      "attack_bonus": 226,
+      "strength_bonus": 128,
+      "defense_level": 65
+    },
+    "defensive_stats": {
+      "attack_defense": 140,
+      "strength_defense": 140,
+      "ranged_defense": 140,
+      "magic_defense": 140
+    },
+    "xp_drops": {
+      "combat": 2200
+    },
+    "drop_table": [
+      {
+        "item": "elder_bone",
+        "chance": 0.7,
+        "quantity_min": 1,
+        "quantity_max": 3
+      },
+      {
+        "item": "elder_essence",
+        "chance": 0.5,
+        "quantity_min": 1,
+        "quantity_max": 3
+      },
+      {
+        "item": "coins",
+        "chance": 0.9,
+        "quantity_min": 1200,
+        "quantity_max": 2200
+      },
+      {
+        "item": "grove_fawn",
+        "chance": 0.002,
+        "quantity_min": 1,
+        "quantity_max": 1
+      }
+    ]
+  },
+  "grove_dryad": {
+    "name": "grove_dryad",
+    "display_name": "Grove Dryad",
+    "hp": 320,
+    "combat_stats": {
+      "attack_level": 70,
+      "strength_level": 60,
+      "attack_bonus": 241,
+      "strength_bonus": 143,
+      "defense_level": 70
+    },
+    "defensive_stats": {
+      "attack_defense": 150,
+      "strength_defense": 150,
+      "ranged_defense": 150,
+      "magic_defense": 150
+    },
+    "xp_drops": {
+      "combat": 2600
+    },
+    "drop_table": [
+      {
+        "item": "elder_bone",
+        "chance": 0.7,
+        "quantity_min": 2,
+        "quantity_max": 4
+      },
+      {
+        "item": "elder_essence",
+        "chance": 0.5,
+        "quantity_min": 1,
+        "quantity_max": 4
+      },
+      {
+        "item": "sacred_wood",
+        "chance": 0.1,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "coins",
+        "chance": 0.9,
+        "quantity_min": 1500,
+        "quantity_max": 2600
+      },
+      {
+        "item": "grove_fawn",
+        "chance": 0.002,
+        "quantity_min": 1,
+        "quantity_max": 1
+      }
+    ]
+  },
+  "ash_beast": {
+    "name": "ash_beast",
+    "display_name": "Ash Beast",
+    "hp": 340,
+    "combat_stats": {
+      "attack_level": 75,
+      "strength_level": 65,
+      "attack_bonus": 240,
+      "strength_bonus": 140,
+      "defense_level": 75
+    },
+    "defensive_stats": {
+      "attack_defense": 180,
+      "strength_defense": 180,
+      "ranged_defense": 180,
+      "magic_defense": 180
+    },
+    "xp_drops": {
+      "combat": 3100
+    },
+    "drop_table": [
+      {
+        "item": "elder_bone",
+        "chance": 0.7,
+        "quantity_min": 2,
+        "quantity_max": 4
+      },
+      {
+        "item": "elder_essence",
+        "chance": 0.6,
+        "quantity_min": 2,
+        "quantity_max": 4
+      },
+      {
+        "item": "coins",
+        "chance": 0.9,
+        "quantity_min": 2200,
+        "quantity_max": 3400
+      },
+      {
+        "item": "magma_salamander",
+        "chance": 0.002,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "cinder_hawk",
+        "chance": 0.0006,
+        "quantity_min": 1,
+        "quantity_max": 1
+      }
+    ]
+  },
+  "lava_wraith": {
+    "name": "lava_wraith",
+    "display_name": "Lava Wraith",
+    "hp": 380,
+    "combat_stats": {
+      "attack_level": 80,
+      "strength_level": 70,
+      "attack_bonus": 255,
+      "strength_bonus": 155,
+      "defense_level": 80
+    },
+    "defensive_stats": {
+      "attack_defense": 195,
+      "strength_defense": 195,
+      "ranged_defense": 195,
+      "magic_defense": 195
+    },
+    "xp_drops": {
+      "combat": 3600
+    },
+    "drop_table": [
+      {
+        "item": "elder_bone",
+        "chance": 0.8,
+        "quantity_min": 2,
+        "quantity_max": 5
+      },
+      {
+        "item": "elder_essence",
+        "chance": 0.6,
+        "quantity_min": 2,
+        "quantity_max": 5
+      },
+      {
+        "item": "elder_ruby",
+        "chance": 0.05,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "coins",
+        "chance": 0.9,
+        "quantity_min": 2600,
+        "quantity_max": 4200
+      },
+      {
+        "item": "magma_salamander",
+        "chance": 0.002,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "cinder_hawk",
+        "chance": 0.0008,
+        "quantity_min": 1,
+        "quantity_max": 1
+      }
+    ]
+  },
+  "abyssal_horror": {
+    "name": "abyssal_horror",
+    "display_name": "Abyssal Horror",
+    "hp": 340,
+    "combat_stats": {
+      "attack_level": 85,
+      "strength_level": 75,
+      "attack_bonus": 235,
+      "strength_bonus": 135,
+      "defense_level": 85
+    },
+    "defensive_stats": {
+      "attack_defense": 190,
+      "strength_defense": 190,
+      "ranged_defense": 190,
+      "magic_defense": 190
+    },
+    "xp_drops": {
+      "combat": 4000
+    },
+    "drop_table": [
+      {
+        "item": "elder_bone",
+        "chance": 0.8,
+        "quantity_min": 3,
+        "quantity_max": 5
+      },
+      {
+        "item": "elder_essence",
+        "chance": 0.7,
+        "quantity_min": 3,
+        "quantity_max": 6
+      },
+      {
+        "item": "elder_sapphire",
+        "chance": 0.06,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "coins",
+        "chance": 0.9,
+        "quantity_min": 3000,
+        "quantity_max": 5000
+      },
+      {
+        "item": "abyss_wisp",
+        "chance": 0.002,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "deepwater_serpent",
+        "chance": 0.0002,
+        "quantity_min": 1,
+        "quantity_max": 1
+      }
+    ]
+  },
+  "void_seraph": {
+    "name": "void_seraph",
+    "display_name": "Void Seraph",
+    "hp": 380,
+    "combat_stats": {
+      "attack_level": 90,
+      "strength_level": 80,
+      "attack_bonus": 250,
+      "strength_bonus": 150,
+      "defense_level": 90
+    },
+    "defensive_stats": {
+      "attack_defense": 210,
+      "strength_defense": 210,
+      "ranged_defense": 210,
+      "magic_defense": 210
+    },
+    "xp_drops": {
+      "combat": 4500
+    },
+    "drop_table": [
+      {
+        "item": "elder_bone",
+        "chance": 0.9,
+        "quantity_min": 3,
+        "quantity_max": 6
+      },
+      {
+        "item": "elder_essence",
+        "chance": 0.7,
+        "quantity_min": 3,
+        "quantity_max": 7
+      },
+      {
+        "item": "elder_diamond",
+        "chance": 0.04,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "coins",
+        "chance": 0.9,
+        "quantity_min": 3500,
+        "quantity_max": 6000
+      },
+      {
+        "item": "abyss_wisp",
+        "chance": 0.002,
+        "quantity_min": 1,
+        "quantity_max": 1
+      },
+      {
+        "item": "deepwater_serpent",
+        "chance": 0.0003,
+        "quantity_min": 1,
+        "quantity_max": 1
+      }
+    ]
   }
 }

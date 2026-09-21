@@ -1,0 +1,13 @@
+• Fixed the Armory freezing the app for a few seconds when opened and on every filter tab change
+• Made 219 guild quest names translatable that were previously stuck in English
+• Fixed the bulk sell confirmation button accepting repeat taps during a large sale, causing extra "sold for 0 gold" notifications
+• Fixed first taps being swallowed after scrolling to the edge of a list (skill sheets, Mercantile, Prestige, and elsewhere)
+• Fixed the guild "Go to Skill" shortcut re-opening its skill menu when returning to the Skills screen
+• Fixed lag around the combat log during kill-heavy dungeon sessions
+• Seasonal bounty quest chips now appear in the Runecrafting and Firemaking crafting menus
+• Lantern Lights now awards its token at reaching round 6 as the hint promises, and the memory game got its own success message
+• Fixed offline queue catch-up losing hours when a fast-forwarded crafting session had a speed tool equipped (frying pan, tinderbox, hammer)
+• Fixed the queue schedule slipping when aggressive battery savers interrupted a session handoff in the background
+• My House now fits the screen in landscape on tablets instead of overflowing and blocking scrolling
+• New food eating order option: highest heal first, lowest heal first, or least quantity first
+• Blessings activate and gathering activities start on a single tap, without a confirmation dialog

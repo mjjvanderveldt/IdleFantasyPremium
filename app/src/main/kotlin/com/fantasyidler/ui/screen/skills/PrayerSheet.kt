@@ -100,7 +100,7 @@ internal fun PrayerSheet(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(boneScrollState),
+                    .verticalScroll(boneScrollState, flingBehavior = rememberTapFriendlyFlingBehavior()),
             ) {
                 Text(
                     text     = stringResource(R.string.label_prayer),

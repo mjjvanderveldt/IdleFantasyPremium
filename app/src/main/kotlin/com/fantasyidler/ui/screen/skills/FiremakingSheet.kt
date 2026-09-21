@@ -110,7 +110,7 @@ internal fun FiremakingSheet(
                     Text(stringResource(R.string.skills_no_logs), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             } else {
-                Column(Modifier.verticalScroll(logScrollState).imePadding()) {
+                Column(Modifier.verticalScroll(logScrollState, flingBehavior = rememberTapFriendlyFlingBehavior()).imePadding()) {
                     availableLogs.entries.sortedBy { it.value.levelRequired }.forEach { (key, log) ->
                         val ashKey = when (key) {
                             "oak_log" -> "oak_ashes"; "willow_log" -> "willow_ashes"
@@ -184,7 +184,7 @@ internal fun FiremakingSheet(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(detailScrollState)
+                    .verticalScroll(detailScrollState, flingBehavior = rememberTapFriendlyFlingBehavior())
                     .imePadding(),
             ) {
                 TextButton(onClick = { selectedKey = null }, modifier = Modifier.padding(start = 4.dp)) {

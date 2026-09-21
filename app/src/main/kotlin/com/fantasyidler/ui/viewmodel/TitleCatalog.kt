@@ -32,5 +32,6 @@ object TitleCatalog {
         TitleDefinition("merchant_prince",   R.string.title_merchant_prince_name,   R.string.title_merchant_prince_requirement),
         TitleDefinition("pathfinder",        R.string.title_pathfinder_name,        R.string.title_pathfinder_requirement),
         TitleDefinition("master_farmer",     R.string.title_master_farmer_name,     R.string.title_master_farmer_requirement),
+        TitleDefinition("isle_champion",     R.string.title_isle_champion_name,     R.string.title_isle_champion_requirement),
     )
 }

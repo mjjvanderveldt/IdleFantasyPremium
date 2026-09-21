@@ -308,7 +308,7 @@
     <string name="quest_construction_3_objective">Build 50 Willow Cabinets</string> <!-- untranslated -->
     <string name="quest_construction_4_name">Construction IV</string> <!-- untranslated -->
     <string name="quest_construction_4_objective">Build 50 Maple Dressers</string> <!-- untranslated -->
-    <string name="quest_construction_5_name">Construction V</string> <!-- untranslated -->
+    <string name="quest_construction_5_name">Construcción V</string>
     <string name="quest_construction_5_objective">Build 25 Magic Thrones</string> <!-- untranslated -->
     <string name="quest_construction_upgrade_inn_name">Renovate the Inn</string> <!-- untranslated -->
     <string name="quest_construction_upgrade_inn_objective">Upgrade the Inn at least once</string> <!-- untranslated -->

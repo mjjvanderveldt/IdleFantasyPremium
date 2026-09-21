@@ -1,0 +1,4 @@
+• The Runecrafting sheet now shows the total runes a session will produce and correctly factors the level and ash catalyst multipliers into the projected XP, so a redwood-ashes run no longer under-reports either
+• Rotating a piece of furniture in the house editor no longer treats it as a new purchase; rotation variants share ownership and storage with the base piece
+• The Herblore potion sheet now lists every ash tier the player owns, dimming ones that don't cover the current quantity with an "owned / needed" indicator, instead of hiding them entirely
+• Character save-slot switching is now crash-safe: switches are serialized, a switch interrupted mid-way is automatically completed on the next app start, and starting a session collect while a switch is running is blocked with a "please wait" message

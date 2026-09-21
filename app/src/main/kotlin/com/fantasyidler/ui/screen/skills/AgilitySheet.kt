@@ -62,7 +62,7 @@ internal fun AgilitySheet(
             )
         }
         HorizontalDivider()
-        Column(Modifier.verticalScroll(scrollState)) {
+        Column(Modifier.verticalScroll(scrollState, flingBehavior = rememberTapFriendlyFlingBehavior())) {
             courses.entries
                 .sortedBy { it.value.levelRequired }
                 .forEach { (key, course) ->

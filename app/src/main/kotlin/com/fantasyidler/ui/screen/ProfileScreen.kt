@@ -120,6 +120,14 @@ private val SKILL_CATEGORY_GROUPS: List<Pair<Int, List<String>>> = listOf(
     R.string.label_combat         to listOf("attack", "strength", "defense", "ranged", "magic", "hitpoints", "slayer"),
 )
 
+/** Elder-skill layout for the Profile Skills tab: only the skills that exist on the isle. */
+private val ELDER_SKILL_CATEGORY_GROUPS: List<Pair<Int, List<String>>> = listOf(
+    R.string.label_gathering       to listOf("mining", "fishing", "woodcutting"),
+    R.string.label_crafting        to listOf("smithing", "cooking"),
+    R.string.label_support_skills  to listOf("agility"),
+    R.string.label_combat          to listOf("attack", "strength", "defense", "ranged", "magic", "hitpoints"),
+)
+
 private data class UnlockMilestone(val level: Int, val description: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -251,6 +259,7 @@ fun ProfileScreen(
                     totalLevel                = state.totalLevel,
                     coins                     = state.coins,
                     activeBlessingKey         = state.activeBlessingKey,
+                    allBlessings              = state.allBlessings,
                     prayerCapeMult            = state.prayerCapeMult,
                     activeBlessingRemainingMs = (state.activeBlessingExpiresAt - System.currentTimeMillis()).coerceAtLeast(0L),
                     xpBoostRemainingMs        = if (state.ironman) 0L else (state.xpBoostExpiresAt - System.currentTimeMillis()).coerceAtLeast(0L),
@@ -272,6 +281,9 @@ fun ProfileScreen(
                         prestigeUnspent = state.prestigeUnspentBySkill,
                         ironman        = state.ironman,
                         onOpenPrestige = onNavigateToPrestige,
+                        elderIsleUnlocked = state.elderIsleUnlocked,
+                        elderSkillLevels  = state.elderSkillLevels,
+                        elderSkillXp      = state.elderSkillXp,
                     )
                     1    -> InventoryTab(state.inventory, context, viewModel::categoryFor, viewModel::openAncientTreasures) { showAddItemSheet = true }
                     2    -> EquipmentTab(
@@ -282,7 +294,7 @@ fun ProfileScreen(
                         onEquipBestTools   = viewModel::equipBestTools,
                         onNavigateToCombat = onNavigateToCombat,
                     )
-                    3    -> PetsTab(allPets = viewModel.allPets, ownedPetIds = state.ownedPetIds)
+                    3    -> PetsTab(allPets = viewModel.allPets, ownedPetIds = state.ownedPetIds, elderIsleUnlocked = state.elderIsleUnlocked)
                     4    -> AchievementsTab(achState.byGroup, achState.unlockedCount, achState.totalCount)
                     5    -> NotesTab(
                         skillingDungeons     = viewModel.allSkillingDungeons,
@@ -510,17 +522,40 @@ private fun SkillsTab(
     prestigeUnspent: Map<String, Int> = emptyMap(),
     ironman: Boolean = false,
     onOpenPrestige: (String) -> Unit = {},
+    elderIsleUnlocked: Boolean = false,
+    elderSkillLevels: Map<String, Int> = emptyMap(),
+    elderSkillXp: Map<String, Long> = emptyMap(),
 ) {
     var selectedSkill by remember { mutableStateOf<String?>(null) }
-    val milestones = remember(selectedSkill) {
-        selectedSkill?.let { buildUnlockMilestones(it, viewModel, context) } ?: emptyList()
-    }
     var debugSelectedSkill by remember { mutableStateOf("") }
     var debugSelectedXp by remember { mutableLongStateOf(0L) }
     var debugShowAddXpSheet by remember { mutableStateOf(false) }
 
+    // Sub-tab: Mainland vs Elder skill sheet. Only shows the toggle once isle is unlocked.
+    var showElder by rememberSaveable { mutableStateOf(false) }
+    val effectiveLevels = if (showElder) skillLevels.mapValues { elderSkillLevels[it.key] ?: 1 } else skillLevels
+    val effectiveXp     = if (showElder) skillXp.mapValues { elderSkillXp[it.key] ?: 0L }    else skillXp
+    val groups          = if (showElder) ELDER_SKILL_CATEGORY_GROUPS else SKILL_CATEGORY_GROUPS
+    val showPrestige    = !showElder
+
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        for ((categoryRes, skills) in SKILL_CATEGORY_GROUPS) {
+        if (elderIsleUnlocked) {
+            item(key = "mainland_elder_tabs") {
+                androidx.compose.material3.TabRow(selectedTabIndex = if (showElder) 1 else 0) {
+                    androidx.compose.material3.Tab(
+                        selected = !showElder,
+                        onClick  = { showElder = false },
+                        text     = { Text("Mainland") },
+                    )
+                    androidx.compose.material3.Tab(
+                        selected = showElder,
+                        onClick  = { showElder = true },
+                        text     = { Text("Elder") },
+                    )
+                }
+            }
+        }
+        for ((categoryRes, skills) in groups) {
             item(key = "hdr_$categoryRes") {
                 SlotSectionHeader(stringResource(categoryRes))
             }
@@ -536,8 +571,8 @@ private fun SkillsTab(
                         rowSkills.forEach { key ->
                             SkillGridCard(
                                 skillKey = key,
-                                level    = skillLevels[key] ?: 1,
-                                xp       = skillXp[key] ?: 0L,
+                                level    = effectiveLevels[key] ?: 1,
+                                xp       = effectiveXp[key] ?: 0L,
                                 context  = context,
                                 onClick  = { selectedSkill = key },
                                 modifier = Modifier.weight(1f),
@@ -560,6 +595,10 @@ private fun SkillsTab(
     }
 
     selectedSkill?.let { key ->
+        // Recompute milestones per-open so the mainland vs Elder toggle steers which
+        // activities/drops populate the sheet. Elder tab hides prestige (no isle
+        // prestige system), so the "View tree" button drops off too.
+        val sheetMilestones = remember(key, showElder) { buildUnlockMilestones(key, viewModel, context, showElder) }
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         ModalBottomSheet(
             onDismissRequest = { selectedSkill = null },
@@ -569,12 +608,12 @@ private fun SkillsTab(
             ScaledSheetContent {
             SkillUnlockSheet(
                 skillKey       = key,
-                level          = skillLevels[key] ?: 1,
+                level          = effectiveLevels[key] ?: 1,
                 context        = context,
-                milestones     = milestones,
-                prestigeCount  = skillPrestige[key] ?: 0,
-                unspentPoints  = prestigeUnspent[key] ?: 0,
-                onOpenPrestige = { selectedSkill = null; onOpenPrestige(key) },
+                milestones     = sheetMilestones,
+                prestigeCount  = if (showElder) 0 else skillPrestige[key] ?: 0,
+                unspentPoints  = if (showElder) 0 else prestigeUnspent[key] ?: 0,
+                onOpenPrestige = if (showElder) null else { -> selectedSkill = null; onOpenPrestige(key) },
             )
             }
         }
@@ -811,78 +850,95 @@ private fun SkillUnlockSheet(
     }
 }
 
-private fun buildUnlockMilestones(skillKey: String, vm: InventoryViewModel, context: Context): List<UnlockMilestone> =
-    when (skillKey) {
+private fun buildUnlockMilestones(skillKey: String, vm: InventoryViewModel, context: Context, isElder: Boolean = false): List<UnlockMilestone> {
+    // Mainland sheet filters elder activities out; elder sheet keeps only isle activities.
+    // Skills without any elder counterpart (farming, firemaking, thieving, etc.) return
+    // empty on the elder tab.
+    fun <V> Map<String, V>.filterByIsle(elderSet: Set<String>): Map<String, V> =
+        filter { (k, _) -> if (isElder) k in elderSet else k !in elderSet }
+    return when (skillKey) {
         "mining" ->
-            vm.ores.entries
+            vm.ores
+                .filterByIsle(com.fantasyidler.data.model.ElderContent.ORES)
+                .entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, ore) -> UnlockMilestone(ore.levelRequired, GameStrings.itemName(context, key)) }
 
         "fishing" ->
-            vm.fish.entries
+            vm.fish
+                .filterByIsle(com.fantasyidler.data.model.ElderContent.FISH)
+                .entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, fish) -> UnlockMilestone(fish.levelRequired, GameStrings.itemName(context, key)) }
 
         "woodcutting" ->
-            vm.trees.entries
+            vm.trees
+                .filterByIsle(com.fantasyidler.data.model.ElderContent.TREES)
+                .entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, tree) -> UnlockMilestone(tree.levelRequired, GameStrings.treeName(context, key, tree.displayName)) }
 
         "farming" ->
-            vm.crops.entries
+            if (isElder) emptyList() else vm.crops.entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, crop) -> UnlockMilestone(crop.levelRequired, GameStrings.cropName(context, key)) }
 
         "firemaking" ->
-            vm.logs.entries
+            if (isElder) emptyList() else vm.logs.entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, log) -> UnlockMilestone(log.levelRequired, GameStrings.itemName(context, key)) }
 
         "agility" ->
-            vm.agilityCourses.entries
+            vm.agilityCourses
+                .filterByIsle(com.fantasyidler.data.model.ElderContent.AGILITY_COURSES)
+                .entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, course) ->
                     UnlockMilestone(course.levelRequired, context.stringByName("agility_${key}_name") ?: course.displayName)
                 }
 
         "smithing" ->
-            vm.smithingRecipes.entries
+            vm.smithingRecipes
+                .filterByIsle(com.fantasyidler.data.model.ElderContent.SMITHING_RECIPES)
+                .entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, recipe) -> UnlockMilestone(recipe.levelRequired, GameStrings.itemName(context, key)) }
 
         "cooking" ->
-            vm.cookingRecipes.entries
+            vm.cookingRecipes
+                .filterByIsle(com.fantasyidler.data.model.ElderContent.COOKING_RECIPES)
+                .entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, recipe) -> UnlockMilestone(recipe.levelRequired, GameStrings.itemName(context, key)) }
 
         "fletching" ->
-            vm.fletchingRecipes.entries
+            if (isElder) emptyList() else vm.fletchingRecipes.entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, recipe) -> UnlockMilestone(recipe.levelRequired, GameStrings.itemName(context, key)) }
 
         "crafting" ->
-            vm.craftingRecipes.entries
+            if (isElder) emptyList() else vm.craftingRecipes.entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, recipe) -> UnlockMilestone(recipe.levelRequired, GameStrings.itemName(context, key)) }
 
         "runecrafting" ->
-            vm.runes.entries
+            if (isElder) emptyList() else vm.runes.entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, rune) -> UnlockMilestone(rune.levelRequired, GameStrings.itemName(context, key)) }
 
         "herblore" ->
-            vm.herbloreRecipes.entries
+            if (isElder) emptyList() else vm.herbloreRecipes.entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, recipe) -> UnlockMilestone(recipe.levelRequired, GameStrings.itemName(context, key)) }
 
         "attack", "strength", "ranged", "magic" ->
-            vm.allEquipment.entries
+            if (isElder) emptyList() else vm.allEquipment.entries
                 .filter { it.value.requirements.containsKey(skillKey) }
                 .sortedBy { it.value.requirements[skillKey] ?: 0 }
                 .map { (key, item) -> UnlockMilestone(item.requirements[skillKey]!!, GameStrings.itemName(context, key)) }
 
         "defense" ->
-            vm.allEquipment.entries
+            if (isElder) emptyList() else vm.allEquipment.entries
                 .filter { it.value.requirements.containsKey("defense") }
                 .sortedBy { it.value.requirements["defense"] ?: 0 }
                 .map { (key, item) -> UnlockMilestone(item.requirements["defense"]!!, GameStrings.itemName(context, key)) }
@@ -894,7 +950,7 @@ private fun buildUnlockMilestones(skillKey: String, vm: InventoryViewModel, cont
         )
 
         "prayer" ->
-            vm.bones.entries
+            if (isElder) emptyList() else vm.bones.entries
                 .sortedBy { it.value.xpPerBone }
                 .mapIndexed { i, (key, bone) ->
                     UnlockMilestone(
@@ -904,22 +960,22 @@ private fun buildUnlockMilestones(skillKey: String, vm: InventoryViewModel, cont
                 }
 
         "thieving" ->
-            vm.thievingNpcs.entries
+            if (isElder) emptyList() else vm.thievingNpcs.entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, npc) -> UnlockMilestone(npc.levelRequired, GameStrings.thievingNpcName(context, key)) }
 
         "construction" ->
-            vm.constructionRecipes.entries
+            if (isElder) emptyList() else vm.constructionRecipes.entries
                 .sortedBy { it.value.levelRequired }
                 .map { (key, recipe) -> UnlockMilestone(recipe.levelRequired, GameStrings.itemName(context, key)) }
 
         "mercantile" ->
-            vm.tradeRoutes
+            if (isElder) emptyList() else vm.tradeRoutes
                 .sortedBy { it.levelRequired }
                 .map { UnlockMilestone(it.levelRequired, GameStrings.tradeRouteName(context, it.id, it.displayName)) }
 
         "slayer" ->
-            vm.slayerTaskData.entries
+            if (isElder) emptyList() else vm.slayerTaskData.entries
                 .sortedBy { it.value.slayerLevel }
                 .distinctBy { it.value.slayerLevel }
                 .map { (key, task) ->
@@ -928,6 +984,7 @@ private fun buildUnlockMilestones(skillKey: String, vm: InventoryViewModel, cont
 
         else -> emptyList()
     }
+}
 
 // ---------------------------------------------------------------------------
 // Inventory tab
@@ -1262,12 +1319,22 @@ private fun AchievementRow(ach: Achievement) {
 // Pets tab
 // ---------------------------------------------------------------------------
 
+/** The 8 isle-only pets (7 elder dungeon drops + Last Elder's familiar). Hidden from the
+ *  pet list until the isle is unlocked, so a pre-unlock save can't spoil what's coming. */
+private val ELDER_ISLE_PET_IDS = setOf(
+    "tidal_sprite", "grove_fawn", "magma_salamander", "abyss_wisp",
+    "ancient_turtle", "cinder_hawk", "deepwater_serpent", "elder_familiar",
+)
+
 @Composable
 private fun PetsTab(
     allPets: Map<String, PetData>,
     ownedPetIds: Set<String>,
+    elderIsleUnlocked: Boolean = false,
 ) {
-    if (allPets.isEmpty()) {
+    val visiblePets = if (elderIsleUnlocked) allPets
+                      else allPets.filterKeys { it !in ELDER_ISLE_PET_IDS }
+    if (visiblePets.isEmpty()) {
         Box(
             modifier         = Modifier.fillMaxSize().padding(32.dp),
             contentAlignment = Alignment.Center,
@@ -1281,8 +1348,8 @@ private fun PetsTab(
         return
     }
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        val owned  = allPets.values.filter { it.id in ownedPetIds }
-        val locked = allPets.values.filter { it.id !in ownedPetIds }
+        val owned  = visiblePets.values.filter { it.id in ownedPetIds }
+        val locked = visiblePets.values.filter { it.id !in ownedPetIds }
 
         if (owned.isNotEmpty()) {
             item { SlotSectionHeader(stringResource(R.string.profile_pet_collected)) }

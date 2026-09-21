@@ -3,6 +3,7 @@ package com.fantasyidler.ui.screen
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -47,6 +49,7 @@ import com.fantasyidler.R
 import com.fantasyidler.data.json.BossData
 import com.fantasyidler.data.json.EnemyData
 import com.fantasyidler.ui.viewmodel.BestiaryEntry
+import com.fantasyidler.ui.viewmodel.BestiaryFilter
 import com.fantasyidler.ui.viewmodel.BestiarySort
 import com.fantasyidler.ui.viewmodel.BestiaryViewModel
 import com.fantasyidler.ui.theme.ScaledSheetContent
@@ -78,20 +81,32 @@ fun BestiaryTab(viewModel: BestiaryViewModel = hiltViewModel()) {
             )
         }
 
-        val encounteredEnemies = state.enemies.count { it.encountered }
-        val encounteredBosses  = state.bosses.count { it.encountered }
-        val totalEncountered   = encounteredEnemies + encounteredBosses
-        val totalAll           = state.enemies.size + state.bosses.size
-        if (totalAll > 0) {
+        if (state.totalCount > 0) {
             CompletionProgressBar(
-                completed = totalEncountered,
-                total = totalAll,
+                completed = state.totalEncountered,
+                total = state.totalCount,
                 label = stringResource(R.string.bestiary_progress_bar)
             )
         }
 
         Row(
-            Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            BestiaryFilter.entries.forEach { f ->
+                FilterChip(
+                    selected = state.filter == f,
+                    onClick  = { viewModel.setFilter(f) },
+                    label    = { Text(filterLabel(f)) },
+                )
+            }
+        }
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(start = 12.dp, end = 12.dp, bottom = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             FilterChip(
@@ -108,7 +123,7 @@ fun BestiaryTab(viewModel: BestiaryViewModel = hiltViewModel()) {
 
         val enemiesListState = rememberLazyListState()
         val bossesListState = rememberLazyListState()
-        LaunchedEffect(state.sort) {
+        LaunchedEffect(state.filter, state.sort) {
             enemiesListState.scrollToItem(0)
             bossesListState.scrollToItem(0)
         }
@@ -141,6 +156,12 @@ fun BestiaryTab(viewModel: BestiaryViewModel = hiltViewModel()) {
 // ---------------------------------------------------------------------------
 // List
 // ---------------------------------------------------------------------------
+
+@Composable
+private fun filterLabel(filter: BestiaryFilter): String = when (filter) {
+    BestiaryFilter.ALL     -> stringResource(R.string.bestiary_filter_all)
+    BestiaryFilter.MISSING -> stringResource(R.string.bestiary_filter_missing)
+}
 
 @Composable
 private fun BestiaryList(

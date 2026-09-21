@@ -14,4 +14,8 @@ interface PlayerDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(player: Player)
+
+    /** Returns the number of rows updated (0 when the player row doesn't exist yet). */
+    @Query("UPDATE players SET flags = :flags WHERE id = 1")
+    suspend fun updateFlags(flags: String): Int
 }

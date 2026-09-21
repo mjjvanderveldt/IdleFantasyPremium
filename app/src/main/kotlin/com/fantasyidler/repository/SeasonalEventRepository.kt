@@ -418,7 +418,8 @@ class SeasonalEventRepository @Inject constructor(
     }
 
     private fun awardTokenUnlocked(flags: PlayerFlags, event: SeasonalEventData): PlayerFlags {
-        val newCount = (flags.seasonalTokensByEvent[event.id] ?: 0) + 1
+        // Tokens are capped at the track's goal; overflow past it showed as e.g. 307/300 (#1786).
+        val newCount = minOf((flags.seasonalTokensByEvent[event.id] ?: 0) + 1, event.tokenGoal)
         var updated = flags.copy(seasonalTokensByEvent = flags.seasonalTokensByEvent + (event.id to newCount))
         if (newCount >= event.tokenGoal && event.id !in flags.seasonalBannersEarned.map { it.eventId }) {
             val localeContext = context.withAppLocale()

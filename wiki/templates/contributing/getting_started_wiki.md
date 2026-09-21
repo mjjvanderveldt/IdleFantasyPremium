@@ -101,6 +101,8 @@ The following code files are used as follows in the wiki:
 - `game_data.py` - A set of helper functions which retrieve data from the game such as json files and game strings
 - `site.py` - The code responsible for generating the Idle Fantasy wiki website based upon the generated Markdown files.
 - `page_hierarchy.py` - A simple file defining the page hierarchy structure.
+- `validation.py` - Holds the logic behind `check_wiki_validity()` (the `validity` command): checks that every page icon exists, every page has a working generator, and every internal page link points somewhere real.
+- `wiki_logs.py` - A small shared logger (`LOGGER`) used across the build to emit de-duplicated warnings, such as missing translation strings.
 
 ## Contributing process
 

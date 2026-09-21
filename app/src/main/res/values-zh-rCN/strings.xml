@@ -2,6 +2,7 @@
 <resources>
 
 
+
     <!-- ===== Bottom navigation ===== -->
     <string name="nav_skills">技能</string>
     <string name="nav_combat">战斗</string>
@@ -66,6 +67,8 @@
     <string name="label_bosses">首领</string>
     <string name="label_by_location">按地点</string>
     <string name="bestiary_not_encountered">尚未遭遇</string>
+    <string name="bestiary_filter_all">全部</string>
+    <string name="bestiary_filter_missing">未遭遇</string>
     <string name="bestiary_qty_header">数量</string>
     <string name="bestiary_chance_header">几率</string>
     <string name="label_completion_progress">%3$s %1$d / %2$d</string>
@@ -200,6 +203,8 @@
     <string name="format_level_xp">等级 %1$d — %2$s 经验</string>
     <!-- Translator note: %1$s = formatted XP amount, %2$d = target level number -->
     <string name="format_xp_to_next">距 %2$d 级还需 %1$s 经验</string>
+    <!-- Translator note: %1$s = formatted XP amount remaining to reach the level cap (99) -->
+    <string name="xp_to_99">%1$s 升到99级所需经验值</string>
     <!-- Translator note: %1$s = time string (e.g. "42m 10s") -->
     <string name="format_time_remaining">剩余 %1$s</string>
     <!-- Translator note: %1$s = relative time (e.g. "5m ago") -->
@@ -488,6 +493,7 @@
     <string name="settings_backup_no_folder">未选择文件夹</string>
     <string name="settings_backup_choose">选择</string>
     <string name="settings_backup_frequency">频率</string>
+    <string name="settings_backup_count">备份数量</string>
     <string name="settings_backup_off">关闭</string>
     <string name="settings_backup_hourly">每小时</string>
     <string name="settings_backup_daily">每天</string>
@@ -634,10 +640,10 @@
     <string name="profile_food_dungeon">食物（地牢）</string>
     <string name="profile_no_food">背包中没有已烹饪的食物</string>
     <string name="profile_food_threshold">低于此值时进食</string>
-    <string name="profile_food_order">Eating order</string> <!-- untranslated -->
-    <string name="food_order_descending">Highest Heal Value First</string> <!-- untranslated -->
-    <string name="food_order_ascending">Lowest Heal Value First</string> <!-- untranslated -->
-    <string name="food_order_least_quantity">Least Quantity First</string> <!-- untranslated -->
+    <string name="profile_food_order">进食顺序</string>
+    <string name="food_order_descending">先吃生命恢复量最高</string>
+    <string name="food_order_ascending">先吃生命恢复量最低</string>
+    <string name="food_order_least_quantity">先吃数量最少</string>
     <string name="profile_combat_style">战斗风格</string>
     <!-- Translator note: %1$d = quantity, %2$d = heal value -->
     <string name="profile_food_desc">×%1$d  •  恢复 %2$d 生命</string>
@@ -677,8 +683,8 @@
     <!-- Translator note: %1$d = fishing level -->
     <string name="skills_fishing_desc">等级 %1$d  •  根据等级捕获鱼类</string>
     <!-- Translator note: %1$d = prayer level -->
-    <string name="skills_prayer_desc">等级 %1$d  •  掩埋骸骨或撒播骨灰获取祈祷经验</string>
-    <string name="skills_no_bones">背包中没有骸骨或骨灰</string>
+    <string name="skills_prayer_desc">等级 %1$d  •  掩埋骸骨或撒播灰烬获取祈祷经验</string>
+    <string name="skills_no_bones">背包中没有骸骨或灰烬</string>
     <string name="skills_xp_each">每个 %1$d 经验值</string>
     <!-- Translator note: %1$d = XP per bone, %2$d = quantity available -->
     <string name="skills_bone_selected">每块 %1$d 经验  •  可用 %2$d 块</string>
@@ -704,7 +710,7 @@
     <!-- Translator note: %1$d = owned quantity -->
     <string name="crafting_owned">拥有：%1$d</string>
     <string name="crafting_owned_detail">背包中拥有：%1$d</string>
-    <string name="firemaking_ashes_owned">拥有骨灰：%1$d</string>
+    <string name="firemaking_ashes_owned">拥有灰烬：%1$d</string>
 
 
     <!-- ===== ShopScreen ===== -->
@@ -713,6 +719,9 @@
     <string name="shop_keep_one_toggle">每种物品保留一个</string>
     <string name="shop_search_hint">搜索物品</string>
     <string name="shop_filter_all">全部</string>
+    <string name="shop_order_default">默认</string>
+    <string name="shop_order_highest_amount">数量</string>
+    <string name="shop_order_highest_price">价格</string>
     <string name="shop_sell_blocked_equipped">%1$s 已装备，请先卸下再出售。</string>
     <string name="shop_sell_blocked_reserved">%1$s 被排队任务占用。</string>
     <string name="shop_sell_blocked_keep_one">保留最后一件 %1$s（每种保留一个已开启）。</string>
@@ -1133,196 +1142,196 @@
     <string name="house_edit">编辑</string>
     <string name="house_done">完成</string>
     <string name="house_share">分享家园照片</string>
-    <string name="house_rooms_owned">Rooms: %1$d</string> <!-- untranslated -->
-    <string name="house_construction_level">Construction level %1$d</string> <!-- untranslated -->
+    <string name="house_rooms_owned">房间：%1$d</string>
+    <string name="house_construction_level">建筑等级 %1$d</string>
     <string name="house_add_room">添加房间 (%1$s)</string>
     <string name="house_add_room_locked">添加房间 (Lv %1$d)</string>
-    <string name="house_bill_title">Bill of Sale</string> <!-- untranslated -->
-    <string name="house_bill_cost">Build cost: %1$s</string> <!-- untranslated -->
-    <string name="house_bill_no_changes">No pending changes</string> <!-- untranslated -->
-    <string name="house_bill_changes_free">Unpurchased changes</string> <!-- untranslated -->
-    <string name="house_bill_open">Bill</string> <!-- untranslated -->
+    <string name="house_bill_title">购买清单</string>
+    <string name="house_bill_cost">建造费用：%1$s</string>
+    <string name="house_bill_no_changes">没有待处理的更改</string>
+    <string name="house_bill_changes_free">未购买的更改</string>
+    <string name="house_bill_open">清单</string>
     <string name="house_bill_new_room">新房间 %1$d</string>
-    <string name="house_bill_expand_room">Expand room %1$d (+%2$d cells)</string> <!-- untranslated -->
-    <string name="house_bill_shrink_credit">Shrink room %1$d credit (%2$d cells)</string> <!-- untranslated -->
-    <string name="house_bill_materials_header">Materials needed</string> <!-- untranslated -->
-    <string name="house_bill_credit_header">Credited on purchase</string> <!-- untranslated -->
-    <string name="house_bill_xp_total">+%1$s Construction XP on purchase</string> <!-- untranslated -->
-    <string name="house_bill_level_required">Requires Construction level %1$d</string> <!-- untranslated -->
-    <string name="house_bill_coins_total">Total: %1$s coins</string> <!-- untranslated -->
-    <string name="house_purchase_build">Purchase Build</string> <!-- untranslated -->
+    <string name="house_bill_expand_room">扩建房间 %1$d（+%2$d 格）</string>
+    <string name="house_bill_shrink_credit">缩建房间 %1$d 抵扣（%2$d 格）</string>
+    <string name="house_bill_materials_header">所需材料</string>
+    <string name="house_bill_credit_header">购买时抵扣</string>
+    <string name="house_bill_xp_total">购买时 +%1$s 建筑经验</string>
+    <string name="house_bill_level_required">需要建筑等级 %1$d</string>
+    <string name="house_bill_coins_total">总计：%1$s 金币</string>
+    <string name="house_purchase_build">购买建造</string>
     <string name="house_apply_changes">应用变更</string>
-    <string name="house_purchase_success">Build purchased!</string> <!-- untranslated -->
+    <string name="house_purchase_success">建造已购买！</string>
     <string name="house_changes_applied">变更已应用.</string>
     <string name="house_discard_build">放弃</string>
     <string name="house_discard_confirm_title">放弃改变?</string>
-    <string name="house_discard_confirm_message">All unpurchased changes will be lost.</string> <!-- untranslated -->
+    <string name="house_discard_confirm_message">所有未购买的更改都将丢失。</string>
     <string name="house_blueprints">蓝图</string>
-    <string name="house_blueprint_slot_empty">Empty slot</string> <!-- untranslated -->
+    <string name="house_blueprint_slot_empty">空槽位</string>
     <string name="house_blueprint_save">保存</string>
     <string name="house_blueprint_load">读取</string>
     <string name="house_blueprint_delete">删除</string>
     <string name="house_blueprint_name_hint">蓝图名称</string>
     <string name="house_blueprint_saved">蓝图已保存.</string>
-    <string name="house_blueprint_loaded">Blueprint loaded into the editor.</string> <!-- untranslated -->
-    <string name="house_blueprint_skipped">Blueprint loaded; %1$d pieces no longer exist and were skipped.</string> <!-- untranslated -->
+    <string name="house_blueprint_loaded">蓝图已加载到编辑器。</string>
+    <string name="house_blueprint_skipped">蓝图已加载；%1$d 个部件已不存在并被跳过。</string>
     <string name="house_blueprint_load_title">读取蓝图?</string>
-    <string name="house_blueprint_load_message">Your unpurchased changes will be replaced with \"%1$s\".</string> <!-- untranslated -->
-    <string name="house_mode_place_item">Placing %1$s. Drag or tap a spot in your house.</string> <!-- untranslated -->
-    <string name="house_mode_place_room">Placing a new 3x3 room. It must touch an existing room.</string> <!-- untranslated -->
-    <string name="house_error_level">Your Construction level is too low.</string> <!-- untranslated -->
-    <string name="house_error_coins">Not enough coins.</string> <!-- untranslated -->
-    <string name="house_error_materials">Not enough materials.</string> <!-- untranslated -->
-    <string name="house_error_spot">That spot doesn\'t work.</string> <!-- untranslated -->
-    <string name="house_error_max_rooms">Your house has reached its maximum number of rooms.</string> <!-- untranslated -->
-    <string name="house_error_max_size">This room can\'t grow any larger.</string> <!-- untranslated -->
-    <string name="house_stored_count">Stored: %1$d</string> <!-- untranslated -->
-    <string name="house_level_short">Lv %1$d</string> <!-- untranslated -->
-    <string name="house_store_hint">Stored furniture keeps its materials and can be placed again later.</string> <!-- untranslated -->
-    <string name="house_store_item">Put in storage</string> <!-- untranslated -->
-    <string name="house_room_n">Room %1$d</string> <!-- untranslated -->
-    <string name="house_room_size">%1$d x %2$d cells</string> <!-- untranslated -->
-    <string name="house_expand_title">Expand</string> <!-- untranslated -->
-    <string name="house_shrink_title">Shrink</string> <!-- untranslated -->
-    <string name="house_shrink_hint">Removes a row of cells from that side. Its cost is refunded and furniture there goes to storage.</string> <!-- untranslated -->
-    <string name="house_error_min_size">Rooms can\'t be smaller than 3x3.</string> <!-- untranslated -->
-    <string name="house_dir_north">North</string> <!-- untranslated -->
-    <string name="house_dir_south">South</string> <!-- untranslated -->
-    <string name="house_dir_east">East</string> <!-- untranslated -->
-    <string name="house_dir_west">West</string> <!-- untranslated -->
-    <string name="house_floor_title">Floor</string> <!-- untranslated -->
-    <string name="house_floor_dark">Dark wood</string> <!-- untranslated -->
-    <string name="house_floor_brick">Stone brick</string> <!-- untranslated -->
-    <string name="house_floor_brick_locked">Stone brick (Lv %1$d)</string> <!-- untranslated -->
-    <string name="house_cat_furniture">Furniture</string> <!-- untranslated -->
-    <string name="house_cat_walls">Walls</string> <!-- untranslated -->
-    <string name="house_cat_wealth">Wealth</string> <!-- untranslated -->
-    <string name="house_item_wall_v">Wall (Upright)</string> <!-- untranslated -->
-    <string name="house_item_wall_h">Wall (Across)</string> <!-- untranslated -->
-    <string name="house_cat_wall">Wall Decor</string> <!-- untranslated -->
-    <string name="house_cat_banner">Banners</string> <!-- untranslated -->
-    <string name="house_banners_empty">Complete a seasonal event to earn a banner you can hang here.</string> <!-- untranslated -->
-    <string name="house_banner_placed">On display</string> <!-- untranslated -->
-    <string name="house_free">Free</string> <!-- untranslated -->
-    <string name="house_cost_coins">%1$s coins</string> <!-- untranslated -->
-    <string name="house_error_already_placed">That banner is already on display.</string> <!-- untranslated -->
-    <string name="house_remove_banner">Take down</string> <!-- untranslated -->
-    <string name="house_move_hint">Drag it on the grid to move it somewhere else.</string> <!-- untranslated -->
-    <string name="house_rotate_item">Rotate</string> <!-- untranslated -->
-    <string name="house_nudge_item">Move with arrows</string> <!-- untranslated -->
-    <string name="house_outside_title">Outside</string> <!-- untranslated -->
-    <string name="house_outside_hint">Choose what the ground around your house looks like.</string> <!-- untranslated -->
-    <string name="house_move_room">Move room</string> <!-- untranslated -->
-    <string name="house_demolish_room">Demolish</string> <!-- untranslated -->
-    <string name="house_demolish_confirm_title">Demolish this room?</string> <!-- untranslated -->
-    <string name="house_demolish_confirm_message">Its furniture goes to storage. The room\'s build cost is not refunded.</string> <!-- untranslated -->
-    <string name="house_mode_move_room">Moving room. Drag or tap where it should go.</string> <!-- untranslated -->
-    <string name="house_error_last_room">You can\'t demolish your last room.</string> <!-- untranslated -->
-    <string name="house_item_bed_default">Simple Bed</string> <!-- untranslated -->
-    <string name="house_item_bed_default_alt">Simple Bed (Peach)</string> <!-- untranslated -->
-    <string name="house_item_bed_light">Light Bed</string> <!-- untranslated -->
-    <string name="house_item_bed_light_alt">Light Bed (Peach)</string> <!-- untranslated -->
-    <string name="house_item_bed_dark">Dark Bed</string> <!-- untranslated -->
-    <string name="house_item_bed_dark_alt">Dark Bed (Peach)</string> <!-- untranslated -->
-    <string name="house_sub_beds">Beds</string> <!-- untranslated -->
-    <string name="house_sub_bookshelves">Bookshelves</string> <!-- untranslated -->
-    <string name="house_sub_tables">Tables</string> <!-- untranslated -->
-    <string name="house_item_barrel_default">Barrel</string> <!-- untranslated -->
-    <string name="house_item_barrel_light">Light Barrel</string> <!-- untranslated -->
-    <string name="house_item_barrel_dark">Dark Barrel</string> <!-- untranslated -->
-    <string name="house_item_barrel_storage_default">Barrel Rack</string> <!-- untranslated -->
-    <string name="house_item_barrel_storage_light">Light Barrel Rack</string> <!-- untranslated -->
-    <string name="house_item_barrel_storage_dark">Dark Barrel Rack</string> <!-- untranslated -->
-    <string name="house_item_wardrobe_default">Wardrobe</string> <!-- untranslated -->
-    <string name="house_item_wardrobe_light">Light Wardrobe</string> <!-- untranslated -->
-    <string name="house_item_wardrobe_dark">Dark Wardrobe</string> <!-- untranslated -->
-    <string name="house_item_nightstand_default">Nightstand</string> <!-- untranslated -->
-    <string name="house_item_nightstand_default_1">Nightstand II</string> <!-- untranslated -->
-    <string name="house_item_nightstand_default_2">Nightstand III</string> <!-- untranslated -->
-    <string name="house_item_nightstand_light">Light Nightstand</string> <!-- untranslated -->
-    <string name="house_item_nightstand_light_1">Light Nightstand II</string> <!-- untranslated -->
-    <string name="house_item_nightstand_light_2">Light Nightstand III</string> <!-- untranslated -->
-    <string name="house_item_nightstand_dark">Dark Nightstand</string> <!-- untranslated -->
-    <string name="house_item_nightstand_dark_1">Dark Nightstand II</string> <!-- untranslated -->
-    <string name="house_item_nightstand_dark_2">Dark Nightstand III</string> <!-- untranslated -->
-    <string name="house_sub_seating">Seating</string> <!-- untranslated -->
-    <string name="house_sub_table_decor">Table Decor</string> <!-- untranslated -->
-    <string name="house_sub_nightstands">Nightstands</string> <!-- untranslated -->
-    <string name="house_sub_wardrobes">Wardrobes</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_cup">Silver Cup</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_cups">Silver Cups</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_jug">Silver Jug</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_narrow_pitcher">Narrow Silver Pitcher</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_plate">Silver Plate</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_plates">Silver Plate Stack</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_tall_pitcher">Tall Silver Pitcher</string> <!-- untranslated -->
-    <string name="house_item_tabledecor_silver_wide_pitcher">Wide Silver Pitcher</string> <!-- untranslated -->
-    <string name="house_item_table_default_small">Small Table</string> <!-- untranslated -->
-    <string name="house_item_table_default_large">Large Table</string> <!-- untranslated -->
-    <string name="house_item_table_default_long_v">Long Table</string> <!-- untranslated -->
-    <string name="house_item_table_default_cloth">Tablecloth Table</string> <!-- untranslated -->
-    <string name="house_item_table_default_cloth_long_v">Long Tablecloth Table</string> <!-- untranslated -->
-    <string name="house_item_table_light_small">Light Small Table</string> <!-- untranslated -->
-    <string name="house_item_table_light_large">Light Large Table</string> <!-- untranslated -->
-    <string name="house_item_table_light_long_v">Light Long Table</string> <!-- untranslated -->
-    <string name="house_item_table_light_cloth">Light Tablecloth Table</string> <!-- untranslated -->
-    <string name="house_item_table_light_cloth_long_v">Light Long Tablecloth Table</string> <!-- untranslated -->
-    <string name="house_item_table_dark_small">Dark Small Table</string> <!-- untranslated -->
-    <string name="house_item_table_dark_large">Dark Large Table</string> <!-- untranslated -->
-    <string name="house_item_table_dark_long_v">Dark Long Table</string> <!-- untranslated -->
-    <string name="house_item_table_dark_cloth">Dark Tablecloth Table</string> <!-- untranslated -->
-    <string name="house_item_table_dark_cloth_long_v">Dark Long Tablecloth Table</string> <!-- untranslated -->
-    <string name="house_item_chair_default_n">Chair</string> <!-- untranslated -->
-    <string name="house_item_chair_light_n">Light Chair</string> <!-- untranslated -->
-    <string name="house_item_chair_dark_n">Dark Chair</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_default_1">Bookshelf I</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_default_2">Bookshelf II</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_default_3">Bookshelf III</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_default_4">Bookshelf IV</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_light_1">Light Bookshelf I</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_light_2">Light Bookshelf II</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_light_3">Light Bookshelf III</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_light_4">Light Bookshelf IV</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_dark_1">Dark Bookshelf I</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_dark_2">Dark Bookshelf II</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_dark_3">Dark Bookshelf III</string> <!-- untranslated -->
-    <string name="house_item_bookshelf_dark_4">Dark Bookshelf IV</string> <!-- untranslated -->
-    <string name="house_sub_paintings">Paintings</string> <!-- untranslated -->
-    <string name="house_sub_wall_shelves">Shelves</string> <!-- untranslated -->
-    <string name="house_sub_quest_boards">Quest Boards</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_1">Wall Shelf I</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_2">Wall Shelf II</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_3">Wall Shelf III</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_4">Wall Shelf IV</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_5">Wall Shelf V</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_6">Wall Shelf VI</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_7">Wall Shelf VII</string> <!-- untranslated -->
-    <string name="house_item_wallshelf_8">Wall Shelf VIII</string> <!-- untranslated -->
-    <string name="house_item_questboard_1">Quest Board I</string> <!-- untranslated -->
-    <string name="house_item_questboard_2">Quest Board II</string> <!-- untranslated -->
-    <string name="house_item_questboard_3">Quest Board III</string> <!-- untranslated -->
-    <string name="house_sub_other">Other</string> <!-- untranslated -->
-    <string name="house_item_gold_chest">Gilded Chest</string> <!-- untranslated -->
-    <string name="house_item_gold_nugget">Gold Nuggets</string> <!-- untranslated -->
-    <string name="house_item_gold_pile">Buried Treasure</string> <!-- untranslated -->
-    <string name="house_item_gold_pile_gems">Jeweled Hoard</string> <!-- untranslated -->
-    <string name="house_item_wall_art_default_sunshine_grass">Sunny Meadow</string> <!-- untranslated -->
-    <string name="house_item_wall_art_default_sunshine_ocean">Sunny Seas</string> <!-- untranslated -->
-    <string name="house_item_wall_art_default_starry_night_grass">Starry Meadow</string> <!-- untranslated -->
-    <string name="house_item_wall_art_default_starry_night_ocean">Starry Seas</string> <!-- untranslated -->
-    <string name="house_item_wall_art_light_sunshine_grass">Sunny Meadow (Light Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_light_sunshine_ocean">Sunny Seas (Light Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_light_starry_night_grass">Starry Meadow (Light Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_light_starry_night_ocean">Starry Seas (Light Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_dark_sunshine_grass">Sunny Meadow (Dark Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_dark_sunshine_ocean">Sunny Seas (Dark Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_dark_starry_night_grass">Starry Meadow (Dark Frame)</string> <!-- untranslated -->
-    <string name="house_item_wall_art_dark_starry_night_ocean">Starry Seas (Dark Frame)</string> <!-- untranslated -->
-    <string name="house_item_helmet_trophy">Helmet Trophy</string> <!-- untranslated -->
-    <string name="house_item_shield_round">Round Shield Display</string> <!-- untranslated -->
-    <string name="house_item_shield_kite">Kite Shield Display</string> <!-- untranslated -->
-    <string name="house_item_swords_crossed">Crossed Swords</string> <!-- untranslated -->
-    <string name="house_item_lamp">Wall Lantern</string> <!-- untranslated -->
+    <string name="house_blueprint_load_message">你的未购买更改将被替换为“%1$s”。</string>
+    <string name="house_mode_place_item">正在放置%1$s。在房屋中拖动或点击一个位置。</string>
+    <string name="house_mode_place_room">正在放置一个全新的 3x3 房间。它必须与现有房间相连。</string>
+    <string name="house_error_level">你的建筑等级太低。</string>
+    <string name="house_error_coins">金币不足。</string>
+    <string name="house_error_materials">材料不足。</string>
+    <string name="house_error_spot">该位置不可用。</string>
+    <string name="house_error_max_rooms">你的房屋已达到最大房间数。</string>
+    <string name="house_error_max_size">此房间无法再扩大。</string>
+    <string name="house_stored_count">已存储：%1$d</string>
+    <string name="house_level_short">等级 %1$d</string>
+    <string name="house_store_hint">已存储的家具会保留材料，之后可以再次放置。</string>
+    <string name="house_store_item">放入仓库</string>
+    <string name="house_room_n">房间 %1$d</string>
+    <string name="house_room_size">%1$d x %2$d 格</string>
+    <string name="house_expand_title">扩建</string>
+    <string name="house_shrink_title">缩建</string>
+    <string name="house_shrink_hint">移除该侧的单元格列。其费用将退还，该处的家具会进入仓库。</string>
+    <string name="house_error_min_size">房间不能小于 3x3。</string>
+    <string name="house_dir_north">北</string>
+    <string name="house_dir_south">南</string>
+    <string name="house_dir_east">东</string>
+    <string name="house_dir_west">西</string>
+    <string name="house_floor_title">地板</string>
+    <string name="house_floor_dark">深色木材</string>
+    <string name="house_floor_brick">石砖</string>
+    <string name="house_floor_brick_locked">石砖（等级 %1$d）</string>
+    <string name="house_cat_furniture">家具</string>
+    <string name="house_cat_walls">墙壁</string>
+    <string name="house_cat_wealth">财富</string>
+    <string name="house_item_wall_v">墙壁（竖立）</string>
+    <string name="house_item_wall_h">墙壁（横放）</string>
+    <string name="house_cat_wall">墙面装饰</string>
+    <string name="house_cat_banner">旗帜</string>
+    <string name="house_banners_empty">完成季节活动即可获得一面可悬挂于此的旗帜。</string>
+    <string name="house_banner_placed">展示中</string>
+    <string name="house_free">免费</string>
+    <string name="house_cost_coins">%1$s 金币</string>
+    <string name="house_error_already_placed">该旗帜已在展示中。</string>
+    <string name="house_remove_banner">取下</string>
+    <string name="house_move_hint">在网格上拖动它即可将其移至其他位置。</string>
+    <string name="house_rotate_item">旋转</string>
+    <string name="house_nudge_item">用箭头移动</string>
+    <string name="house_outside_title">室外</string>
+    <string name="house_outside_hint">选择房屋周围地面的外观。</string>
+    <string name="house_move_room">移动房间</string>
+    <string name="house_demolish_room">拆除</string>
+    <string name="house_demolish_confirm_title">拆除这个房间？</string>
+    <string name="house_demolish_confirm_message">其家具将进入仓库。房间的建造费用不予退还。</string>
+    <string name="house_mode_move_room">正在移动房间。拖动或点击目标位置。</string>
+    <string name="house_error_last_room">你无法拆除最后一个房间。</string>
+    <string name="house_item_bed_default">简易床</string>
+    <string name="house_item_bed_default_alt">简易床（桃色）</string>
+    <string name="house_item_bed_light">浅色床</string>
+    <string name="house_item_bed_light_alt">浅色床（桃色）</string>
+    <string name="house_item_bed_dark">深色床</string>
+    <string name="house_item_bed_dark_alt">深色床（桃色）</string>
+    <string name="house_sub_beds">床</string>
+    <string name="house_sub_bookshelves">书架</string>
+    <string name="house_sub_tables">桌子</string>
+    <string name="house_item_barrel_default">木桶</string>
+    <string name="house_item_barrel_light">浅色木桶</string>
+    <string name="house_item_barrel_dark">深色木桶</string>
+    <string name="house_item_barrel_storage_default">木桶架</string>
+    <string name="house_item_barrel_storage_light">浅色木桶架</string>
+    <string name="house_item_barrel_storage_dark">深色木桶架</string>
+    <string name="house_item_wardrobe_default">衣柜</string>
+    <string name="house_item_wardrobe_light">浅色衣柜</string>
+    <string name="house_item_wardrobe_dark">深色衣柜</string>
+    <string name="house_item_nightstand_default">床头柜</string>
+    <string name="house_item_nightstand_default_1">床头柜 II</string>
+    <string name="house_item_nightstand_default_2">床头柜 III</string>
+    <string name="house_item_nightstand_light">浅色床头柜</string>
+    <string name="house_item_nightstand_light_1">浅色床头柜 II</string>
+    <string name="house_item_nightstand_light_2">浅色床头柜 III</string>
+    <string name="house_item_nightstand_dark">深色床头柜</string>
+    <string name="house_item_nightstand_dark_1">深色床头柜 II</string>
+    <string name="house_item_nightstand_dark_2">深色床头柜 III</string>
+    <string name="house_sub_seating">座椅</string>
+    <string name="house_sub_table_decor">桌面装饰</string>
+    <string name="house_sub_nightstands">床头柜</string>
+    <string name="house_sub_wardrobes">衣柜</string>
+    <string name="house_item_tabledecor_silver_cup">银杯</string>
+    <string name="house_item_tabledecor_silver_cups">银杯（多个）</string>
+    <string name="house_item_tabledecor_silver_jug">银壶</string>
+    <string name="house_item_tabledecor_silver_narrow_pitcher">细颈银水壶</string>
+    <string name="house_item_tabledecor_silver_plate">银盘</string>
+    <string name="house_item_tabledecor_silver_plates">银盘叠</string>
+    <string name="house_item_tabledecor_silver_tall_pitcher">高身银水壶</string>
+    <string name="house_item_tabledecor_silver_wide_pitcher">宽身银水壶</string>
+    <string name="house_item_table_default_small">小桌</string>
+    <string name="house_item_table_default_large">大桌</string>
+    <string name="house_item_table_default_long_v">长桌</string>
+    <string name="house_item_table_default_cloth">桌布桌</string>
+    <string name="house_item_table_default_cloth_long_v">长桌布桌</string>
+    <string name="house_item_table_light_small">浅色小桌</string>
+    <string name="house_item_table_light_large">浅色大桌</string>
+    <string name="house_item_table_light_long_v">浅色长桌</string>
+    <string name="house_item_table_light_cloth">浅色桌布桌</string>
+    <string name="house_item_table_light_cloth_long_v">浅色长桌布桌</string>
+    <string name="house_item_table_dark_small">深色小桌</string>
+    <string name="house_item_table_dark_large">深色大桌</string>
+    <string name="house_item_table_dark_long_v">深色长桌</string>
+    <string name="house_item_table_dark_cloth">深色桌布桌</string>
+    <string name="house_item_table_dark_cloth_long_v">深色长桌布桌</string>
+    <string name="house_item_chair_default_n">椅子</string>
+    <string name="house_item_chair_light_n">浅色椅子</string>
+    <string name="house_item_chair_dark_n">深色椅子</string>
+    <string name="house_item_bookshelf_default_1">书架 I</string>
+    <string name="house_item_bookshelf_default_2">书架 II</string>
+    <string name="house_item_bookshelf_default_3">书架 III</string>
+    <string name="house_item_bookshelf_default_4">书架 IV</string>
+    <string name="house_item_bookshelf_light_1">浅色书架 I</string>
+    <string name="house_item_bookshelf_light_2">浅色书架 II</string>
+    <string name="house_item_bookshelf_light_3">浅色书架 III</string>
+    <string name="house_item_bookshelf_light_4">浅色书架 IV</string>
+    <string name="house_item_bookshelf_dark_1">深色书架 I</string>
+    <string name="house_item_bookshelf_dark_2">深色书架 II</string>
+    <string name="house_item_bookshelf_dark_3">深色书架 III</string>
+    <string name="house_item_bookshelf_dark_4">深色书架 IV</string>
+    <string name="house_sub_paintings">画作</string>
+    <string name="house_sub_wall_shelves">搁板</string>
+    <string name="house_sub_quest_boards">任务板</string>
+    <string name="house_item_wallshelf_1">墙架 I</string>
+    <string name="house_item_wallshelf_2">墙架 II</string>
+    <string name="house_item_wallshelf_3">墙架 III</string>
+    <string name="house_item_wallshelf_4">墙架 IV</string>
+    <string name="house_item_wallshelf_5">墙架 V</string>
+    <string name="house_item_wallshelf_6">墙架 VI</string>
+    <string name="house_item_wallshelf_7">墙架 VII</string>
+    <string name="house_item_wallshelf_8">墙架 VIII</string>
+    <string name="house_item_questboard_1">任务板 I</string>
+    <string name="house_item_questboard_2">任务板 II</string>
+    <string name="house_item_questboard_3">任务板 III</string>
+    <string name="house_sub_other">其他</string>
+    <string name="house_item_gold_chest">镀金宝箱</string>
+    <string name="house_item_gold_nugget">金块</string>
+    <string name="house_item_gold_pile">埋藏的宝藏</string>
+    <string name="house_item_gold_pile_gems">宝石宝藏</string>
+    <string name="house_item_wall_art_default_sunshine_grass">阳光草地</string>
+    <string name="house_item_wall_art_default_sunshine_ocean">阳光海面</string>
+    <string name="house_item_wall_art_default_starry_night_grass">星夜草地</string>
+    <string name="house_item_wall_art_default_starry_night_ocean">星夜海面</string>
+    <string name="house_item_wall_art_light_sunshine_grass">阳光草地（浅色相框）</string>
+    <string name="house_item_wall_art_light_sunshine_ocean">阳光海面（浅色相框）</string>
+    <string name="house_item_wall_art_light_starry_night_grass">星夜草地（浅色相框）</string>
+    <string name="house_item_wall_art_light_starry_night_ocean">星夜海面（浅色相框）</string>
+    <string name="house_item_wall_art_dark_sunshine_grass">阳光草地（深色相框）</string>
+    <string name="house_item_wall_art_dark_sunshine_ocean">阳光海面（深色相框）</string>
+    <string name="house_item_wall_art_dark_starry_night_grass">星夜草地（深色相框）</string>
+    <string name="house_item_wall_art_dark_starry_night_ocean">星夜海面（深色相框）</string>
+    <string name="house_item_helmet_trophy">头盔奖杯</string>
+    <string name="house_item_shield_round">圆盾展示</string>
+    <string name="house_item_shield_kite">鸢盾展示</string>
+    <string name="house_item_swords_crossed">交叉长剑</string>
+    <string name="house_item_lamp">壁灯</string>
     <string name="slayer_title">讨伐大师</string>
     <string name="slayer_card_desc">讨伐任务与奖励</string>
     <string name="slayer_desc">完成任务以获得讨伐经验和积分。在商店中用积分兑换专属装备。</string>
@@ -1462,10 +1471,10 @@
     <string name="bone_altar_select_prompt">选择要埋葬在祭坛的骨头</string>
     <string name="bone_altar_tap">点击埋葬</string>
     <string name="bone_altar_change_bone">更换</string>
-    <string name="bone_altar_combo_count" formatted="false">Combo ×%d</string> <!-- untranslated -->
-    <string name="bone_altar_bonus_active" formatted="false">+50% XP bonus!</string> <!-- untranslated -->
-    <string name="bone_altar_session_xp" formatted="false">+%s XP this session</string> <!-- untranslated -->
-    <string name="bone_altar_buried_count" formatted="false">%d buried</string> <!-- untranslated -->
+    <string name="bone_altar_combo_count" formatted="false">连击 ×%d</string>
+    <string name="bone_altar_bonus_active" formatted="false">+50% 经验加成！</string>
+    <string name="bone_altar_session_xp" formatted="false">本次会话 +%s 经验</string>
+    <string name="bone_altar_buried_count" formatted="false">已埋藏 %d</string>
     <string name="bone_altar_no_bones">背包中没有骨头</string>
     <string name="bone_altar_cape_awarded">获得祈祷斗篷！</string>
 
@@ -1481,6 +1490,7 @@
     <string name="catalyst_enhanced_output">产出强化药水</string>
     <string name="catalyst_rune_bonus">每份精华 %1$d 符文</string>
     <string name="catalyst_none">无催化剂</string>
+    <string name="skills_rune_output">Produces %1$d runes</string> <!-- untranslated -->
 
     <!-- Construction skill -->
     <string name="skill_construction_name">建造</string>
@@ -1529,9 +1539,9 @@
     <string name="town_church_no_bonus">升级后延长祝福持续时间</string>
     <string name="town_building_fairgrounds_name">游乐场</string>
     <string name="town_fairgrounds_no_bonus">4 个活跃小游戏可用，冷却时间 10 分钟</string>
-    <string name="town_fairgrounds_t1_bonus" formatted="false">Unlocks Pick-a-Cup, cooldowns reduced to 7.5 minutes, +5% idle ticket chance</string> <!-- untranslated -->
-    <string name="town_fairgrounds_t2_bonus" formatted="false">Unlocks Higher or Lower, +10% idle ticket chance</string> <!-- untranslated -->
-    <string name="town_fairgrounds_t3_bonus" formatted="false">Cooldowns reduced to 5 minutes, +15% idle ticket chance</string> <!-- untranslated -->
+    <string name="town_fairgrounds_t1_bonus" formatted="false">解锁“挑杯游戏”，冷却时间缩短至 7.5 分钟，挂机票获得几率 +5%</string>
+    <string name="town_fairgrounds_t2_bonus" formatted="false">解锁“更高或更低”，挂机票获得几率 +10%</string>
+    <string name="town_fairgrounds_t3_bonus" formatted="false">冷却时间缩短至 5 分钟，挂机票获得几率 +15%</string>
     <string name="town_building_garden_name">花园</string>
     <plurals name="town_garden_bonus">
         <item quantity="zero">暂无额外农田</item>
@@ -1553,6 +1563,148 @@
     <string name="town_artisans_workshop_no_bonus">升级后有几率保留副材料</string>
     <string name="town_artisans_workshop_active_bonus">%1$d%% 几率保留副材料</string>
     <string name="town_building_chronos_spire_name">时间之塔</string>
+    <string name="town_building_dock_name">Dock</string> <!-- untranslated -->
+    <string name="elder_isle_title">Elder Isle</string> <!-- untranslated -->
+    <string name="elder_isle_sail_title">Sail to Elder Isle</string> <!-- untranslated -->
+    <string name="elder_isle_zone_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
+    <string name="elder_isle_zone_forest">Ancient Forest</string> <!-- untranslated -->
+    <string name="elder_isle_zone_volcano">Volcano Peak</string> <!-- untranslated -->
+    <string name="elder_isle_zone_abyss">Abyssal Depths</string> <!-- untranslated -->
+    <string name="elder_isle_zone_locked">Locked</string> <!-- untranslated -->
+    <string name="elder_isle_coming_soon">Elder Isle is barely charted. Return once the isle has been built out.</string> <!-- untranslated -->
+    <string name="elder_isle_boss_sea_serpent">Sea Serpent</string> <!-- untranslated -->
+    <string name="elder_isle_set_sail">Set sail for Elder Isle</string> <!-- untranslated -->
+    <string name="elder_isle_return">Return to the mainland</string> <!-- untranslated -->
+    <string name="elder_isle_sail_blocked_by_session">Finish your active session before setting sail.</string> <!-- untranslated -->
+    <string name="elder_isle_sail_blocked_locked">Elder Isle is not yet unlocked.</string> <!-- untranslated -->
+    <string name="elder_isle_sail_blocked_serpent">The Sea Serpent guards the passage. Defeat it to reach Elder Isle.</string> <!-- untranslated -->
+    <string name="elder_isle_dock_unlocked_title">The Dock stands ready</string> <!-- untranslated -->
+    <string name="elder_isle_dock_unlocked_body">The pier is complete and the boats are waiting, but no crew will make the crossing until the Sea Serpent that has drowned every prior voyage lies dead. Find it in the mainland Combat tab under Bosses. The passage opens the moment it falls.</string> <!-- untranslated -->
+    <string name="elder_isle_dock_unlocked_cta">Face the Sea Serpent</string> <!-- untranslated -->
+    <string name="elder_isle_dock_unlocked_later">Later</string> <!-- untranslated -->
+    <string name="boss_masked_name">\?\?\?</string> <!-- untranslated -->
+    <string name="boss_last_elder_masked_desc">Something ancient stirs at the bottom of the isle. Assemble the full Elder set to face it.</string> <!-- untranslated -->
+    <string name="elder_isle_welcome_title">Landfall on Elder Isle</string> <!-- untranslated -->
+    <string name="elder_isle_welcome_body">The salt spray fades and the fog lifts. Ahead: a bone-white shore, a jungle laced with pale runes, and further in, smoke curling from a peak that shouldn\'t be smoking. The old sailors were right. Something ancient still lives here.\n\nYour mainland skills, boosts, and gear stay on the ship. Everything you level or craft on the isle grows a separate track of its own. Elder gear will carry back to the mainland; mainland power will not carry here.\n\nStart with the Skills tab. Head to Mining or Woodcutting to gather isle materials. Then check the Quests tab for your first objective, and open the Lore Master in town whenever a new fragment unlocks.</string> <!-- untranslated -->
+    <string name="elder_isle_welcome_cta">Step ashore</string> <!-- untranslated -->
+    <string name="elder_isle_stub_skills">Elder skills are being charted. Full skill tracks arrive in a later build.</string> <!-- untranslated -->
+    <string name="elder_isle_stub_combat">Elder dungeons and the Last Elder fight are being drawn up. Later build.</string> <!-- untranslated -->
+    <string name="elder_isle_stub_quests">Isle quests will appear here once the story chain lands.</string> <!-- untranslated -->
+    <string name="elder_isle_stub_profile">Isle stats and gear layout land with the skill-tracks build.</string> <!-- untranslated -->
+    <string name="elder_isle_skills_title">Elder Skills</string> <!-- untranslated -->
+    <string name="elder_isle_total_level_label">Total Elder Level</string> <!-- untranslated -->
+    <string name="elder_isle_total_level_value">%1$d / %2$d</string> <!-- untranslated -->
+    <string name="elder_isle_skill_activities_title">%1$s activities</string> <!-- untranslated -->
+    <string name="elder_isle_no_activities">No activities yet in this build.</string> <!-- untranslated -->
+    <string name="elder_isle_start_session">Start session</string> <!-- untranslated -->
+    <string name="elder_isle_session_started">Session started.</string> <!-- untranslated -->
+    <string name="elder_isle_session_start_failed">Could not start session: %1$s</string> <!-- untranslated -->
+    <string name="elder_isle_activity_level">Level %1$d required</string> <!-- untranslated -->
+    <string name="elder_isle_combat_title">Elder Dungeons</string> <!-- untranslated -->
+    <string name="elder_isle_profile_title">Isle Profile</string> <!-- untranslated -->
+    <string name="elder_isle_dungeon_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
+    <string name="elder_isle_dungeon_forest">Ancient Forest</string> <!-- untranslated -->
+    <string name="elder_isle_dungeon_volcano">Volcano Peak</string> <!-- untranslated -->
+    <string name="elder_isle_dungeon_abyss">Abyssal Depths</string> <!-- untranslated -->
+    <string name="elder_isle_dungeon_boss">The Last Elder</string> <!-- untranslated -->
+    <string name="elder_isle_tab_dungeons">Dungeons</string> <!-- untranslated -->
+    <string name="elder_isle_tab_bosses">Bosses</string> <!-- untranslated -->
+    <string name="elder_isle_shop_title">Isle Shop</string> <!-- untranslated -->
+    <string name="elder_isle_shop_buy">Buy</string> <!-- untranslated -->
+    <string name="elder_isle_shop_soon">Coming later</string> <!-- untranslated -->
+    <string name="elder_isle_shop_insufficient">Not enough Elder Essence.</string> <!-- untranslated -->
+    <string name="elder_isle_shop_purchased">Purchased %1$s.</string> <!-- untranslated -->
+    <string name="elder_isle_shop_button">Visit Isle Shop</string> <!-- untranslated -->
+    <string name="elder_isle_armor_master_title">Elder Armor Master</string> <!-- untranslated -->
+    <string name="elder_isle_lore_master_title">Lore Master</string> <!-- untranslated -->
+    <string name="elder_armor_missing_mats">Not enough materials.</string> <!-- untranslated -->
+    <string name="elder_armor_crafted">Crafted %1$s.</string> <!-- untranslated -->
+    <string name="elder_armor_queue_full">Craft queue is full (3).</string> <!-- untranslated -->
+    <string name="elder_armor_missing_stone">You don\'t own that sigil stone.</string> <!-- untranslated -->
+    <string name="elder_armor_stone_embedded">Embedded %1$s in %2$s.</string> <!-- untranslated -->
+    <string name="elder_armor_sigil_embedder">Sigil Embedder</string> <!-- untranslated -->
+    <string name="elder_armor_sigil_empty">Empty socket</string> <!-- untranslated -->
+    <string name="elder_armor_sigil_change">Change</string> <!-- untranslated -->
+    <string name="elder_armor_sigil_embed">Embed</string> <!-- untranslated -->
+    <string name="elder_armor_sigil_remove">Remove</string> <!-- untranslated -->
+    <string name="elder_armor_pick_stone">Pick a sigil stone</string> <!-- untranslated -->
+    <string name="item_mythrite_ore_name">Mythrite Ore</string> <!-- untranslated -->
+    <string name="item_abyssal_ore_name">Abyssal Ore</string> <!-- untranslated -->
+    <string name="item_voidsteel_ore_name">Voidsteel Ore</string> <!-- untranslated -->
+    <string name="item_starforged_ore_name">Starforged Ore</string> <!-- untranslated -->
+    <string name="item_mythrite_bar_name">Mythrite Bar</string> <!-- untranslated -->
+    <string name="item_abyssal_bar_name">Abyssal Bar</string> <!-- untranslated -->
+    <string name="item_voidsteel_bar_name">Voidsteel Bar</string> <!-- untranslated -->
+    <string name="item_starforged_bar_name">Starforged Bar</string> <!-- untranslated -->
+    <string name="item_coastal_pine_log_name">Coastal Pine Log</string> <!-- untranslated -->
+    <string name="item_grove_oak_log_name">Grove Oak Log</string> <!-- untranslated -->
+    <string name="item_abyssal_log_name">Abyssal Log</string> <!-- untranslated -->
+    <string name="item_starwood_log_name">Starwood Log</string> <!-- untranslated -->
+    <string name="item_raw_tidepool_crab_name">Tidepool Crab (raw)</string> <!-- untranslated -->
+    <string name="item_raw_grove_bass_name">Grove Bass (raw)</string> <!-- untranslated -->
+    <string name="item_raw_lavafin_name">Lavafin (raw)</string> <!-- untranslated -->
+    <string name="item_raw_deepwater_ray_name">Deepwater Ray (raw)</string> <!-- untranslated -->
+    <string name="item_tidepool_crab_name">Tidepool Crab</string> <!-- untranslated -->
+    <string name="item_grove_bass_name">Grove Bass</string> <!-- untranslated -->
+    <string name="item_lavafin_name">Lavafin</string> <!-- untranslated -->
+    <string name="item_deepwater_ray_name">Deepwater Ray</string> <!-- untranslated -->
+    <string name="item_elder_bone_name">Elder Bone</string> <!-- untranslated -->
+    <string name="item_elder_essence_name">Elder Essence</string> <!-- untranslated -->
+    <string name="item_ancient_sigil_name">Ancient Sigil</string> <!-- untranslated -->
+    <string name="item_sacred_wood_name">Sacred Wood</string> <!-- untranslated -->
+
+    <!-- Elder Isle: gathering targets (trees) -->
+    <string name="item_coastal_pine_name">Coastal Pine</string> <!-- untranslated -->
+    <string name="item_grove_oak_name">Grove Oak</string> <!-- untranslated -->
+    <string name="item_abyssal_tree_name">Abyssal Tree</string> <!-- untranslated -->
+    <string name="item_starwood_tree_name">Starwood Tree</string> <!-- untranslated -->
+
+    <!-- Elder Isle: crafted armor pieces (tier progression Coastal → Grove → Volcanic → Elder) -->
+    <string name="item_coastal_helm_name">Coastal Helm</string> <!-- untranslated -->
+    <string name="item_coastal_platebody_name">Coastal Platebody</string> <!-- untranslated -->
+    <string name="item_coastal_platelegs_name">Coastal Platelegs</string> <!-- untranslated -->
+    <string name="item_coastal_boots_name">Coastal Boots</string> <!-- untranslated -->
+    <string name="item_grove_helm_name">Grove Helm</string> <!-- untranslated -->
+    <string name="item_grove_platebody_name">Grove Platebody</string> <!-- untranslated -->
+    <string name="item_grove_platelegs_name">Grove Platelegs</string> <!-- untranslated -->
+    <string name="item_grove_boots_name">Grove Boots</string> <!-- untranslated -->
+    <string name="item_volcanic_helm_name">Volcanic Helm</string> <!-- untranslated -->
+    <string name="item_volcanic_platebody_name">Volcanic Platebody</string> <!-- untranslated -->
+    <string name="item_volcanic_platelegs_name">Volcanic Platelegs</string> <!-- untranslated -->
+    <string name="item_volcanic_boots_name">Volcanic Boots</string> <!-- untranslated -->
+    <string name="item_elder_helm_name">Elder Helm</string> <!-- untranslated -->
+    <string name="item_elder_platebody_name">Elder Platebody</string> <!-- untranslated -->
+    <string name="item_elder_platelegs_name">Elder Platelegs</string> <!-- untranslated -->
+    <string name="item_elder_boots_name">Elder Boots</string> <!-- untranslated -->
+    <string name="item_elder_cape_name">Elder Cape</string> <!-- untranslated -->
+    <string name="item_elder_shield_name">Elder Shield</string> <!-- untranslated -->
+    <string name="item_elder_signet_ring_name">Elder Signet Ring</string> <!-- untranslated -->
+    <string name="item_elder_amulet_name">Elder Amulet</string> <!-- untranslated -->
+    <string name="item_ancient_signet_name">Ancient Signet</string> <!-- untranslated -->
+
+    <!-- Elder Isle: sigil stones (four wired, two shipped-but-cosmetic) -->
+    <string name="item_elder_sapphire_name">Sapphire Sigil Stone</string> <!-- untranslated -->
+    <string name="item_elder_ruby_name">Ruby Sigil Stone</string> <!-- untranslated -->
+    <string name="item_elder_emerald_name">Emerald Sigil Stone</string> <!-- untranslated -->
+    <string name="item_elder_amethyst_name">Amethyst Sigil Stone</string> <!-- untranslated -->
+    <string name="item_elder_topaz_name">Topaz Sigil Stone</string> <!-- untranslated -->
+    <string name="item_elder_diamond_name">Diamond Sigil Stone</string> <!-- untranslated -->
+
+    <!-- Elder Isle: pet item entries (parallel to pet_* below; used by drop tables and inventory) -->
+    <string name="item_tidal_sprite_name">Tidal Sprite</string> <!-- untranslated -->
+    <string name="item_grove_fawn_name">Grove Fawn</string> <!-- untranslated -->
+    <string name="item_magma_salamander_name">Magma Salamander</string> <!-- untranslated -->
+    <string name="item_abyss_wisp_name">Abyss Wisp</string> <!-- untranslated -->
+    <string name="item_ancient_turtle_name">Ancient Turtle</string> <!-- untranslated -->
+    <string name="item_cinder_hawk_name">Cinder Hawk</string> <!-- untranslated -->
+    <string name="item_deepwater_serpent_name">Deepwater Serpent</string> <!-- untranslated -->
+    <string name="item_elder_familiar_name">Elder Familiar</string> <!-- untranslated -->
+
+    <!-- Elder Isle: ore descriptions -->
+    <string name="item_mythrite_ore_desc">Silvery isle ore. Smelts into Mythrite Bars, the base metal of the Coastal armor tier.</string> <!-- untranslated -->
+    <string name="item_abyssal_ore_desc">Dark isle ore laced with pressure-cracked veins. Smelts into Abyssal Bars for Grove-tier gear.</string> <!-- untranslated -->
+    <string name="item_voidsteel_ore_desc">Isle ore that hums faintly under pressure. Smelts into Voidsteel Bars for Volcanic-tier gear.</string> <!-- untranslated -->
+    <string name="item_starforged_ore_desc">The isle\'s rarest ore, said to be shed from the seal itself. Smelts into Starforged Bars for the Elder set.</string> <!-- untranslated -->
     <string name="town_chronos_spire_no_bonus">升级后减少玩家训练时长</string>
     <string name="town_chronos_spire_active_bonus">玩家训练时长减少 %1$d%%</string>
 
@@ -1585,25 +1737,25 @@
     <string name="carnival_prize_xp_lamp_small_desc">为指定技能增加 10,000 经验。</string>
     <string name="carnival_prize_xp_lamp_large_name">大型经验灯</string>
     <string name="carnival_prize_xp_lamp_large_desc">为指定技能增加 50,000 经验。</string>
-    <string name="carnival_ticket_balance">门票：%1$d</string>
+    <string name="carnival_ticket_balance">奖券：%1$d</string>
     <string name="carnival_idle_tab">挂机游戏</string>
     <string name="carnival_active_tab">主动游戏</string>
     <string name="carnival_shop_tab">奖品商店</string>
-    <string name="carnival_idle_hint">排队一次活动来赚取门票。相关技能等级越高，每次活动获得的门票越多。</string>
+    <string name="carnival_idle_hint">排队一次活动来赚取奖券。相关技能等级越高，每次活动获得的奖券越多。</string>
     <string name="carnival_archery_range">射箭场</string>
-    <string name="carnival_idle_desc_archery">射击移动靶。远程等级提升门票收益。</string>
+    <string name="carnival_idle_desc_archery">射击移动靶。远程等级提升奖券收益。</string>
     <string name="carnival_strongman_competition">力量竞赛</string>
-    <string name="carnival_idle_desc_strongman">举石头、挥铁锤。力量等级提升门票收益。</string>
+    <string name="carnival_idle_desc_strongman">举石头、挥铁锤。力量等级提升奖券收益。</string>
     <string name="carnival_wizards_duel">巫师对决</string>
-    <string name="carnival_idle_desc_wizard">对敌方法师施展幻术魔法。魔法等级提升门票收益。</string>
+    <string name="carnival_idle_desc_wizard">对敌方法师施展幻术魔法。魔法等级提升奖券收益。</string>
     <string name="carnival_fishing_derby">钓鱼比赛</string>
-    <string name="carnival_idle_desc_fishing">在嘉年华池塘中钓最大的鱼。钓鱼等级提升门票收益。</string>
+    <string name="carnival_idle_desc_fishing">在嘉年华池塘中钓最大的鱼。钓鱼等级提升奖券收益。</string>
     <string name="carnival_skill_level">%1$s 等级 %2$d</string>
-    <string name="carnival_ticket_yield">约 %1$d 门票/回合</string>
+    <string name="carnival_ticket_yield">约 %1$d 奖券/回合</string>
     <string name="carnival_queue">排队活动</string>
     <string name="carnival_ring_toss">套环</string>
     <string name="carnival_active_ring_desc">当指针到达金色目标区域时把握投掷时机。</string>
-    <string name="carnival_ring_target_hint" formatted="false">Aim for the centre (45%–55%)</string> <!-- untranslated -->
+    <string name="carnival_ring_target_hint" formatted="false">瞄准中心（45%–55%）</string>
     <string name="carnival_throw">投掷！</string>
     <string name="carnival_hammer_strike">铁锤打击</string>
     <string name="carnival_active_hammer_desc">当力量槽到达顶峰时打击，以获得最高分。</string>
@@ -1621,28 +1773,28 @@
     <string name="carnival_appraisal_which">哪个更值钱？</string>
     <string name="carnival_play">开始</string>
     <string name="carnival_cooldown">%1$d 分 %2$d 秒后就绪</string>
-    <string name="carnival_ticket_cost">%1$d 门票</string>
+    <string name="carnival_ticket_cost">%1$d 奖券</string>
     <string name="carnival_redeem">兑换</string>
     <string name="carnival_queue_added">已加入队列：%1$s。</string>
     <string name="carnival_queue_full">队列已满。</string>
-    <string name="carnival_ring_won">命中靶心！+%1$d 门票</string>
+    <string name="carnival_ring_won">命中靶心！+%1$d 奖券</string>
     <string name="carnival_ring_missed">未命中靶子！</string>
-    <string name="carnival_hammer_perfect">完美打击！+%1$d 门票</string>
-    <string name="carnival_hammer_good">不错的命中！+%1$d 门票</string>
+    <string name="carnival_hammer_perfect">完美打击！+%1$d 奖券</string>
+    <string name="carnival_hammer_good">不错的命中！+%1$d 奖券</string>
     <string name="carnival_hammer_miss">挥空了！</string>
-    <string name="carnival_sequence_correct">序列正确！+%1$d 门票</string>
+    <string name="carnival_sequence_correct">序列正确！+%1$d 奖券</string>
     <string name="carnival_sequence_wrong">顺序错误！再试一次。</string>
-    <string name="carnival_appraisal_correct">正确！+%1$d 门票</string>
+    <string name="carnival_appraisal_correct">正确！+%1$d 奖券</string>
     <string name="carnival_appraisal_wrong">错误！更值钱的物品是 %1$s。</string>
     <string name="carnival_redeemed">已兑换：%1$s！</string>
-    <string name="carnival_not_enough_tickets">门票不足。</string>
+    <string name="carnival_not_enough_tickets">奖券不足。</string>
     <string name="carnival_lamp_redeemed">+%1$s %2$s 经验！</string>
     <string name="carnival_shell_game">猜杯子</string>
     <string name="carnival_active_shell_desc">观察宝石藏在哪个杯子下，然后在洗牌后选出它！</string>
     <string name="carnival_shell_showing">仔细看——宝石在第 %1$d 个杯子下</string>
     <string name="carnival_shell_watch">仔细观察……</string>
     <string name="carnival_shell_pick">宝石在哪个杯子下？</string>
-    <string name="carnival_shell_won">正确！+%1$d 门票</string>
+    <string name="carnival_shell_won">正确！+%1$d 奖券</string>
     <string name="carnival_shell_missed">错误！宝石在第 %1$d 个杯子下。</string>
     <string name="carnival_shell_locked">将游乐场升级至第一阶以解锁</string>
     <string name="carnival_higher_lower">猜大小</string>
@@ -1652,14 +1804,14 @@
     <string name="carnival_higher_lower_round">第 %1$d / %2$d 轮</string>
     <string name="carnival_higher_lower_btn_higher">更高</string>
     <string name="carnival_higher_lower_btn_lower">更低</string>
-    <string name="carnival_higher_lower_result">答对 %1$d/%2$d 题——+%3$d 门票</string>
+    <string name="carnival_higher_lower_result">答对 %1$d/%2$d 题 —— +%3$d 奖券</string>
     <string name="carnival_higher_lower_locked">将游乐场升级至第二阶以解锁</string>
     <string name="carnival_higher_lower_last_card">上一张牌：%1$d</string>
     <string name="carnival_higher_lower_continue">继续</string>
     <string name="carnival_difficulty_label">难度</string>
     <string name="carnival_difficulty_normal">普通</string>
     <string name="carnival_difficulty_hard">困难</string>
-    <string name="carnival_ring_hard_hint" formatted="false">Hard: 52%–57% target, 7 tickets</string> <!-- untranslated -->
+    <string name="carnival_ring_hard_hint" formatted="false">困难：52%–57% 目标，7 张票</string>
 
 
     <!-- ===== Magic Bean / Farming ===== -->
@@ -1690,6 +1842,7 @@
     <string name="armory_how_to_obtain">获取途径</string>
     <string name="armory_no_stats">无属性加成。</string>
     <string name="armory_filter_all">全部</string>
+    <string name="armory_filter_missing">未获取</string>
     <string name="armory_filter_weapons">武器</string>
     <string name="armory_filter_armor">护甲</string>
     <string name="armory_filter_accessories">饰品</string>
@@ -1724,8 +1877,8 @@
     <string name="armory_source_smithing">锻造</string>
     <string name="armory_source_crafting">工艺制作</string>
     <string name="armory_source_fletching">制箭</string>
-    <string name="armory_source_prestige_locked">%1$s (requires prestige perk %2$s, %3$s only)</string> <!-- untranslated -->
-    <string name="armory_source_prestige_locked_any">%1$s (requires prestige perk %2$s)</string> <!-- untranslated -->
+    <string name="armory_source_prestige_locked">%1$s（需要转生专精 %2$s，仅限%3$s）</string>
+    <string name="armory_source_prestige_locked_any">%1$s（需要转生专精 %2$s）</string>
     <string name="armory_source_drop_always">%1$s 掉落（必定）</string>
     <string name="armory_source_drop_chance">%1$s 掉落（%2$s）</string>
     <string name="armory_source_drop">%1$s 掉落</string>
@@ -1794,8 +1947,8 @@
     <string name="bonus_agility_prestige_detail">转生加成：等级 %2$d 的训练时长由 %1$d 分变为 %3$d 分</string>
     <string name="bonus_coin_return">+%1$d%% 金币回报</string>
     <string name="bonus_tower">塔楼</string>
-    <string name="bonus_builder_discount_detail" formatted="false">0.5% off building upgrade costs per level</string> <!-- untranslated -->
-    <string name="bonus_xp">+%1$d%% XP</string> <!-- untranslated -->
+    <string name="bonus_builder_discount_detail" formatted="false">每级建筑升级费用降低 0.5%</string>
+    <string name="bonus_xp">+%1$d%% 经验</string>
     <string name="bonus_coin_drops">+%1$d%% 金币掉落</string>
     <string name="bonus_hp">+%1$d 生命值</string>
     <string name="snackbar_added_to_queue">已加入队列：%1$s。</string>
@@ -1826,8 +1979,8 @@
     <string name="monument_stage_1_reward">+1 田地</string>
     <string name="monument_stage_2_reward">解锁每日纪念碑触摸</string>
     <string name="monument_stage_3_reward">教堂祝福延长6小时</string>
-    <string name="monument_stage_4_reward" formatted="false">+1 action queue slot, and the Golden Goose takes roost (+10% coin drops)</string> <!-- untranslated -->
-    <string name="monument_stage_5_reward">Unlocks the Vault Guardian boss and the Patron of the Realm title</string> <!-- untranslated -->
+    <string name="monument_stage_4_reward" formatted="false">+1 行动队列槽位，金鹅入住（金币掉落 +10%）</string>
+    <string name="monument_stage_5_reward">解锁金库守护者首领和王国守护者称号</string>
     <string name="monument_built">已建造</string>
     <string name="monument_build_btn">建造 (%1$s)</string>
     <string name="monument_contribute_label">供奉永恒之火</string>
@@ -1839,8 +1992,8 @@
     <string name="monument_touch_title">每日触摸</string>
     <string name="monument_touch_btn">触摸纪念碑</string>
     <string name="monument_touched_today">今日已触摸。纪念碑满足地嗡嗡作响。</string>
-    <string name="monument_touch_blessing">A blessing settles over you for two hours.</string> <!-- untranslated -->
-    <string name="monument_touch_blessing_extended">The Monument extends your blessing by two hours.</string> <!-- untranslated -->
+    <string name="monument_touch_blessing">一道祝福在你身上持续两小时。</string>
+    <string name="monument_touch_blessing_extended">纪念碑将你的祝福延长两小时。</string>
     <string name="monument_touch_items">纪念碑赐予：%1$s</string>
     <string name="monument_contributed">火焰更加明亮了！</string>
     <string name="monument_flame_lit">永恒之火点燃了！宝库守卫在等待。</string>
@@ -1849,6 +2002,8 @@
     <string name="monument_not_enough_coins">金币不足。</string>
     <string name="title_patron_of_the_realm_name">王国守护者</string>
     <string name="title_patron_of_the_realm_requirement">完成大纪念碑</string>
+    <string name="title_isle_champion_name">Isle Champion</string> <!-- untranslated -->
+    <string name="title_isle_champion_requirement">Defeat the Last Elder on Elder Isle</string> <!-- untranslated -->
     <string name="item_gilded_full_helmet_name">镀金全罩头盔</string>
     <string name="item_gilded_platebody_name">镀金板甲</string>
     <string name="item_gilded_kiteshield_name">镀金鸢盾</string>
@@ -1863,50 +2018,50 @@
 
     <!-- ===== Infinite Tower ===== -->
     <!-- Raids and mercenaries -->
-    <string name="raid_section_title">Raids</string> <!-- untranslated -->
-    <string name="raid_section_desc">Bosses no lone hero can fell. Hire a mercenary party first.</string> <!-- untranslated -->
-    <string name="raid_party_status">Mercenaries: %1$d/%2$d hired</string> <!-- untranslated -->
-    <string name="raid_party_title">Raid Party</string> <!-- untranslated -->
-    <string name="raid_solo_warning">Raid bosses cannot be beaten alone, even with the best gear. Hire mercenaries before attempting.</string> <!-- untranslated -->
-    <string name="raid_no_mercs">No mercenaries under contract.</string> <!-- untranslated -->
-    <string name="merc_camp_open">Hire Mercenaries</string> <!-- untranslated -->
-    <string name="merc_camp_title">Mercenary Camp</string> <!-- untranslated -->
-    <string name="merc_camp_desc">Contracts last for 24 hours after hiring. A new pool of mercenaries arrives each day.</string> <!-- untranslated -->
-    <string name="merc_hire">Hire</string> <!-- untranslated -->
-    <string name="merc_dismiss">Dismiss</string> <!-- untranslated -->
-    <string name="merc_hired">%1$s joins your party for 24 hours.</string> <!-- untranslated -->
-    <string name="merc_party_full">Your party is full.</string> <!-- untranslated -->
-    <string name="merc_already_hired">%1$s is already under contract.</string> <!-- untranslated -->
-    <string name="merc_not_enough_coins">Not enough coins to hire %1$s.</string> <!-- untranslated -->
-    <string name="merc_not_available">%1$s is not available today.</string> <!-- untranslated -->
-    <string name="merc_contract_remaining">Contract: %1$s left</string> <!-- untranslated -->
-    <string name="raid_allies_down">Mercenaries down: %1$d</string> <!-- untranslated -->
-    <string name="merc_tier_cheap">Sellsword</string> <!-- untranslated -->
-    <string name="merc_tier_seasoned">Veteran</string> <!-- untranslated -->
-    <string name="merc_tier_elite">Champion</string> <!-- untranslated -->
-    <string name="merc_stats">Atk %1$d  Str %2$d  Def %3$d  HP %4$d</string> <!-- untranslated -->
-    <string name="merc_cost_per_day">%1$s coins</string> <!-- untranslated -->
-    <string name="merc_bran_the_sellsword_name">Bran the Sellsword</string> <!-- untranslated -->
-    <string name="merc_wren_the_stray_name">Wren the Stray</string> <!-- untranslated -->
-    <string name="merc_tam_the_grey_name">Tam the Grey</string> <!-- untranslated -->
-    <string name="merc_nix_the_cutpurse_name">Nix the Cutpurse</string> <!-- untranslated -->
-    <string name="merc_sera_ironsong_name">Sera Ironsong</string> <!-- untranslated -->
-    <string name="merc_kael_emberhand_name">Kael Emberhand</string> <!-- untranslated -->
-    <string name="merc_dorn_shieldbreaker_name">Dorn Shieldbreaker</string> <!-- untranslated -->
-    <string name="merc_fenna_swiftarrow_name">Fenna Swiftarrow</string> <!-- untranslated -->
-    <string name="merc_grimjaw_the_colossus_name">Grimjaw the Colossus</string> <!-- untranslated -->
-    <string name="merc_sylvara_trueshot_name">Sylvara Trueshot</string> <!-- untranslated -->
-    <string name="merc_vex_the_undying_name">Vex the Undying</string> <!-- untranslated -->
-    <string name="merc_thane_dawnbringer_name">Thane Dawnbringer</string> <!-- untranslated -->
+    <string name="raid_section_title">突袭</string>
+    <string name="raid_section_desc">没有孤胆英雄能击倒的首领。先雇佣一支佣兵队伍。</string>
+    <string name="raid_party_status">佣兵：%1$d/%2$d 已雇佣</string>
+    <string name="raid_party_title">突袭队伍</string>
+    <string name="raid_solo_warning">突袭首领无法独自击败，即使装备精良也不行。尝试前请先雇佣佣兵。</string>
+    <string name="raid_no_mercs">没有签约的佣兵。</string>
+    <string name="merc_camp_open">雇佣佣兵</string>
+    <string name="merc_camp_title">佣兵营地</string>
+    <string name="merc_camp_desc">雇佣后合约持续 24 小时。每天都会有一批新的佣兵到来。</string>
+    <string name="merc_hire">雇佣</string>
+    <string name="merc_dismiss">解雇</string>
+    <string name="merc_hired">%1$s 加入你的队伍，为期 24 小时。</string>
+    <string name="merc_party_full">你的队伍已满。</string>
+    <string name="merc_already_hired">%1$s 已签约。</string>
+    <string name="merc_not_enough_coins">金币不足，无法雇佣 %1$s。</string>
+    <string name="merc_not_available">%1$s 今天不可用。</string>
+    <string name="merc_contract_remaining">合约：剩余 %1$s</string>
+    <string name="raid_allies_down">佣兵倒下：%1$d</string>
+    <string name="merc_tier_cheap">佣兵</string>
+    <string name="merc_tier_seasoned">老兵</string>
+    <string name="merc_tier_elite">冠军</string>
+    <string name="merc_stats">攻击 %1$d  力量 %2$d  防御 %3$d  生命 %4$d</string>
+    <string name="merc_cost_per_day">%1$s 金币</string>
+    <string name="merc_bran_the_sellsword_name">佣兵布兰</string>
+    <string name="merc_wren_the_stray_name">流浪者雷恩</string>
+    <string name="merc_tam_the_grey_name">灰袍塔姆</string>
+    <string name="merc_nix_the_cutpurse_name">窃贼尼克斯</string>
+    <string name="merc_sera_ironsong_name">铁歌塞拉</string>
+    <string name="merc_kael_emberhand_name">烬手凯尔</string>
+    <string name="merc_dorn_shieldbreaker_name">碎盾多恩</string>
+    <string name="merc_fenna_swiftarrow_name">迅箭芬娜</string>
+    <string name="merc_grimjaw_the_colossus_name">巨人格瑞姆加</string>
+    <string name="merc_sylvara_trueshot_name">神射西尔瓦拉</string>
+    <string name="merc_vex_the_undying_name">不朽维克斯</string>
+    <string name="merc_thane_dawnbringer_name">破晓塞恩</string>
 
     <string name="tower_title">无限塔</string>
-    <string name="tower_floor_label" formatted="false">Floor %d</string> <!-- untranslated -->
+    <string name="tower_floor_label" formatted="false">楼层 %d</string>
     <string name="tower_floor_desc">无限高塔 第 %1$d 层</string>
-    <string name="tower_best_floor" formatted="false">Best: Floor %d</string> <!-- untranslated -->
-    <string name="tower_start_btn" formatted="false">Attempt Floor %d</string> <!-- untranslated -->
+    <string name="tower_best_floor" formatted="false">最佳：楼层 %d</string>
+    <string name="tower_start_btn" formatted="false">挑战楼层 %d</string>
     <string name="tower_milestones">里程碑</string>
-    <string name="tower_floor_cleared" formatted="false">Floor %d cleared!</string> <!-- untranslated -->
-    <string name="tower_new_best" formatted="false">New best: Floor %d!</string> <!-- untranslated -->
+    <string name="tower_floor_cleared" formatted="false">楼层 %d 已通关！</string>
+    <string name="tower_new_best" formatted="false">新纪录：楼层 %d！</string>
     <!-- Translator note: %1$d = floor died on, %2$d = floor resuming from (last checkpoint + 1) -->
     <string name="tower_death_reset">你在第 %1$d 层倒下了。重置至第 %2$d 层。</string>
     <string name="tower_not_enough_runes">%1$s 不足以发挥最大潜在攻击次数。</string>
@@ -1914,16 +2069,16 @@
     <string name="tower_milestone_claimed">已领取</string>
     <!-- Tower milestone reward descriptions; %s placeholders are item display names -->
     <string name="tower_milestone_ring">%1$s（攻击+6，力量+6）</string>
-    <string name="tower_milestone_xp_1pct" formatted="false">+1% tower XP all skills</string> <!-- untranslated -->
+    <string name="tower_milestone_xp_1pct" formatted="false">所有技能高塔经验 +1%</string>
     <string name="tower_milestone_coins_5k">5,000 金币</string>
     <string name="tower_milestone_shield">%1$s（防御+80）</string>
     <string name="tower_milestone_amulet">%1$s（攻击+15，力量+15，防御+10，全类型）</string>
     <string name="tower_milestone_hp_50">+50 生命值</string>
-    <string name="tower_milestone_xp_2pct" formatted="false">+2% tower XP all skills</string> <!-- untranslated -->
+    <string name="tower_milestone_xp_2pct" formatted="false">所有技能高塔经验 +2%</string>
     <string name="tower_milestone_coins_25k">25,000 金币</string>
     <string name="tower_milestone_helm">%1$s（防御+82，力量+8）</string>
-    <string name="tower_milestone_pet" formatted="false">Tower Pet (5% combat XP)</string> <!-- untranslated -->
-    <string name="tower_milestone_coin_drops_1pct" formatted="false">+1% tower coin drops</string> <!-- untranslated -->
+    <string name="tower_milestone_pet" formatted="false">高塔宠物（战斗经验 5%）</string>
+    <string name="tower_milestone_coin_drops_1pct" formatted="false">高塔金币掉落 +1%</string>
     <string name="tower_milestone_plate">%1$s（防御+132）</string>
     <string name="tower_milestone_coins_100k">100,000 金币</string>
     <string name="tower_milestone_legs_set">%1$s（防御+125）+ %2$s（防御+58）+ %3$s（防御+125）</string>
@@ -1945,14 +2100,14 @@
     <string name="seasonal_bounty_board_title">赏金板</string>
     <string name="seasonal_expedition_title">远征</string>
     <string name="seasonal_go_to_combat">前往战斗</string>
-    <string name="treasure_open_message">Crack it open for coins and a chance at gems.</string> <!-- untranslated -->
-    <string name="treasure_open">Open</string> <!-- untranslated -->
-    <string name="treasure_open_one">Open 1</string> <!-- untranslated -->
-    <string name="treasure_open_all">Open all (%1$d)</string> <!-- untranslated -->
-    <string name="treasure_open_result">Opened %1$d: +%2$s coins</string> <!-- untranslated -->
-    <string name="treasure_open_result_gems">Opened %1$d: +%2$s coins and %3$d gems</string> <!-- untranslated -->
-    <string name="seasonal_expedition_token_hint">Each run grants 1 token.</string> <!-- untranslated -->
-    <string name="seasonal_boss_token_hint">Each kill grants 1 token, up to %1$d per day.</string> <!-- untranslated -->
+    <string name="treasure_open_message">打开它可获得金币，并有机会获得宝石。</string>
+    <string name="treasure_open">打开</string>
+    <string name="treasure_open_one">打开 1 个</string>
+    <string name="treasure_open_all">全部打开（%1$d）</string>
+    <string name="treasure_open_result">已打开 %1$d 个：+%2$s 金币</string>
+    <string name="treasure_open_result_gems">已打开 %1$d 个：+%2$s 金币和 %3$d 颗宝石</string>
+    <string name="seasonal_expedition_token_hint">每次运行获得 1 个代币。</string>
+    <string name="seasonal_boss_token_hint">每次击杀获得 1 个代币，每天最多 %1$d 个。</string>
     <string name="seasonal_minigame_hint">在余烬熄灭前命中 %1$d / %2$d 个！</string>
     <string name="seasonal_minigame_round">第 %1$d / %2$d 轮——命中：%3$d</string>
     <string name="seasonal_minigame_mode_label">模式</string>
@@ -1964,8 +2119,8 @@
     <string name="seasonal_tap">点击！</string>
     <string name="seasonal_claim">领取</string>
     <string name="seasonal_bounty_cooldown">新赏金在 %1$d 分 %2$d 秒后</string>
-    <string name="seasonal_bounty_reroll">Reroll bounty</string> <!-- untranslated -->
-    <string name="seasonal_bounty_reroll_confirm">Swap this bounty for a different one for %1$s coins? Progress on it is lost.</string> <!-- untranslated -->
+    <string name="seasonal_bounty_reroll">重置悬赏</string>
+    <string name="seasonal_bounty_reroll_confirm">花费 %1$s 金币将此悬赏换成另一个？该悬赏的进度将丢失。</string>
     <string name="seasonal_go">前往</string>
     <string name="seasonal_event_sunspire_solstice_2026_name">日尖塔夏至节</string>
     <string name="seasonal_event_sunspire_solstice_2026_banner">参与了 2026 日尖塔夏至节</string>
@@ -2003,7 +2158,7 @@
     <string name="seasonal_event_gloomharvest_2026_banner">参与了2026暗潮收割活动</string>
     <string name="seasonal_minigame_lantern_lights_name">灯笼之光</string>
     <string name="seasonal_minigame_sequence_hint">观察灯笼，然后重复顺序。达到第 %1$d / %2$d 轮即可获得代币！</string>
-    <string name="seasonal_minigame_sequence_success">Well remembered! +1 token.</string> <!-- untranslated -->
+    <string name="seasonal_minigame_sequence_success">记得真清楚！+1 代币。</string>
     <string name="seasonal_minigame_sequence_round">第 %1$d / %2$d 轮</string>
     <string name="seasonal_minigame_watch">仔细看！</string>
     <string name="seasonal_minigame_your_turn">轮到你了！</string>
@@ -2063,7 +2218,7 @@
     <string name="journal_hint">记录下次的备忘——排什么队、在刷什么。</string>
     <string name="journal_placeholder">写个笔记……</string>
     <string name="profile_banners_empty">尚未获得旗帜。完成季节活动即可获得！</string>
-    <string name="profile_banners_earned_on" formatted="false">Earned %s</string> <!-- untranslated -->
+    <string name="profile_banners_earned_on" formatted="false">获得于 %s</string>
     <string name="profile_banners_unobtained">（未获得）</string>
     <string name="character_title_label">头衔</string>
     <string name="character_title_none">无头衔</string>
@@ -2120,7 +2275,7 @@
     <string name="settings_credit_characters_subtitle">美术：Pixylac</string>
     <string name="settings_credit_bosses_title">首领精灵</string>
     <string name="settings_credit_bosses_subtitle">美术：Meg</string>
-    <string name="settings_credit_house_title">House Interiors</string> <!-- untranslated -->
+    <string name="settings_credit_house_title">房屋内饰</string>
 
     <string name="title_seasonal_champion_of">%1$s 冠军</string>
     <string name="title_seasonal_requirement">完成 %1$s 季节活动</string>
@@ -2168,7 +2323,7 @@
     <string name="pet_timber_sprite_name">木材精灵</string>
     <string name="pet_timber_sprite_desc">从锯末和木材中觉醒的木灵，精准知道每颗钉子该在哪里。</string>
     <string name="pet_juggling_imp_name">杂耍小鬼</string>
-    <string name="pet_juggling_imp_desc" formatted="false">A mischievous imp that juggles your worries away. Boosts all skill XP by 3%.</string> <!-- untranslated -->
+    <string name="pet_juggling_imp_desc" formatted="false">一只顽皮的小鬼，抛接走你的烦恼。所有技能经验提高 3%。</string>
     <string name="pet_tower_pet_name">石头守卫</string>
     <string name="pet_tower_pet_desc">守护高塔秘密的远古石魔像，提升战斗经验。</string>
     <string name="pet_solstice_sprite_name">至日精灵</string>
@@ -2179,6 +2334,24 @@
     <string name="pet_grave_sprout_desc">在古墓丘上扎根的顽强小苗，它对生长略知一二。</string>
     <string name="pet_golden_goose_name">金鹅</string>
     <string name="pet_golden_goose_desc">栖息在镀金纪念碑上的高贵鹅，金币似乎自然而然地找到它的主人。</string>
+
+    <!-- Elder Isle pets: 7 dungeon drops + 1 raid-boss drop -->
+    <string name="pet_tidal_sprite_name">Tidal Sprite</string> <!-- untranslated -->
+    <string name="pet_tidal_sprite_desc">A shimmering water spirit born from the surf of Beach &amp; Cliffs. Never seems to fully dry.</string> <!-- untranslated -->
+    <string name="pet_grove_fawn_name">Grove Fawn</string> <!-- untranslated -->
+    <string name="pet_grove_fawn_desc">A young forest creature with rune-patterned fur, found among the ancient trees.</string> <!-- untranslated -->
+    <string name="pet_magma_salamander_name">Magma Salamander</string> <!-- untranslated -->
+    <string name="pet_magma_salamander_desc">A heat-forged lizard that thrives in Volcano Peak\'s cracks. Its skin is always faintly warm.</string> <!-- untranslated -->
+    <string name="pet_abyss_wisp_name">Abyss Wisp</string> <!-- untranslated -->
+    <string name="pet_abyss_wisp_desc">A cold silver light that drifted up from the Abyssal Depths and refused to sink back.</string> <!-- untranslated -->
+    <string name="pet_ancient_turtle_name">Ancient Turtle</string> <!-- untranslated -->
+    <string name="pet_ancient_turtle_desc">A tiny turtle whose shell bears the same runes as the isle\'s seal. Older than it looks.</string> <!-- untranslated -->
+    <string name="pet_cinder_hawk_name">Cinder Hawk</string> <!-- untranslated -->
+    <string name="pet_cinder_hawk_desc">A bird of banked embers that circles the volcano and roosts on your shoulder between fights.</string> <!-- untranslated -->
+    <string name="pet_deepwater_serpent_name">Deepwater Serpent</string> <!-- untranslated -->
+    <string name="pet_deepwater_serpent_desc">A miniature cousin of the Sea Serpent, coiled around your wrist like a living bracelet.</string> <!-- untranslated -->
+    <string name="pet_elder_familiar_name">Elder Familiar</string> <!-- untranslated -->
+    <string name="pet_elder_familiar_desc">The Last Elder\'s dying companion, bound now to whoever felled its master. Its eyes still remember.</string> <!-- untranslated -->
 
     <!-- Save slots / character manager -->
     <string name="settings_characters">角色</string>
@@ -2203,6 +2376,7 @@
     <string name="save_slot_delete_body">永久删除 %1$s？此操作不可撤销。</string>
     <string name="save_slot_delete_btn">删除</string>
     <string name="save_slot_switch_failed">无法切换角色。</string>
+    <string name="collect_blocked_switching">Character switch in progress. Please wait and try again.</string> <!-- untranslated -->
 
     <!-- Ironman mode -->
     <string name="character_ironman_title">铁人</string>
@@ -2232,7 +2406,10 @@
     <string name="carnival_stat_atk">攻击 +%1$d</string>
     <string name="carnival_stat_str">力量 +%1$d</string>
     <string name="carnival_stat_def">防御 +%1$d</string>
-    <string name="carnival_stat_yield">收益</string>
+    <!-- Translator note: %1$s = "${skill name} ", %2$d = percentage bonus -->
+    <string name="carnival_stat_xp">%1$sXP +%2$d%%</string> <!-- untranslated -->
+    <!-- Translator note: %1$s = "${skill name} ", %2$d = percentage bonus -->
+    <string name="carnival_stat_yield">%1$sYield +%2$d%%</string> <!-- untranslated -->
     <string name="carnival_potion_letter_green">绿</string>
     <string name="carnival_potion_letter_blue">蓝</string>
     <string name="carnival_potion_letter_red">红</string>
@@ -2247,190 +2424,191 @@
     <!-- Translator note: %1$d = unspent prestige points -->
     <string name="prestige_points_available">%1$d 可用点数</string>
     <!-- Translator note: %1$d = lifetime points earned, %2$d = maximum points for this skill -->
-    <string name="prestige_points_lifetime">%1$d of %2$d lifetime points earned</string> <!-- untranslated -->
+    <string name="prestige_points_lifetime">已获得 %1$d/%2$d 累计点数</string>
     <!-- Translator note: %1$d = points the reset would award right now -->
-    <string name="prestige_button_with_points">Prestige now for +%1$d points</string> <!-- untranslated -->
+    <string name="prestige_button_with_points">立即转生以获得 +%1$d 点数</string>
     <!-- Translator note: %1$d = current skill level -->
-    <string name="prestige_requires_99">Reach level 99 to prestige (currently %1$d).</string> <!-- untranslated -->
-    <string name="prestige_maxed_cap">Maximum prestige reached. Every point this skill can earn is yours.</string> <!-- untranslated -->
+    <string name="prestige_requires_99">达到 99 级即可转生（当前 %1$d）。</string>
+    <string name="prestige_maxed_cap">已达到最高转生等级。此技能能获得的每个点数都已是你的。</string>
+    <string name="skills_prestige_max">★×%1$d（最大）</string>
     <!-- Translator note: %1$s = skill name, %2$d = points awarded -->
-    <string name="prestige_confirm_message_points">Your %1$s level will reset to 1 and you\'ll earn %2$d prestige points to spend in this skill\'s tree. Equipment that no longer meets its requirements will be swapped out, and unclaimed %1$s daily quest progress resets. You\'ll also gain 2x %1$s XP for 48 hours to speed the climb back up.</string> <!-- untranslated -->
+    <string name="prestige_confirm_message_points">你的 %1$s 等级将重置为 1，你将获得 %2$d 点转生点数，可在该技能的天赋树中消费。不再满足要求的装备将被替换，未领取的 %1$s 每日任务进度会重置。你还会获得 2 倍 %1$s 经验，持续 48 小时，以加快回升速度。</string>
     <string name="prestige_respec">重置点数</string>
     <!-- Translator note: %1$s = formatted remaining cooldown -->
-    <string name="prestige_respec_available_in">Reset available in %1$s</string> <!-- untranslated -->
+    <string name="prestige_respec_available_in">可在 %1$s 后重置</string>
     <string name="prestige_respec_confirm_title">确定重置转生点数吗?</string>
     <!-- Translator note: %1$s = skill name -->
-    <string name="prestige_respec_confirm_message">All purchased %1$s upgrades will be refunded for their full point cost. You can reset this skill\'s points again in 24 hours.</string> <!-- untranslated -->
+    <string name="prestige_respec_confirm_message">所有已购买的 %1$s 升级将按其全部点数费用退还。你可在 24 小时后再次重置此技能的点数。</string>
     <!-- Translator note: %1$s = skill name -->
-    <string name="prestige_respec_done">%1$s prestige points refunded.</string> <!-- untranslated -->
-    <string name="prestige_respec_on_cooldown">Points were reset recently. Try again later.</string> <!-- untranslated -->
+    <string name="prestige_respec_done">已退还 %1$s 点转生点数。</string>
+    <string name="prestige_respec_on_cooldown">点数最近刚重置过。请稍后再试。</string>
     <!-- Translator note: %1$d = node cost in points -->
-    <string name="prestige_node_cost">Cost: %1$d points</string> <!-- untranslated -->
+    <string name="prestige_node_cost">费用：%1$d 点数</string>
     <string name="prestige_node_owned">已加点</string>
-    <string name="prestige_path_auto_label">Earned by prestiging</string> <!-- untranslated -->
-    <string name="prestige_node_auto_earned">Earned at prestige %1$d.</string> <!-- untranslated -->
-    <string name="prestige_node_auto_pending">Unlocks automatically at prestige %1$d.</string> <!-- untranslated -->
-    <string name="prestige_button_xp_only">Prestige now for the next XP tier</string> <!-- untranslated -->
-    <string name="prestige_confirm_message_xp_only">Your %1$s level will reset to 1 and you\'ll unlock the next automatic XP tier. Equipment that no longer meets its requirements will be swapped out, and unclaimed %1$s daily quest progress resets. You\'ll also gain 2x %1$s XP for 48 hours to speed the climb back up.</string> <!-- untranslated -->
+    <string name="prestige_path_auto_label">通过转生获得</string>
+    <string name="prestige_node_auto_earned">在转生等级 %1$d 时获得。</string>
+    <string name="prestige_node_auto_pending">在转生等级 %1$d 时自动解锁。</string>
+    <string name="prestige_button_xp_only">立即转生以获得下一经验等级</string>
+    <string name="prestige_confirm_message_xp_only">你的 %1$s 等级将重置为 1，你将解锁下一自动经验等级。不再满足要求的装备将被替换，未领取的 %1$s 每日任务进度会重置。你还会获得 2 倍 %1$s 经验，持续 48 小时，以加快回升速度。</string>
     <!-- Translator note: %1$s = list of race names -->
-    <string name="prestige_node_race_only">%1$s only</string> <!-- untranslated -->
+    <string name="prestige_node_race_only">仅限%1$s</string>
     <!-- Translator note: %1$s = list of race names -->
-    <string name="prestige_node_race_locked_desc">Only %1$s characters can learn this upgrade.</string> <!-- untranslated -->
-    <string name="prestige_node_prereq_locked">Requires the previous tier in this path.</string> <!-- untranslated -->
-    <string name="prestige_node_hidden">Unlock the previous upgrade first.</string> <!-- untranslated -->
-    <string name="character_race_edit_hint">Race changes are made in the appearance editor.</string> <!-- untranslated -->
-    <string name="prestige_node_not_enough">Not enough points</string> <!-- untranslated -->
+    <string name="prestige_node_race_locked_desc">只有 %1$s 角色能学习此升级。</string>
+    <string name="prestige_node_prereq_locked">需要该路径中的上一等级。</string>
+    <string name="prestige_node_hidden">请先解锁上一升级。</string>
+    <string name="character_race_edit_hint">种族变更在形象编辑器中完成。</string>
+    <string name="prestige_node_not_enough">点数不足</string>
     <!-- Translator note: %1$s = node name -->
-    <string name="prestige_node_purchased">%1$s purchased!</string> <!-- untranslated -->
+    <string name="prestige_node_purchased">%1$s 已购买！</string>
     <!-- Translator note: %1$d = node cost in points -->
-    <string name="prestige_buy">Purchase for %1$d points</string> <!-- untranslated -->
+    <string name="prestige_buy">花费 %1$d 点数购买</string>
 
     <!-- Prestige effect descriptions -->
-    <string name="prestige_effect_xp_pct">+%1$d%% XP in this skill.</string> <!-- untranslated -->
-    <string name="prestige_effect_yield_pct">+%1$d%% items from this skill\'s sessions.</string> <!-- untranslated -->
+    <string name="prestige_effect_xp_pct">该技能经验 +%1$d%%。</string>
+    <string name="prestige_effect_yield_pct">该技能会话产出 +%1$d%%。</string>
     <!-- Translator note: %1$s = yield percent per interval (may be fractional) -->
-    <string name="prestige_effect_flow_rate">Flow-state: +%1$s%% yield per interval of continuous activity, up to +100%%.</string> <!-- untranslated -->
+    <string name="prestige_effect_flow_rate">心流状态：持续活动每经过一个间隔，产出 +%1$s%%，最高 +100%%。</string>
     <!-- Translator note: %1$d = minutes removed from the flow interval -->
-    <string name="prestige_effect_flow_interval_reduction">Flow-state interval shortened by %1$d minutes.</string> <!-- untranslated -->
-    <string name="prestige_effect_combat_stat_flat">+%1$d effective levels in combat.</string> <!-- untranslated -->
+    <string name="prestige_effect_flow_interval_reduction">心流状态间隔缩短 %1$d 分钟。</string>
+    <string name="prestige_effect_combat_stat_flat">战斗中有效等级 +%1$d。</string>
     <!-- Translator note: %1$s = minutes (may be fractional) -->
-    <string name="prestige_effect_session_floor_min">Sessions up to %1$s minutes shorter at level 99.</string> <!-- untranslated -->
-    <string name="prestige_effect_cape_scaling">Cape bonuses for this skill multiplied ×%1$d.</string> <!-- untranslated -->
-    <string name="prestige_effect_bonus_roll_pct">+%1$d%% gem find chance while mining.</string> <!-- untranslated -->
-    <string name="prestige_effect_coin_pct">+%1$d%% coins from this skill.</string> <!-- untranslated -->
-    <string name="prestige_effect_crop_rotation_pct">+%1$d%% yield when planting a different crop than the last harvest.</string> <!-- untranslated -->
-    <string name="prestige_effect_crop_rotation_always">The rotation bonus applies to every crop, no rotation needed.</string> <!-- untranslated -->
-    <string name="prestige_effect_tool_eff_pct">Tool efficiency +%1$d%%.</string> <!-- untranslated -->
-    <string name="prestige_effect_per_level_bonus">+%1$s tool or combat bonus per level of this skill.</string> <!-- untranslated -->
-    <string name="prestige_effect_success_chance_pct">Pickpocket success chance +%1$d%%.</string> <!-- untranslated -->
-    <string name="prestige_effect_reclaim_pct">+%1$d%% chance to recover spent arrows and runes after combat.</string> <!-- untranslated -->
-    <string name="prestige_effect_heal_pct">Food heals +%1$d%% more in combat.</string> <!-- untranslated -->
-    <string name="prestige_effect_death_keep_pct">Keep an extra %1$d%% of XP and loot when defeated.</string> <!-- untranslated -->
-    <string name="prestige_effect_queue_slot">+%1$d session queue slot.</string> <!-- untranslated -->
-    <string name="prestige_effect_pet_boost_pct">Pet boosts for this skill are %1$d%% stronger.</string> <!-- untranslated -->
-    <string name="prestige_effect_blessing_duration_pct">Church blessings last %1$d%% longer.</string> <!-- untranslated -->
-    <string name="prestige_effect_blessing_cost_pct">Church blessings cost %1$d%% fewer bones.</string> <!-- untranslated -->
-    <string name="prestige_effect_potion_bonus_flat">Combat potions grant +%1$d more to their stats.</string> <!-- untranslated -->
-    <string name="prestige_effect_input_save_pct">%1$d%% of crafting materials are refunded.</string> <!-- untranslated -->
-    <string name="prestige_effect_builder_discount_pct">Town building upgrades cost %1$d%% less.</string> <!-- untranslated -->
-    <string name="prestige_effect_sell_price_pct">Shop sell prices +%1$d%%.</string> <!-- untranslated -->
-    <string name="prestige_effect_slayer_points_pct">Slayer task points +%1$d%%.</string> <!-- untranslated -->
-    <string name="prestige_effect_double_hit_pct">%1$d%% chance to strike a second melee hit.</string> <!-- untranslated -->
-    <string name="prestige_effect_second_chance">Missed melee attacks are rerolled once.</string> <!-- untranslated -->
-    <string name="prestige_effect_foretell_slots">+%1$d foretold slayer task slots.</string> <!-- untranslated -->
-    <string name="prestige_effect_slayer_multi_task">Dungeon kills also count toward matching foretold tasks.</string> <!-- untranslated -->
-    <string name="prestige_effect_unlock_recipe">Unlocks the %1$s fletching recipe.</string> <!-- untranslated -->
+    <string name="prestige_effect_session_floor_min">在 99 级时会话缩短最多 %1$s 分钟。</string>
+    <string name="prestige_effect_cape_scaling">该技能的披风加成乘以 ×%1$d。</string>
+    <string name="prestige_effect_bonus_roll_pct">采矿时发现宝石的几率 +%1$d%%。</string>
+    <string name="prestige_effect_coin_pct">该技能金币 +%1$d%%。</string>
+    <string name="prestige_effect_crop_rotation_pct">种植与上次收获不同的作物时，产量 +%1$d%%。</string>
+    <string name="prestige_effect_crop_rotation_always">轮作加成适用于每种作物，无需轮作。</string>
+    <string name="prestige_effect_tool_eff_pct">工具效率 +%1$d%%。</string>
+    <string name="prestige_effect_per_level_bonus">每级该技能，工具或战斗加成 +%1$s。</string>
+    <string name="prestige_effect_success_chance_pct">扒窃成功几率 +%1$d%%。</string>
+    <string name="prestige_effect_reclaim_pct">战斗后回收已消耗的箭矢和符文的几率 +%1$d%%。</string>
+    <string name="prestige_effect_heal_pct">战斗中食物治疗量 +%1$d%%。</string>
+    <string name="prestige_effect_death_keep_pct">战败时额外保留 %1$d%% 的经验和战利品。</string>
+    <string name="prestige_effect_queue_slot">+%1$d 会话队列槽位。</string>
+    <string name="prestige_effect_pet_boost_pct">该技能的宠物加成提高 %1$d%%。</string>
+    <string name="prestige_effect_blessing_duration_pct">教堂祝福持续时间延长 %1$d%%。</string>
+    <string name="prestige_effect_blessing_cost_pct">教堂祝福费用减少 %1$d%% 骨头。</string>
+    <string name="prestige_effect_potion_bonus_flat">战斗药水额外提供 +%1$d 点属性。</string>
+    <string name="prestige_effect_input_save_pct">退还 %1$d%% 的制造材料。</string>
+    <string name="prestige_effect_builder_discount_pct">城镇建筑升级费用降低 %1$d%%。</string>
+    <string name="prestige_effect_sell_price_pct">商店出售价格 +%1$d%%。</string>
+    <string name="prestige_effect_slayer_points_pct">讨伐任务点数 +%1$d%%。</string>
+    <string name="prestige_effect_double_hit_pct">造成第二次近战攻击的几率 %1$d%%。</string>
+    <string name="prestige_effect_second_chance">未命中的近战攻击会重新掷一次。</string>
+    <string name="prestige_effect_foretell_slots">+%1$d 个预知讨伐任务槽位。</string>
+    <string name="prestige_effect_slayer_multi_task">地牢击杀也会计入匹配的预知任务。</string>
+    <string name="prestige_effect_unlock_recipe">解锁 %1$s 制箭配方。</string>
 
     <!-- New distinctive base path names (variety pass) -->
-    <string name="prestige_path_fishing_rod">Sturdy Rod</string> <!-- untranslated -->
-    <string name="prestige_path_woodcutting_axe">Honed Edge</string> <!-- untranslated -->
-    <string name="prestige_path_cooking_hearty">Hearty Meals</string> <!-- untranslated -->
-    <string name="prestige_path_smithing_thrift">Careful Smith</string> <!-- untranslated -->
-    <string name="prestige_path_crafting_thrift">Steady Hands</string> <!-- untranslated -->
-    <string name="prestige_path_herblore_potency">Potent Potions</string> <!-- untranslated -->
-    <string name="prestige_path_runecrafting_runethrift">Essence Bond</string> <!-- untranslated -->
-    <string name="prestige_path_magic_runethrift">Rune Thrift</string> <!-- untranslated -->
-    <string name="prestige_path_construction_efficient">Efficient Builder</string> <!-- untranslated -->
-    <string name="prestige_path_prayer_devotion">Devotion</string> <!-- untranslated -->
-    <string name="prestige_path_mercantile_trade">Trade Baron</string> <!-- untranslated -->
-    <string name="prestige_path_slayer_bounty">Bounty Hunter</string> <!-- untranslated -->
-    <string name="prestige_path_ranged_quiver">Quiver Care</string> <!-- untranslated -->
-    <string name="prestige_path_defense_laststand">Last Stand</string> <!-- untranslated -->
-    <string name="prestige_path_hitpoints_constitution">Constitution</string> <!-- untranslated -->
-    <string name="prestige_path_strength_double_hit">Double Hit</string> <!-- untranslated -->
-    <string name="prestige_path_ranged_bows">Better Bows</string> <!-- untranslated -->
-    <string name="prestige_path_slayer_foresight">Foresight</string> <!-- untranslated -->
+    <string name="prestige_path_fishing_rod">坚固钓竿</string>
+    <string name="prestige_path_woodcutting_axe">锋利刃口</string>
+    <string name="prestige_path_cooking_hearty">丰盛餐食</string>
+    <string name="prestige_path_smithing_thrift">谨慎铁匠</string>
+    <string name="prestige_path_crafting_thrift">稳健双手</string>
+    <string name="prestige_path_herblore_potency">强效药水</string>
+    <string name="prestige_path_runecrafting_runethrift">精华纽带</string>
+    <string name="prestige_path_magic_runethrift">符文节俭</string>
+    <string name="prestige_path_construction_efficient">高效建造者</string>
+    <string name="prestige_path_prayer_devotion">虔诚</string>
+    <string name="prestige_path_mercantile_trade">贸易男爵</string>
+    <string name="prestige_path_slayer_bounty">赏金猎人</string>
+    <string name="prestige_path_ranged_quiver">箭袋养护</string>
+    <string name="prestige_path_defense_laststand">背水一战</string>
+    <string name="prestige_path_hitpoints_constitution">体质</string>
+    <string name="prestige_path_strength_double_hit">双重打击</string>
+    <string name="prestige_path_ranged_bows">精良弓</string>
+    <string name="prestige_path_slayer_foresight">先见</string>
 
     <!-- Prestige path names (generic) -->
-    <string name="prestige_path_xp">XP Boost</string> <!-- untranslated -->
-    <string name="prestige_path_yield">Yield</string> <!-- untranslated -->
-    <string name="prestige_path_flow">Flow-state</string> <!-- untranslated -->
-    <string name="prestige_path_endurance">Endurance</string> <!-- untranslated -->
-    <string name="prestige_path_gem">Gem Hunter</string> <!-- untranslated -->
-    <string name="prestige_path_rotation">Crop Rotation</string> <!-- untranslated -->
+    <string name="prestige_path_xp">经验加成</string>
+    <string name="prestige_path_yield">产量</string>
+    <string name="prestige_path_flow">心流状态</string>
+    <string name="prestige_path_endurance">耐力</string>
+    <string name="prestige_path_gem">宝石猎人</string>
+    <string name="prestige_path_rotation">轮作</string>
 
     <!-- Prestige path names (skill flavored) -->
-    <string name="prestige_path_mining_yield">Purer Ore</string> <!-- untranslated -->
-    <string name="prestige_path_fishing_yield">More Fish</string> <!-- untranslated -->
-    <string name="prestige_path_woodcutting_yield">Sharper Axe</string> <!-- untranslated -->
-    <string name="prestige_path_thieving_yield">Faster Picking</string> <!-- untranslated -->
-    <string name="prestige_path_slayer_yield">Hunter\'s Instinct</string> <!-- untranslated -->
-    <string name="prestige_path_attack_prowess">Precision</string> <!-- untranslated -->
-    <string name="prestige_path_strength_prowess">Might</string> <!-- untranslated -->
-    <string name="prestige_path_defense_prowess">Bulwark</string> <!-- untranslated -->
-    <string name="prestige_path_ranged_prowess">Deadeye</string> <!-- untranslated -->
-    <string name="prestige_path_magic_prowess">Attunement</string> <!-- untranslated -->
-    <string name="prestige_path_hitpoints_prowess">Vitality</string> <!-- untranslated -->
-    <string name="prestige_path_thieving_coin">Silver Tongue</string> <!-- untranslated -->
-    <string name="prestige_path_mercantile_coin">Haggler</string> <!-- untranslated -->
+    <string name="prestige_path_mining_yield">更纯矿石</string>
+    <string name="prestige_path_fishing_yield">更多鱼获</string>
+    <string name="prestige_path_woodcutting_yield">更利斧刃</string>
+    <string name="prestige_path_thieving_yield">更快扒窃</string>
+    <string name="prestige_path_slayer_yield">猎人本能</string>
+    <string name="prestige_path_attack_prowess">精准</string>
+    <string name="prestige_path_strength_prowess">威能</string>
+    <string name="prestige_path_defense_prowess">壁垒</string>
+    <string name="prestige_path_ranged_prowess">神射手</string>
+    <string name="prestige_path_magic_prowess">调和</string>
+    <string name="prestige_path_hitpoints_prowess">活力</string>
+    <string name="prestige_path_thieving_coin">巧舌如簧</string>
+    <string name="prestige_path_mercantile_coin">讨价还价</string>
 
     <!-- Prestige race branch names -->
-    <string name="prestige_path_race_human">Resourceful</string> <!-- untranslated -->
-    <string name="prestige_path_thieving_race_elf">Shadow Step</string> <!-- untranslated -->
-    <string name="prestige_path_firemaking_race_dwarf">Ember Heart</string> <!-- untranslated -->
-    <string name="prestige_path_fishing_race_halfling">Patient Angler</string> <!-- untranslated -->
-    <string name="prestige_path_woodcutting_race_halfling">Forest Kin</string> <!-- untranslated -->
-    <string name="prestige_path_farming_race_halfling">Bountiful Harvest</string> <!-- untranslated -->
-    <string name="prestige_path_cooking_race_halfling">Home Cook</string> <!-- untranslated -->
-    <string name="prestige_path_construction_race_halfling">Cozy Builder</string> <!-- untranslated -->
-    <string name="prestige_path_fishing_race_gnome">Clever Lures</string> <!-- untranslated -->
-    <string name="prestige_path_fletching_race_gnome">Tinker\'s Touch</string> <!-- untranslated -->
-    <string name="prestige_path_firemaking_race_gnome">Spark Wright</string> <!-- untranslated -->
-    <string name="prestige_path_construction_race_gnome">Gadget Works</string> <!-- untranslated -->
-    <string name="prestige_path_prayer_race_gnome">Trickster\'s Favor</string> <!-- untranslated -->
-    <string name="prestige_path_hitpoints_race_orc">Thick Hide</string> <!-- untranslated -->
+    <string name="prestige_path_race_human">足智多谋</string>
+    <string name="prestige_path_thieving_race_elf">暗影步</string>
+    <string name="prestige_path_firemaking_race_dwarf">余烬之心</string>
+    <string name="prestige_path_fishing_race_halfling">耐心垂钓者</string>
+    <string name="prestige_path_woodcutting_race_halfling">森林亲族</string>
+    <string name="prestige_path_farming_race_halfling">丰收</string>
+    <string name="prestige_path_cooking_race_halfling">家常厨师</string>
+    <string name="prestige_path_construction_race_halfling">温馨建造者</string>
+    <string name="prestige_path_fishing_race_gnome">巧妙诱饵</string>
+    <string name="prestige_path_fletching_race_gnome">巧匠之手</string>
+    <string name="prestige_path_firemaking_race_gnome">火花工匠</string>
+    <string name="prestige_path_construction_race_gnome">机关巧作</string>
+    <string name="prestige_path_prayer_race_gnome">诡术之眷</string>
+    <string name="prestige_path_hitpoints_race_orc">厚皮</string>
 
     <!-- Race change -->
-    <string name="race_change_confirm_title">Change race?</string> <!-- untranslated -->
-    <string name="item_race_change_token_name">Race Change Token</string> <!-- untranslated -->
-    <string name="item_race_change_token_desc">A rare boss drop that lets you change your character\'s race once.</string> <!-- untranslated -->
+    <string name="race_change_confirm_title">更改种族？</string>
+    <string name="item_race_change_token_name">种族变更令牌</string>
+    <string name="item_race_change_token_desc">一种稀有的首领掉落，可让你变更一次角色的种族。</string>
     <!-- Translator note: %1$d = number of tokens owned -->
-    <string name="race_change_pay_token">Use Race Change Token (%1$d)</string> <!-- untranslated -->
-    <string name="race_change_pay_coins">Pay 10,000,000 coins</string> <!-- untranslated -->
-    <string name="race_change_cannot_afford">You need a Race Change Token (rare boss drop) or 10,000,000 coins to change race.</string> <!-- untranslated -->
-    <string name="race_change_ironman_locked">Ironman characters cannot change their race.</string> <!-- untranslated -->
-    <string name="race_change_cooldown_wait">You can change race again in %1$s.</string> <!-- untranslated -->
-    <string name="race_change_ironman_once">As an ironman, this is your one and only race change. Afterwards your race is locked forever.</string> <!-- untranslated -->
-    <string name="ironman_race_permanent_note">Ironman characters cannot change their race later. Choose carefully!</string> <!-- untranslated -->
+    <string name="race_change_pay_token">使用种族变更令牌（%1$d）</string>
+    <string name="race_change_pay_coins">支付 10,000,000 金币</string>
+    <string name="race_change_cannot_afford">你需要一个种族变更令牌（稀有首领掉落）或 10,000,000 金币才能变更种族。</string>
+    <string name="race_change_ironman_locked">铁人角色无法变更种族。</string>
+    <string name="race_change_cooldown_wait">你可以在 %1$s 后再次变更种族。</string>
+    <string name="race_change_ironman_once">作为铁人，这是你唯一一次变更种族。之后你的种族将被永久锁定。</string>
+    <string name="ironman_race_permanent_note">铁人角色之后无法变更种族。请慎重选择！</string>
     <!-- Translator note: %1$s = comma-separated list of skill names -->
-    <string name="race_proficiency_label">Racial skill trees: %1$s</string> <!-- untranslated -->
-    <string name="race_proficiency_human">Racial bonus: an exclusive XP mastery tier in every skill</string> <!-- untranslated -->
-    <string name="race_change_confirm_message">Your race grants race-locked prestige upgrades. Changing race refunds any points spent in other races\' branches, and you can only change race once every 24 hours.</string> <!-- untranslated -->
+    <string name="race_proficiency_label">种族技能树：%1$s</string>
+    <string name="race_proficiency_human">种族加成：每项技能独有的经验精通等级</string>
+    <string name="race_change_confirm_message">你的种族会授予种族锁定的转生升级。变更种族会退还其他种族分支中已花费的所有点数，且你每 24 小时只能变更一次种族。</string>
     <!-- Heirloom items (raid boss rare drops that level up with use) -->
-    <string name="item_heirloom_pickaxe_name">Heirloom Pickaxe</string> <!-- untranslated -->
-    <string name="item_heirloom_pickaxe_desc">A family pickaxe passed down through generations. It remembers every ore its bearers ever broke.</string> <!-- untranslated -->
-    <string name="item_heirloom_axe_name">Heirloom Axe</string> <!-- untranslated -->
-    <string name="item_heirloom_axe_desc">A woodsman\'s axe worn smooth by a hundred hands. Every felled tree sharpens it a little more.</string> <!-- untranslated -->
-    <string name="item_heirloom_fishing_rod_name">Heirloom Fishing Rod</string> <!-- untranslated -->
-    <string name="item_heirloom_fishing_rod_desc">An old rod that has landed catches beyond counting. It learns the water with every cast.</string> <!-- untranslated -->
-    <string name="item_heirloom_hoe_name">Heirloom Hoe</string> <!-- untranslated -->
-    <string name="item_heirloom_hoe_desc">A humble hoe that has turned soil for generations. Each harvest leaves it keener than before.</string> <!-- untranslated -->
-    <string name="item_heirloom_hammer_name">Heirloom Hammer</string> <!-- untranslated -->
-    <string name="item_heirloom_hammer_desc">A smith\'s hammer black with the soot of a thousand forges. It grows truer with every strike.</string> <!-- untranslated -->
-    <string name="item_heirloom_tinderbox_name">Heirloom Tinderbox</string> <!-- untranslated -->
-    <string name="item_heirloom_tinderbox_desc">A battered tinderbox that has never failed to spark. Every fire it lights burns a little brighter.</string> <!-- untranslated -->
-    <string name="item_heirloom_grappling_hook_name">Heirloom Grappling Hook</string> <!-- untranslated -->
-    <string name="item_heirloom_grappling_hook_desc">A climber\'s hook that has held on ledges beyond counting. It grows surer with every course.</string> <!-- untranslated -->
-    <string name="item_heirloom_frying_pan_name">Heirloom Frying Pan</string> <!-- untranslated -->
-    <string name="item_heirloom_frying_pan_desc">A seasoned pan handed down through a family of cooks. Every meal deepens its seasoning.</string> <!-- untranslated -->
-    <string name="item_heirloom_lockpick_name">Heirloom Lockpick</string> <!-- untranslated -->
-    <string name="item_heirloom_lockpick_desc">A thief\'s pick that has whispered open countless locks. It grows subtler with every job.</string> <!-- untranslated -->
-    <string name="item_midas_band_name">Midas Band</string> <!-- untranslated -->
-    <string name="item_midas_band_desc">A sliver of the Vault Guardian\'s living gold. It drinks in a little of every battle its wearer survives.</string> <!-- untranslated -->
-    <string name="item_heirloom_blade_name">Heirloom Blade</string> <!-- untranslated -->
-    <string name="item_heirloom_blade_desc">An ancestral blade that wakes a little more with every battle its line survives.</string> <!-- untranslated -->
-    <string name="item_heirloom_greathammer_name">Heirloom Greathammer</string> <!-- untranslated -->
-    <string name="item_heirloom_greathammer_desc">A colossal warhammer of forgotten make. Each blow it lands adds to its legend.</string> <!-- untranslated -->
-    <string name="item_heirloom_longbow_name">Heirloom Longbow</string> <!-- untranslated -->
-    <string name="item_heirloom_longbow_desc">A bow strung and restrung across generations of archers. Every arrow teaches it something.</string> <!-- untranslated -->
-    <string name="item_heirloom_staff_name">Heirloom Staff</string> <!-- untranslated -->
-    <string name="item_heirloom_staff_desc">A staff steeped in the castings of every mage who ever bore it. Its power still deepens.</string> <!-- untranslated -->
-    <string name="heirloom_section_title">Heirloom</string> <!-- untranslated -->
+    <string name="item_heirloom_pickaxe_name">传家宝镐</string>
+    <string name="item_heirloom_pickaxe_desc">一把世代相传的家族镐。它记得其历任持有者开采过的每一块矿石。</string>
+    <string name="item_heirloom_axe_name">传家宝斧</string>
+    <string name="item_heirloom_axe_desc">一把被上百双手磨得光滑的伐木斧。每砍倒一棵树都会让它更锋利一点。</string>
+    <string name="item_heirloom_fishing_rod_name">传家宝钓竿</string>
+    <string name="item_heirloom_fishing_rod_desc">一根钓获无数渔获的旧钓竿。每一次抛竿它都在学习这片水域。</string>
+    <string name="item_heirloom_hoe_name">传家宝锄</string>
+    <string name="item_heirloom_hoe_desc">一把世代翻土的朴素锄头。每一次收获都让它比从前更锋利。</string>
+    <string name="item_heirloom_hammer_name">传家宝锤</string>
+    <string name="item_heirloom_hammer_desc">一把被上千座熔炉的烟灰熏黑的铁匠锤。每一次敲击都让它更精准。</string>
+    <string name="item_heirloom_tinderbox_name">传家宝火绒盒</string>
+    <string name="item_heirloom_tinderbox_desc">一只从未失灵的火绒盒。它点燃的每一堆火都烧得更亮一点。</string>
+    <string name="item_heirloom_grappling_hook_name">传家宝抓钩</string>
+    <string name="item_heirloom_grappling_hook_desc">一把在无数岩架上支撑过的登山钩。每一次攀爬都让它更可靠。</string>
+    <string name="item_heirloom_frying_pan_name">传家宝煎锅</string>
+    <string name="item_heirloom_frying_pan_desc">一口在厨子家族中代代相传、经过岁月调养的锅。每一餐都加深了它的味觉沉淀。</string>
+    <string name="item_heirloom_lockpick_name">传家宝开锁器</string>
+    <string name="item_heirloom_lockpick_desc">一把悄无声息撬开无数门锁的盗贼撬锁器。每一次开锁都让它更精妙。</string>
+    <string name="item_midas_band_name">迈达斯之戒</string>
+    <string name="item_midas_band_desc">一片金库守护者的活体黄金。它会吸纳佩戴者幸存下来的每一场战斗中一小部分。</string>
+    <string name="item_heirloom_blade_name">传家宝利刃</string>
+    <string name="item_heirloom_blade_desc">一把先祖利刃，其家族血脉每经历一场战斗幸存，它便多觉醒一分。</string>
+    <string name="item_heirloom_greathammer_name">传家宝巨锤</string>
+    <string name="item_heirloom_greathammer_desc">一把遗忘铸造的巨型战锤。它每命中一击，都会为它的传奇增添一笔。</string>
+    <string name="item_heirloom_longbow_name">传家宝长弓</string>
+    <string name="item_heirloom_longbow_desc">一把历经世代弓箭手反复上弦的重弓。每一支箭都教给它一些东西。</string>
+    <string name="item_heirloom_staff_name">传家宝法杖</string>
+    <string name="item_heirloom_staff_desc">一根浸染过每一位曾持杖法师的施法技艺的法杖。它的力量仍在加深。</string>
+    <string name="heirloom_section_title">传家宝</string>
     <!-- Translator note: %1$d = the heirloom item\'s current level (1-99) -->
-    <string name="heirloom_level_label">Heirloom Lv. %1$d</string> <!-- untranslated -->
+    <string name="heirloom_level_label">传家宝等级 %1$d</string>
     <!-- Translator note: %1$s = a skill name, used twice -->
-    <string name="heirloom_desc">Grows with %1$s XP up to Lv. 99. Its power also scales with your %1$s level, reaching full effect at level 85. Stats shown are its full potential.</string> <!-- untranslated -->
-    <string name="shop_sell_blocked_heirloom">%1$s is an heirloom and cannot be sold.</string> <!-- untranslated -->
+    <string name="heirloom_desc">随 %1$s 经验成长，最高至 99 级。其力量也会随你的 %1$s 等级提升，在 85 级时达到完全效果。所显示的属性为其最大潜力。</string>
+    <string name="shop_sell_blocked_heirloom">%1$s 是传家宝，无法出售。</string>
     <!-- Translator note: %1$s = a dungeon or boss name -->
-    <string name="repeat_blocked_level">Your combat level is too low to repeat %1$s.</string> <!-- untranslated -->
+    <string name="repeat_blocked_level">你的战斗等级太低，无法重复 %1$s。</string>
 </resources>

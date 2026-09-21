@@ -163,7 +163,9 @@ class WorkerSkillsViewModel @Inject constructor(
     )
 
     val smithingRecipes: List<CraftableRecipe> by lazy {
-        gameData.smithingRecipes.map { (key, r) ->
+        gameData.smithingRecipes
+            .filterKeys { it !in com.fantasyidler.data.model.ElderContent.SMITHING_RECIPES }
+            .map { (key, r) ->
             val equip = gameData.equipment[key]
             val category = when (r.type) {
                 "bar"       -> "Bar"
@@ -197,7 +199,9 @@ class WorkerSkillsViewModel @Inject constructor(
     }
 
     val cookingRecipes: List<CraftableRecipe> by lazy {
-        gameData.cookingRecipes.map { (key, r) ->
+        gameData.cookingRecipes
+            .filterKeys { it !in com.fantasyidler.data.model.ElderContent.COOKING_RECIPES }
+            .map { (key, r) ->
             CraftableRecipe(
                 key                = key,
                 displayName        = r.displayName,
@@ -314,18 +318,22 @@ class WorkerSkillsViewModel @Inject constructor(
         val fmLevel      = state.skillLevels[Skills.FIREMAKING]  ?: 1
         val rcLevel      = state.skillLevels[Skills.RUNECRAFTING] ?: 1
 
+        // Workers are a mainland-only mechanic — they never travel to the isle. Filter
+        // every activity list here to drop Elder Isle resources (ores/trees/fish/courses),
+        // otherwise a mainland worker could farm isle-tier XP + drops with mainland stats,
+        // an exploit reported against v1.15.0.
         val sheet: SheetState = when (skillKey) {
             Skills.MINING -> SheetState.Mining(
-                ores = gameData.ores.filter { (_, ore) -> ore.levelRequired <= miningLevel }
+                ores = gameData.ores.filter { (k, ore) -> ore.levelRequired <= miningLevel && k !in com.fantasyidler.data.model.ElderContent.ORES }
             )
             Skills.WOODCUTTING -> SheetState.Woodcutting(
-                trees = gameData.trees.filter { (_, tree) -> tree.levelRequired <= wcLevel }
+                trees = gameData.trees.filter { (k, tree) -> tree.levelRequired <= wcLevel && k !in com.fantasyidler.data.model.ElderContent.TREES }
             )
             Skills.FISHING -> SheetState.Fishing(
-                fish = gameData.fish.filter { (_, f) -> f.levelRequired <= fishingLevel }
+                fish = gameData.fish.filter { (k, f) -> f.levelRequired <= fishingLevel && k !in com.fantasyidler.data.model.ElderContent.FISH }
             )
             Skills.AGILITY -> SheetState.Agility(
-                courses = gameData.agilityCourses.filter { (_, c) -> c.levelRequired <= agilityLevel }
+                courses = gameData.agilityCourses.filter { (k, c) -> c.levelRequired <= agilityLevel && k !in com.fantasyidler.data.model.ElderContent.AGILITY_COURSES }
             )
             Skills.FIREMAKING -> {
                 viewModelScope.launch {

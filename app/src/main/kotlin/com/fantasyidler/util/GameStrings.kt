@@ -237,7 +237,8 @@ object GameStrings {
         when (prizeType) {
             "equipment" -> itemDesc(context, prize)
             "pet" -> petDesc(context, prize)
-            else -> context.stringByName("carnival_prize_${prize}_desc") ?: fallback
+            else -> context.stringByName("carnival_prize_${prize}_desc")
+                ?: fallback
         }
 
     fun themeName(context: Context, theme: String): String =

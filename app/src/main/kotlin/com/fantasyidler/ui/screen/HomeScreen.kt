@@ -26,7 +26,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Celebration
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
@@ -109,6 +111,10 @@ fun HomeScreen(
     onNavigateToHouse: () -> Unit = {},
     onNavigateToCarnival: () -> Unit = {},
     onNavigateToSeasonalEvent: () -> Unit = {},
+    onNavigateToElderIsle: () -> Unit = {},
+    onNavigateToElderIsleShop: () -> Unit = {},
+    onNavigateToElderArmorMaster: () -> Unit = {},
+    onNavigateToLoreMaster: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state            by viewModel.uiState.collectAsState()
@@ -116,6 +122,26 @@ fun HomeScreen(
     val context           = LocalContext.current
 
     AppBannerEffect(state.snackbarMessage, viewModel::snackbarConsumed)
+
+    // First-arrival splash on Elder Isle: brief scene-set + a nudge toward the right
+    // first tab. Persists a flag so subsequent landings don't nag.
+    if (state.showIsleWelcome) {
+        AlertDialog(
+            onDismissRequest = viewModel::dismissIsleWelcome,
+            title = { Text(stringResource(R.string.elder_isle_welcome_title), fontWeight = FontWeight.Bold) },
+            text  = {
+                Text(
+                    text     = stringResource(R.string.elder_isle_welcome_body),
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = viewModel::dismissIsleWelcome) {
+                    Text(stringResource(R.string.elder_isle_welcome_cta))
+                }
+            },
+        )
+    }
 
     state.petFoundName?.let { petName ->
         AlertDialog(
@@ -503,7 +529,7 @@ fun HomeScreen(
         contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top), // Responsible for top bar padding
         topBar = {
             TopAppBar(
-                title   = { Text(stringResource(R.string.app_name)) },
+                title   = { Text(stringResource(if (state.onElderIsle) R.string.home_title_elder_isle else R.string.app_name)) },
                 actions = {
                     // dropUnlessResumed: ignore ghost taps during nav transitions (issue #1345)
                     if (!state.isLoading && state.showCharacterSwitch) {
@@ -536,6 +562,7 @@ fun HomeScreen(
             ) { CircularProgressIndicator() }
             return@Scaffold
         }
+
 
         Column(
             modifier = Modifier
@@ -602,6 +629,24 @@ fun HomeScreen(
                 }
             }
 
+            // ── Isle currencies row (right under greeting; only on isle) ──
+            if (state.onElderIsle) {
+                Surface(
+                    shape    = RoundedCornerShape(16.dp),
+                    color    = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Row(
+                        modifier              = Modifier.fillMaxWidth().padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        IsleStatChip("Ancient Sigils", state.inventory["ancient_sigil"] ?: 0, 40)
+                        IsleStatChip("Elder Essence",  state.inventory["elder_essence"] ?: 0)
+                        IsleStatChip("Elder Bones",    state.inventory["elder_bone"]    ?: 0)
+                    }
+                }
+            }
+
             // ── Stats bar ───────────────────────────────────────────────
             if (state.showStatsBar) {
                 Surface(
@@ -615,6 +660,7 @@ fun HomeScreen(
                         totalLevel                 = totalLevelFrom(state.skillLevels),
                         coins                      = state.coins,
                         activeBlessingKey          = state.activeBlessingKey,
+                        allBlessings               = state.allBlessings,
                         prayerCapeMult             = state.prayerCapeMult,
                         activeBlessingRemainingMs  = state.activeBlessingRemainingMs,
                         xpBoostRemainingMs         = state.xpBoostRemainingMs,
@@ -624,34 +670,71 @@ fun HomeScreen(
                 }
             }
 
-            // ── Town grid ───────────────────────────────────────────────
+            // ── Town grid (or isle grid) ───────────────────────────────
             val churchTint = if (state.activeBlessingKey.isNotEmpty() && state.activeBlessingRemainingMs > 0)
                 MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
             val townGridRows: @Composable () -> Unit = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Row(
-                        modifier              = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        TownGridCard(Icons.Filled.ShoppingCart, stringResource(R.string.label_shop),       onClick = onNavigateToShop,      modifier = Modifier.weight(1f))
-                        TownGridCard(Icons.Filled.Person,        stringResource(R.string.inn_title),        onClick = onNavigateToInn,       modifier = Modifier.weight(1f))
-                        TownGridCard(Icons.Filled.Group,         stringResource(R.string.guild_hall_title), onClick = onNavigateToGuildHall, modifier = Modifier.weight(1f), badgeCount = state.guildClaimableCount)
+                if (state.onElderIsle) {
+                    // Isle-flavored grid: mirrors mainland town-grid card styling; 4 cards.
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Row(
+                            modifier              = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            TownGridCard(Icons.Filled.ShoppingCart,          stringResource(R.string.elder_isle_shop_title),          onClick = onNavigateToElderIsleShop,          modifier = Modifier.weight(1f))
+                            TownGridCard(Icons.Filled.Shield,                stringResource(R.string.elder_isle_armor_master_title), onClick = onNavigateToElderArmorMaster,       modifier = Modifier.weight(1f))
+                        }
+                        Row(
+                            modifier              = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            TownGridCard(Icons.AutoMirrored.Filled.MenuBook, stringResource(R.string.elder_isle_lore_master_title),   onClick = onNavigateToLoreMaster,             modifier = Modifier.weight(1f))
+                            TownGridCard(Icons.Filled.Explore,               stringResource(R.string.elder_isle_return),              onClick = viewModel::toggleElderIsleLocation, modifier = Modifier.weight(1f))
+                        }
                     }
-                    Row(
-                        modifier              = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        TownGridCard(Icons.Filled.Star,                    stringResource(R.string.church_title),   onClick = onNavigateToChurch,   modifier = Modifier.weight(1f), iconTint = churchTint)
-                        TownGridCard(Icons.AutoMirrored.Filled.Assignment, stringResource(R.string.builder_title),  onClick = onNavigateToBuilder,  modifier = Modifier.weight(1f))
-                        TownGridCard(Icons.Filled.Shield,                  stringResource(R.string.slayer_title),   onClick = onNavigateToSlayer,   modifier = Modifier.weight(1f))
-                    }
-                    Row(
-                        modifier              = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        TownGridCard(Icons.Filled.Celebration,    stringResource(R.string.carnival_title), onClick = onNavigateToCarnival, modifier = Modifier.weight(1f))
-                        TownGridCard(Icons.Filled.AccountBalance, stringResource(R.string.monument_title), onClick = onNavigateToMonument, modifier = Modifier.weight(1f))
-                        TownGridCard(Icons.Filled.Home,           stringResource(R.string.house_title),    onClick = onNavigateToHouse,    modifier = Modifier.weight(1f))
+                } else {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Row(
+                            modifier              = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            TownGridCard(Icons.Filled.ShoppingCart, stringResource(R.string.label_shop),       onClick = onNavigateToShop,      modifier = Modifier.weight(1f))
+                            TownGridCard(Icons.Filled.Person,        stringResource(R.string.inn_title),        onClick = onNavigateToInn,       modifier = Modifier.weight(1f))
+                            TownGridCard(Icons.Filled.Group,         stringResource(R.string.guild_hall_title), onClick = onNavigateToGuildHall, modifier = Modifier.weight(1f), badgeCount = state.guildClaimableCount)
+                        }
+                        Row(
+                            modifier              = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            TownGridCard(Icons.Filled.Star,                    stringResource(R.string.church_title),   onClick = onNavigateToChurch,   modifier = Modifier.weight(1f), iconTint = churchTint)
+                            TownGridCard(Icons.AutoMirrored.Filled.Assignment, stringResource(R.string.builder_title),  onClick = onNavigateToBuilder,  modifier = Modifier.weight(1f))
+                            TownGridCard(Icons.Filled.Shield,                  stringResource(R.string.slayer_title),   onClick = onNavigateToSlayer,   modifier = Modifier.weight(1f))
+                        }
+                        Row(
+                            modifier              = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            TownGridCard(Icons.Filled.Celebration,    stringResource(R.string.carnival_title), onClick = onNavigateToCarnival, modifier = Modifier.weight(1f))
+                            TownGridCard(Icons.Filled.AccountBalance, stringResource(R.string.monument_title), onClick = onNavigateToMonument, modifier = Modifier.weight(1f))
+                            TownGridCard(Icons.Filled.Home,           stringResource(R.string.house_title),    onClick = onNavigateToHouse,    modifier = Modifier.weight(1f))
+                        }
+                        // Show the Set Sail button as soon as the Dock is built, even before
+                        // the Sea Serpent falls. Pre-kill tap surfaces the "defeat the Sea
+                        // Serpent" snackbar via toggleElderIsleLocation, so the requirement is
+                        // discoverable from Home instead of hidden.
+                        if (state.dockBuilt) {
+                            Row(
+                                modifier              = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                TownGridCard(
+                                    Icons.Filled.Explore,
+                                    stringResource(R.string.elder_isle_set_sail),
+                                    onClick = viewModel::toggleElderIsleLocation,
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -689,8 +772,8 @@ fun HomeScreen(
                 townGridRows()
             }
 
-            // ── Seasonal Event row ────────────────────────────────────────
-            if (state.showSeasonalEvents) state.activeSeasonalEvent?.let { event ->
+            // ── Seasonal Event row (hidden on isle — mainland-only content) ──
+            if (!state.onElderIsle && state.showSeasonalEvents) state.activeSeasonalEvent?.let { event ->
                 val eventComplete = event.tokens >= event.goal
                 Surface(
                     shape    = RoundedCornerShape(16.dp),
@@ -759,6 +842,7 @@ fun HomeScreen(
                     sessionXpGain  = state.activeSessionXpGain,
                     showEndTime    = state.showSessionEndTime,
                     bossEmoji      = if (session.skillName == "boss") viewModel.bossEmoji(session.activityKey) else null,
+                    bossDurationMinutes = if (session.skillName == "boss") viewModel.bossDurationMinutes(session.activityKey) else null,
                     repeatIndex    = if (session.skillName == "boss") state.activeBossRepeatIndex else state.activeDungeonRepeatIndex,
                     repeatTotal    = if (session.skillName == "boss") state.activeBossRepeatTotal else state.activeDungeonRepeatTotal,
                     assignedItems  = state.activeSessionAssignedItems,
@@ -879,6 +963,394 @@ fun HomeScreen(
                     onNavigateToWorkerSkills = { onNavigateToWorkerSkills(2) },
                 )
             }
+        }
+    }
+}
+
+/**
+ * Isle mission tracker: elder armor crafting progress + main story acts. Slots into the
+ * mainland Home layout as an isle-only extra section, so the surrounding chrome
+ * (greeting, session banner, stats bar) stays consistent across mainland and isle.
+ */
+@Composable
+private fun IsleMissionTracker(inventory: Map<String, Int>) {
+    val elderPieces = listOf(
+        "elder_helm"        to "Elder Helm",
+        "elder_platebody"   to "Elder Platebody",
+        "elder_platelegs"   to "Elder Platelegs",
+        "elder_boots"       to "Elder Boots",
+        "elder_cape"        to "Elder Cape",
+        "elder_shield"      to "Elder Shield",
+        "elder_signet_ring" to "Elder Ring",
+        "elder_amulet"      to "Elder Amulet",
+    )
+    val ownedPieces  = elderPieces.count { (inventory[it.first] ?: 0) >= 1 }
+    val setComplete  = ownedPieces == elderPieces.size
+    val lastElderKilled = (inventory["ancient_signet"] ?: 0) >= 1
+    val actsCompleted = if (lastElderKilled) 4 else 0
+    val sigilCount = inventory["ancient_sigil"] ?: 0
+    val essence    = inventory["elder_essence"] ?: 0
+    val bones      = inventory["elder_bone"] ?: 0
+
+    // Elder set progress card
+    Surface(
+        shape    = RoundedCornerShape(16.dp),
+        color    = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text       = "Elder Set Progress",
+                    style      = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier   = Modifier.weight(1f),
+                )
+                Text(
+                    text  = "$ownedPieces / ${elderPieces.size}",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+            LinearProgressIndicator(
+                progress = { ownedPieces / elderPieces.size.toFloat() },
+                modifier = Modifier.fillMaxWidth().height(6.dp),
+            )
+            Spacer(Modifier.height(12.dp))
+            elderPieces.forEach { (key, name) ->
+                val owned = (inventory[key] ?: 0) >= 1
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 2.dp)) {
+                    Text(
+                        text  = if (owned) "✓" else "•",
+                        color = if (owned) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.width(20.dp),
+                    )
+                    Text(
+                        text  = name,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (owned) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Text(
+                        text  = if (owned) "Crafted" else "5 Sigils + mats",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            if (setComplete) {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text  = "Full set assembled. Challenge the Last Elder from the Combat tab.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+    }
+
+    // Story arc board
+    Surface(
+        shape    = RoundedCornerShape(16.dp),
+        color    = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text       = "The Isle Story",
+                    style      = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier   = Modifier.weight(1f),
+                )
+                Text(
+                    text  = "$actsCompleted / 4 acts",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+            Spacer(Modifier.height(10.dp))
+            IsleActRow("I",   "The Landing",        "Beach & Cliffs — meet Rowan.",                    actsCompleted >= 1)
+            IsleActRow("II",  "The Buried Library", "Ancient Forest — piece together the story.",     actsCompleted >= 2)
+            IsleActRow("III", "The Sealing Site",   "Volcano Peak — climb to the failing seal.",      actsCompleted >= 3)
+            IsleActRow("IV",  "The Last Elder",     "Abyssal Depths — face the last Elder.",          actsCompleted >= 4)
+        }
+    }
+
+    // Isle currencies row
+    Surface(
+        shape    = RoundedCornerShape(16.dp),
+        color    = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier              = Modifier.fillMaxWidth().padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            IsleStatChip("Ancient Sigils", sigilCount, 40)
+            IsleStatChip("Elder Essence", essence)
+            IsleStatChip("Elder Bones", bones)
+        }
+    }
+}
+
+/** LEGACY — no longer referenced from HomeScreen but kept while other call sites are pruned. */
+@Suppress("unused")
+@Composable
+private fun IsleHomeContent(
+    onReturnToMainland: () -> Unit,
+    onNavigateToShop: () -> Unit,
+    modifier: Modifier = Modifier,
+    homeVm: com.fantasyidler.ui.viewmodel.HomeViewModel = androidx.hilt.navigation.compose.hiltViewModel(),
+) {
+    val homeState by homeVm.uiState.collectAsState()
+    val inv       = homeState.inventory
+    val sigilCount = inv["ancient_sigil"] ?: 0
+    val essence    = inv["elder_essence"] ?: 0
+    val bones      = inv["elder_bone"] ?: 0
+
+    // Elder BIS tracker — 8 pieces, "owned" = at least one in inventory.
+    val elderPieces = listOf(
+        "elder_helm"        to "Elder Helm",
+        "elder_platebody"   to "Elder Platebody",
+        "elder_platelegs"   to "Elder Platelegs",
+        "elder_boots"       to "Elder Boots",
+        "elder_cape"        to "Elder Cape",
+        "elder_shield"      to "Elder Shield",
+        "elder_signet_ring" to "Elder Ring",
+        "elder_amulet"      to "Elder Amulet",
+    )
+    val ownedPieces  = elderPieces.count { (inv[it.first] ?: 0) >= 1 }
+    val setComplete  = ownedPieces == elderPieces.size
+
+    // Story arc — Act IV completes when Last Elder drops the Ancient Signet. Placeholder
+    // until per-act quest tracking lands.
+    val lastElderKilled = (inv["ancient_signet"] ?: 0) >= 1
+    val actsCompleted = if (lastElderKilled) 4 else 0
+
+    Column(
+        modifier            = modifier
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(
+            text       = stringResource(R.string.elder_isle_title),
+            style      = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+        )
+        Text(
+            text  = "Tabs at the bottom go to elder skills, dungeons, quests, and profile. Return to the mainland when done.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        // ── Elder armor tracker ──────────────────────────────────────
+        Surface(
+            shape    = MaterialTheme.shapes.medium,
+            color    = MaterialTheme.colorScheme.surfaceVariant,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Column(Modifier.padding(16.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text       = "Elder Set Progress",
+                        style      = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier   = Modifier.weight(1f),
+                    )
+                    Text(
+                        text  = "$ownedPieces / ${elderPieces.size}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+                androidx.compose.material3.LinearProgressIndicator(
+                    progress = { ownedPieces / elderPieces.size.toFloat() },
+                    modifier = Modifier.fillMaxWidth().height(6.dp),
+                )
+                Spacer(Modifier.height(12.dp))
+                elderPieces.forEach { (key, name) ->
+                    val owned = (inv[key] ?: 0) >= 1
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 2.dp)) {
+                        Text(
+                            text  = if (owned) "✓" else "•",
+                            color = if (owned) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.width(20.dp),
+                        )
+                        Text(
+                            text  = name,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (owned) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Text(
+                            text  = if (owned) "Crafted" else "5 Sigils + mats",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                if (setComplete) {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text  = "Full set assembled. Challenge the Last Elder from the Combat tab.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
+        }
+
+        // ── Story arc board ──────────────────────────────────────────
+        Surface(
+            shape    = MaterialTheme.shapes.medium,
+            color    = MaterialTheme.colorScheme.surfaceVariant,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Column(Modifier.padding(16.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text       = "The Isle Story",
+                        style      = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier   = Modifier.weight(1f),
+                    )
+                    Text(
+                        text  = "$actsCompleted / 4 acts",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text  = "The Elders mastered eternal life through the Grand Ritual and were sealed by their own creation. Retrace their path across four acts.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(10.dp))
+                IsleActRow("I",   "The Landing",        "Beach & Cliffs — meet Rowan.",                                   actsCompleted >= 1)
+                IsleActRow("II",  "The Buried Library", "Ancient Forest — piece together the Elders' story.",             actsCompleted >= 2)
+                IsleActRow("III", "The Sealing Site",   "Volcano Peak — climb to the failing seal.",                      actsCompleted >= 3)
+                IsleActRow("IV",  "The Last Elder",     "Abyssal Depths — face the last corrupted Elder.",                actsCompleted >= 4)
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text  = "Full quest chain lands in a later build. For now, the Last Elder kill unlocks the final act.",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
+        // ── Currencies row ──────────────────────────────────────────
+        Surface(
+            shape    = MaterialTheme.shapes.medium,
+            color    = MaterialTheme.colorScheme.surfaceVariant,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Row(
+                modifier              = Modifier.fillMaxWidth().padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                IsleStatChip("Ancient Sigils", sigilCount, 40)
+                IsleStatChip("Elder Essence", essence)
+                IsleStatChip("Elder Bones", bones)
+            }
+        }
+
+        Spacer(Modifier.height(8.dp))
+        androidx.compose.material3.OutlinedButton(
+            onClick  = onNavigateToShop,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(stringResource(R.string.elder_isle_shop_button))
+        }
+        androidx.compose.material3.Button(
+            onClick  = onReturnToMainland,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(stringResource(R.string.elder_isle_return))
+        }
+    }
+}
+
+@Composable
+private fun IsleActRow(roman: String, title: String, subtitle: String, done: Boolean) {
+    Row(
+        modifier            = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        verticalAlignment   = Alignment.CenterVertically,
+    ) {
+        Text(
+            text       = roman,
+            style      = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            color      = if (done) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier   = Modifier.width(28.dp),
+        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = if (done) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text  = subtitle,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Text(
+            text  = if (done) "✓" else "•",
+            color = if (done) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun IsleStatChip(label: String, value: Int, target: Int = 0) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text  = if (target > 0) "$value / $target" else "$value",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        Text(
+            text  = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun IsleZoneCard(title: String, body: String) {
+    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp)) {
+            Text(
+                text  = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text  = body,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text  = stringResource(R.string.elder_isle_zone_locked),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }

@@ -1,0 +1,1 @@
+• Workers can no longer be assigned Elder Isle activities. Elder ores, trees, fish, agility courses, bars, and cooked food are now hidden from the worker skill sheets, closing an exploit where a mainland worker could mine Starforged Ore (and other isle-tier resources) for isle XP into the mainland pool.

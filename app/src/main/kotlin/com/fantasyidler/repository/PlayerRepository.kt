@@ -211,15 +211,19 @@ class PlayerRepository @Inject constructor(
     ): List<String> = playerMutex.withLock {
         val player    = getOrCreatePlayer()
         val flags: PlayerFlags = json.decodeFromString(player.flags)
+        // Sigil stones apply game-wide, so mainland collects pick up the same xp/loot mults
+        // an isle collect would. Coin stones fold in at the coin write below.
+        val sigils = sigilBonusesFrom(flags)
         val ratedXp = xpGained * BASE_XP_RATE_MULTIPLIER
         val scaledXp = if (efficiencyMultiplier == 1.0f) ratedXp else (ratedXp * efficiencyMultiplier).toLong()
         // 2x boost, blessing, and prestige xp nodes combined in one place (ironman-inert).
         // applyXpBoosts=false grants raw XP with no heirloom mirror, for grants that must be
         // exactly reversible by deductSkillXp (crop planting XP, issue #1645).
-        val boostedXp = if (applyXpBoosts) (scaledXp * boostRepo.xpMultiplier(skillName, flags, prayerCapeMult(player, flags))).toLong()
+        val boostedXp = if (applyXpBoosts) (scaledXp * boostRepo.xpMultiplier(skillName, flags, prayerCapeMult(player, flags)) * sigils.xpMult).toLong()
                         else scaledXp
-        val scaledItems = if (efficiencyMultiplier == 1.0f) itemsGained
+        val efficiencyItems = if (efficiencyMultiplier == 1.0f) itemsGained
             else itemsGained.mapValues { (_, v) -> (v * efficiencyMultiplier).roundToInt().coerceAtLeast(1) }
+        val scaledItems = scaleLootWithSigils(efficiencyItems, sigils)
 
         val levels: MutableMap<String, Int>  = json.decodeFromString(player.skillLevels)
         val xpMap: MutableMap<String, Long>  = json.decodeFromString(player.skillXp)
@@ -258,6 +262,138 @@ class PlayerRepository @Inject constructor(
             )
         )
         return awardedCapes
+    }
+
+    /**
+     * Elder-XP level scaling — action XP scales with the current elder skill level so the
+     * grind never plateaus even with a small activity pool. +5% XP per elder level (level
+     * 1 = 1x, level 30 = 2.45x, level 60 = 3.95x, level 99 = ~5.9x). Applied on top of the
+     * activity's base XP at collection time.
+     */
+    private fun elderXpMultiplier(elderLevel: Int): Double =
+        1.0 + (elderLevel.coerceAtLeast(1) - 1) * 0.05
+
+    /**
+     * Bonuses aggregated from Sigil Stones embedded across all Elder pieces. Each stone
+     * of a colour contributes its full bonus; equipping multiple of the same colour stacks
+     * linearly. Applied on top of elder-XP level scaling at collection time.
+     */
+    private data class SigilBonuses(
+        val xpMult: Double,
+        val coinMult: Double,
+        val lootMult: Double,
+        val essenceMult: Double,
+        /** Topaz stack — scales `ancient_sigil` drops specifically. */
+        val sigilMult: Double,
+        /** Diamond stack — scales `elder_bone` drops specifically. */
+        val boneMult: Double,
+    )
+    private fun sigilBonusesFrom(flags: PlayerFlags): SigilBonuses {
+        val stones = flags.embeddedSigils.values
+        return SigilBonuses(
+            xpMult      = 1.0 + stones.count { it == "elder_sapphire" } * 0.05,
+            coinMult    = 1.0 + stones.count { it == "elder_ruby" }     * 0.05,
+            lootMult    = 1.0 + stones.count { it == "elder_emerald" }  * 0.05,
+            essenceMult = 1.0 + stones.count { it == "elder_amethyst" } * 0.05,
+            sigilMult   = 1.0 + stones.count { it == "elder_topaz" }    * 0.05,
+            boneMult    = 1.0 + stones.count { it == "elder_diamond" }  * 0.05,
+        )
+    }
+
+    /**
+     * Applies per-item sigil multipliers at collection time. Specific items get their targeted
+     * stone's multiplier (essence→amethyst, sigils→topaz, elder bones→diamond); everything else
+     * gets the general loot mult (emerald). Rounding never drops a stack below its base count.
+     */
+    private fun scaleLootWithSigils(items: Map<String, Int>, bonuses: SigilBonuses): Map<String, Int> {
+        if (bonuses.lootMult == 1.0 && bonuses.essenceMult == 1.0 &&
+            bonuses.sigilMult == 1.0 && bonuses.boneMult == 1.0) return items
+        return items.mapValues { (k, qty) ->
+            val m = when (k) {
+                "elder_essence"  -> bonuses.essenceMult
+                "ancient_sigil"  -> bonuses.sigilMult
+                "elder_bone"     -> bonuses.boneMult
+                else             -> bonuses.lootMult
+            }
+            if (m == 1.0) qty else (qty * m).roundToInt().coerceAtLeast(qty)
+        }
+    }
+
+    /**
+     * Elder Isle multi-skill collection (combat sessions where XP splits across attack/str/def/hp).
+     * Routes each skill's XP into PlayerFlags.elderSkillXp; items into shared inventory. No cape
+     * awards, no XP boosts, no heirloom mirror — isle is walled off from mainland bonuses.
+     */
+    suspend fun applyElderMultiSkillResults(
+        xpPerSkill: Map<String, Long>,
+        itemsGained: Map<String, Int>,
+        coinsGained: Long,
+    ) = playerMutex.withLock {
+        val player    = getOrCreatePlayer()
+        val flags: PlayerFlags = json.decodeFromString(player.flags)
+        val inventory: MutableMap<String, Int> = json.decodeFromString(player.inventory)
+
+        val bonuses = sigilBonusesFrom(flags)
+        val newElderXp = flags.elderSkillXp.toMutableMap()
+        val newElderLevels = flags.elderSkillLevels.toMutableMap()
+        for ((skill, xp) in xpPerSkill) {
+            val currentLevel = flags.elderSkillLevels[skill] ?: 1
+            val scaled = (xp * BASE_XP_RATE_MULTIPLIER * elderXpMultiplier(currentLevel) * bonuses.xpMult).toLong()
+            val updated = (newElderXp[skill] ?: 0L) + scaled
+            newElderXp[skill]     = updated
+            newElderLevels[skill] = XpTable.levelForXp(updated)
+        }
+        val boostedItems = scaleLootWithSigils(itemsGained, bonuses)
+        val boostedCoins = (coinsGained * bonuses.coinMult).toLong()
+        grantItems(inventory, boostedItems)
+
+        playerDao.upsert(
+            player.copy(
+                inventory = json.encode<Map<String, Int>>(inventory),
+                coins     = player.coins + boostedCoins,
+                flags     = json.encode<PlayerFlags>(flags.copy(
+                    elderSkillXp     = newElderXp,
+                    elderSkillLevels = newElderLevels,
+                ).plusSeen(boostedItems.keys)),
+            )
+        )
+    }
+
+    /**
+     * Elder Isle session collection: routes XP into PlayerFlags.elderSkillXp (separate pool
+     * from mainland skill_xp) and adds items to the shared inventory. No cape awards, no
+     * XP boosts, no heirloom mirroring — the isle is walled off from mainland bonuses.
+     */
+    suspend fun applyElderSessionResults(
+        skillName: String,
+        xpGained: Long,
+        itemsGained: Map<String, Int>,
+    ) = playerMutex.withLock {
+        val player    = getOrCreatePlayer()
+        val flags: PlayerFlags = json.decodeFromString(player.flags)
+        val inventory: MutableMap<String, Int> = json.decodeFromString(player.inventory)
+
+        val currentLevel = flags.elderSkillLevels[skillName] ?: 1
+        val bonuses = sigilBonusesFrom(flags)
+        val scaledXp = (xpGained * BASE_XP_RATE_MULTIPLIER * elderXpMultiplier(currentLevel) * bonuses.xpMult).toLong()
+        val boostedItems = scaleLootWithSigils(itemsGained, bonuses)
+        val newElderXp = flags.elderSkillXp.toMutableMap().also {
+            it[skillName] = (it[skillName] ?: 0L) + scaledXp
+        }
+        val newElderLevels = flags.elderSkillLevels.toMutableMap().also {
+            it[skillName] = XpTable.levelForXp(newElderXp[skillName] ?: 0L)
+        }
+        grantItems(inventory, boostedItems)
+
+        playerDao.upsert(
+            player.copy(
+                inventory = json.encode<Map<String, Int>>(inventory),
+                flags     = json.encode<PlayerFlags>(flags.copy(
+                    elderSkillXp     = newElderXp,
+                    elderSkillLevels = newElderLevels,
+                ).plusSeen(itemsGained.keys)),
+            )
+        )
     }
 
     /** Subtract XP from a skill, flooring at 0. Recalculates level. */
@@ -475,7 +611,8 @@ class PlayerRepository @Inject constructor(
 
     suspend fun updateFlagsAtomically(block: (PlayerFlags) -> PlayerFlags) = playerMutex.withLock {
         val current = getFlagsUnlocked()
-        updateFlagsUnlocked(block(current))
+        val updated = block(current)
+        if (updated != current) updateFlagsUnlocked(updated)
     }
 
     /** Stops an in-progress boss repeat run (e.g. on abandon) so it doesn't leave stale "N/M" progress behind. */
@@ -527,14 +664,21 @@ class PlayerRepository @Inject constructor(
     suspend fun <T> withLock(block: suspend () -> T): T = playerMutex.withLock { block() }
 
     internal suspend fun updateFlagsUnlocked(flags: PlayerFlags) {
-        val player = getOrCreatePlayer()
-        playerDao.upsert(player.copy(flags = json.encode<PlayerFlags>(flags)))
+        // Single-column update: replacing the whole row rewrote every JSON blob and made
+        // frequent flag writes (queue reorders especially) visibly laggy (issue #1764).
+        val encoded = json.encode<PlayerFlags>(flags)
+        if (playerDao.updateFlags(encoded) == 0) {
+            playerDao.upsert(getOrCreatePlayer().copy(flags = encoded))
+        }
     }
 
     suspend fun getQueue(): List<QueuedAction> = getFlags().sessionQueue
 
-    /** Base queue size (8) plus any Queue Master town building bonus, plus the Monument's Gilded stage. */
+    /** Base queue size (8) plus any Queue Master town building bonus, plus the Monument's
+     *  Gilded stage. Elder Isle caps at the base 3 — none of those mainland slot boosts
+     *  reach isle sessions, per the isle bonus-flow rule. */
     fun maxQueueSize(flags: PlayerFlags): Int {
+        if (flags.onElderIsle) return 3
         var extraSlots = boostRepo.extraQueueSlots(flags)
         flags.townBuildingTiers.forEach { (buildingName, tier) ->
             val bonuses = gameData.townBuildings[buildingName]?.tiers?.getOrNull(tier - 1)?.bonuses
@@ -550,8 +694,14 @@ class PlayerRepository @Inject constructor(
     private suspend fun enqueueActionUnlocked(action: QueuedAction): Boolean {
         val flags = getFlags()
         if (flags.sessionQueue.size >= maxQueueSize(flags)) return false
-        updateFlagsUnlocked(flags.copy(
-            sessionQueue = flags.sessionQueue + action.copy(levelAtQueue = queueLevelFor(action))))
+        // Stamp the isle flag at enqueue time so an action queued on isle stays "elder"
+        // even if the player sails back before it starts. QueuedSessionStarter reads
+        // action.isElderSession instead of the live flags value.
+        val stamped = action.copy(
+            levelAtQueue   = queueLevelFor(action),
+            isElderSession = flags.onElderIsle,
+        )
+        updateFlagsUnlocked(flags.copy(sessionQueue = flags.sessionQueue + stamped))
         return true
     }
 
@@ -958,10 +1108,14 @@ class PlayerRepository @Inject constructor(
         val player    = getOrCreatePlayer()
         val flags: PlayerFlags = json.decodeFromString(player.flags)
         val capeMult = prayerCapeMult(player, flags)
-        val coinBlessingMult = if (flags.ironman) 1.0f else ChurchRepository.coinMultiplier(flags, capeMult) *
+        // Sigil stones apply game-wide; xp mult folds into each skill's finalXp below,
+        // loot mult scales items here, coin mult multiplies the coin write.
+        val sigils = sigilBonusesFrom(flags)
+        val coinBlessingMult = if (flags.ironman) 1.0f else ChurchRepository.coinMultiplier(flags, capeMult, gameData.blessings) *
             gooseCoinMultiplier(json.decodeFromString(player.pets)).toFloat()
-        val scaledItems = if (efficiencyMultiplier == 1.0f) itemsGained
+        val efficiencyItems = if (efficiencyMultiplier == 1.0f) itemsGained
             else itemsGained.mapValues { (_, v) -> (v * efficiencyMultiplier).roundToInt().coerceAtLeast(1) }
+        val scaledItems = scaleLootWithSigils(efficiencyItems, sigils)
 
         val levels:    MutableMap<String, Int>  = json.decodeFromString(player.skillLevels)
         val xpMap:     MutableMap<String, Long> = json.decodeFromString(player.skillXp)
@@ -976,7 +1130,7 @@ class PlayerRepository @Inject constructor(
             val scaledXp = if (efficiencyMultiplier == 1.0f) ratedXp else (ratedXp * efficiencyMultiplier).toLong()
             val petPct = if (flags.ironman) 0 else perSkillPetBoostPct[skill] ?: 0
             val withPet = if (petPct > 0) (scaledXp * (1.0 + petPct / 100.0)).toLong() else scaledXp
-            val finalXp = (withPet * boostRepo.xpMultiplier(skill, flags, capeMult)).toLong()
+            val finalXp = (withPet * boostRepo.xpMultiplier(skill, flags, capeMult) * sigils.xpMult).toLong()
             awardedXp[skill] = finalXp
             val newXp = (xpMap[skill] ?: 0L) + finalXp
             xpMap[skill]  = newXp
@@ -1003,7 +1157,7 @@ class PlayerRepository @Inject constructor(
                 skillLevels = json.encode<Map<String, Int>>(levels),
                 skillXp     = json.encode<Map<String, Long>>(xpMap),
                 inventory   = json.encode<Map<String, Int>>(inventory),
-                coins       = player.coins + (coinsGained * coinBlessingMult).toLong(),
+                coins       = player.coins + (coinsGained * coinBlessingMult * sigils.coinMult).toLong(),
                 flags       = json.encode<PlayerFlags>(newFlags.plusSeen(scaledItems.keys + awardedCapes)),
             )
         )
@@ -1029,7 +1183,7 @@ class PlayerRepository @Inject constructor(
         val flags: PlayerFlags = json.decodeFromString(player.flags)
         val capeMult = prayerCapeMult(player, flags)
         val boostFactor = boostRepo.xpBoostFactor(skillName, flags)
-        val blessingMult = if (flags.ironman) 1.0f else ChurchRepository.xpMultiplier(flags, capeMult)
+        val blessingMult = if (flags.ironman) 1.0f else ChurchRepository.xpMultiplier(flags, capeMult, gameData.blessings)
         val prestigeXpPct = boostRepo.prestigeXpPct(skillName, flags)
         // Mirror the mod's doubled base rate so the disclosed amount matches what is credited.
         val ratedXp = baseXp * BASE_XP_RATE_MULTIPLIER
@@ -1195,11 +1349,11 @@ class PlayerRepository @Inject constructor(
         }
         if (skillName == Skills.PRAYER) {
             val prayerLevel = levels[Skills.PRAYER] ?: 1
-            val activeBlessing = ChurchRepository.activeBlessing(newFlags)
+            val activeBlessing = ChurchRepository.activeBlessing(newFlags, gameData.blessings)
             if (activeBlessing != null && activeBlessing.prayerLevelRequired > prayerLevel) {
                 // The bones are already paid, so the blessing downgrades (keeping its expiry)
                 // to the strongest same-type blessing the reset level allows instead of ending.
-                val fallback = ChurchRepository.ALL_BLESSINGS
+                val fallback = gameData.blessings
                     .filter { it.type == activeBlessing.type && it.prayerLevelRequired <= prayerLevel }
                     .maxByOrNull { it.prayerLevelRequired }
                 newFlags = if (fallback != null) {
@@ -1288,7 +1442,8 @@ class PlayerRepository @Inject constructor(
     companion object {
         /**
          * Global base XP multiplier applied to every source of skill XP before any other
-         * bonuses (boost/blessing/prestige/pet). Set to 2 to double the base exp rate everywhere.
+         * bonuses (boost/blessing/prestige/pet/sigil). Set to 2 to double the base exp rate
+         * everywhere, mainland and Elder Isle alike.
          */
         const val BASE_XP_RATE_MULTIPLIER = 2L
 

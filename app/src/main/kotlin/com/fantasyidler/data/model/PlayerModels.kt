@@ -145,6 +145,7 @@ data class PlayerFlags(
     @SerialName("backup_folder_uri") val backupFolderUri: String = "",
     /** Automatic backup frequency: ""|"hourly"|"daily"|"weekly". */
     @SerialName("backup_frequency") val backupFrequency: String = "",
+    @SerialName("backup_count") val backupCount: Int = 1,
     @SerialName("last_backup_at") val lastBackupAt: Long = 0L,
     @SerialName("last_backup_ok") val lastBackupOk: Boolean = true,
     @SerialName("last_backup_error") val lastBackupError: String = "",
@@ -305,6 +306,32 @@ data class PlayerFlags(
     @SerialName("house_draft") val houseDraft: HouseDraft? = null,
     /** Saved house layouts, at most one per slot (slots 0..2). */
     @SerialName("house_blueprints") val houseBlueprints: List<HouseBlueprint> = emptyList(),
+    /** True once the Sea Serpent has been defeated at least once (voyage climax). */
+    @SerialName("sea_serpent_defeated") val seaSerpentDefeated: Boolean = false,
+    /** True once all Voyage requirements are met and the isle is reachable. */
+    @SerialName("elder_isle_unlocked") val elderIsleUnlocked: Boolean = false,
+    /** True when the player is currently on the Elder Isle; false = on mainland. All bottom-nav
+     *  tabs render their isle variant while this is true. Toggled by the Set Sail / Return to
+     *  Mainland buttons on the Home tab. Blocked while any session is running. */
+    @SerialName("on_elder_isle") val onElderIsle: Boolean = false,
+    /** Elder skill levels (mirrors mainland Skills.ALL minus prayer/agility/construction, so 16
+     *  keys — see ElderSkills.ALL). Absent key = level 1. Persists through mainland prestige. */
+    @SerialName("elder_skill_levels") val elderSkillLevels: Map<String, Int> = emptyMap(),
+    /** Elder skill XP totals, parallel to elderSkillLevels. Absent key = 0 XP. */
+    @SerialName("elder_skill_xp") val elderSkillXp: Map<String, Long> = emptyMap(),
+    /** Elder Armor Master craft queue: piece keys in the order they'll auto-craft as
+     *  materials become available. Capped at 3, matching the mainland action queue. */
+    @SerialName("elder_craft_queue") val elderCraftQueue: List<String> = emptyList(),
+    /** Sigil Embedder state: Elder armor piece key to the sigil stone item key embedded
+     *  in its socket. Absent piece = empty socket. One stone per piece for now. */
+    @SerialName("embedded_sigils") val embeddedSigils: Map<String, String> = emptyMap(),
+    /** Isle main-quest completion set. A quest is added when its predicate is first
+     *  met and stays here permanently — so consuming quest mats afterwards doesn't
+     *  un-complete it. Lore fragments in the Lore Master unlock from this set. */
+    @SerialName("elder_quests_completed") val elderQuestsCompleted: Set<String> = emptySet(),
+    /** True once the first-arrival welcome splash has been shown on Elder Isle. Stops
+     *  the splash from popping every time you sail back after that first landing. */
+    @SerialName("elder_isle_welcomed") val elderIsleWelcomed: Boolean = false,
 )
 
 /** One completed bulk sell: what was sold and what it paid. */
@@ -450,6 +477,21 @@ data class QueuedAction(
     @SerialName("weapon_slot") val weaponSlot: String? = null,
     /** Total fights/runs requested in one queue entry (e.g. "fight this boss 100 times" or "run this dungeon 24 times"). 1 = no repeat. */
     @SerialName("repeat_count") val repeatCount: Int = 1,
+    /**
+     * XP boost multiplier (purchased 2x × blessing) baked into [estimatedXpGain] at queue
+     * time, so displays can swap it for the live value when boosts change (issue #1748).
+     * 0 = legacy entry with an unknown baked-in multiplier — shown as stored.
+     */
+    @SerialName("xp_boost_mult_at_queue") val xpBoostMultAtQueue: Double = 0.0,
+    /**
+     * Stamped from `flags.onElderIsle` at enqueue time so the isle context stays attached
+     * to the action, even if the player sails back to the mainland before this queued
+     * session actually starts. Without it, a queued isle session that fired after the
+     * player returned to mainland would route XP into the wrong pool (issue: reporter
+     * queued Coastal Run on isle, sailed back, then found the XP had landed on mainland
+     * Agility instead of elder Agility).
+     */
+    @SerialName("is_elder_session") val isElderSession: Boolean = false,
 )
 
 // ---------------------------------------------------------------------------
@@ -605,6 +647,10 @@ object EquipSlot {
     const val NECKLACE = "necklace"
     const val SHIELD   = "shield"
 
+    /** Elder Isle: Ancient Signet slot. Hidden from the gear picker until the signet drops
+     *  (checked via `flags.seenItemKeys.contains("ancient_signet")`). */
+    const val SIGNET = "signet"
+
     // Gathering tools
     const val PICKAXE     = "pickaxe"
     const val AXE         = "axe"
@@ -619,7 +665,7 @@ object EquipSlot {
     const val LOCKPICK       = "lockpick"
 
     val WEAPON_SLOTS = listOf(WEAPON_ATK, WEAPON_STR, WEAPON_RANGED, WEAPON_MAGIC)
-    val ARMOR_SLOTS  = listOf(HEAD, BODY, LEGS, BOOTS, CAPE, RING, NECKLACE, SHIELD)
+    val ARMOR_SLOTS  = listOf(HEAD, BODY, LEGS, BOOTS, CAPE, RING, NECKLACE, SHIELD, SIGNET)
     val COMBAT_SLOTS = WEAPON_SLOTS + ARMOR_SLOTS
     val TOOL_SLOTS   = listOf(PICKAXE, AXE, FISHING_ROD, HOE, HAMMER, TINDERBOX, GRAPPLING_HOOK, FRYING_PAN, LOCKPICK)
     val ALL          = COMBAT_SLOTS + TOOL_SLOTS

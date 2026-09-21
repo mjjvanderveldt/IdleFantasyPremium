@@ -359,5 +359,22 @@
         }
       }
     ]
+  },
+  "dock": {
+    "key": "dock",
+    "tiers": [
+      {
+        "construction_level_required": 90,
+        "coin_cost": 5000000,
+        "materials": {
+          "magic_plank": 2000,
+          "yew_plank": 2000,
+          "mithril_nail": 8000
+        },
+        "bonuses": {
+          "dock_built": 1.0
+        }
+      }
+    ]
   }
 }

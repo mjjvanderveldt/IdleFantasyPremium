@@ -24,6 +24,7 @@ import com.fantasyidler.notification.SessionNotificationManager
 import com.fantasyidler.repository.BackupScheduler
 import com.fantasyidler.repository.GlobalStateRepository
 import com.fantasyidler.repository.PlayerRepository
+import com.fantasyidler.repository.SaveSlotRepository
 import com.fantasyidler.ui.navigation.AppNavigation
 import com.fantasyidler.ui.theme.FantasyIdlerTheme
 import com.fantasyidler.ui.theme.LocalAppFontScale
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     @Inject lateinit var backupScheduler: BackupScheduler
     @Inject lateinit var sessionNotificationManager: SessionNotificationManager
     @Inject lateinit var globalStateRepository: GlobalStateRepository
+    @Inject lateinit var saveSlotRepository: SaveSlotRepository
 
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -59,6 +61,9 @@ class MainActivity : AppCompatActivity() {
         // backupFrequency is empty. This heals existing users without any manual action.
         if (savedInstanceState == null) {
             CoroutineScope(Dispatchers.IO).launch {
+                // Recover first: a crashed switch left the active-slot pointer stale, and
+                // reading flags below would surface the wrong character (issue #1839).
+                saveSlotRepository.recoverInterruptedSwitch()
                 val flags = playerRepository.getFlags()
                 if (flags.backupFrequency.isNotEmpty()) {
                     backupScheduler.schedule(flags.backupFrequency)

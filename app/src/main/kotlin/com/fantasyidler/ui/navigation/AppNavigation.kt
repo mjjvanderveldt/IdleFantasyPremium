@@ -57,6 +57,9 @@ import com.fantasyidler.ui.screen.ChurchScreen
 import com.fantasyidler.ui.screen.MonumentScreen
 import com.fantasyidler.ui.screen.BuilderScreen
 import com.fantasyidler.ui.screen.CombatScreen
+import com.fantasyidler.ui.screen.ElderArmorMasterScreen
+import com.fantasyidler.ui.screen.ElderIsleShopScreen
+import com.fantasyidler.ui.screen.LoreMasterScreen
 import com.fantasyidler.ui.screen.FarmingScreen
 import com.fantasyidler.ui.screen.GuildDetailScreen
 import com.fantasyidler.ui.screen.GuildHallScreen
@@ -253,6 +256,9 @@ fun AppNavigation(
                     onNavigateToHouse        = { navController.navigate(Screen.House.route) },
                     onNavigateToCarnival     = { navController.navigate(Screen.Carnival.route) },
                     onNavigateToSeasonalEvent = { navController.navigate(Screen.SeasonalEvent.route) },
+                    onNavigateToElderIsleShop = { navController.navigate(Screen.ElderIsleShop.route) },
+                    onNavigateToElderArmorMaster = { navController.navigate(Screen.ElderArmorMaster.route) },
+                    onNavigateToLoreMaster       = { navController.navigate(Screen.LoreMaster.route) },
                 )
             }
             paneComposable(Screen.Quests.route)   { QuestsScreen() }
@@ -415,6 +421,7 @@ fun AppNavigation(
             paneComposable(Screen.Builder.route) { entry ->
                 BuilderScreen(
                     onBack = { if (navController.currentBackStackEntry == entry) navController.popBackStack() },
+                    onNavigateToSeaSerpent = { navController.navigate(Screen.Combat.presetBossRoute("sea_serpent")) },
                 )
             }
             paneComposable(Screen.House.route) { entry ->
@@ -437,6 +444,21 @@ fun AppNavigation(
                     onBack               = { if (navController.currentBackStackEntry == entry) navController.popBackStack() },
                     onNavigateToExpedition = { key -> navController.navigate(Screen.Combat.presetDungeonRoute(key)) },
                     onNavigateToBoss       = { key -> navController.navigate(Screen.Combat.presetBossRoute(key)) },
+                )
+            }
+            paneComposable(Screen.ElderIsleShop.route) { entry ->
+                ElderIsleShopScreen(
+                    onBack = { if (navController.currentBackStackEntry == entry) navController.popBackStack() },
+                )
+            }
+            paneComposable(Screen.ElderArmorMaster.route) { entry ->
+                ElderArmorMasterScreen(
+                    onBack = { if (navController.currentBackStackEntry == entry) navController.popBackStack() },
+                )
+            }
+            paneComposable(Screen.LoreMaster.route) { entry ->
+                LoreMasterScreen(
+                    onBack = { if (navController.currentBackStackEntry == entry) navController.popBackStack() },
                 )
             }
         }

@@ -183,6 +183,11 @@ class HouseRepository @Inject constructor(
     fun tileDef(key: String): HouseTileDef? =
         if (key.startsWith(BANNER_PREFIX)) BANNER_DEF else gameData.houseTiles.items[key]
 
+    // Rotation variants of the same furniture share ownership: nameKey points hidden
+    // variants back at the palette entry, so the whole rotation cycle collapses to one
+    // canonical key for billing and storage.
+    private fun canonicalKey(key: String): String = tileDef(key)?.nameKey ?: key
+
     /** Cost of the next room purchase, or null when all rooms are owned. */
     fun nextRoomCost(roomsOwned: Int): HouseCostTier? =
         gameData.houseTiles.rooms.getOrNull(roomsOwned - 1)
@@ -537,14 +542,20 @@ class HouseRepository @Inject constructor(
     // ------------------------------------------------------------------ bill + purchase
 
     /** Copies of [key] the draft can still place for free (built plus stored, minus drafted). */
-    fun freeUnits(built: HouseData, layout: HouseData, key: String): Int =
-        built.placements.count { it.item == key } + (built.storage[key] ?: 0) -
-            layout.placements.count { it.item == key }
+    fun freeUnits(built: HouseData, layout: HouseData, key: String): Int {
+        val canon = canonicalKey(key)
+        val stored = built.storage.entries.sumOf { (k, v) -> if (canonicalKey(k) == canon) v else 0 }
+        val builtCount = built.placements.count { canonicalKey(it.item) == canon }
+        val draftCount = layout.placements.count { canonicalKey(it.item) == canon }
+        return builtCount + stored - draftCount
+    }
 
     /** Draft-side storage view: what the storage panel should show while editing. */
     fun draftStorageView(built: HouseData, layout: HouseData): Map<String, Int> {
         val keys = built.storage.keys + built.placements.map { it.item }
         return keys.filterNot { it.startsWith(BANNER_PREFIX) }
+            .map { canonicalKey(it) }
+            .distinct()
             .associateWith { freeUnits(built, layout, it) }
             .filterValues { it > 0 }
     }
@@ -555,10 +566,12 @@ class HouseRepository @Inject constructor(
         val ghosts = mutableSetOf<Int>()
         layout.placements.forEachIndexed { i, p ->
             if (p.item.startsWith(BANNER_PREFIX)) return@forEachIndexed
-            val left = remaining.getOrPut(p.item) {
-                built.placements.count { it.item == p.item } + (built.storage[p.item] ?: 0)
+            val canon = canonicalKey(p.item)
+            val left = remaining.getOrPut(canon) {
+                built.placements.count { canonicalKey(it.item) == canon } +
+                    built.storage.entries.sumOf { (k, v) -> if (canonicalKey(k) == canon) v else 0 }
             }
-            if (left <= 0) ghosts += i else remaining[p.item] = left - 1
+            if (left <= 0) ghosts += i else remaining[canon] = left - 1
         }
         return ghosts
     }
@@ -618,18 +631,18 @@ class HouseRepository @Inject constructor(
             }
         }
 
-        // Items: pay only for copies beyond built + stored, per key.
-        draft.layout.placements.map { it.item }.distinct()
+        // Items: pay only for copies beyond built + stored, per canonical (rotation-group) key.
+        draft.layout.placements.map { canonicalKey(it.item) }.distinct()
             .filterNot { it.startsWith(BANNER_PREFIX) }
             .sorted()
-            .forEach { key ->
-                val buys = -freeUnits(built, draft.layout, key)
+            .forEach { canon ->
+                val buys = -freeUnits(built, draft.layout, canon)
                 if (buys <= 0) return@forEach
-                val def = tileDef(key) ?: return@forEach
+                val def = tileDef(canon) ?: return@forEach
                 lines += tierLine(
                     HouseBillLine.Kind.ITEM,
                     HouseCostTier(def.levelRequired, def.coinCost, def.materials, def.xp),
-                    buys, itemKey = key,
+                    buys, itemKey = canon,
                 )
             }
 
@@ -683,9 +696,12 @@ class HouseRepository @Inject constructor(
             )
         }
 
-        // Leftover free units per key become the new storage.
+        // Leftover free units per canonical (rotation-group) key become the new storage,
+        // so rotating a stored piece doesn't split it across variant buckets.
         val keys = built.storage.keys + built.placements.map { it.item }
         val storage = keys.filterNot { it.startsWith(BANNER_PREFIX) }
+            .map { canonicalKey(it) }
+            .distinct()
             .associateWith { freeUnits(built, draft.layout, it) }
             .filterValues { it > 0 }
 

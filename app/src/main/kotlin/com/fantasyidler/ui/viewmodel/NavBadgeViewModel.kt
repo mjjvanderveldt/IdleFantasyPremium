@@ -54,6 +54,9 @@ class NavBadgeViewModel @Inject constructor(
         .map { player ->
             if (player == null) return@map emptySet()
             val flags: PlayerFlags = json.decodeFromString(player.flags)
+            // Prestige is a mainland-only system; suppress the nav badges while on the isle
+            // so they don't nag the player about work the isle bar doesn't even expose.
+            if (flags.onElderIsle) return@map emptySet()
             val levels: Map<String, Int> = json.decodeFromString(player.skillLevels)
             Skills.ALL.filterTo(mutableSetOf()) { skill ->
                 (levels[skill] ?: 1) >= 99 &&

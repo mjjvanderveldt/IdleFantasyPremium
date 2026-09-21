@@ -1,0 +1,24 @@
+{
+  "name": "volcano_peak",
+  "display_name": "Volcano Peak",
+  "description": "Ash slopes and lava vents. Only cooked Deepwater Ray keeps you upright at these vents.",
+  "recommended_level": 60,
+  "encounter_rate": 0.5,
+  "enemy_spawns": [
+    {
+      "enemy": "ash_beast",
+      "weight": 3
+    },
+    {
+      "enemy": "lava_wraith",
+      "weight": 2
+    }
+  ],
+  "rare_drops": [
+    {
+      "chance": 0.8,
+      "comment": "80% chance per clear",
+      "item": "ancient_sigil"
+    }
+  ]
+}

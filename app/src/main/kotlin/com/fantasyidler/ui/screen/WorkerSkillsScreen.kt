@@ -900,30 +900,47 @@ private fun WorkerCraftQuantityContent(
         }
         if (onSetAsh != null) {
             val ashTiers = listOf("ashes","oak_ashes","willow_ashes","maple_ashes","yew_ashes","magic_ashes","redwood_ashes")
-            val availableAshes = ashTiers.filter { (state.inventory[it] ?: 0) >= qty }
-            if (availableAshes.isNotEmpty()) {
+            val ownedAshes = ashTiers.filter { (state.inventory[it] ?: 0) > 0 }
+            val selectedAsh = state.herbloreAshKey
+            LaunchedEffect(qty, state.inventory, selectedAsh) {
+                if (selectedAsh != null && (state.inventory[selectedAsh] ?: 0) < qty) onSetAsh(null)
+            }
+            if (ownedAshes.isNotEmpty()) {
                 Spacer(Modifier.height(12.dp))
                 Text(stringResource(R.string.catalyst_optional), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(Modifier.height(4.dp))
-                val selectedAsh = state.herbloreAshKey
-                (listOf(null) + availableAshes).forEach { ashKey ->
+                (listOf(null) + ownedAshes).forEach { ashKey ->
+                    val owned      = ashKey?.let { state.inventory[it] ?: 0 } ?: 0
+                    val affordable = ashKey == null || owned >= qty
                     Row(
-                        modifier              = Modifier.fillMaxWidth().clickable { onSetAsh(ashKey) }.padding(vertical = 4.dp),
+                        modifier              = Modifier.fillMaxWidth().clickable(enabled = affordable) { onSetAsh(ashKey) }.padding(vertical = 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment     = Alignment.CenterVertically,
                     ) {
                         Text(
                             text       = if (ashKey == null) stringResource(R.string.catalyst_none) else GameStrings.itemName(context, ashKey),
                             style      = MaterialTheme.typography.bodyMedium,
-                            color      = if (selectedAsh == ashKey) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                            color      = when {
+                                !affordable              -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                selectedAsh == ashKey    -> MaterialTheme.colorScheme.primary
+                                else                     -> MaterialTheme.colorScheme.onSurface
+                            },
                             fontWeight = if (selectedAsh == ashKey) FontWeight.SemiBold else FontWeight.Normal,
                         )
                         if (ashKey != null) {
-                            Text(
-                                text  = "×${state.inventory[ashKey] ?: 0}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                            if (affordable) {
+                                Text(
+                                    text  = "×$owned",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            } else {
+                                Text(
+                                    text  = "$owned / $qty",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
                         }
                     }
                 }

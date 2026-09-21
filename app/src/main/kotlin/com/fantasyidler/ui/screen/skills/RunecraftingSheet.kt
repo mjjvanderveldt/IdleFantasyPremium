@@ -102,7 +102,7 @@ internal fun RunecraftingSheet(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(runeScrollState),
+                    .verticalScroll(runeScrollState, flingBehavior = rememberTapFriendlyFlingBehavior()),
             ) {
                 // ── Rune type selection ──────────────────────────────────────
                 Text(
@@ -201,7 +201,7 @@ internal fun RunecraftingSheet(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(detailScrollState)
+                    .verticalScroll(detailScrollState, flingBehavior = rememberTapFriendlyFlingBehavior())
                     .imePadding(),
             ) {
                 // ── Quantity picker ──────────────────────────────────────────
@@ -209,6 +209,23 @@ internal fun RunecraftingSheet(
             val maxQty = minOf(inventoryMax, tierMaxQty)
             var qty by remember(selectedKey) { mutableIntStateOf(maxQty.coerceAtLeast(1)) }
             var textValue by remember(selectedKey) { mutableStateOf(maxQty.coerceAtLeast(1).toString()) }
+            val rcLevel = XpTable.levelForXp(currentXp)
+            val rcBase = when {
+                rcLevel >= 75 -> 3
+                rcLevel >= 50 -> 2
+                else          -> 1
+            }
+            val ashBonus = when (selectedAshKey) {
+                "ashes"         -> 1
+                "oak_ashes"     -> 2
+                "willow_ashes"  -> 3
+                "maple_ashes"   -> 4
+                "yew_ashes"     -> 5
+                "magic_ashes"   -> 6
+                "redwood_ashes" -> 7
+                else            -> 0
+            }
+            val runeMultiplier = rcBase + ashBonus
 
             TextButton(
                 onClick  = { selectedKey = null },
@@ -284,11 +301,17 @@ internal fun RunecraftingSheet(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text       = projectedXpLabel(currentXp, (qty * selectedRune.xpPerRune).toLong()),
+                    text       = projectedXpLabel(currentXp, (qty.toLong() * selectedRune.xpPerRune.toLong() * runeMultiplier)),
                     style      = MaterialTheme.typography.bodyMedium,
                     color      = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.SemiBold,
                     modifier   = Modifier.padding(vertical = 8.dp),
+                )
+                Text(
+                    text     = stringResource(R.string.skills_rune_output, qty * runeMultiplier),
+                    style    = MaterialTheme.typography.bodySmall,
+                    color    = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 4.dp),
                 )
                 if (sessionDurationMs > 0) {
                     Text(
@@ -310,12 +333,6 @@ internal fun RunecraftingSheet(
                 Spacer(Modifier.height(8.dp))
                 Text(stringResource(R.string.catalyst_optional), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(horizontal = 16.dp))
                 Spacer(Modifier.height(4.dp))
-                val rcLevel = XpTable.levelForXp(currentXp)
-                val rcBase = when {
-                    rcLevel >= 75 -> 3
-                    rcLevel >= 50 -> 2
-                    else          -> 1
-                }
                 (listOf(null) + ownedAshes).forEach { ashKey ->
                     val totalRunes = rcBase + when (ashKey) {
                         "ashes"         -> 1

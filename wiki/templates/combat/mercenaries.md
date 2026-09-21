@@ -1,6 +1,6 @@
 # Mercenary Camp
 
-Raid bosses cannot be beaten alone. The Mercenary Camp hires fighters who join your party for the length of a contract, which lasts until your next daily reset. Find it through the Raid section of the combat screen, next to the raid bosses themselves.
+Raid bosses cannot be beaten alone. The Mercenary Camp hires fighters who join your party for the length of a contract, which lasts a flat 24 hours from the moment you hire them. A late-day hire is not cut short by the daily reset, so a contract can run well past it. Find it through the Raid section of the combat screen, next to the raid bosses themselves.
 
 {merc_table}
 

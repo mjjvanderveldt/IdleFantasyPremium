@@ -1,0 +1,29 @@
+{
+  "name": "abyssal_depths",
+  "display_name": "Abyssal Depths",
+  "description": "Flooded caldera below the volcano. Rarest gathering nodes on the isle, and the sealed chamber of the Last Elder.",
+  "recommended_level": 85,
+  "encounter_rate": 0.5,
+  "enemy_spawns": [
+    {
+      "enemy": "abyssal_horror",
+      "weight": 3
+    },
+    {
+      "enemy": "void_seraph",
+      "weight": 2
+    }
+  ],
+  "rare_drops": [
+    {
+      "chance": 1.0,
+      "comment": "guaranteed per clear",
+      "item": "ancient_sigil"
+    },
+    {
+      "chance": 0.2,
+      "comment": "20% chance for a bonus second sigil",
+      "item": "ancient_sigil"
+    }
+  ]
+}

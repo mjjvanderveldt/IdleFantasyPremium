@@ -130,20 +130,25 @@ class FarmingRepository @Inject constructor(
         val cropId = patch.cropType ?: return
         if (cropId == "magic_bean") return          // bean patches are collected via climbBeanstalk()
         val crop   = gameData.crops[cropId] ?: return
+        val cropGrowTime = crop.growthTimeMs.coerceAtLeast(0L)
 
         val player   = playerRepo.getOrCreatePlayer()
+        val inventory: Map<String, Int> = json.decodeFromString(player.inventory)
         val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
         val flags = playerRepo.getFlags()
 
         val levels: Map<String, Int> = json.decodeFromString(player.skillLevels)
         val hoeMult = gameData.toolEfficiency(equipped[EquipSlot.HOE], EquipSlot.HOE, skillLevels = levels, heirloomXp = flags.heirloomXp)
-        // Cape rack tier 1 applies owned gathering capes passively (ironman excluded),
-        // mirroring resolveCapeMultiplier's gates (issue #1483).
-        val inventory: Map<String, Int> = json.decodeFromString(player.inventory)
-        val rackApplies = !flags.ironman &&
-            (flags.townBuildingTiers["cape_rack"] ?: 0) >= 1 &&
-            (inventory["farming_cape"] ?: 0) > 0
-        val capedDouble = equipped[EquipSlot.CAPE] == "farming_cape" || rackApplies
+
+        val capeMult = resolveCapeMultiplier(
+            skillName         = Skills.FARMING,
+            equippedCape      = equipped[EquipSlot.CAPE]?.let { gameData.equipment[it] },
+            inventoryKeys     = inventory.keys,
+            townBuildingTiers = flags.townBuildingTiers,
+            capeScaling       = boostRepo.capeScalingBySkill(flags),
+            allEquipment      = gameData.equipment,
+            ironman           = flags.ironman,
+        )
 
         val ashKey = flags.farmingFertilizer[patchNumber.toString()]
         val ashMult = ashYieldMultiplier(ashKey)
@@ -152,13 +157,14 @@ class FarmingRepository @Inject constructor(
         // differs from its previous harvest (or always, with the gnome capstone).
         val rotated       = flags.lastCropByPatch[patchNumber.toString()].let { it != null && it != cropId }
         val rotationMult  = 1.0 + boostRepo.cropRotationBonusPct(flags, rotated) / 100.0
-        val prestigeYield = boostRepo.yieldMultiplier(Skills.FARMING, flags)
+        val prestigeMult = boostRepo.yieldMultiplier(Skills.FARMING, flags) *
+                boostRepo.flowMultiplier(Skills.FARMING, flags, boostRepo.flowElapsedMs(flags,
+                    Skills.FARMING, cropGrowTime))
 
         var yield = Random.nextInt(crop.yieldMin, crop.yieldMax + 1)
-        yield = (yield * hoeMult * ashMult * prestigeYield * rotationMult).roundToInt()
-        if (capedDouble) yield *= 2
+        yield = (yield * hoeMult * ashMult * capeMult * prestigeMult * rotationMult).roundToInt()
 
-        val items = buildMap<String, Int> {
+        val items = buildMap {
             put(crop.id, yield)
             put(crop.seedName, 1)
         }

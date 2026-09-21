@@ -55,6 +55,12 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
     }
 }
 
+val MIGRATION_7_8 = object : Migration(7, 8) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE skill_sessions ADD COLUMN is_elder_session INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
 @Database(
     entities = [
         Player::class,
@@ -65,7 +71,7 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
         ArenaRecord::class,
         CustomTheme::class,
     ],
-    version = 7,
+    version = 8,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {

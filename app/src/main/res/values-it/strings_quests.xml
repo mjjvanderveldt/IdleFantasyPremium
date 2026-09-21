@@ -544,11 +544,11 @@
     <string name="skilling_dungeon_dwarven_depths_note_3">Golem di ferro stanno immobili nei loro anfratti. I loro occhi luccicano mentre fai scendere il tuo piccone.</string>
     <string name="skilling_dungeon_dwarven_depths_note_4">Le rune della forgia sono un avvertimento: qualcosa giace in questi luoghi e desidera la libertà.</string>
     <string name="skilling_dungeon_dwarven_depths_note_5">I golem si risvegliano dal loro sonno. L\'Antica Fucina ha ritrovato tutto il suo vigore; i suoi guardiani aspettano i più temerari.</string>
-    <string name="skilling_dungeon_corrupted_canopy_note_1">The trees here bleed shadow where cut. The wood writhes and resists the blade.</string> <!-- untranslated -->
-    <string name="skilling_dungeon_corrupted_canopy_note_2">A shadow beast watches from the canopy. It does not attack — it only observes.</string> <!-- untranslated -->
-    <string name="skilling_dungeon_corrupted_canopy_note_3">Old sanctum stones are visible through the twisted trunks. Something still lives there.</string> <!-- untranslated -->
-    <string name="skilling_dungeon_corrupted_canopy_note_4">The corruption spreads as you work. The canopy hungers for something unnamed.</string> <!-- untranslated -->
-    <string name="skilling_dungeon_corrupted_canopy_note_5">The canopy parts. The Corrupted Sanctum rises from the shadow-wood — its doors open, waiting.</string> <!-- untranslated -->
+    <string name="skilling_dungeon_corrupted_canopy_note_1">Gli alberi emettono oscuri vapori dopo essere stati tagliati. Il legno si distorce e si oppone alla lama.</string>
+    <string name="skilling_dungeon_corrupted_canopy_note_2">Una bestia ti osserva tra le ombre. Non dà segni di voler attacare, i suoi occhi indagatori sono penetranti.</string>
+    <string name="skilling_dungeon_corrupted_canopy_note_3">Antiche pietre di un tempio sono visibili tra le fronde. Qualcosa le sta usando come rifugio.</string>
+    <string name="skilling_dungeon_corrupted_canopy_note_4">Un malessere si diffonde mentre lavori. La foresta è in cerca di qualcosa.</string>
+    <string name="skilling_dungeon_corrupted_canopy_note_5">Le fronde lasciano spazio ad una radura. Il Santuario Corrotto si staglia a contrasto con l\'ombra degli alberi. Le porte sono aperte, in attesa del prossimo esploratore.</string>
     <string name="skilling_dungeon_whispering_grove_note_1">Gli alberi sussurrano in una lingua ormai dimenticata.</string>
     <string name="skilling_dungeon_whispering_grove_note_2">Costruzioni di pietra si mostrano tra le radici. Resti di qualcosa costruito prima che la natura tornasse sovrana.</string>
     <string name="skilling_dungeon_whispering_grove_note_3">Un druido ha inciso un avvertimento nella corteccia: «Il cuore del bosco non è più quello di un tempo. Allontanati.»</string>
@@ -569,9 +569,9 @@
     <string name="skilling_dungeon_copper_caverns_note_3">Una nota lasciata da un minatore: «Abbiamo sfondato verso sotto. Il capo ha chiuso il ramo più basso. Non ci ha detto il motivo.»</string>
     <string name="skilling_dungeon_copper_caverns_note_4">Cupi rumori e scosse provengono dalle profondità. Polvere di roccia scende dal soffitto a intervalli regolari. Qualcosa si muove.</string>
     <string name="skilling_dungeon_copper_caverns_note_5">I sigilli non resistono lo scorrere del tempo. Una profonda e vasta caverna ti da il benvenuto: la Miniera Crollata è oltre questo passaggio.</string>
-    <string name="skilling_dungeon_shadow_vault_note_1">A dossier on every major merchant in the city. Someone has been compiling this for years.</string> <!-- untranslated -->
-    <string name="skilling_dungeon_shadow_vault_note_2">A vault door, partially ajar. Inside — crates of stolen weapons, armour, and sealed scroll cases.</string> <!-- untranslated -->
-    <string name="skilling_dungeon_shadow_vault_note_3">One scroll case is different from the others. It bears the seal of the royal treasury. It is empty.</string> <!-- untranslated -->
-    <string name="skilling_dungeon_shadow_vault_note_4">A private journal: \'The Guild of Shadows is not just a guild. It is a government. They have always been watching.\'</string> <!-- untranslated -->
-    <string name="skilling_dungeon_shadow_vault_note_5">The deepest vault is not locked. It is guarded. What waits inside is the Guild\'s greatest secret — and its most dangerous protectors.</string> <!-- untranslated -->
+    <string name="skilling_dungeon_shadow_vault_note_1">Un dossier su tutti i mercanti della città. Qualcuno ci ha lavorato per anni.</string>
+    <string name="skilling_dungeon_shadow_vault_note_2">La porta del caveau è aperta. All\'interno trovi casse con armi e armature rubate, e pergamene magiche sigillate.</string>
+    <string name="skilling_dungeon_shadow_vault_note_3">Un contenitore coglie la tua attenzione: su di esso è inciso il simbolo della tesoreria reale. La scatola è vuota.</string>
+    <string name="skilling_dungeon_shadow_vault_note_4">Una pagina di diario: la Gilda delle Ombre non è solo un\'organizzazione. Ha creato un suo anti-stato. Hanno occhi dappertutto.</string>
+    <string name="skilling_dungeon_shadow_vault_note_5">L\'ultima porta del caveau non è chiusa, ma protetta. All\'interno ti aspettano i segreti più nascosti della gilda, insieme alle loro guardie.</string>
 </resources>

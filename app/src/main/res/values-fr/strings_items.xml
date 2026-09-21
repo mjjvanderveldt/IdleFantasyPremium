@@ -89,8 +89,8 @@
     <string name="item_raw_lobster_desc">Homard cru. Consommable après cuisson.</string>
     <string name="item_raw_swordfish_name">Espadon Cru</string>
     <string name="item_raw_swordfish_desc">Espadon cru. Consommable après cuisson.</string>
-    <string name="item_raw_monkfish_name">Poisson-lune Cru</string>
-    <string name="item_raw_monkfish_desc">Poisson-lune cru. Consommable après cuisson.</string>
+    <string name="item_raw_monkfish_name">Lotte Crue</string>
+    <string name="item_raw_monkfish_desc">Lotte crue. Consommable après cuisson.</string>
     <string name="item_raw_shark_name">Requin Cru</string>
     <string name="item_raw_shark_desc">Requin cru. Consommable après cuisson.</string>
     <string name="item_raw_sea_turtle_name">Tortue de Mer Crue</string>
@@ -117,8 +117,8 @@
     <string name="item_lobster_desc">Homard cuit. Restaure une bonne quantité de PV.</string>
     <string name="item_swordfish_name">Espadon cuit</string>
     <string name="item_swordfish_desc">Espadon cuit. Restaure une quantité importante de PV.</string>
-    <string name="item_monkfish_name">Poisson-lune cuit</string>
-    <string name="item_monkfish_desc">Poisson-lune cuit. Restaure une quantité solide de PV.</string>
+    <string name="item_monkfish_name">Lotte cuite</string>
+    <string name="item_monkfish_desc">Lotte cuite. Restaure une quantité massive de PV.</string>
     <string name="item_shark_name">Requin cuit</string>
     <string name="item_shark_desc">Requin cuit. Restaure une grande quantité de PV.</string>
     <string name="item_sea_turtle_name">Tortue de mer cuite</string>
@@ -128,7 +128,7 @@
 
     <!-- ===== Raw meat ===== -->
     <string name="item_raw_rat_meat_name">Viande de Rat Crue</string>
-    <string name="item_raw_rat_meat_desc">Viande de rat crue. Mangeable après cuisson.</string>
+    <string name="item_raw_rat_meat_desc">Viande de rat crue. Consommable après cuisson.</string>
     <string name="item_raw_chicken_name">Poulet Cru</string>
     <string name="item_raw_chicken_desc">Poulet cru. Consommable après cuisson.</string>
     <string name="item_raw_mutton_name">Mouton Cru</string>
@@ -216,7 +216,7 @@
     <string name="item_runite_sword_name">Épée en Runite</string>
     <string name="item_runite_sword_desc">La meilleure épée à une main disponible.</string>
     <string name="item_runite_scimitar_name">Cimeterre en Runite</string>
-    <string name="item_runite_scimitar_desc">La meilleure scimitar, avec un bonus de force exceptionnel.</string>
+    <string name="item_runite_scimitar_desc">Le meilleur cimeterre, avec un bonus de force exceptionnel.</string>
     <string name="item_runite_2h_sword_name">Épée à 2 Mains en Runite</string>
     <string name="item_runite_2h_sword_desc">La meilleure épée à deux mains disponible.</string>
     <string name="item_runite_warhammer_name">Marteau de Guerre en Runite</string>
@@ -475,10 +475,10 @@
     <string name="item_diamond_necklace_name">Collier avec Diamant</string>
     <string name="item_ancient_treasure_name">Ancien Trésor</string>
     <string name="item_seaweed_name">Algue</string>
-    <string name="item_old_boot_name">Ancienne Botte</string>
+    <string name="item_old_boot_name">Vieille Botte</string>
     <string name="item_pearl_name">Perle</string>
     <string name="item_black_pearl_name">Perle Noire</string>
-    <string name="item_nature_rune_name">Rune Naturelle</string>
+    <string name="item_nature_rune_name">Rune de Nature</string>
     <string name="item_herb_name">Herbe</string>
     <string name="item_mahogany_log_name">Bûche d\'Acajou</string>
     <string name="item_oyster_name">Huître</string>
@@ -517,7 +517,7 @@
     <string name="item_goblin_mail_name">Maille de Gobelin</string>
     <string name="item_goblin_mail_desc">Armure endommagée laissée par des gobelins. Se vend bien.</string>
     <string name="item_imp_hide_name">Peau de diablotin</string>
-    <string name="item_imp_hide_desc">Peau cuirée d\'un diablotin.</string>
+    <string name="item_imp_hide_desc">Peau tannée d\'un diablotin.</string>
     <string name="item_spider_silk_name">Soie d\'araignée</string>
     <string name="item_spider_silk_desc">Soie fine tissée par de gigantesques araignées. Précieuse pour les artisans.</string>
     <string name="item_spider_fang_name">Croc d\'araignée</string>
@@ -527,17 +527,17 @@
     <string name="item_wool_name">Laine</string>
     <string name="item_wool_desc">Laine douce d\'un mouton.</string>
     <string name="item_feather_name">Plume</string>
-    <string name="item_feather_desc">Une plume utilisée pour l\'ébénisterie des flèches.</string>
+    <string name="item_feather_desc">Une plume utilisée pour l\'empennage des flèches.</string>
     <string name="item_rotten_flesh_name">Chair putréfiée</string>
-    <string name="item_rotten_flesh_desc">Chair en décomposition d\'une créature morte-vivante. Odeur terrible.</string>
-    <string name="item_lockpick_name">Crochet de crochetage</string>
-    <string name="item_lockpick_desc">Un crochet de crochetage laissé par des voleurs.</string>
+    <string name="item_rotten_flesh_desc">Chair en décomposition d\'une créature morte-vivante. Odeur horrible.</string>
+    <string name="item_lockpick_name">Rossignol</string>
+    <string name="item_lockpick_desc">Un rossignol laissé par des voleurs.</string>
     <string name="item_magic_bean_name">Haricot magique</string>
     <string name="item_magic_bean_desc">Un haricot magique aux propriétés mystérieuses.</string>
     <string name="item_hellhound_fang_name">Crocs de chien de l\'enfer</string>
     <string name="item_hellhound_fang_desc">Une dent brûlée d\'un chien de l\'enfer.</string>
     <string name="item_demon_horn_name">Corne de démon</string>
-    <string name="item_demon_horn_desc">Une corne déchiquetée d\'un démon insignifiant.</string>
+    <string name="item_demon_horn_desc">Une corne déchiquetée d\'un démon mineur.</string>
     <string name="item_troll_bone_name">Os de troll</string>
     <string name="item_troll_bone_desc">Un os massif et noueux d\'un troll des montagnes.</string>
 

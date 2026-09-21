@@ -68,6 +68,7 @@ fun BuildingUpgradeCard(
                 "cape_rack"    -> R.string.town_building_cape_rack_name
                 "artisans_workshop" -> R.string.town_building_artisans_workshop_name
                 "chronos_spire" -> R.string.town_building_chronos_spire_name
+                "dock"         -> R.string.town_building_dock_name
                 else           -> R.string.town_upgrade_section_title
             }
             Text(

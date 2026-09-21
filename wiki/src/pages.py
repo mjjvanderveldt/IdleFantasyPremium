@@ -21,7 +21,7 @@ from wiki.src.game_data import STRINGS, load, title, item_name, house_item_name,
     trade_route_name, thieving_npc_name, quest_name, agility_course_name, town_building_name, quest_desc, title_name, \
     pet_name, boss_name, boss_desc, trade_route_desc, pet_desc, item_desc, dungeon_name, dungeon_desc, expedition_name, \
     expedition_desc, seasonal_event_name, seasonal_reward_desc, prestige_effect_desc, tree_name, merc_name, race_name, \
-    carnival_prize_name, carnival_prize_desc, slot_name
+    carnival_prize_name, carnival_prize_desc, slot_name, blessing_name
 from wiki.src.page_hierarchy import PageHierarchy
 from wiki.src.wiki_logs import LOGGER
 
@@ -114,6 +114,14 @@ def add_static_pages():
             ("buildings", PageInfo("Buildings", "Buildings.md", gen_buildings)),
             ("carnival", PageInfo("Carnival", "Carnival.md", gen_carnival)),
             ("housing", PageInfo("Housing", "Housing.md", gen_housing)),
+        ]],
+        ["Elder Isle", False, [
+            ("elder_isle_overview", PageInfo("Overview", "ElderIsleOverview.md", gen_elder_isle_overview)),
+            ("elder_skills",        PageInfo("Elder Skills", "ElderSkills.md", gen_elder_skills)),
+            ("sigil_stones",        PageInfo("Sigil Stones", "SigilStones.md", gen_sigil_stones)),
+            ("elder_armor",         PageInfo("Elder Armor Set", "ElderArmor.md", gen_elder_armor)),
+            ("elder_story",         PageInfo("Story & Lore", "ElderStory.md", gen_elder_story)),
+            ("elder_dungeons",      PageInfo("Isle Dungeons & Bosses", "ElderDungeons.md", gen_elder_dungeons)),
         ]],
         ["Miscellaneous", False, [
             ("expeditions", PageInfo("Expeditions", "Expeditions.md", gen_expeditions, skill_icon_path("expedition"))),
@@ -898,10 +906,10 @@ def gen_farming() -> str:
     # Ashes tables
     # Todo: Switch to avoid being hardcoded
     ash_rows = []
-    ash_amounts = [("ashes", 1.1), ("oak_ashes", 1.25), ("willow_ashes", 1.35), ("maple_ashes", 1.5), ("yew_ashes", 1.75),
+    ash_amounts = [("ashes", 1.1), ("oak_ashes", 1.2), ("willow_ashes", 1.35), ("maple_ashes", 1.5), ("yew_ashes", 1.75),
                    ("magic_ashes", 2), ("redwood_ashes", 2.5)]
     for ash, bonus in ash_amounts:
-        ash_rows.append([item_name(ash), f"+{int((bonus - 1) * 100)}%"])
+        ash_rows.append([item_name(ash), f"+{round((bonus - 1) * 100)}%"])
 
     magic_bean_note = (
         "Obtaining one requires patience. A lucky harvest may be all it takes. "
@@ -1198,19 +1206,26 @@ def gen_runecrafting() -> str:
 def gen_herblore() -> str:
     recipes = load("recipes/herblore.json")
     assert isinstance(recipes, dict)
+
+    def fmt_effects(effects: dict, enhanced: bool = False) -> str:
+        def val_for(v):
+            return max(int(v * 2), v + 1) if enhanced else v
+        return ", ".join(f"{stat.title()} +{val_for(val)}" for stat, val in effects.items())
+
     rows = sorted(
         [[
             item_name(k),
             r["level_required"],
             fmt_materials(r["materials"]),
-            ", ".join(f"{stat.title()} +{val}" for stat, val in r.get("effects", {}).items()),
+            fmt_effects(r.get("effects", {})),
+            fmt_effects(r.get("effects", {}), enhanced=True),
             r["xp_per_item"],
         ] for k, r in recipes.items()],
         key=lambda r: r[1]
     )
     return get_template("skills/crafting/herblore").format(
         icon=html_image(skill_icon_path("herblore"), "", "text"),
-        potion_table=table(['Potion','Level','Ingredients','Effect','XP'], rows),
+        potion_table=table(['Potion','Level','Ingredients','Effect','Enhanced Effect','XP'], rows),
     )
 
 
@@ -1259,10 +1274,21 @@ def gen_thieving() -> str:
     )
 
 
+_BLESSING_BONE_COST = {1: 10, 10: 20, 20: 35, 30: 55, 40: 80, 50: 110,
+                       60: 145, 70: 185, 80: 230, 90: 265, 99: 300}
+
+
+def _blessing_table(blessings: list, kind: str, effect_fmt) -> str:
+    rows = [[blessing_name(b["key"]), b["prayer_level_required"], _BLESSING_BONE_COST[b["prayer_level_required"]], effect_fmt(b["magnitude"])]
+            for b in blessings if b["type"] == kind]
+    return table(["Name", "Prayer Level", "Cost (bones)", "Effect"], rows)
+
+
 def gen_prayer() -> str:
-    # Todo: Add info about bone altar
     bones = load("bones.json")
     assert isinstance(bones, dict)
+    blessings = load("blessings.json")
+    assert isinstance(blessings, list)
     rows = sorted(
         [[item_name(k), b["xp_per_bone"]]
          for k, b in bones.items()],
@@ -1270,7 +1296,11 @@ def gen_prayer() -> str:
     )
     return get_template("skills/support/prayer").format(
         icon=html_image(skill_icon_path("prayer"), "", "text"),
+        church_link=link("buildings", "Church", "church"),
         prayer_table=table(['Bone / Ash','XP Each'], rows),
+        blessing_xp_table=_blessing_table(blessings, "XP", lambda m: f"+{round((m - 1) * 100)}% XP"),
+        blessing_defense_table=_blessing_table(blessings, "DEFENSE", lambda m: f"+{m} Defence"),
+        blessing_coins_table=_blessing_table(blessings, "COINS", lambda m: f"+{round(m * 100)}% coins"),
     )
 
 
@@ -1735,6 +1765,7 @@ def gen_spells() -> str:
     ], key=lambda r: r[1])
     return get_template("combat/spells").format(
         spell_table=table(["Spell", "Magic Level", "Rune", "Runes / Cast", "Max Hit"], rows),
+        void_staff_link=item_link("void_staff"),
         combat_footer=gen_combat_footer(),
     )
 
@@ -2028,11 +2059,12 @@ def gen_carnival() -> str:
         ["Hammer Strike", "Time your swing for a strong hit", "1–2", "6–8"],
         ["Potion Sequence", "Repeat a growing memory sequence of potion colors", "2", "7"],
         ["Item Appraisal", "Pick the more valuable item", "2", "7"],
-        [f"Pick-a-Cup ({link("buildings", "Fairgrounds")} tier 1+)", "Track which cup hides the gem through a shuffle", "4", "7"],
-        [f"Higher or Lower ({link("buildings", "Fairgrounds")} tier 2+)", "Guess higher or lower over several rounds — more correct in a row pays more", "up to 5", "up to 8"],
+        [f"Pick-a-Cup ({link("buildings", "Fairgrounds", "fairgrounds")} tier 1+)", "Track which cup hides the gem through a shuffle", "4", "7"],
+        [f"Higher or Lower ({link("buildings", "Fairgrounds", "fairgrounds")} tier 2+)", "Guess higher or lower over several rounds — more correct in a row pays more", "up to 5", "up to 8"],
     ]
 
     return get_template("town/carnival").format(
+        fairgrounds_link=link("buildings", "Fairgrounds", "fairgrounds"),
         idle_table=table(["Minigame", "Skill Trained"], idle_rows),
         active_table=table(["Minigame", "How to play", "Normal", "Hard"], active_rows),
         prize_table=table(["Prize", "Ticket Cost", "Effect"], prize_rows),
@@ -2308,6 +2340,186 @@ PLAYER_GUIDE_GENERATORS: dict[str, Callable[[str], str]] = {
 #         table_of_contents="{table_of_contents}"
 #     )
 #     return content.format(table_of_contents=gen_table_of_contents(content))
+
+# ---------------------------------------------------------------------------
+# Elder Isle
+# ---------------------------------------------------------------------------
+
+_ELDER_ACTIVITY_ROSTER = {
+    "mining": [
+        ("mythrite_ore", 1), ("abyssal_ore", 30),
+        ("voidsteel_ore", 60), ("starforged_ore", 85),
+    ],
+    "woodcutting": [
+        ("coastal_pine", 1), ("grove_oak", 30),
+        ("abyssal_tree", 60), ("starwood_tree", 85),
+    ],
+    "fishing": [
+        ("raw_tidepool_crab", 1), ("raw_grove_bass", 30),
+        ("raw_lavafin", 60), ("raw_deepwater_ray", 85),
+    ],
+    "smithing": [
+        ("mythrite_bar", 1), ("abyssal_bar", 30),
+        ("voidsteel_bar", 60), ("starforged_bar", 85),
+    ],
+    "cooking": [
+        ("tidepool_crab", 1), ("grove_bass", 30),
+        ("lavafin", 60), ("deepwater_ray", 85),
+    ],
+}
+
+_ELDER_COMBAT_SKILLS = ["attack", "strength", "defense", "ranged", "magic", "hitpoints"]
+
+_ELDER_QUEST_CHAIN = [
+    ("I.1", "Act I: The Landing",          "First Steps",             "Clear Beach & Cliffs 8 times.",                      "8 clears",   "Prologue lore fragment"),
+    ("I.2", "Act I: The Landing",          "Rowan's Cache",           "Deliver 500 Mythrite Ore.",                          "500 ore",    "I.a lore fragment"),
+    ("I.3", "Act I: The Landing",          "Rations for the Voyage",  "Cook 250 Tidepool Crab.",                            "250 cooked", "I.b + Act II unlock"),
+    ("II.1","Act II: The Buried Library",  "Cutting the Vines",       "Clear Ancient Forest 15 times.",                     "15 clears",  "I.c + first Grand Ritual glimpse"),
+    ("II.2","Act II: The Buried Library",  "Library Salvage",         "Gather 800 Abyssal Ore.",                            "800 ore",    "II.a + Rowan learns the Elders' script"),
+    ("II.3","Act II: The Buried Library",  "Match the Elders",        "Craft 4 Coastal armor pieces.",                      "4 pieces",   "II.b + Act III unlock"),
+    ("III.1","Act III: The Sealing Site",  "Volcano Ascent",          "Clear Volcano Peak 20 times.",                       "20 clears",  "II.c + seal location revealed"),
+    ("III.2","Act III: The Sealing Site",  "Voidsteel Study",         "Gather 1,200 Voidsteel Ore.",                        "1,200 ore",  "III.a + seal weakening identified"),
+    ("III.3","Act III: The Sealing Site",  "Grove Gear",              "Craft 4 Grove armor pieces.",                        "4 pieces",   "III.b + Act IV unlock"),
+    ("IV.1","Act IV: The Last Elder",      "Descent",                 "Clear the Abyssal Depths 25 times.",                 "25 clears",  "III.c + faint voice of the Last Elder"),
+    ("IV.2","Act IV: The Last Elder",      "Assemble the Full Elder Set", "Craft all 8 Elder BIS armor pieces.",            "8 pieces",   "IV.a + the Ritual's true cost"),
+    ("IV.3","Act IV: The Last Elder",      "Face the Last Elder",     "Defeat the Last Elder in the Abyssal Depths.",       "1 kill",     "Ancient Signet, Isle Champion title, IV.b + IV.c"),
+]
+
+_SIGIL_STONES = [
+    ("elder_sapphire", "Sapphire", "+5% XP gain per stone",           "Wired game-wide"),
+    ("elder_ruby",     "Ruby",     "+5% coins per stone",             "Wired game-wide"),
+    ("elder_emerald",  "Emerald",  "+5% loot per stone",              "Wired game-wide"),
+    ("elder_amethyst", "Amethyst", "+5% Elder Essence per stone",     "Wired game-wide"),
+    ("elder_topaz",    "Topaz",    "+5% Ancient Sigil drops per stone", "Wired game-wide"),
+    ("elder_diamond",  "Diamond",  "+5% Elder Bone drops per stone",    "Wired game-wide"),
+]
+
+_ELDER_PIECE_ROWS = [
+    ("elder_helm",        85, "5 Starforged bars, 3 Starwood logs, 5 Ancient Sigils"),
+    ("elder_platebody",   90, "8 Starforged bars, 4 Starwood logs, 5 Ancient Sigils"),
+    ("elder_platelegs",   90, "7 Starforged bars, 4 Starwood logs, 5 Ancient Sigils"),
+    ("elder_boots",       88, "4 Starforged bars, 2 Starwood logs, 5 Ancient Sigils"),
+    ("elder_cape",        88, "20 Abyssal logs, 2 Starforged bars, 5 Ancient Sigils"),
+    ("elder_shield",      88, "6 Starforged bars, 4 Abyssal logs, 5 Ancient Sigils"),
+    ("elder_signet_ring", 90, "3 Starforged bars, 1 Ruby Sigil Stone, 5 Ancient Sigils"),
+    ("elder_amulet",      90, "3 Starforged bars, 1 Sapphire Sigil Stone, 5 Ancient Sigils"),
+]
+
+_ISLE_DUNGEONS = [
+    ("beach_and_cliffs", 1,  ["beach_marauder", "beach_leviathan"], "1 guaranteed Ancient Sigil"),
+    ("ancient_forest",   30, ["grove_stalker", "grove_dryad"],       "1 guaranteed Ancient Sigil"),
+    ("volcano_peak",     60, ["ash_beast", "lava_wraith"],           "2 guaranteed Ancient Sigils"),
+    ("abyssal_depths",   85, ["abyssal_horror", "void_seraph"],      "3 guaranteed Ancient Sigils"),
+]
+
+_ISLE_BOSSES = [
+    ("sea_serpent", "Unlock",  "Defeat once to permanently enable Set Sail. Reachable via the Voyage quest at the Dock (Construction 90 required)."),
+    ("last_elder",  "Finale", "Locked until you own all 8 Elder pieces. First kill drops the Ancient Signet and awards Isle Champion; repeat clears drop Ancient Sigils."),
+]
+
+
+def _elder_common_links():
+    return dict(
+        overview_link       = link("elder_isle_overview", "Elder Isle Overview"),
+        elder_skills_link   = link("elder_skills", "Elder skills"),
+        sigil_link          = link("sigil_stones", "sigil stones"),
+        armor_link          = link("elder_armor", "Elder armor set"),
+        armor_link_master   = link("elder_armor", "Elder Armor Master"),
+        story_link          = link("elder_story", "Story & Lore"),
+        dungeons_link       = link("elder_dungeons", "Isle Dungeons & Bosses"),
+        sea_serpent_link    = link("sea_serpent", boss_name("sea_serpent")),
+        sea_serpent_name    = boss_name("sea_serpent"),
+        last_elder_name     = boss_name("last_elder"),
+        heirlooms_link      = link("heirlooms"),
+        titles_link         = link("titles"),
+        ancient_signet_link = item_link("ancient_signet"),
+        # Elder Isle Shop has no dedicated wiki page; the sigil stone table below
+        # links the closest thing (the sigil doc itself).
+        shop_stub           = "the Elder Isle Shop (in-app)",
+    )
+
+
+def gen_elder_isle_overview() -> str:
+    page = get_template("elder_isle/overview").format(**_elder_common_links())
+    return page
+
+
+def gen_elder_skills() -> str:
+    roster_rows = [
+        ["Mining",       "Gathering", "Independent XP pool from mainland Mining"],
+        ["Fishing",      "Gathering", "Independent XP pool from mainland Fishing"],
+        ["Woodcutting",  "Gathering", "Independent XP pool from mainland Woodcutting"],
+        ["Smithing",     "Crafting",  "Handles both bars and all elder armor tiers"],
+        ["Cooking",      "Crafting",  "Independent XP pool from mainland Cooking"],
+    ]
+    for skill in _ELDER_COMBAT_SKILLS:
+        roster_rows.append([skill_name(skill), "Combat", "Independent XP pool from the mainland combat skill"])
+    activity_rows = []
+    for skill, entries in _ELDER_ACTIVITY_ROSTER.items():
+        activities = ", ".join(f"{item_name(k)} (lvl {lvl})" for k, lvl in entries)
+        activity_rows.append([skill_name(skill), activities])
+    common = _elder_common_links()
+    return get_template("elder_isle/elder_skills").format(
+        skill_roster_table = table(["Skill", "Category", "Notes"], roster_rows),
+        activity_table     = table(["Skill", "Activities"], activity_rows),
+        **{k: v for k, v in common.items() if k not in ("elder_skills_link",)},
+    )
+
+
+def gen_sigil_stones() -> str:
+    stone_rows = [
+        [name, effect, status] for _, name, effect, status in _SIGIL_STONES
+    ]
+    common = _elder_common_links()
+    return get_template("elder_isle/sigil_stones").format(
+        stone_table = table(["Stone", "Effect", "Status"], stone_rows),
+        **{k: v for k, v in common.items() if k != "sigil_link"},
+    )
+
+
+def gen_elder_armor() -> str:
+    piece_rows = [
+        [item_link(key), lvl, mats] for key, lvl, mats in _ELDER_PIECE_ROWS
+    ]
+    common = _elder_common_links()
+    return get_template("elder_isle/elder_armor").format(
+        elder_piece_table = table(["Piece", "Smithing Level", "Materials"], piece_rows),
+        **{k: v for k, v in common.items() if k != "armor_link"},
+    )
+
+
+def gen_elder_story() -> str:
+    quest_rows = [
+        [roman, act, title_, obj, target, reward]
+        for roman, act, title_, obj, target, reward in _ELDER_QUEST_CHAIN
+    ]
+    common = _elder_common_links()
+    return get_template("elder_isle/story").format(
+        quest_table = table(["#", "Act", "Title", "Objective", "Target", "Reward"], quest_rows),
+        **{k: v for k, v in common.items() if k != "story_link"},
+    )
+
+
+def gen_elder_dungeons() -> str:
+    dungeon_rows = []
+    for dungeon_id, lvl, enemies_list, rare in _ISLE_DUNGEONS:
+        enemy_links = ", ".join(link(e, enemy_name(e)) for e in enemies_list)
+        dungeon_rows.append([link(dungeon_id, dungeon_name(dungeon_id)), lvl, enemy_links, rare])
+    boss_rows = []
+    for boss_id, role, notes in _ISLE_BOSSES:
+        boss_rows.append([link(boss_id, boss_name(boss_id)), role, notes])
+    enemy_rows = []
+    for _, _, enemies_list, _ in _ISLE_DUNGEONS:
+        for e in enemies_list:
+            enemy_rows.append([link(e, enemy_name(e))])
+    common = _elder_common_links()
+    return get_template("elder_isle/dungeons").format(
+        dungeon_table = table(["Dungeon", "Recommended Level", "Enemies", "Rare Drops"], dungeon_rows),
+        boss_table    = table(["Boss", "Role", "Notes"], boss_rows),
+        enemy_table   = table(["Enemy"], enemy_rows),
+        **{k: v for k, v in common.items() if k != "dungeons_link"},
+    )
+
 
 # ---------------------------------------------------------------------------
 # Adding pages to the directory/hierarchy

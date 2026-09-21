@@ -78,4 +78,10 @@ data class SkillSession(
      * rebooted since, so the elapsedRealtime anchor is meaningless and the check fails open. */
     @ColumnInfo(name = "start_boot_count")
     val startBootCount: Int? = null,
+
+    /** True when this session was started on Elder Isle. Collection routes XP into
+     *  PlayerFlags.elderSkillXp (not the mainland skill_xp map) and combat XP into
+     *  the elder combat skill pool. Loot still lands in the shared inventory. */
+    @ColumnInfo(name = "is_elder_session", defaultValue = "0")
+    val isElderSession: Boolean = false,
 )

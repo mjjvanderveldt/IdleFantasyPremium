@@ -65,6 +65,6 @@ object CarnivalSimulator {
         )
     }
 
-    fun estimateTickets(relevantSkillLevel: Int, tierBonus: Float): Int =
-        (60 * (ticketChance(relevantSkillLevel) + tierBonus).coerceAtMost(1.0)).toInt()
+    fun estimateTickets(relevantSkillLevel: Int, tierBonus: Float, capeMultiplier: Float = 1f): Int =
+        (60 * (ticketChance(relevantSkillLevel) + tierBonus).coerceAtMost(1.0) * capeMultiplier).toInt()
 }

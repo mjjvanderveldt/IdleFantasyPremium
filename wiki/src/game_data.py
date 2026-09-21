@@ -339,6 +339,10 @@ def merc_name(merc: str) -> str:
     return _standard_string_resolution(merc, "merc_{}_name", "merc_name", "mercenary")
 
 
+def blessing_name(blessing: str) -> str:
+    return _standard_string_resolution(blessing, "blessing_{}_name", "blessing_name", "blessing")
+
+
 def race_name(race: str) -> str:
     return _standard_string_resolution(race, "character_race_{}", "race_name", "race")
 

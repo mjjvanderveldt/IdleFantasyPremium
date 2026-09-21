@@ -423,6 +423,18 @@ object SkillSimulator {
     }
 
     /**
+     * Elder Isle session duration: 60 min at elder-agility 1, scaling linearly to 45 min at
+     * elder-agility 99. Mainland agility, prestige floor, and Chronos Spire are all ignored
+     * — the isle explicitly walls off mainland duration bonuses so isle time-to-reward stays
+     * predictable and elder Agility is the only lever.
+     */
+    fun elderSessionDurationMs(elderAgilityLevel: Int): Long {
+        val fraction = (elderAgilityLevel - 1).coerceIn(0, 98) / 98.0
+        val minutes = 60.0 - 15.0 * fraction
+        return (minutes * 60_000.0).roundToLong().coerceAtLeast(45L * 60_000L)
+    }
+
+    /**
      * Finds the tier entry whose key (as an Int) is the highest value ≤ [currentLevel].
      * Keys are the string-encoded level thresholds used in xp_ranges / drop_tables.
      */

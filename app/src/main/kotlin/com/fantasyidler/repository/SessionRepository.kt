@@ -75,6 +75,7 @@ class SessionRepository @Inject constructor(
         levelAtStart: Int = 0,
         weaponSlot: String? = null,
         playerMutexHeld: Boolean = false,
+        isElderSession: Boolean = false,
     ): SkillSession {
         val now = System.currentTimeMillis()
         val startedAt = now - backdateMs
@@ -91,6 +92,7 @@ class SessionRepository @Inject constructor(
             levelAtStart = levelAtStart,
             startElapsedMs = if (insertAsCompleted) null else SystemClock.elapsedRealtime() - backdateMs,
             startBootCount = if (insertAsCompleted) null else currentBootCount(),
+            isElderSession = isElderSession,
         )
         sessionDao.insert(session)
         if (playerMutexHeld) playerRepo.stampHeirloomMirrorTargetsUnlocked(session.sessionId, weaponSlot)

@@ -266,8 +266,8 @@ object CombatSimulator {
                     break
                 }
 
-                // Always eat the best-tier food still in stock first; only fall back to a
-                // weaker tier once the best one runs out, up to 300 items total.
+                // Eats food based on the selected order, and move to next in list
+                // when the current selected one runs out, up to 300 items total.
                 val hpBeforeEating = currentHp
                 var ate = true
                 while (ate && totalFoodEaten < 300) {
@@ -660,8 +660,8 @@ object CombatSimulator {
                     break@outer
                 }
 
-                // Always eat the best-tier food still in stock first; only fall back to a
-                // weaker tier once the best one runs out, up to 300 items total.
+                // Eats food based on the selected order, and move to next in list
+                // when the current selected one runs out, up to 300 items total.
                 val hpBeforeEating = currentHp
                 var ate = true
                 while (ate && totalFoodEaten < 300) {

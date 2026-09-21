@@ -1,0 +1,24 @@
+{
+  "name": "ancient_forest",
+  "display_name": "Ancient Forest",
+  "description": "Overgrown ruins under a canopy of abyssal trees. The Elders' buried library sleeps here.",
+  "recommended_level": 30,
+  "encounter_rate": 0.5,
+  "enemy_spawns": [
+    {
+      "enemy": "grove_stalker",
+      "weight": 3
+    },
+    {
+      "enemy": "grove_dryad",
+      "weight": 2
+    }
+  ],
+  "rare_drops": [
+    {
+      "chance": 0.4,
+      "comment": "40% chance per clear",
+      "item": "ancient_sigil"
+    }
+  ]
+}
