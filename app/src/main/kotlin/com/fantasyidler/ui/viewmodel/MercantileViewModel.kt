@@ -114,7 +114,7 @@ class MercantileViewModel @Inject constructor(
                 coinReturnMult   = capeMult * prestigeMult * blessingCoinMult,
                 tradeRoutes      = routes,
                 anySessionActive = session != null,
-                queueSize        = flags.sessionQueue.size,
+                queueSize        = flags.activeQueue.size,
                 maxQueueSize     = playerRepo.maxQueueSize(flags),
                 activeQuests     = computeActiveQuests(questProgress, flags, player.coins),
                 guildUnlockLevel = guildUnlockLevel,

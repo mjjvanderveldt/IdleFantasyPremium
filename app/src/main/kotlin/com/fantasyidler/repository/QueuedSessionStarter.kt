@@ -93,13 +93,20 @@ class QueuedSessionStarter @Inject constructor(
      * Returns true if a session was started, false if the queue was empty or the
      * session couldn't be started (e.g. missing materials).
      */
-    suspend fun startNextQueued(backdateMs: Long = 0L): Boolean {
+    suspend fun startNextQueuedHere(backdateMs: Long = 0L): Boolean =
+        startNextQueued(backdateMs, isle = SessionRepository.isIsleSlot(sessionRepo.currentSlot()))
+
+    suspend fun startNextQueued(backdateMs: Long = 0L, isle: Boolean): Boolean {
         // Mutex covers the full dequeue + session-start so concurrent callers (alarm
         // receiver, recoverActiveSession, collectSession) can't both pass the "no running
         // session" check and dequeue separate actions before either inserts a DB row.
+        // [isle] names the lane explicitly rather than reading flags.onElderIsle: this also
+        // runs from alarms and offline recovery, where where the player happens to be
+        // standing says nothing about which queue the finished session came from.
+        val slot = SessionRepository.slotFor(isle)
         return playerRepo.playerMutex.withLock {
             mutex.withLock {
-                val current = sessionRepo.getActiveSession()
+                val current = sessionRepo.getActiveSession(slot)
                 if (current != null && !current.completed) return@withLock false
                 // A boss queued with a fight-count > 1 (CombatViewModel.startBossSession) isn't
                 // re-enqueued as N separate queue entries -- the progress lives in PlayerFlags
@@ -109,7 +116,9 @@ class QueuedSessionStarter @Inject constructor(
                 // final fight's rewards independently once the app is reopened.
                 if (current != null && current.completed && current.skillName == "boss") {
                     val repeatFlags = playerRepo.getFlagsUnlocked()
-                    val snapshot = repeatFlags.activeBossRepeatSnapshot
+                    // Repeat-chain state is a single set of flags shared by both lanes, so only
+                    // the lane that actually owns the chain may advance it.
+                    val snapshot = repeatFlags.activeBossRepeatSnapshot?.takeIf { it.isElderSession == isle }
                     if (snapshot != null && repeatFlags.activeBossRepeatIndex < repeatFlags.activeBossRepeatTotal) {
                         val frames: List<SessionFrame> = json.decodeFromString(current.frames)
                         val won = (frames.lastOrNull()?.kills ?: 0) > 0
@@ -131,7 +140,7 @@ class QueuedSessionStarter @Inject constructor(
                 // by not dying, unlike a boss fight's kill count.
                 if (current != null && current.completed && current.skillName == "combat") {
                     val repeatFlags = playerRepo.getFlagsUnlocked()
-                    val snapshot = repeatFlags.activeDungeonRepeatSnapshot
+                    val snapshot = repeatFlags.activeDungeonRepeatSnapshot?.takeIf { it.isElderSession == isle }
                     if (snapshot != null && repeatFlags.activeDungeonRepeatIndex < repeatFlags.activeDungeonRepeatTotal) {
                         val frames: List<SessionFrame> = json.decodeFromString(current.frames)
                         val survived = frames.lastOrNull()?.died != true
@@ -156,7 +165,7 @@ class QueuedSessionStarter @Inject constructor(
                 // only when something actually starts. Dequeuing/requeuing through individual
                 // DB writes here made the live queue card visibly shrink and rebuild every time
                 // this ran while a Tower floor sat uncollected (issue #1183).
-                val originalQueue = playerRepo.getFlagsUnlocked().sessionQueue
+                val originalQueue = playerRepo.getFlagsUnlocked().queueFor(isle)
                 var remaining = originalQueue
                 val skippedTowerActions = mutableListOf<QueuedAction>()
                 var droppedAny = false
@@ -169,7 +178,7 @@ class QueuedSessionStarter @Inject constructor(
                         if (next.skillName == "boss") playerRepo.stampBossRepeatStartUnlocked(next)
                         if (next.skillName == "combat") playerRepo.stampDungeonRepeatStartUnlocked(next)
                         val finalQueue = skippedTowerActions + remaining
-                        playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(sessionQueue = finalQueue))
+                        playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().withQueueFor(isle, finalQueue))
                         return@withLock true
                     } catch (_: TowerPendingCollectionException) {
                         skippedTowerActions += next
@@ -184,8 +193,8 @@ class QueuedSessionStarter @Inject constructor(
                     }
                 }
                 if (droppedAny) {
-                    playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(
-                        sessionQueue = skippedTowerActions + remaining))
+                    playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked()
+                        .withQueueFor(isle, skippedTowerActions + remaining))
                 }
                 false
             }
@@ -221,8 +230,8 @@ class QueuedSessionStarter @Inject constructor(
      * offline catch-up (issue #1737). Clamped to the estimate so the accounting never
      * exceeds what the entry gate approved.
      */
-    private suspend fun actualChargeMs(estimateMs: Long): Long {
-        val session = sessionRepo.getActiveSession() ?: return estimateMs
+    private suspend fun actualChargeMs(estimateMs: Long, slot: Int): Long {
+        val session = sessionRepo.getActiveSession(slot) ?: return estimateMs
         val endMs = if (session.skillName == "boss") sessionRepo.bossFightEndMs(session) else session.endsAt
         return (endMs - session.startedAt).coerceIn(1L, estimateMs)
     }
@@ -247,7 +256,8 @@ class QueuedSessionStarter @Inject constructor(
      *
      * Called from [SessionRepository.recoverActiveSession] to reconstruct offline progress.
      */
-    suspend fun insertNextQueuedAsOffline(remainingMs: Long): Long {
+    suspend fun insertNextQueuedAsOffline(remainingMs: Long, isle: Boolean): Long {
+        val slot = SessionRepository.slotFor(isle)
         return playerRepo.playerMutex.withLock {
             mutex.withLock {
                 val player = playerRepo.getOrCreatePlayer()
@@ -269,8 +279,8 @@ class QueuedSessionStarter @Inject constructor(
                 // (non-offline) chain in startNextQueued() -- returning before ever reaching the
                 // sessionQueue scan below preserves the "don't let another queue item jump an
                 // in-progress chain" guarantee from issue #1167.
-                if (flags.activeBossRepeatSnapshot != null && flags.activeBossRepeatIndex < flags.activeBossRepeatTotal) {
-                    val current = sessionRepo.getActiveSession()
+                if (flags.activeBossRepeatSnapshot?.isElderSession == isle && flags.activeBossRepeatIndex < flags.activeBossRepeatTotal) {
+                    val current = sessionRepo.getActiveSession(slot)
                     if (current == null || !current.completed || current.skillName != "boss") return@withLock 0L
                     val won = (json.decodeFromString<List<SessionFrame>>(current.frames).lastOrNull()?.kills ?: 0) > 0
                     if (!won) {
@@ -283,15 +293,15 @@ class QueuedSessionStarter @Inject constructor(
                     return@withLock try {
                         startQueuedAction(snapshot, offline = true, backdateMs = remainingMs)
                         playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(activeBossRepeatIndex = flags.activeBossRepeatIndex + 1))
-                        actualChargeMs(duration)
+                        actualChargeMs(duration, slot)
                     } catch (_: Exception) {
                         playerRepo.clearActiveBossRepeatUnlocked()
                         0L
                     }
                 }
                 // Same idea as the boss repeat chain above, but for dungeon runs (issue #1167 / #1189).
-                if (flags.activeDungeonRepeatSnapshot != null && flags.activeDungeonRepeatIndex < flags.activeDungeonRepeatTotal) {
-                    val current = sessionRepo.getActiveSession()
+                if (flags.activeDungeonRepeatSnapshot?.isElderSession == isle && flags.activeDungeonRepeatIndex < flags.activeDungeonRepeatTotal) {
+                    val current = sessionRepo.getActiveSession(slot)
                     if (current == null || !current.completed || current.skillName != "combat") return@withLock 0L
                     val survived = json.decodeFromString<List<SessionFrame>>(current.frames).lastOrNull()?.died != true
                     if (!survived) {
@@ -312,7 +322,7 @@ class QueuedSessionStarter @Inject constructor(
                 }
                 // Same reasoning as startNextQueued(): scan a local copy of the queue and persist
                 // at most once, only when something actually starts (issue #1183).
-                val originalQueue = flags.sessionQueue
+                val originalQueue = flags.queueFor(isle)
                 var remaining = originalQueue
                 val skippedTowerActions = mutableListOf<QueuedAction>()
                 var droppedAny = false
@@ -330,8 +340,8 @@ class QueuedSessionStarter @Inject constructor(
                         if (next.skillName == "boss") playerRepo.stampBossRepeatStartUnlocked(next)
                         if (next.skillName == "combat") playerRepo.stampDungeonRepeatStartUnlocked(next)
                         val finalQueue = skippedTowerActions + remaining
-                        playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(sessionQueue = finalQueue))
-                        return@withLock actualChargeMs(duration)
+                        playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().withQueueFor(isle, finalQueue))
+                        return@withLock actualChargeMs(duration, slot)
                     } catch (_: TowerPendingCollectionException) {
                         skippedTowerActions += next
                     } catch (_: ActionNoLongerQualifiesException) {
@@ -346,8 +356,8 @@ class QueuedSessionStarter @Inject constructor(
                     }
                 }
                 if (droppedAny) {
-                    playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(
-                        sessionQueue = skippedTowerActions + remaining))
+                    playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked()
+                        .withQueueFor(isle, skippedTowerActions + remaining))
                 }
                 0L
             }
@@ -938,7 +948,10 @@ class QueuedSessionStarter @Inject constructor(
                 // was otherwise the only skill where finishing a session wasn't enough to keep
                 // the queue moving (issue #1183). A death still halts the chain so the player
                 // sees it and can decide whether to keep climbing from the checkpoint.
-                val pendingTower = sessionRepo.getAllCompletedSessions().lastOrNull { it.skillName == "tower" }
+                // The Infinite Tower only exists on the mainland, so this always asks the
+                // mainland lane rather than wherever the player is standing.
+                val pendingTower = sessionRepo.getAllCompletedSessions(SessionRepository.PLAYER_SLOT)
+                    .lastOrNull { it.skillName == "tower" }
                 val pendingFloor = pendingTower?.activityKey?.removePrefix("tower_floor_")?.toIntOrNull()
                 if (pendingTower != null) {
                     val pendingFrames: List<SessionFrame> = json.decodeFromString(pendingTower.frames)
@@ -1087,11 +1100,17 @@ class QueuedSessionStarter @Inject constructor(
      * Used so the next queued combat session doesn't get the full pre-battle food supply.
      */
     private suspend fun pendingFoodConsumed(): Map<String, Int> {
-        val session = sessionRepo.getActiveSession() ?: return emptyMap()
-        if (!session.completed || session.skillName !in listOf("combat", "boss")) return emptyMap()
-        val frames = try { json.decodeFromString<List<SessionFrame>>(session.frames) } catch (_: Exception) { return emptyMap() }
+        // Levels are per-location but the food bag is not: a finished-but-uncollected fight
+        // in EITHER lane has already eaten food that is still sitting in the shared
+        // inventory, so both lanes must be reserved against or two parallel combat sessions
+        // each simulate with the full stack and then both deduct it.
         val result = mutableMapOf<String, Int>()
-        for (frame in frames) frame.foodConsumed.forEach { (k, v) -> result[k] = (result[k] ?: 0) + v }
+        for (slot in SessionRepository.PLAYER_SLOTS) {
+            val session = sessionRepo.getActiveSession(slot) ?: continue
+            if (!session.completed || session.skillName !in listOf("combat", "boss")) continue
+            val frames = try { json.decodeFromString<List<SessionFrame>>(session.frames) } catch (_: Exception) { continue }
+            for (frame in frames) frame.foodConsumed.forEach { (k, v) -> result[k] = (result[k] ?: 0) + v }
+        }
         return result
     }
 

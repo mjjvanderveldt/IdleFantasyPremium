@@ -14,7 +14,11 @@ import com.fantasyidler.data.model.SkillSession
 import com.fantasyidler.receiver.SessionAlarmReceiver
 import com.fantasyidler.simulator.CombatSimulator
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
@@ -31,8 +35,35 @@ class SessionRepository @Inject constructor(
     private val playerDao: PlayerDao,
     private val playerRepo: PlayerRepository,
 ) {
-    val activeSessionFlow: Flow<SkillSession?> = sessionDao.observeActiveSession()
-    val completedCountFlow: Flow<Int> = sessionDao.observeCompletedCount()
+    /** Whether the player is standing on the Elder Isle right now. Location is a view: it
+     *  selects which lane the UI is looking at, and never stops the other one running. */
+    private val currentIsleFlow: Flow<Boolean> = playerRepo.playerFlow
+        .map { p ->
+            if (p == null) false
+            else try { json.decodeFromString<PlayerFlags>(p.flags).onElderIsle } catch (_: Exception) { false }
+        }
+        .distinctUntilChanged()
+
+    /** The session in the lane the player is currently viewing. Every screen consumes this,
+     *  so sailing swaps which lane is on screen without touching either one. */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val activeSessionFlow: Flow<SkillSession?> =
+        currentIsleFlow.flatMapLatest { sessionDao.observeActiveSessionInSlot(slotFor(it)) }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val completedCountFlow: Flow<Int> =
+        currentIsleFlow.flatMapLatest { sessionDao.observeCompletedCountInSlot(slotFor(it)) }
+
+    /** The session running in the lane the player is *not* looking at, so the Home tab can
+     *  say "mainland session still running" while you are on the isle (and vice versa). */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val otherLaneSessionFlow: Flow<SkillSession?> =
+        currentIsleFlow.flatMapLatest { sessionDao.observeActiveSessionInSlot(slotFor(!it)) }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val otherLaneCompletedCountFlow: Flow<Int> =
+        currentIsleFlow.flatMapLatest { sessionDao.observeCompletedCountInSlot(slotFor(!it)) }
+
     val workerCompletedCountFlow: Flow<Int> = sessionDao.observeWorkerCompletedCount()
 
     fun workerCompletedCountFlow(slot: Int): Flow<Int> =
@@ -41,7 +72,21 @@ class SessionRepository @Inject constructor(
     fun activeWorkerSessionFlow(slot: Int): Flow<SkillSession?> =
         sessionDao.observeActiveWorkerSession(slot)
 
-    suspend fun getActiveSession(): SkillSession? = sessionDao.getActiveSession()
+    /** Which lane the player is standing in. */
+    suspend fun currentSlot(): Int = slotFor(
+        try { playerRepo.getFlags().onElderIsle } catch (_: Exception) { false }
+    )
+
+    /**
+     * The active session in the player's *current* lane. Anything that fires from the
+     * background — alarms, offline catch-up, recovery, save export — must name its lane
+     * with the [slot] overload instead, because the player's location at that moment says
+     * nothing about which session the work belongs to.
+     */
+    suspend fun getActiveSession(): SkillSession? = sessionDao.getActiveSessionInSlot(currentSlot())
+
+    /** The active session in an explicitly named lane ([PLAYER_SLOT] or [ISLE_SLOT]). */
+    suspend fun getActiveSession(slot: Int): SkillSession? = sessionDao.getActiveSessionInSlot(slot)
 
     suspend fun getActiveWorkerSession(slot: Int): SkillSession? =
         sessionDao.getActiveWorkerSession(slot)
@@ -93,6 +138,10 @@ class SessionRepository @Inject constructor(
             startElapsedMs = if (insertAsCompleted) null else SystemClock.elapsedRealtime() - backdateMs,
             startBootCount = if (insertAsCompleted) null else currentBootCount(),
             isElderSession = isElderSession,
+            // Lane follows the session's own isle flag, never the player's live location —
+            // a queued isle session that fires after the player sailed home still belongs
+            // to the isle lane.
+            workerSlot     = slotFor(isElderSession),
         )
         sessionDao.insert(session)
         if (playerMutexHeld) playerRepo.stampHeirloomMirrorTargetsUnlocked(session.sessionId, weaponSlot)
@@ -210,19 +259,36 @@ class SessionRepository @Inject constructor(
         starter: QueuedSessionStarter,
         workerStarter: WorkerQueuedSessionStarter? = null,
     ): Unit = watchdogMutex.withLock {
+        for (slot in PLAYER_SLOTS) completeOverdueLane(slot, starter)
+        if (workerStarter != null) {
+            val now = System.currentTimeMillis()
+            for (slot in 1..2) {
+                val ws = getActiveWorkerSession(slot)
+                if (ws != null && !ws.completed && now >= ws.endsAt && hasTrustedClock(ws)) {
+                    markCompleted(ws.sessionId)
+                    try { workerStarter.startNextQueued(slot) } catch (_: Exception) {}
+                }
+            }
+        }
+    }
+
+    /** [completeOverdueSessions] for one player lane. Mainland and isle are independent, so
+     *  an overdue session in one never holds up the other's queue. */
+    private suspend fun completeOverdueLane(slot: Int, starter: QueuedSessionStarter) {
+        val isle = isIsleSlot(slot)
         val now = System.currentTimeMillis()
-        val session = getActiveSession()
+        val session = getActiveSession(slot)
         if (session != null && !session.completed) {
             val endMs = if (session.skillName == "boss") bossFightEndMs(session) else session.endsAt
             if (now >= endMs && hasTrustedClock(session)) {
                 markCompleted(session.sessionId)
                 var catchUpMs = now - endMs
                 while (catchUpMs > 0) {
-                    val used = try { starter.insertNextQueuedAsOffline(catchUpMs) } catch (_: Exception) { 0L }
+                    val used = try { starter.insertNextQueuedAsOffline(catchUpMs, isle) } catch (_: Exception) { 0L }
                     if (used == 0L) break
                     catchUpMs -= used
                 }
-                try { starter.startNextQueued(backdateMs = catchUpMs.coerceAtLeast(0L)) } catch (_: Exception) {}
+                try { starter.startNextQueued(backdateMs = catchUpMs.coerceAtLeast(0L), isle = isle) } catch (_: Exception) {}
             }
         } else if (session != null && session.completed) {
             // The session already finished but the next queued item never started (e.g. the
@@ -234,22 +300,13 @@ class SessionRepository @Inject constructor(
                 val endMs = if (session.skillName == "boss") bossFightEndMs(session) else session.endsAt
                 var catchUpMs = maxOf(0L, now - endMs)
                 while (catchUpMs > 0) {
-                    val used = try { starter.insertNextQueuedAsOffline(catchUpMs) } catch (_: Exception) { 0L }
+                    val used = try { starter.insertNextQueuedAsOffline(catchUpMs, isle) } catch (_: Exception) { 0L }
                     if (used == 0L) break
                     catchUpMs -= used
                 }
-                try { starter.startNextQueued(backdateMs = catchUpMs) } catch (_: Exception) {}
+                try { starter.startNextQueued(backdateMs = catchUpMs, isle = isle) } catch (_: Exception) {}
             } else {
-                try { starter.startNextQueued() } catch (_: Exception) {}
-            }
-        }
-        if (workerStarter != null) {
-            for (slot in 1..2) {
-                val ws = getActiveWorkerSession(slot)
-                if (ws != null && !ws.completed && now >= ws.endsAt && hasTrustedClock(ws)) {
-                    markCompleted(ws.sessionId)
-                    try { workerStarter.startNextQueued(slot) } catch (_: Exception) {}
-                }
+                try { starter.startNextQueued(isle = isle) } catch (_: Exception) {}
             }
         }
     }
@@ -272,8 +329,14 @@ class SessionRepository @Inject constructor(
      * - If it's still running, reschedules the alarm so it fires at the correct time.
      */
     suspend fun recoverActiveSession(starter: QueuedSessionStarter) {
-        val session = try { getActiveSession() } catch (_: Exception) { null } ?: run {
-            starter.startNextQueued()
+        for (slot in PLAYER_SLOTS) recoverLane(slot, starter)
+    }
+
+    /** [recoverActiveSession] for one player lane. */
+    private suspend fun recoverLane(slot: Int, starter: QueuedSessionStarter) {
+        val isle = isIsleSlot(slot)
+        val session = try { getActiveSession(slot) } catch (_: Exception) { null } ?: run {
+            starter.startNextQueued(isle = isle)
             return
         }
         if (session.completed) {
@@ -281,11 +344,11 @@ class SessionRepository @Inject constructor(
             val endMs = if (session.skillName == "boss") bossFightEndMs(session) else session.endsAt
             var catchUpMs = maxOf(0L, System.currentTimeMillis() - endMs)
             while (catchUpMs > 0) {
-                val used = try { starter.insertNextQueuedAsOffline(catchUpMs) } catch (_: Exception) { 0L }
+                val used = try { starter.insertNextQueuedAsOffline(catchUpMs, isle) } catch (_: Exception) { 0L }
                 if (used == 0L) break
                 catchUpMs -= used
             }
-            try { starter.startNextQueued(backdateMs = catchUpMs) } catch (_: Exception) { markCompleted(session.sessionId) }
+            try { starter.startNextQueued(backdateMs = catchUpMs, isle = isle) } catch (_: Exception) { markCompleted(session.sessionId) }
             return
         }
         // Boss sessions: endsAt is cosmetic (full duration). The session really ends
@@ -300,11 +363,11 @@ class SessionRepository @Inject constructor(
                 // suppresses alarms for a killed app (Discord report, Aug 2026).
                 var catchUpMs = System.currentTimeMillis() - fightEndMs
                 while (catchUpMs > 0) {
-                    val used = try { starter.insertNextQueuedAsOffline(catchUpMs) } catch (_: Exception) { 0L }
+                    val used = try { starter.insertNextQueuedAsOffline(catchUpMs, isle) } catch (_: Exception) { 0L }
                     if (used == 0L) break
                     catchUpMs -= used
                 }
-                try { starter.startNextQueued(backdateMs = catchUpMs) } catch (_: Exception) { }
+                try { starter.startNextQueued(backdateMs = catchUpMs, isle = isle) } catch (_: Exception) { }
             } else {
                 scheduleAlarm(session.sessionId, fightEndMs, session.skillName)
             }
@@ -316,11 +379,11 @@ class SessionRepository @Inject constructor(
                 markCompleted(session.sessionId)
                 var catchUpMs = now - session.endsAt
                 while (catchUpMs > 0) {
-                    val used = starter.insertNextQueuedAsOffline(catchUpMs)
+                    val used = starter.insertNextQueuedAsOffline(catchUpMs, isle)
                     if (used == 0L) break
                     catchUpMs -= used
                 }
-                starter.startNextQueued(backdateMs = catchUpMs)
+                starter.startNextQueued(backdateMs = catchUpMs, isle = isle)
             } else {
                 scheduleAlarm(session.sessionId, session.endsAt, session.skillName)
             }
@@ -377,10 +440,15 @@ class SessionRepository @Inject constructor(
     suspend fun insertSession(session: SkillSession) = sessionDao.insert(session)
 
     suspend fun getRecentCompleted(limit: Int = 20): List<SkillSession> =
-        sessionDao.getRecentCompleted(limit)
+        sessionDao.getRecentCompletedInSlot(currentSlot(), limit)
 
+    /** Uncollected finished sessions in the player's current lane. */
     suspend fun getAllCompletedSessions(): List<SkillSession> =
-        sessionDao.getAllCompletedSessions()
+        sessionDao.getAllCompletedSessionsInSlot(currentSlot())
+
+    /** Uncollected finished sessions in an explicitly named lane. */
+    suspend fun getAllCompletedSessions(slot: Int): List<SkillSession> =
+        sessionDao.getAllCompletedSessionsInSlot(slot)
 
     suspend fun getOldestCompletedSession(): SkillSession? =
         sessionDao.getOldestCompletedSession()
@@ -432,5 +500,23 @@ class SessionRepository @Inject constructor(
     companion object {
         const val SESSION_DURATION_MS = 60L * 60L * 1_000L  // 1 hour
         const val CLOCK_SKEW_TOLERANCE_MS = 120_000L
+
+        /** The mainland player lane. */
+        const val PLAYER_SLOT = 0
+
+        /**
+         * The Elder Isle player lane. Negative deliberately: every query that predates it
+         * matches `worker_slot = 0`, `= :slot` or `> 0`, so the isle lane is invisible to
+         * both the mainland shorthand and the worker sweeps (expiry, bulk delete) without
+         * a schema change or a Room migration.
+         */
+        const val ISLE_SLOT = -1
+
+        /** The player's own lanes, in the order recovery and catch-up should walk them. */
+        val PLAYER_SLOTS = listOf(PLAYER_SLOT, ISLE_SLOT)
+
+        fun slotFor(isle: Boolean): Int = if (isle) ISLE_SLOT else PLAYER_SLOT
+
+        fun isIsleSlot(slot: Int): Boolean = slot == ISLE_SLOT
     }
 }

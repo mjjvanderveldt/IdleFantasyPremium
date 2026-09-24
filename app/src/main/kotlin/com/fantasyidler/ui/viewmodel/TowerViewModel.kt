@@ -273,7 +273,7 @@ class TowerViewModel @Inject constructor(
                         estimatedDurationMs = SkillSimulator.sessionDurationMs(agility, boostRepo.sessionFloorReductionMin(flags), townRepo.playerSessionDurationMultiplier(flags)),
                     )
                 )
-                if (enqueued) queuedSessionStarter.startNextQueued()
+                if (enqueued) queuedSessionStarter.startNextQueued(isle = false)
                 _extra.update {
                     it.copy(
                         snackbarMessage = if (enqueued)
@@ -580,7 +580,7 @@ class TowerViewModel @Inject constructor(
             }
             session = sessionRepo.getAllCompletedSessions().firstOrNull { it.skillName == "tower" }
             }
-            queuedSessionStarter.startNextQueued()
+            queuedSessionStarter.startNextQueued(isle = false)
         }
     }
 

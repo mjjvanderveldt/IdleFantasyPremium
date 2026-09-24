@@ -892,6 +892,17 @@ fun HomeScreen(
                 }
             }
 
+            // ── Other location's lane ────────────────────────────────────
+            // Mainland and isle sessions run in parallel, so surface the one that is not
+            // on screen right now; tapping it sails there.
+            OtherLaneCard(
+                session        = state.otherLaneSession,
+                pendingCollect = state.otherLanePendingCollect,
+                onElderIsle    = state.onElderIsle,
+                context        = context,
+                onSail         = viewModel::toggleElderIsleLocation,
+            )
+
             // ── Queue card ───────────────────────────────────────────────
             if (state.sessionQueue.isNotEmpty()) {
                 QueueCard(

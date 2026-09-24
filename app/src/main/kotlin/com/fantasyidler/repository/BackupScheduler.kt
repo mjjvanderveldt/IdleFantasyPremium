@@ -99,8 +99,13 @@ class BackupScheduler @Inject constructor(
         var failureMsg = ""
         val ok = try {
             val sessions = buildList {
-                sessionRepo.getActiveSession()?.let { add(it.toExport()) }
-                addAll(sessionRepo.getAllCompletedSessions().map { it.toExport() })
+                // Both player lanes (mainland + Elder Isle), not just the one the player
+                // happens to be standing in — otherwise a backup taken on the isle drops
+                // the running mainland session entirely.
+                for (slot in SessionRepository.PLAYER_SLOTS) {
+                    sessionRepo.getActiveSession(slot)?.let { add(it.toExport()) }
+                    addAll(sessionRepo.getAllCompletedSessions(slot).map { it.toExport() })
+                }
                 for (slot in 1..2) {
                     sessionRepo.getActiveWorkerSession(slot)?.let { add(it.toExport()) }
                     addAll(sessionRepo.getAllCompletedWorkerSessions(slot).map { it.toExport() })

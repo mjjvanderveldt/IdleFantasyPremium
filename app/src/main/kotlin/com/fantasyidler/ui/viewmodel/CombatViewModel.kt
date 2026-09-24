@@ -363,7 +363,7 @@ class CombatViewModel @Inject constructor(
                 totalLevel              = Skills.ALL.sumOf { levels[it] ?: 1 },
                 onElderIsle             = flags.onElderIsle,
                 hasFullElderSet         = ELDER_PIECE_KEYS.all { (inventory[it] ?: 0) >= 1 },
-                isQueueFull             = flags.sessionQueue.size >= playerRepo.maxQueueSize(flags),
+                isQueueFull             = flags.activeQueue.size >= playerRepo.maxQueueSize(flags),
                 mercPool                = mercRepo.dailyPool(flags),
                 hiredMercs              = mercRepo.activeContracts(flags).map { (m, h) -> MercContract(m, h.expiresAt) },
             )
@@ -569,7 +569,7 @@ class CombatViewModel @Inject constructor(
                         repeatCount         = repeatCount,
                     )
                 )
-                if (enqueued) queuedSessionStarter.startNextQueued()
+                if (enqueued) queuedSessionStarter.startNextQueuedHere()
                 _extra.update {
                     it.copy(
                         snackbarMessage    = if (enqueued) context.withAppLocale().getString(R.string.snackbar_added_to_queue, dungeonName) else context.withAppLocale().getString(R.string.snackbar_queue_full),
@@ -814,7 +814,7 @@ class CombatViewModel @Inject constructor(
                         repeatCount         = repeatCount,
                     )
                 )
-                if (enqueued) queuedSessionStarter.startNextQueued()
+                if (enqueued) queuedSessionStarter.startNextQueuedHere()
                 _extra.update {
                     it.copy(
                         snackbarMessage    = if (enqueued) context.withAppLocale().getString(R.string.snackbar_added_to_queue, bossName) else context.withAppLocale().getString(R.string.snackbar_queue_full),
@@ -991,7 +991,7 @@ class CombatViewModel @Inject constructor(
             val session = sessionRepo.getActiveSession() ?: return@launch
             if (session.skillName == "combat" || session.skillName == "boss") {
                 abandonCombatSession(session)
-                queuedSessionStarter.startNextQueued()
+                queuedSessionStarter.startNextQueuedHere()
             }
         }
     }

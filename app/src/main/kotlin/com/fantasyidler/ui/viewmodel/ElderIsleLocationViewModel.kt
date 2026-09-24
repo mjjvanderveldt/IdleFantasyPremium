@@ -1,15 +1,10 @@
 package com.fantasyidler.ui.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fantasyidler.R
 import com.fantasyidler.data.model.PlayerFlags
 import com.fantasyidler.repository.PlayerRepository
-import com.fantasyidler.repository.SessionRepository
-import com.fantasyidler.util.withAppLocale
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -35,8 +30,6 @@ data class ElderIsleLocationState(
 @HiltViewModel
 class ElderIsleLocationViewModel @Inject constructor(
     private val playerRepo: PlayerRepository,
-    private val sessionRepo: SessionRepository,
-    @ApplicationContext private val context: Context,
     private val json: Json,
 ) : ViewModel() {
 
@@ -53,12 +46,10 @@ class ElderIsleLocationViewModel @Inject constructor(
         extra.copy(onElderIsle = onIsle)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ElderIsleLocationState())
 
+    /** Never blocked by a running session — the isle lane keeps running while the player
+     *  is back on the mainland, and vice versa. */
     fun returnToMainland() {
         viewModelScope.launch {
-            if (sessionRepo.getActiveSession() != null) {
-                _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.elder_isle_sail_blocked_by_session)) }
-                return@launch
-            }
             val flags = playerRepo.getFlags()
             if (flags.onElderIsle) playerRepo.updateFlags(flags.copy(onElderIsle = false))
         }

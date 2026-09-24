@@ -237,7 +237,7 @@ class CraftingViewModel @Inject constructor(
                 questFills         = computeQuestFills(extra.selectedRecipe, questProgress, flags),
                 recipeQuests       = computeRecipeQuests(allRecipes, questProgress, flags, effInv),
                 craftPerItemMs     = perItemMs,
-                isQueueFull        = flags.sessionQueue.size >= playerRepo.maxQueueSize(flags),
+                isQueueFull        = flags.activeQueue.size >= playerRepo.maxQueueSize(flags),
                 craftXpMult        = xpMult,
                 hiddenRecipeKeys   = boostRepo.gatedRecipeKeys - boostRepo.unlockedRecipeKeys(flags),
                 onElderIsle        = flags.onElderIsle,

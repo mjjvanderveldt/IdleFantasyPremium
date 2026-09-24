@@ -26,6 +26,28 @@ interface SkillSessionDao {
     @Query("SELECT COUNT(*) FROM skill_sessions WHERE completed = 1 AND user_id = 1 AND worker_slot = 0")
     fun observeCompletedCount(): Flow<Int>
 
+    // ── Player-owned lanes, slot-parameterized ──────────────────────────────
+    // worker_slot 0 = mainland, -1 = Elder Isle. Both are the player's own lanes and run
+    // in parallel; the queries above are the mainland-only shorthand kept for callers that
+    // genuinely only ever mean the mainland (the Infinite Tower, for one). Note every other
+    // query in this DAO matches `= 0`, `= :slot` or `> 0`, so the negative isle slot is
+    // invisible to the worker sweeps below by construction.
+
+    @Query("SELECT * FROM skill_sessions WHERE user_id = 1 AND worker_slot = :slot ORDER BY started_at DESC LIMIT 1")
+    suspend fun getActiveSessionInSlot(slot: Int): SkillSession?
+
+    @Query("SELECT * FROM skill_sessions WHERE user_id = 1 AND worker_slot = :slot ORDER BY started_at DESC LIMIT 1")
+    fun observeActiveSessionInSlot(slot: Int): Flow<SkillSession?>
+
+    @Query("SELECT * FROM skill_sessions WHERE completed = 1 AND user_id = 1 AND worker_slot = :slot ORDER BY started_at ASC")
+    suspend fun getAllCompletedSessionsInSlot(slot: Int): List<SkillSession>
+
+    @Query("SELECT * FROM skill_sessions WHERE completed = 1 AND user_id = 1 AND worker_slot = :slot ORDER BY started_at DESC LIMIT :limit")
+    suspend fun getRecentCompletedInSlot(slot: Int, limit: Int): List<SkillSession>
+
+    @Query("SELECT COUNT(*) FROM skill_sessions WHERE completed = 1 AND user_id = 1 AND worker_slot = :slot")
+    fun observeCompletedCountInSlot(slot: Int): Flow<Int>
+
     // ── Worker sessions — slot-parameterized ────────────────────────────────
 
     @Query("SELECT * FROM skill_sessions WHERE user_id = 1 AND worker_slot = :slot ORDER BY started_at DESC LIMIT 1")

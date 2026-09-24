@@ -58,8 +58,14 @@ data class PlayerFlags(
     @SerialName("character_beard_style") val characterBeardStyle: Int = 0,
     /** Beard colour letter (a-k). */
     @SerialName("character_beard_color") val characterBeardColor: String = "a",
-    /** Up to 3 queued sessions to auto-start after the current one completes. */
+    /** Mainland queued sessions to auto-start after the current mainland one completes.
+     *  The Elder Isle keeps its own parallel queue in [isleSessionQueue] — the two lanes
+     *  run side by side, so never read this one without checking [onElderIsle] first
+     *  (use `PlayerFlags.activeQueue` / `queueFor(isle)`). */
     @SerialName("session_queue") val sessionQueue: List<QueuedAction> = emptyList(),
+    /** Elder Isle queue — the isle lane's equivalent of [sessionQueue]. Defaults empty so
+     *  saves written before the isle lane existed load unchanged. */
+    @SerialName("isle_session_queue") val isleSessionQueue: List<QueuedAction> = emptyList(),
     /** 1-based index of the boss fight currently running within a multi-fight repeat request. 0 = not repeating. */
     @SerialName("active_boss_repeat_index") val activeBossRepeatIndex: Int = 0,
     /** Total fights requested for the current boss repeat run. */
@@ -312,7 +318,9 @@ data class PlayerFlags(
     @SerialName("elder_isle_unlocked") val elderIsleUnlocked: Boolean = false,
     /** True when the player is currently on the Elder Isle; false = on mainland. All bottom-nav
      *  tabs render their isle variant while this is true. Toggled by the Set Sail / Return to
-     *  Mainland buttons on the Home tab. Blocked while any session is running. */
+     *  Mainland buttons on the Home tab. Purely a *view*: each location owns its own session
+     *  lane (SessionRepository.PLAYER_SLOT / ISLE_SLOT) and its own queue, both of which keep
+     *  running while you are standing in the other one, so sailing is never blocked. */
     @SerialName("on_elder_isle") val onElderIsle: Boolean = false,
     /** Elder skill levels (mirrors mainland Skills.ALL minus prayer/agility/construction, so 16
      *  keys — see ElderSkills.ALL). Absent key = level 1. Persists through mainland prestige. */
@@ -332,7 +340,27 @@ data class PlayerFlags(
     /** True once the first-arrival welcome splash has been shown on Elder Isle. Stops
      *  the splash from popping every time you sail back after that first landing. */
     @SerialName("elder_isle_welcomed") val elderIsleWelcomed: Boolean = false,
-)
+) {
+    // ── Session lanes ───────────────────────────────────────────────────────
+    // The mainland and the Elder Isle each own a session lane that runs independently, so
+    // "the queue" is always relative to a location. Anything that fires from the background
+    // (alarms, offline catch-up, recovery) must name its lane with [queueFor]/[withQueueFor];
+    // UI code that means "the queue where the player is standing right now" uses [activeQueue].
+
+    fun queueFor(isle: Boolean): List<QueuedAction> =
+        if (isle) isleSessionQueue else sessionQueue
+
+    fun withQueueFor(isle: Boolean, queue: List<QueuedAction>): PlayerFlags =
+        if (isle) copy(isleSessionQueue = queue) else copy(sessionQueue = queue)
+
+    /** The queue for the location the player is currently viewing. */
+    val activeQueue: List<QueuedAction> get() = queueFor(onElderIsle)
+
+    /** Both lanes' queues together. Use for anything that reserves out of the *shared*
+     *  inventory (shop sell-blocking, essence/material reservations): levels are walled off
+     *  per location, but the bag is not. */
+    val allQueues: List<QueuedAction> get() = sessionQueue + isleSessionQueue
+}
 
 /** One completed bulk sell: what was sold and what it paid. */
 @Serializable
@@ -575,6 +603,9 @@ data class SkillSessionExport(
     @SerialName("is_worker_session")    val isWorkerSession: Boolean,
     @SerialName("efficiency_multiplier") val efficiencyMultiplier: Float = 1.0f,
     @SerialName("worker_slot")          val workerSlot: Int = if (isWorkerSession) 1 else 0,
+    /** Elder Isle routing flag. Defaults false so pre-isle saves import unchanged; without it
+     *  a restored in-flight isle session would pay its XP into the mainland pool. */
+    @SerialName("is_elder_session")     val isElderSession: Boolean = false,
 )
 
 fun SkillSession.toExport() = SkillSessionExport(
@@ -588,6 +619,7 @@ fun SkillSession.toExport() = SkillSessionExport(
     isWorkerSession      = isWorkerSession,
     efficiencyMultiplier = efficiencyMultiplier,
     workerSlot           = workerSlot,
+    isElderSession       = isElderSession,
 )
 
 fun SkillSessionExport.toSkillSession() = SkillSession(
@@ -601,6 +633,7 @@ fun SkillSessionExport.toSkillSession() = SkillSession(
     isWorkerSession      = isWorkerSession,
     efficiencyMultiplier = efficiencyMultiplier,
     workerSlot           = workerSlot,
+    isElderSession       = isElderSession,
 )
 
 @Serializable

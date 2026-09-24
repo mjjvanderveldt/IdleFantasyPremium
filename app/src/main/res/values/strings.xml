@@ -535,6 +535,15 @@
     <string name="home_up_next">Up Next (%1$d/%2$d)</string>
     <!-- Translator note: %1$s = formatted duration string (e.g. "2h 15m") -->
     <string name="home_queue_ends_in">Queue ends in %1$s</string>
+    <!-- Other-location session lane. Mainland and Elder Isle run in parallel, so the Home
+         tab shows a one-line reminder of whichever one you are not currently standing in. -->
+    <string name="home_other_lane_mainland">Mainland</string>
+    <string name="home_other_lane_isle">Elder Isle</string>
+    <!-- Translator note: %1$s = activity name, %2$s = formatted time remaining -->
+    <string name="home_other_lane_running">%1$s, %2$s left</string>
+    <!-- Translator note: %1$d = number of finished sessions waiting there -->
+    <string name="home_other_lane_ready">%1$d ready to collect</string>
+    <string name="home_other_lane_go">Go</string>
     <!-- Translator note: %1$d = item quantity (e.g. ×40) -->
     <string name="queue_item_qty" translatable="false">×%1$d</string>
     <string name="queue_item_qty_with_output">×%1$d → %2$d items</string>

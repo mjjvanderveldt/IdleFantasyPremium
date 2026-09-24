@@ -65,13 +65,17 @@ class SessionAlarmReceiver : BroadcastReceiver() {
             val workerStarted = workerQueuedSessionStarter.startNextQueued(slot)
             if (!workerStarted) notificationManager.showSessionComplete(notifName)
         } else {
+            // Advance the lane this session belongs to, read off the row itself. The player
+            // may well be standing in the other location (or have the app closed) when this
+            // fires — mainland and isle each keep their own queue moving.
+            val isle = SessionRepository.isIsleSlot(session.workerSlot)
             var catchUpMs = backdateMs
             while (catchUpMs > 0) {
-                val used = try { queuedSessionStarter.insertNextQueuedAsOffline(catchUpMs) } catch (_: Exception) { 0L }
+                val used = try { queuedSessionStarter.insertNextQueuedAsOffline(catchUpMs, isle) } catch (_: Exception) { 0L }
                 if (used == 0L) break
                 catchUpMs -= used
             }
-            val started = queuedSessionStarter.startNextQueued(backdateMs = catchUpMs)
+            val started = queuedSessionStarter.startNextQueued(backdateMs = catchUpMs, isle = isle)
             if (!started) notificationManager.showSessionComplete(notifName)
         }
     }

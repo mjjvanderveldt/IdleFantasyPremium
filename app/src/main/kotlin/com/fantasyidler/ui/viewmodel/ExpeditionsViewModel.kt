@@ -127,7 +127,7 @@ class ExpeditionsViewModel @Inject constructor(
             isLoading = false,
             skillLevels = levels,
             dungeonsBySkill = dungeonsBySkill,
-            isQueueFull = flags.sessionQueue.size >= playerRepo.maxQueueSize(flags),
+            isQueueFull = flags.activeQueue.size >= playerRepo.maxQueueSize(flags),
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ExpeditionsUiState())
 

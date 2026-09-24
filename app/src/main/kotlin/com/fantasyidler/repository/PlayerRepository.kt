@@ -672,13 +672,17 @@ class PlayerRepository @Inject constructor(
         }
     }
 
-    suspend fun getQueue(): List<QueuedAction> = getFlags().sessionQueue
+    /** The queue for the lane the player is standing in. */
+    suspend fun getQueue(): List<QueuedAction> = getFlags().activeQueue
+
+    /** The queue for an explicitly named lane. */
+    suspend fun getQueue(isle: Boolean): List<QueuedAction> = getFlags().queueFor(isle)
 
     /** Base queue size (8) plus any Queue Master town building bonus, plus the Monument's
-     *  Gilded stage. Elder Isle caps at the base 3 — none of those mainland slot boosts
-     *  reach isle sessions, per the isle bonus-flow rule. */
+     *  Gilded stage. Elder Isle gets the same modded base 8 but still none of the mainland
+     *  slot boosts, per the isle bonus-flow rule. */
     fun maxQueueSize(flags: PlayerFlags): Int {
-        if (flags.onElderIsle) return 3
+        if (flags.onElderIsle) return 8
         var extraSlots = boostRepo.extraQueueSlots(flags)
         flags.townBuildingTiers.forEach { (buildingName, tier) ->
             val bonuses = gameData.townBuildings[buildingName]?.tiers?.getOrNull(tier - 1)?.bonuses
@@ -693,15 +697,18 @@ class PlayerRepository @Inject constructor(
 
     private suspend fun enqueueActionUnlocked(action: QueuedAction): Boolean {
         val flags = getFlags()
-        if (flags.sessionQueue.size >= maxQueueSize(flags)) return false
+        val isle  = flags.onElderIsle
+        if (flags.queueFor(isle).size >= maxQueueSize(flags)) return false
         // Stamp the isle flag at enqueue time so an action queued on isle stays "elder"
         // even if the player sails back before it starts. QueuedSessionStarter reads
         // action.isElderSession instead of the live flags value.
         val stamped = action.copy(
             levelAtQueue   = queueLevelFor(action),
-            isElderSession = flags.onElderIsle,
+            isElderSession = isle,
         )
-        updateFlagsUnlocked(flags.copy(sessionQueue = flags.sessionQueue + stamped))
+        // Enqueue into the lane the player is standing in — the other lane's queue keeps
+        // its own order and its own capacity.
+        updateFlagsUnlocked(flags.withQueueFor(isle, flags.queueFor(isle) + stamped))
         return true
     }
 
@@ -721,7 +728,7 @@ class PlayerRepository @Inject constructor(
     /** Creates and enqueues a combat (dungeon) session for a Slayer task's auto-advance. Returns false if queue is full. */
     suspend fun enqueueCombatSession(dungeonKey: String, dungeonDisplayName: String): Boolean = playerMutex.withLock {
         val flags = getFlags()
-        if (flags.sessionQueue.size >= maxQueueSize(flags)) return@withLock false
+        if (flags.activeQueue.size >= maxQueueSize(flags)) return@withLock false
         val player = getOrCreatePlayer()
         val levels: Map<String, Int> = json.decodeFromString(player.skillLevels)
         val agility = levels[Skills.AGILITY] ?: 1
@@ -747,22 +754,24 @@ class PlayerRepository @Inject constructor(
         ))
     }
 
-    /** Removes and returns the first item in the queue, or null if empty. */
-    suspend fun dequeueNextAction(): QueuedAction? = playerMutex.withLock { dequeueNextActionUnlocked() }
+    /** Removes and returns the first item in [isle]'s queue, or null if empty. Lane is
+     *  explicit: this runs from alarms and recovery, where the player's live location says
+     *  nothing about which queue the work came from. */
+    suspend fun dequeueNextAction(isle: Boolean): QueuedAction? = playerMutex.withLock { dequeueNextActionUnlocked(isle) }
 
-    internal suspend fun dequeueNextActionUnlocked(): QueuedAction? {
+    internal suspend fun dequeueNextActionUnlocked(isle: Boolean): QueuedAction? {
         val flags = getFlags()
-        val queue = flags.sessionQueue
+        val queue = flags.queueFor(isle)
         if (queue.isEmpty()) return null
-        updateFlagsUnlocked(flags.copy(sessionQueue = queue.drop(1)))
+        updateFlagsUnlocked(flags.withQueueFor(isle, queue.drop(1)))
         return queue.first()
     }
 
-    suspend fun requeueActionAtFront(action: QueuedAction) = playerMutex.withLock { requeueActionAtFrontUnlocked(action) }
+    suspend fun requeueActionAtFront(isle: Boolean, action: QueuedAction) = playerMutex.withLock { requeueActionAtFrontUnlocked(isle, action) }
 
-    internal suspend fun requeueActionAtFrontUnlocked(action: QueuedAction) {
+    internal suspend fun requeueActionAtFrontUnlocked(isle: Boolean, action: QueuedAction) {
         val flags = getFlags()
-        updateFlagsUnlocked(flags.copy(sessionQueue = listOf(action) + flags.sessionQueue))
+        updateFlagsUnlocked(flags.withQueueFor(isle, listOf(action) + flags.queueFor(isle)))
     }
 
     private fun PlayerFlags.workerForSlot(slot: Int) = if (slot == 2) hiredWorker2 else hiredWorker
@@ -809,11 +818,14 @@ class PlayerRepository @Inject constructor(
     /** Removes and returns the queued item at [index], or null if out of range. */
     suspend fun removeFromQueue(index: Int): QueuedAction? = playerMutex.withLock {
         val flags = getFlagsUnlocked()
-        val queue = flags.sessionQueue
+        val isle  = flags.onElderIsle
+        val queue = flags.queueFor(isle)
         if (index < 0 || index >= queue.size) return@withLock null
         val removed = queue[index]
         val newQueue = queue.toMutableList().apply { removeAt(index) }
-        updateFlagsUnlocked(flags.copy(sessionQueue = renumberTowerQueue(newQueue, flags.towerCurrentFloor)))
+        // Tower renumbering is mainland-only (there is no isle tower), so it only ever
+        // touches the mainland queue.
+        updateFlagsUnlocked(flags.withQueueFor(isle, renumberTowerQueue(newQueue, flags.towerCurrentFloor)))
         removed
     }
 
@@ -836,18 +848,20 @@ class PlayerRepository @Inject constructor(
 
     suspend fun evictQueueForSkill(skillName: String): List<QueuedAction> = playerMutex.withLock {
         val flags = getFlagsUnlocked()
-        val (evicted, remaining) = flags.sessionQueue.partition { it.skillName == skillName }
-        if (evicted.isNotEmpty()) updateFlagsUnlocked(flags.copy(sessionQueue = remaining))
+        val isle  = flags.onElderIsle
+        val (evicted, remaining) = flags.queueFor(isle).partition { it.skillName == skillName }
+        if (evicted.isNotEmpty()) updateFlagsUnlocked(flags.withQueueFor(isle, remaining))
         evicted
     }
 
     suspend fun moveQueueItem(fromIndex: Int, toIndex: Int) = playerMutex.withLock {
         val flags = getFlagsUnlocked()
-        val queue = flags.sessionQueue.toMutableList()
+        val isle  = flags.onElderIsle
+        val queue = flags.queueFor(isle).toMutableList()
         if (fromIndex < 0 || toIndex < 0 || fromIndex >= queue.size || toIndex >= queue.size) return@withLock
         val item = queue.removeAt(fromIndex)
         queue.add(toIndex, item)
-        updateFlagsUnlocked(flags.copy(sessionQueue = queue))
+        updateFlagsUnlocked(flags.withQueueFor(isle, queue))
     }
 
     suspend fun incrementDungeonRun(activityKey: String) = playerMutex.withLock {

@@ -155,7 +155,7 @@ class SlayerViewModel @Inject constructor(
                 taskDungeons          = taskDungeons,
                 taskDungeonKeys       = taskDungeonKeys,
                 taskIsStuck           = taskIsStuck,
-                queueSize             = flags.sessionQueue.size,
+                queueSize             = flags.activeQueue.size,
                 maxQueueSize          = playerRepo.maxQueueSize(flags),
                 unlockedDungeons      = unlockedDungeons,
                 inventory             = inventory,
@@ -393,7 +393,7 @@ class SlayerViewModel @Inject constructor(
                     weaponSlot          = resolvedWeaponSlot,
                 )
             )
-            if (enqueued) queuedSessionStarter.startNextQueued()
+            if (enqueued) queuedSessionStarter.startNextQueuedHere()
             _extra.update {
                 it.copy(
                     snackbarMessage = if (enqueued) context.withAppLocale().getString(R.string.slayer_queue_added, dungeonName)

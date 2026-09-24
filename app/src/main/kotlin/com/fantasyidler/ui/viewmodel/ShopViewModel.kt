@@ -140,7 +140,7 @@ class ShopViewModel @Inject constructor(
                 xpBoostLastPurchaseAt = flags.xpBoostLastPurchaseAt,
                 dailyResetHour   = flags.dailyResetHour,
                 isLoading        = false,
-                reservedItems    = computeReserved(flags.sessionQueue),
+                reservedItems    = computeReserved(flags.allQueues),
                 armorLoadouts    = flags.armorLoadouts,
                 lockedItems      = flags.lockedItems.toSet(),
                 mercantileLevel  = levels[Skills.MERCANTILE] ?: 0,
@@ -384,7 +384,7 @@ class ShopViewModel @Inject constructor(
 
             // Gear referenced only by a queued action's start-of-session snapshot is still
             // in use once that session fires; never sell its last copy (issue #1630).
-            val queuedGearKeys = playerRepo.getFlags().sessionQueue.flatMapTo(mutableSetOf()) { action ->
+            val queuedGearKeys = playerRepo.getFlags().allQueues.flatMapTo(mutableSetOf()) { action ->
                 action.equippedSnapshot?.let {
                     try { json.decodeFromString<Map<String, String?>>(it).values.filterNotNull() }
                     catch (_: Exception) { emptyList() }
@@ -472,7 +472,7 @@ class ShopViewModel @Inject constructor(
         val have = inventory[itemKey] ?: 0
         val equippedCount = if (equipData != null) {
             val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
-            val queuedGearKeys = flags.sessionQueue.flatMapTo(mutableSetOf()) { action ->
+            val queuedGearKeys = flags.allQueues.flatMapTo(mutableSetOf()) { action ->
                 action.equippedSnapshot?.let {
                     try { json.decodeFromString<Map<String, String?>>(it).values.filterNotNull() }
                     catch (_: Exception) { emptyList() }
@@ -481,7 +481,7 @@ class ShopViewModel @Inject constructor(
             val loadoutKeys = flags.armorLoadouts.values.flatMapTo(mutableSetOf()) { it.values.filterNotNull() } + queuedGearKeys
             maxOf(equipped.values.count { it == itemKey }, if (itemKey in loadoutKeys) 1 else 0)
         } else 0
-        val reserved = computeReserved(flags.sessionQueue)[itemKey] ?: 0
+        val reserved = computeReserved(flags.allQueues)[itemKey] ?: 0
         val keeper = if (flags.shopKeepOneOfEach && equippedCount == 0) 1 else 0
         return (have - equippedCount - reserved - keeper).coerceAtLeast(0)
     }

@@ -231,7 +231,7 @@ class SkillsViewModel @Inject constructor(
                 skillXp               = xp,
                 activeSession         = nonCombatSession,
                 anySessionActive      = session != null,
-                queueSize             = flags.sessionQueue.size,
+                queueSize             = flags.activeQueue.size,
                 maxQueueSize          = playerRepo.maxQueueSize(flags),
                 miningEfficiency      = gameData.toolEfficiency(equipped[EquipSlot.PICKAXE],     EquipSlot.PICKAXE,     0, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.MINING, flags, levels[Skills.MINING] ?: 1),
                 woodcuttingEfficiency = gameData.toolEfficiency(equipped[EquipSlot.AXE],         EquipSlot.AXE,         0, skillLevels = levels, heirloomXp = flags.heirloomXp) * boostRepo.toolEffMultiplier(Skills.WOODCUTTING, flags, levels[Skills.WOODCUTTING] ?: 1),
@@ -366,7 +366,7 @@ class SkillsViewModel @Inject constructor(
                     val player = playerRepo.getOrCreatePlayer()
                     val inv: Map<String, Int> = json.decodeFromString(player.inventory)
                     val flags = try { json.decodeFromString<PlayerFlags>(player.flags) } catch (_: Exception) { PlayerFlags() }
-                    val reservedEssence = flags.sessionQueue
+                    val reservedEssence = flags.allQueues
                         .filter { it.skillName == Skills.RUNECRAFTING }
                         .sumOf { action -> (gameData.runes[action.activityKey]?.essenceCost ?: 0) * action.qty }
                     val essenceQty = ((inv["rune_essence"] ?: 0) - reservedEssence).coerceAtLeast(0)
@@ -387,7 +387,7 @@ class SkillsViewModel @Inject constructor(
                     val player = playerRepo.getOrCreatePlayer()
                     val inv: Map<String, Int> = json.decodeFromString(player.inventory)
                     val flags = try { json.decodeFromString<PlayerFlags>(player.flags) } catch (_: Exception) { PlayerFlags() }
-                    val reserved = reservedQty(flags.sessionQueue, Skills.PRAYER)
+                    val reserved = reservedQty(flags.allQueues, Skills.PRAYER)
                     val effectiveCounts = inv.mapValues { (k, v) -> v - (reserved[k] ?: 0) }
                     val available = gameData.bones
                         .filter { (key, _) -> (effectiveCounts[key] ?: 0) > 0 }
@@ -536,7 +536,7 @@ class SkillsViewModel @Inject constructor(
             if (sessionRepo.getActiveSession() != null) {
                 val enqueued = playerRepo.enqueueAction(action)
                 if (enqueued) playerRepo.consumeItems(mapOf(logKey to actualQty))
-                if (enqueued) queuedSessionStarter.startNextQueued()
+                if (enqueued) queuedSessionStarter.startNextQueuedHere()
                 _uiState.update {
                     it.copy(
                         snackbarMessage = if (enqueued) context.withAppLocale().getString(R.string.slayer_queue_added, "Firemaking") else context.withAppLocale().getString(R.string.slayer_queue_full),
@@ -549,7 +549,7 @@ class SkillsViewModel @Inject constructor(
             _uiState.update { it.copy(startingSession = true) }
             try {
                 playerRepo.enqueueAction(action)
-                queuedSessionStarter.startNextQueued()
+                queuedSessionStarter.startNextQueuedHere()
             } catch (e: Exception) {
                 _uiState.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.skill_session_start_failed, e.message ?: "")) }
             } finally {
@@ -604,7 +604,7 @@ class SkillsViewModel @Inject constructor(
                     if (catalystKey != null && consumedAshCost > 0) {
                         playerRepo.consumeItems(mapOf(catalystKey to consumedAshCost))
                     }
-                    queuedSessionStarter.startNextQueued()
+                    queuedSessionStarter.startNextQueuedHere()
                 }
                 _uiState.update {
                     it.copy(
@@ -711,7 +711,7 @@ class SkillsViewModel @Inject constructor(
                     )
                 )
                 if (enqueued) playerRepo.consumeItems(mapOf(boneKey to qty))
-                if (enqueued) queuedSessionStarter.startNextQueued()
+                if (enqueued) queuedSessionStarter.startNextQueuedHere()
                 _uiState.update {
                     it.copy(
                         snackbarMessage = if (enqueued) context.withAppLocale().getString(R.string.skill_added_to_queue_activity, GameStrings.skillName(context, Skills.PRAYER), GameStrings.itemName(context, boneKey)) else context.withAppLocale().getString(R.string.slayer_queue_full),
@@ -825,7 +825,7 @@ class SkillsViewModel @Inject constructor(
                         xpBoostMultAtQueue  = xpQueueMult * prestigeMult,
                     )
                 )
-                if (enqueued) queuedSessionStarter.startNextQueued()
+                if (enqueued) queuedSessionStarter.startNextQueuedHere()
                 _uiState.update {
                     it.copy(
                         snackbarMessage = if (enqueued)
@@ -999,7 +999,7 @@ class SkillsViewModel @Inject constructor(
                 enqueuedAny = true
             }
 
-            if (enqueuedAny) queuedSessionStarter.startNextQueued()
+            if (enqueuedAny) queuedSessionStarter.startNextQueuedHere()
             _uiState.update {
                 it.copy(
                     snackbarMessage = if (enqueuedAny) {
@@ -1034,7 +1034,7 @@ class SkillsViewModel @Inject constructor(
                 playerRepo.addItem(session.catalystKey, session.catalystQty)
             }
             sessionRepo.abandonSession(session.sessionId)
-            queuedSessionStarter.startNextQueued()
+            queuedSessionStarter.startNextQueuedHere()
         }
     }
 

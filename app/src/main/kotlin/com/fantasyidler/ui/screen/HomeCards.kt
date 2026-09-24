@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -336,6 +337,90 @@ internal fun HomeSessionCard(
                     }
                 }
             }
+        }
+    }
+}
+
+/**
+ * A one-line reminder of the session still running in the location the player is NOT in.
+ * Mainland and Elder Isle each own a session lane that keeps running while you stand in the
+ * other one, so without this the off-screen lane would tick away invisibly. Tapping it sails.
+ */
+@Composable
+internal fun OtherLaneCard(
+    session: SkillSession?,
+    pendingCollect: Int,
+    onElderIsle: Boolean,
+    context: Context,
+    onSail: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (session == null && pendingCollect <= 0) return
+
+    // "The other place" is the mainland when you are on the isle, and vice versa.
+    val placeLabel = stringResource(
+        if (onElderIsle) R.string.home_other_lane_mainland else R.string.home_other_lane_isle
+    )
+
+    var now by remember { mutableStateOf(System.currentTimeMillis()) }
+    LaunchedEffect(session?.sessionId) {
+        while (session != null && System.currentTimeMillis() < session.endsAt) {
+            now = System.currentTimeMillis()
+            delay(1_000L)
+        }
+        now = System.currentTimeMillis()
+    }
+
+    val running = session != null && !session.completed && now < session.endsAt
+    val detail = if (running) {
+        val name = when (session!!.skillName) {
+            "combat" -> GameStrings.dungeonName(context, session.activityKey)
+            "boss"   -> GameStrings.bossName(context, session.activityKey)
+            "tower"  -> context.getString(R.string.tower_title)
+            else     -> GameStrings.skillName(context, session.skillName)
+        }
+        stringResource(
+            R.string.home_other_lane_running,
+            name,
+            (session.endsAt - now).coerceAtLeast(0L).formatDurationMs(context),
+        )
+    } else {
+        stringResource(R.string.home_other_lane_ready, pendingCollect.coerceAtLeast(1))
+    }
+
+    Surface(
+        shape    = RoundedCornerShape(16.dp),
+        color    = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier.fillMaxWidth().clickable(onClick = onSail),
+    ) {
+        Row(
+            modifier              = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment     = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Icon(
+                Icons.Filled.Explore,
+                contentDescription = null,
+                tint     = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp),
+            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    placeLabel,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    detail,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Text(
+                stringResource(R.string.home_other_lane_go),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
         }
     }
 }

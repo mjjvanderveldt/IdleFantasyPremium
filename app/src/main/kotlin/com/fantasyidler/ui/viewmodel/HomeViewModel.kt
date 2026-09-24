@@ -174,6 +174,11 @@ data class HomeUiState(
     /** Resolved, localized title name (e.g. "Master Smith"), or null if none equipped. */
     val titleName: String? = null,
     val sessionQueue: List<QueuedAction> = emptyList(),
+    /** Session still running in the location the player is *not* in, so the other lane is
+     *  visible instead of silently ticking away off screen. */
+    val otherLaneSession: SkillSession? = null,
+    /** Uncollected finished sessions waiting in that other location. */
+    val otherLanePendingCollect: Int = 0,
     val maxQueueSize: Int = 8,
     /** Highest Tower floor already cleared; used to preview upcoming queued floor numbers live. */
     val towerCurrentFloor: Int = 0,
@@ -298,6 +303,16 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    /** The two player lanes at once: the one on screen, plus whatever is still running in
+     *  the location the player sailed away from. */
+    private data class LaneFlowData(
+        val player: Player?,
+        val session: SkillSession?,
+        val completedCount: Int,
+        val otherSession: SkillSession?,
+        val otherCompletedCount: Int,
+    )
+
     private data class WorkerFlowData(
         val session1: SkillSession?,
         val session2: SkillSession?,
@@ -307,7 +322,13 @@ class HomeViewModel @Inject constructor(
     )
 
     val uiState: StateFlow<HomeUiState> = combine(
-        combine(playerRepo.playerFlow, sessionRepo.activeSessionFlow, sessionRepo.completedCountFlow) { a, b, c -> Triple(a, b, c) },
+        combine(
+            playerRepo.playerFlow,
+            sessionRepo.activeSessionFlow,
+            sessionRepo.completedCountFlow,
+            sessionRepo.otherLaneSessionFlow,
+            sessionRepo.otherLaneCompletedCountFlow,
+        ) { p, sess, count, otherSess, otherCount -> LaneFlowData(p, sess, count, otherSess, otherCount) },
         combine(
             sessionRepo.activeWorkerSessionFlow(1),
             sessionRepo.activeWorkerSessionFlow(2),
@@ -315,13 +336,16 @@ class HomeViewModel @Inject constructor(
             _extra,
         ) { w1, w2, counts, extra -> WorkerFlowData(w1, w2, counts.first, counts.second, extra) },
         guildRepo.observeQuestProgress(),
-    ) { playerTriple, workerData, guildProgress ->
-        val (player, session, completedCount) = playerTriple
+    ) { laneData, workerData, guildProgress ->
+        val player         = laneData.player
+        val session        = laneData.session
+        val completedCount = laneData.completedCount
         val workerSession  = workerData.session1
         val workerSession2 = workerData.session2
         val extra = workerData.extra
         if (player == null) extra.copy(
             isLoading = true, activeSession = session, pendingCollectCount = completedCount,
+            otherLaneSession = laneData.otherSession, otherLanePendingCollect = laneData.otherCompletedCount,
             workerSession = workerSession, workerSession2 = workerSession2,
             workerPendingCollect1 = workerData.completedCount1 > 0,
             workerPendingCollect2 = workerData.completedCount2 > 0,
@@ -359,8 +383,8 @@ class HomeViewModel @Inject constructor(
             // Recomputed live from current agility/gear rather than the frozen value stored at
             // queue time, so the countdown reacts to level-ups and tool swaps (issues #938, #940).
             // Boss fights alone use a fixed wall-clock duration unrelated to agility or gear.
-            val queueEndsAt  = if (flags.sessionQueue.isEmpty()) 0L
-                               else queueStart + flags.sessionQueue.sumOf {
+            val queueEndsAt  = if (flags.activeQueue.isEmpty()) 0L
+                               else queueStart + flags.activeQueue.sumOf {
                                    when {
                                        // repeatCount defaults to 1 for every non-boss/combat entry,
                                        // so this only changes anything for repeated boss fights and
@@ -458,7 +482,7 @@ class HomeViewModel @Inject constructor(
                 // estimate; swap it for the live full per-skill chain (per-skill 2x boosts and
                 // prestige included) so previews match the eventual payout (issues #1748, #1790).
                 // Legacy entries (mult 0) are shown as stored.
-                sessionQueue        = flags.sessionQueue.map { a ->
+                sessionQueue        = flags.activeQueue.map { a ->
                     if (a.xpBoostMultAtQueue > 0.0 && a.estimatedXpGain > 0L)
                         a.copy(estimatedXpGain = (a.estimatedXpGain * (boostRepo.xpMultiplier(a.skillName, flags, capeMult) / a.xpBoostMultAtQueue)).toLong())
                     else a
@@ -492,6 +516,8 @@ class HomeViewModel @Inject constructor(
                 collapsibleTownGrid        = flags.collapsibleTownGrid,
                 elderIsleUnlocked          = flags.elderIsleUnlocked,
                 onElderIsle                = flags.onElderIsle,
+                otherLaneSession           = laneData.otherSession,
+                otherLanePendingCollect    = laneData.otherCompletedCount,
                 dockBuilt                  = (flags.townBuildingTiers["dock"] ?: 0) >= 1,
                 showIsleWelcome            = flags.onElderIsle && !flags.elderIsleWelcomed,
                 inventory                  = try { json.decodeFromString<Map<String, Int>>(player.inventory) } catch (_: Exception) { emptyMap() },
@@ -626,7 +652,7 @@ class HomeViewModel @Inject constructor(
             }
 
             for (session in sessions) sessionRepo.deleteSession(session.sessionId)
-            queuedSessionStarter.startNextQueued()
+            queuedSessionStarter.startNextQueuedHere()
             reconcileTowerQueue()
             if (acc.dailyKills.isNotEmpty()) playerRepo.recordDailyKills(acc.dailyKills)
 
@@ -1201,7 +1227,7 @@ class HomeViewModel @Inject constructor(
             val session = sessionRepo.getSession(sessionId) ?: return@launch
             if (!session.completed && sessionRepo.hasTrustedClock(session)) {
                 sessionRepo.markCompleted(sessionId)
-                queuedSessionStarter.startNextQueued()
+                queuedSessionStarter.startNextQueuedHere()
             }
         }
     }
@@ -1353,7 +1379,7 @@ class HomeViewModel @Inject constructor(
             sessionRepo.abandonSession(session.sessionId)
             if (session.skillName == "boss") playerRepo.clearActiveBossRepeat()
             if (session.skillName == "combat") playerRepo.clearActiveDungeonRepeat()
-            queuedSessionStarter.startNextQueued()
+            queuedSessionStarter.startNextQueuedHere()
             reconcileTowerQueue()
         }
     }
@@ -1718,15 +1744,13 @@ class HomeViewModel @Inject constructor(
     }
 
     /**
-     * Set sail to Elder Isle or return to mainland. Blocked while any session is running,
-     * so the player is never mid-fight when the whole app UI swaps context.
+     * Set sail to Elder Isle or return to mainland. Never blocked by a running session:
+     * each location owns its own session lane and its own queue, so the one you sail away
+     * from keeps running (and stays collectable when you come back). Location is only a
+     * view onto whichever lane you are standing in.
      */
     fun toggleElderIsleLocation() {
         viewModelScope.launch {
-            if (sessionRepo.getActiveSession() != null) {
-                _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.elder_isle_sail_blocked_by_session)) }
-                return@launch
-            }
             val flags = playerRepo.getFlags()
             if (!flags.elderIsleUnlocked && !flags.onElderIsle) {
                 // Split the blocked message: pre-Dock vs Dock-built-but-Serpent-alive. The
@@ -1750,7 +1774,9 @@ class HomeViewModel @Inject constructor(
     }
 
     private suspend fun reconcileTowerQueue() {
-        val activeSession = sessionRepo.getActiveSession()
+        // Tower is mainland-only content, so this reads the mainland lane explicitly rather
+        // than whichever lane the player is currently looking at.
+        val activeSession = sessionRepo.getActiveSession(SessionRepository.PLAYER_SLOT)
         val runningFloor = if (activeSession?.skillName == "tower") {
             activeSession.activityKey.removePrefix("tower_floor_").toIntOrNull() ?: 1
         } else {

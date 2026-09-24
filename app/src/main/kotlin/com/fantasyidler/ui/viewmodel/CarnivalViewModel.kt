@@ -202,7 +202,7 @@ class CarnivalViewModel @Inject constructor(
                 skillXp             = xpMap,
                 tierBonus           = townRepo.idleTicketBonusChance(flags),
                 capeMultiplier      = capeMult,
-                queueSize           = flags.sessionQueue.size,
+                queueSize           = flags.activeQueue.size,
                 maxQueueSize        = playerRepo.maxQueueSize(flags),
                 ownedPrizeKeys      = ownedPrizeKeys,
                 selectedTab         = if (!extra.tabInitialized) flags.carnivalTab else extra.selectedTab,
@@ -266,7 +266,7 @@ class CarnivalViewModel @Inject constructor(
                     estimatedDurationMs = SkillSimulator.sessionDurationMs(agility, boostRepo.sessionFloorReductionMin(carnivalFlags), townRepo.playerSessionDurationMultiplier(carnivalFlags)),
                 )
             )
-            if (enqueued) queuedSessionStarter.startNextQueued()
+            if (enqueued) queuedSessionStarter.startNextQueuedHere()
             _extra.update {
                 it.copy(snackbarMessage = if (enqueued)
                     context.withAppLocale().getString(R.string.carnival_queue_added, displayName)

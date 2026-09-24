@@ -89,10 +89,13 @@ class SaveSlotRepository @Inject constructor(
     // Full-save export/import — shared with SettingsViewModel
     // ------------------------------------------------------------------
 
-    /** All sessions worth persisting: the active one plus completed ones, player and both worker slots. */
+    /** All sessions worth persisting: the active and completed ones in both player lanes
+     *  (mainland and Elder Isle) plus both worker slots. */
     suspend fun collectSessionExports(): List<SkillSessionExport> = buildList {
-        sessionRepo.getActiveSession()?.let { add(it.toExport()) }
-        addAll(sessionRepo.getAllCompletedSessions().map { it.toExport() })
+        for (slot in SessionRepository.PLAYER_SLOTS) {
+            sessionRepo.getActiveSession(slot)?.let { add(it.toExport()) }
+            addAll(sessionRepo.getAllCompletedSessions(slot).map { it.toExport() })
+        }
         for (slot in 1..2) {
             sessionRepo.getActiveWorkerSession(slot)?.let { add(it.toExport()) }
             addAll(sessionRepo.getAllCompletedWorkerSessions(slot).map { it.toExport() })
