@@ -214,7 +214,9 @@ class PlayerRepository @Inject constructor(
         // Sigil stones apply game-wide, so mainland collects pick up the same xp/loot mults
         // an isle collect would. Coin stones fold in at the coin write below.
         val sigils = sigilBonusesFrom(flags)
-        val ratedXp = xpGained * BASE_XP_RATE_MULTIPLIER
+        // Raw grants (applyXpBoosts=false, i.e. crop planting XP) stay 1x so clearPatch's 1x
+        // deduction reverses them exactly; doubling them reopened plant-and-clear (issue #1645).
+        val ratedXp = if (applyXpBoosts) xpGained * BASE_XP_RATE_MULTIPLIER else xpGained
         val scaledXp = if (efficiencyMultiplier == 1.0f) ratedXp else (ratedXp * efficiencyMultiplier).toLong()
         // 2x boost, blessing, and prestige xp nodes combined in one place (ironman-inert).
         // applyXpBoosts=false grants raw XP with no heirloom mirror, for grants that must be
