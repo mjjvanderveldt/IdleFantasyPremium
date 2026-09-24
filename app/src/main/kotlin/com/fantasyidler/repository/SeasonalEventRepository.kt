@@ -147,6 +147,7 @@ class SeasonalEventRepository @Inject constructor(
                 seasonalBountyProgress          = emptyMap(),
                 seasonalBountySlotCooldownUntil = emptyMap(),
                 seasonalBountyDailyStamp        = now,
+                seasonalBountyNextResetAt       = dailyQuestRepo.nextResetMs(now, flags.dailyResetHour),
             )
             playerRepo.updateFlagsUnlocked(reseeded)
             return reseeded
@@ -156,6 +157,7 @@ class SeasonalEventRepository @Inject constructor(
         var progress = flags.seasonalBountyProgress
         var cooldowns = flags.seasonalBountySlotCooldownUntil
         var dailyStamp = flags.seasonalBountyDailyStamp
+        var dailyNextResetAt = flags.seasonalBountyNextResetAt
         var changed = false
 
         // Claimed slots rotate once their post-claim cooldown expires. Replacements come
@@ -177,7 +179,7 @@ class SeasonalEventRepository @Inject constructor(
         // squats for the whole event. Slots with any progress (or a pending post-claim
         // cooldown) are left alone to protect in-flight work. Pool-wide like the
         // post-claim rotation above.
-        if (dailyQuestRepo.shouldRefresh(dailyStamp, flags.dailyResetHour)) {
+        if (dailyQuestRepo.shouldRefresh(flags.seasonalBountyNextResetAt)) {
             for ((index, taskId) in slots.withIndex()) {
                 if (cooldowns.containsKey(index.toString())) continue
                 if ((progress[taskId] ?: 0) > 0) continue
@@ -195,6 +197,7 @@ class SeasonalEventRepository @Inject constructor(
                 changed = true
             }
             dailyStamp = now
+            dailyNextResetAt = dailyQuestRepo.nextResetMs(now, flags.dailyResetHour)
             changed = true
         }
 
@@ -204,6 +207,7 @@ class SeasonalEventRepository @Inject constructor(
             seasonalBountyProgress          = progress,
             seasonalBountySlotCooldownUntil = cooldowns,
             seasonalBountyDailyStamp        = dailyStamp,
+            seasonalBountyNextResetAt       = dailyNextResetAt,
         )
         playerRepo.updateFlagsUnlocked(rotated)
         return rotated

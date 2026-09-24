@@ -93,6 +93,9 @@ data class PlayerFlags(
     @SerialName("daily_quest_claimed") val dailyQuestClaimed: List<String> = emptyList(),
     /** Epoch ms when today's daily quests were generated (used to detect 6am rollover). */
     @SerialName("daily_quest_generated_at") val dailyQuestGeneratedAt: Long = 0L,
+    /** Epoch ms of the next daily reset, frozen at generation time so a later device-timezone
+     *  change can't shift it and trigger an early/instant reset. 0 = not yet set (always refresh). */
+    @SerialName("daily_quest_next_reset_at") val dailyQuestNextResetAt: Long = 0L,
 
     /** IDs of the 5 active weekly challenge template IDs. */
     @SerialName("weekly_quest_ids") val weeklyQuestIds: List<String> = emptyList(),
@@ -102,6 +105,8 @@ data class PlayerFlags(
     @SerialName("weekly_quest_claimed") val weeklyQuestClaimed: List<String> = emptyList(),
     /** Epoch ms when the current weekly set was generated (used to detect Monday 6am rollover). */
     @SerialName("weekly_quest_generated_at") val weeklyQuestGeneratedAt: Long = 0L,
+    /** Epoch ms of the next weekly reset, frozen at generation time; see [dailyQuestNextResetAt]. */
+    @SerialName("weekly_quest_next_reset_at") val weeklyQuestNextResetAt: Long = 0L,
     /** True if the full weekly bonus chest has been claimed this week. */
     @SerialName("weekly_bonus_claimed") val weeklyBonusClaimed: Boolean = false,
     /** Consecutive weekly bonus claims without a Divine gear drop; resets to 0 on a drop. */
@@ -135,6 +140,8 @@ data class PlayerFlags(
     @SerialName("guild_daily_claimed") val guildDailyClaimed: List<String> = emptyList(),
     /** Epoch ms when today's guild dailies were generated (used to detect 6am rollover). */
     @SerialName("guild_daily_generated_at") val guildDailyGeneratedAt: Long = 0L,
+    /** Epoch ms of the next guild daily reset, frozen at generation time; see [dailyQuestNextResetAt]. */
+    @SerialName("guild_daily_next_reset_at") val guildDailyNextResetAt: Long = 0L,
     /** Tracks the highest guild level whose quest-progress has been reset on tier-up. guild key → level. */
     @SerialName("guild_quest_reset_levels") val guildQuestResetLevels: Map<String, Int> = emptyMap(),
     /** Notes found per skilling dungeon key (e.g. "copper_caverns" -> 3). */
@@ -273,6 +280,8 @@ data class PlayerFlags(
     @SerialName("seasonal_bounty_slot_cooldown") val seasonalBountySlotCooldownUntil: Map<String, Long> = emptyMap(),
     /** When the bounty board last did its 6am daily rotation of untouched slots. */
     @SerialName("seasonal_bounty_daily_stamp") val seasonalBountyDailyStamp: Long = 0L,
+    /** Epoch ms of the next bounty board daily rotation, frozen at rotation time; see [dailyQuestNextResetAt]. */
+    @SerialName("seasonal_bounty_next_reset_at") val seasonalBountyNextResetAt: Long = 0L,
     /** Seasonal Events: epoch ms when the minigame cooldown expires; 0 = not on cooldown. */
     @SerialName("seasonal_minigame_cooldown_at") val seasonalMinigameCooldownAt: Long = 0L,
     /** Seasonal Events: persistent player choice — longer reaction window, longer cooldown. */

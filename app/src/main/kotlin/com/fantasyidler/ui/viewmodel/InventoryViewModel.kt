@@ -157,11 +157,19 @@ class InventoryViewModel @Inject constructor(
         /** Items in inventory that can go into [pickingSlot]. */
         fun candidatesFor(slot: String, allEquipment: Map<String, EquipmentData>): List<EquipmentData> {
             val style = EquipSlot.combatStyleForSlot(slot)
+            // Sort by total stat bonuses ascending so equally-eligible gear is ordered by
+            // power regardless of pickup order. Prior implementation returned inventory
+            // iteration order, so a late-acquired lower-power item (e.g. Gilded Kiteshield
+            // picked up after Tower Shield) would appear out of place in the picker (#1853).
+            val statPower: (EquipmentData) -> Int = { it.attackBonus + it.strengthBonus + it.defenseBonus + (it.rangedStrengthBonus ?: 0) + (it.magicDamageBonus ?: 0) }
             return if (style != null) {
                 inventory.keys.mapNotNull { allEquipment[it] }
                     .filter { it.slot == EquipSlot.WEAPON && it.combatStyle == style }
+                    .sortedBy(statPower)
             } else {
-                inventory.keys.mapNotNull { allEquipment[it] }.filter { it.slot == slot }
+                inventory.keys.mapNotNull { allEquipment[it] }
+                    .filter { it.slot == slot }
+                    .sortedBy(statPower)
             }
         }
     }

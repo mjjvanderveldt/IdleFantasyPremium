@@ -1476,10 +1476,13 @@
     <string name="crafting_tier_maple">Клён</string>
     <string name="crafting_tier_mithril">Мифрил</string>
     <string name="crafting_tier_oak">Дуб</string>
+    <string name="crafting_tier_plank">Plank</string> <!-- untranslated -->
     <string name="crafting_tier_platinum">Платина</string>
+    <string name="crafting_tier_redwood">Redwood</string> <!-- untranslated -->
     <string name="crafting_tier_runite">Рунит</string>
     <string name="crafting_tier_silver">Серебро</string>
     <string name="crafting_tier_steel">Сталь</string>
+    <string name="crafting_tier_stone">Stone</string> <!-- untranslated -->
     <string name="crafting_tier_willow">Ива</string>
     <string name="crafting_tier_yew">Тис</string>
 

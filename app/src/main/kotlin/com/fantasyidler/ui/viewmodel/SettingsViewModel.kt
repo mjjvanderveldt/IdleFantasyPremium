@@ -11,12 +11,15 @@ import com.fantasyidler.data.json.ThemeData
 import com.fantasyidler.data.model.CustomTheme
 import com.fantasyidler.data.model.PlayerFlags
 import com.fantasyidler.repository.BackupScheduler
+import com.fantasyidler.repository.DailyQuestRepository
 import com.fantasyidler.repository.FarmingRepository
+import com.fantasyidler.repository.GuildRepository
 import com.fantasyidler.repository.PlayerRepository
 import com.fantasyidler.repository.QuestRepository
 import com.fantasyidler.repository.SaveSlotRepository
 import com.fantasyidler.repository.SessionRepository
 import com.fantasyidler.repository.ThemeRepository
+import com.fantasyidler.repository.WeeklyQuestRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,6 +49,9 @@ class SettingsViewModel @Inject constructor(
     private val farmingRepo: FarmingRepository,
     private val saveSlotRepo: SaveSlotRepository,
     private val themeRepo: ThemeRepository,
+    private val dailyQuestRepo: DailyQuestRepository,
+    private val weeklyQuestRepo: WeeklyQuestRepository,
+    private val guildRepo: GuildRepository,
     private val json: Json,
 ) : ViewModel() {
 
@@ -261,13 +267,18 @@ class SettingsViewModel @Inject constructor(
             if (hour == flags.dailyResetHour || hour !in 0..23) return@launch
             // Re-stamp active quest sets to "generated now" so moving the hour can
             // never land a boundary in the past and grant an instant extra reset;
-            // the next reset is simply the new hour's next occurrence.
+            // the next reset is simply the new hour's next occurrence. The *NextResetAt
+            // anchors must be recomputed here too (not just GeneratedAt) since they're
+            // otherwise frozen and would keep pointing at the old hour's boundary.
             val now = System.currentTimeMillis()
             playerRepo.updateFlags(flags.copy(
-                dailyResetHour         = hour,
-                dailyQuestGeneratedAt  = if (flags.dailyQuestGeneratedAt != 0L) now else 0L,
-                weeklyQuestGeneratedAt = if (flags.weeklyQuestGeneratedAt != 0L) now else 0L,
-                guildDailyGeneratedAt  = if (flags.guildDailyGeneratedAt != 0L) now else 0L,
+                dailyResetHour            = hour,
+                dailyQuestGeneratedAt     = if (flags.dailyQuestGeneratedAt != 0L) now else 0L,
+                dailyQuestNextResetAt     = if (flags.dailyQuestGeneratedAt != 0L) dailyQuestRepo.nextResetMs(now, hour) else 0L,
+                weeklyQuestGeneratedAt    = if (flags.weeklyQuestGeneratedAt != 0L) now else 0L,
+                weeklyQuestNextResetAt    = if (flags.weeklyQuestGeneratedAt != 0L) weeklyQuestRepo.nextResetMs(now, hour) else 0L,
+                guildDailyGeneratedAt     = if (flags.guildDailyGeneratedAt != 0L) now else 0L,
+                guildDailyNextResetAt     = if (flags.guildDailyGeneratedAt != 0L) guildRepo.nextResetMs(now, hour) else 0L,
             ))
         }
     }

@@ -60,11 +60,9 @@ class WeeklyQuestRepository @Inject constructor(
         return cal.timeInMillis
     }
 
-    fun shouldRefresh(generatedAt: Long, resetHour: Int): Boolean {
-        if (generatedAt == 0L) return true
-        val now = System.currentTimeMillis()
-        val nextReset = nextResetMs(generatedAt, resetHour)
-        return now >= nextReset
+    fun shouldRefresh(nextResetAt: Long): Boolean {
+        if (nextResetAt == 0L) return true
+        return System.currentTimeMillis() >= nextResetAt
     }
 
     private val combatSkills = listOf("attack", "strength", "defense", "ranged", "magic", "hitpoints")
@@ -118,12 +116,14 @@ class WeeklyQuestRepository @Inject constructor(
 
     fun refreshFlags(flags: PlayerFlags, skillLevels: Map<String, Int>): PlayerFlags {
         val ids = selectFiveQuests(skillLevels, flags.dailyResetHour)
+        val now = System.currentTimeMillis()
         return flags.copy(
             weeklyQuestIds = ids,
             weeklyQuestProgress = emptyMap(),
             weeklyQuestClaimed = emptyList(),
             weeklyBonusClaimed = false,
-            weeklyQuestGeneratedAt = System.currentTimeMillis(),
+            weeklyQuestGeneratedAt = now,
+            weeklyQuestNextResetAt = nextResetMs(now, flags.dailyResetHour),
         )
     }
 

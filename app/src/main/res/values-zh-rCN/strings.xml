@@ -1458,10 +1458,13 @@
     <string name="crafting_tier_maple">枫木</string>
     <string name="crafting_tier_mithril">秘银</string>
     <string name="crafting_tier_oak">橡木</string>
+    <string name="crafting_tier_plank">Plank</string> <!-- untranslated -->
     <string name="crafting_tier_platinum">白金</string>
+    <string name="crafting_tier_redwood">Redwood</string> <!-- untranslated -->
     <string name="crafting_tier_runite">符文</string>
     <string name="crafting_tier_silver">白银</string>
     <string name="crafting_tier_steel">钢</string>
+    <string name="crafting_tier_stone">Stone</string> <!-- untranslated -->
     <string name="crafting_tier_willow">柳木</string>
     <string name="crafting_tier_yew">紫杉木</string>
 

@@ -1098,9 +1098,16 @@ Builds:
     gradle:
       - yes
 
+  - versionName: '1.15.3'
+    versionCode: 153000
+    commit: fe1a8f77072c1dcda6422c9297c894f3d92869c8
+    subdir: app
+    gradle:
+      - yes
+
 AllowedAPKSigningKeys: 99a980a934cb0149bfbdd5f4358471ffe69302e0467bae4d8574d4feeda34010
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: 1.15.2
-CurrentVersionCode: 152000
+CurrentVersion: 1.15.3
+CurrentVersionCode: 153000

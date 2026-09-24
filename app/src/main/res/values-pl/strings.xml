@@ -1474,10 +1474,13 @@
     <string name="crafting_tier_maple">Klon</string>
     <string name="crafting_tier_mithril">Mithril</string> <!-- untranslated -->
     <string name="crafting_tier_oak">Dąb</string>
+    <string name="crafting_tier_plank">Plank</string> <!-- untranslated -->
     <string name="crafting_tier_platinum">Platyna</string>
+    <string name="crafting_tier_redwood">Redwood</string> <!-- untranslated -->
     <string name="crafting_tier_runite">Runit</string>
     <string name="crafting_tier_silver">Srebro</string>
     <string name="crafting_tier_steel">Stal</string>
+    <string name="crafting_tier_stone">Stone</string> <!-- untranslated -->
     <string name="crafting_tier_willow">Wierzba</string>
     <string name="crafting_tier_yew">Cis</string>
 

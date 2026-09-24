@@ -8,7 +8,7 @@
     <string name="nav_combat">Combate</string>
     <string name="nav_home">Inicio</string>
     <string name="nav_crafting">Artesanía</string>
-    <string name="nav_quests">Retos</string>
+    <string name="nav_quests">Misiones</string>
     <string name="nav_profile">Perfil</string>
 
     <!-- ===== Common buttons ===== -->
@@ -366,7 +366,7 @@
     <string name="label_daily_reward_complete">2,000 coins</string> <!-- untranslated -->
     <string name="msg_daily_claimed_coins">Daily quest complete! +2,000 coins.</string> <!-- untranslated -->
     <string name="msg_daily_claimed_dwarven">Daily quest complete! You found %1$s!</string> <!-- untranslated -->
-    <string name="label_hide_completed">Hide completed</string> <!-- untranslated -->
+    <string name="label_hide_completed">Ocultar completadas</string>
 
     <!-- ===== OnboardingScreen ===== -->
     <string name="onboarding_lets_go">Vamos!</string>
@@ -515,9 +515,9 @@
     <string name="guild_dailies_remaining_today">%1$d restantes hoy</string>
     <string name="guild_do_dailies_hint">Completa misiones diarias para avanzar al siguiente rango</string>
     <string name="guild_quest_gate_blocked">Completa misiones para avanzar de rango.</string>
-    <string name="guild_quest_required">Quest required to advance</string> <!-- untranslated -->
-    <string name="guild_progress_dailies_and_quest">Complete %1$d/%2$d daily requests &amp; quests to advance</string> <!-- untranslated -->
-    <string name="guild_progress_dailies_only">Complete %1$d/%2$d daily requests to advance</string> <!-- untranslated -->
+    <string name="guild_quest_required">Se requiere una misión para avanzar</string>
+    <string name="guild_progress_dailies_and_quest">Completa %1$d/%2$d solicitudes diarias y misiones para avanzar</string>
+    <string name="guild_progress_dailies_only">Completa %1$d/%2$d solicitudes diarias para avanzar</string>
     <string name="home_died_message">Moriste y perdiste la mayor parte de tus ganancias.</string>
     <string name="home_xp_boost_was_active">2× All skills XP was active</string> <!-- untranslated -->
     <string name="home_xp_boost_active">2× All skills XP - %1$s</string> <!-- untranslated -->
@@ -863,7 +863,7 @@
         <item>Xander</item>
         <item>Yara</item>
     </string-array> <!-- untranslated -->
-    <string name="inn_title">Inn</string> <!-- untranslated -->
+    <string name="inn_title">Posada</string>
     <string name="inn_desc">Hire a worker to train skills for you, or buy food from the daily menu. Workers do not count toward your quests.</string> <!-- untranslated -->
     <string name="inn_worker_already_hired">A worker is already hired.</string> <!-- untranslated -->
     <string name="inn_not_enough_coins">Not enough coins.</string> <!-- untranslated -->
@@ -971,19 +971,19 @@
     <string name="worker_skills_title_nav">Worker Skills</string> <!-- untranslated -->
 
     <!-- Guild Hall -->
-    <string name="guild_hall_title">Guild Hall</string> <!-- untranslated -->
+    <string name="guild_hall_title">Sede del Gremio</string>
     <string name="guild_hall_desc">Únete a gremios y completa solicitudes diarias para subir de rango</string>
-    <string name="guild_hall_intro">Guilds reward you for activities you already do. Complete quests and daily requests to earn cross-skill materials, coins, and XP, so specialists can still access resources from skills they don\'t train.</string> <!-- untranslated -->
-    <string name="guild_level_label">Level %1$d</string> <!-- untranslated -->
+    <string name="guild_hall_intro">Los gremios te recompensan por actividades que ya haces. Completa misiones y solicitudes diarias para ganar materiales de otras habilidades, monedas y XP, para que los especialistas puedan acceder a recursos de habilidades que no entrenan.</string>
+    <string name="guild_level_label">Nivel %1$d</string>
     <string name="guild_level_max">Level 10 (Max)</string> <!-- untranslated -->
-    <string name="guild_tab_quests">Quests</string> <!-- untranslated -->
-    <string name="guild_tab_dailies">Daily Requests</string> <!-- untranslated -->
-    <string name="guild_daily_resets_in">Resets daily at %1$s</string> <!-- untranslated -->
-    <string name="guild_locked_hint">Requires Guild Level %1$d</string> <!-- untranslated -->
+    <string name="guild_tab_quests">Misiones</string>
+    <string name="guild_tab_dailies">Solicitudes diarias</string>
+    <string name="guild_daily_resets_in">Se reinicia todos los días a las %1$s</string>
+    <string name="guild_locked_hint">Requiere nivel de gremio %1$d</string>
     <string name="guild_no_dailies">Completa misiones de gremio para desbloquear solicitudes diarias.</string>
-    <string name="guild_dailies_all_done">All of today\'s daily requests are complete. Come back after the daily reset.</string> <!-- untranslated -->
+    <string name="guild_dailies_all_done">Todas las solicitudes diarias de hoy están completas. ¡Vuelve mañana!</string>
     <string name="guild_contribute_inventory">Contribuir desde el inventario (%1$d disponible)</string>
-    <string name="guild_go_to_skill">Go to Skill</string> <!-- untranslated -->
+    <string name="guild_go_to_skill">Ir a la habilidad</string>
     <string name="guild_quest_desc_gather">%1$s %2$d %3$s para el %4$s.</string>
     <string name="guild_quest_desc_kill">Derrota %1$d enemigos usando combate %2$s.</string>
     <string name="guild_quest_desc_prayer">Entierra %1$d huesos para el %2$s.</string>
@@ -997,32 +997,32 @@
     <string name="guild_rep_label">%1$d / %2$d diarias</string>
     <string name="guild_quest_complete">Quest complete: %1$s</string>
     <string name="guild_daily_complete">Daily reward claimed!</string> <!-- untranslated -->
-    <string name="guild_name_mining">Mining Guild</string> <!-- untranslated -->
-    <string name="guild_name_fishing">Fishing Guild</string> <!-- untranslated -->
-    <string name="guild_name_woodcutting">Woodcutting Guild</string> <!-- untranslated -->
-    <string name="guild_name_farming">Farming Guild</string> <!-- untranslated -->
-    <string name="guild_name_firemaking">Firemakers Guild</string> <!-- untranslated -->
-    <string name="guild_name_agility">Agility Guild</string> <!-- untranslated -->
-    <string name="guild_name_smithing">Smithing Guild</string> <!-- untranslated -->
-    <string name="guild_name_cooking">Cooks Guild</string> <!-- untranslated -->
-    <string name="guild_name_fletching">Fletchers Guild</string> <!-- untranslated -->
-    <string name="guild_name_crafting">Crafting Guild</string> <!-- untranslated -->
-    <string name="guild_name_runecrafting">Runecrafters Guild</string> <!-- untranslated -->
-    <string name="guild_name_herblore">Herblorists Guild</string> <!-- untranslated -->
-    <string name="guild_name_warriors">Warriors Guild</string> <!-- untranslated -->
-    <string name="guild_name_archers">Archers Guild</string> <!-- untranslated -->
-    <string name="guild_name_mages">Mages Guild</string> <!-- untranslated -->
-    <string name="guild_name_prayer">Prayer Guild</string> <!-- untranslated -->
+    <string name="guild_name_mining">Gremio de Mineros</string>
+    <string name="guild_name_fishing">Gremio de Pescadores</string>
+    <string name="guild_name_woodcutting">Gremio de Leñadores</string>
+    <string name="guild_name_farming">Gremio de Granjeros</string>
+    <string name="guild_name_firemaking">Gremio de Fogateros</string>
+    <string name="guild_name_agility">Gremio de Agilidad</string>
+    <string name="guild_name_smithing">Gremio de Herreros</string>
+    <string name="guild_name_cooking">Gremio de Cocineros</string>
+    <string name="guild_name_fletching">Gremio de Flecheros</string>
+    <string name="guild_name_crafting">Gremio de Artesanía</string>
+    <string name="guild_name_runecrafting">Gremio de Runas</string>
+    <string name="guild_name_herblore">Gremio de Herbolarios</string>
+    <string name="guild_name_warriors">Gremio de Guerreros</string>
+    <string name="guild_name_archers">Gremio de Arqueros</string>
+    <string name="guild_name_mages">Gremio de Magos</string>
+    <string name="guild_name_prayer">Gremio de Plegarias</string>
     <string name="guild_name_thieving">Gremio de Ladrones</string>
-    <string name="guild_name_mercantile">Merchants Guild</string> <!-- untranslated -->
+    <string name="guild_name_mercantile">Gremio de Mercaderes</string>
     <string name="guild_name_construction">Gremio de Constructores</string>
-    <string name="guild_name_slayer">Slayers Guild</string> <!-- untranslated -->
+    <string name="guild_name_slayer">Gremio de Slayer</string>
     <string name="guild_quest_desc_slayer_task">Completa %1$d tareas de Slayer para %2$s.</string>
     <string name="guild_quest_desc_slayer_kill">Derrota %1$d enemigos durante una tarea de Slayer.</string>
 
     <!-- Mercantile skill -->
     <string name="skill_mercantile">Mercantile</string> <!-- untranslated -->
-    <string name="label_support_skills">Support</string> <!-- untranslated -->
+    <string name="label_support_skills">Apoyo</string>
     <string name="mercantile_routes_label">Trade Routes</string> <!-- untranslated -->
     <string name="mercantile_level_label">Level %1$d Mercantile</string> <!-- untranslated -->
     <string name="mercantile_xp_label">XP: %1$s</string> <!-- untranslated -->
@@ -1332,7 +1332,7 @@
     <string name="house_item_shield_kite">Kite Shield Display</string> <!-- untranslated -->
     <string name="house_item_swords_crossed">Crossed Swords</string> <!-- untranslated -->
     <string name="house_item_lamp">Wall Lantern</string> <!-- untranslated -->
-    <string name="slayer_title">Slayer Master</string> <!-- untranslated -->
+    <string name="slayer_title">Maestro de Slayer</string>
     <string name="slayer_card_desc">Tasks and rewards for slayers</string> <!-- untranslated -->
     <string name="slayer_desc">Complete tasks to earn Slayer XP and points. Spend points in the shop for exclusive gear.</string> <!-- untranslated -->
     <string name="slayer_level_label">Level %1$d</string> <!-- untranslated -->
@@ -1458,10 +1458,13 @@
     <string name="crafting_tier_maple">Arce</string>
     <string name="crafting_tier_mithril">Mithril</string> <!-- untranslated -->
     <string name="crafting_tier_oak">Roble</string>
+    <string name="crafting_tier_plank">Plank</string> <!-- untranslated -->
     <string name="crafting_tier_platinum">Platino</string>
+    <string name="crafting_tier_redwood">Redwood</string> <!-- untranslated -->
     <string name="crafting_tier_runite">Runite</string> <!-- untranslated -->
     <string name="crafting_tier_silver">Plata</string>
     <string name="crafting_tier_steel">Acero</string>
+    <string name="crafting_tier_stone">Stone</string> <!-- untranslated -->
     <string name="crafting_tier_willow">Sauce</string>
     <string name="crafting_tier_yew">Tejo</string>
 
@@ -2154,7 +2157,7 @@
     <string name="seasonal_market_limit_left">Quedan %1$d</string>
     <string name="seasonal_market_purchase_success">¡Compra completada!</string>
     <string name="seasonal_donate">Donar</string>
-    <string name="seasonal_event_gloomharvest_2026_name">Gloomharvest</string> <!-- untranslated -->
+    <string name="seasonal_event_gloomharvest_2026_name">Cosecha Sombría</string>
     <string name="seasonal_event_gloomharvest_2026_banner">Participated in the Gloomharvest 2026</string> <!-- untranslated -->
     <string name="seasonal_minigame_lantern_lights_name">Lantern Lights</string> <!-- untranslated -->
     <string name="seasonal_minigame_sequence_hint">Observa los faroles y repite el orden. ¡Llega a la ronda %1$d de %2$d para ganar una ficha!</string>

@@ -10,6 +10,7 @@ import com.fantasyidler.R
 import com.fantasyidler.data.json.BlessingData
 import com.fantasyidler.data.json.EquipmentData
 import com.fantasyidler.data.model.DungeonRunStats
+import com.fantasyidler.data.model.ElderContent
 import com.fantasyidler.data.model.HiredWorker
 import com.fantasyidler.data.model.OwnedPet
 import com.fantasyidler.data.model.PlayerFlags
@@ -85,6 +86,31 @@ private val CAPE_SKILL_TO_COMBAT_STATS: Map<String, Set<String>> = mapOf(
     "archers"  to setOf(Skills.RANGED),
     "mages"    to setOf(Skills.MAGIC),
 )
+
+/**
+ * True when a completed session is unambiguously an Elder Isle session, derived from the
+ * activity key rather than the `isElderSession` DB flag. Isle activity keys (Coastal Run,
+ * Mythrite Ore, elder recipes, isle dungeons, etc.) can't be reached from the mainland,
+ * so the key itself is authoritative. This backstops any code path that failed to stamp
+ * `session.isElderSession = true` at start time — reports of "no isle XP" in v1.15.3
+ * indicate the flag can silently end up false despite the session being isle-side.
+ */
+private fun sessionIsIsleByActivity(session: SkillSession): Boolean {
+    val key = session.activityKey
+    return when (session.skillName) {
+        Skills.MINING       -> key in ElderContent.ORES
+        Skills.WOODCUTTING  -> key in ElderContent.TREES
+        Skills.FISHING      -> key in ElderContent.FISH
+        Skills.SMITHING     -> key in ElderContent.SMITHING_RECIPES
+        Skills.COOKING      -> key in ElderContent.COOKING_RECIPES
+        Skills.AGILITY      -> key in ElderContent.AGILITY_COURSES
+        "combat"            -> key in ISLE_DUNGEON_KEYS
+        "boss"              -> key in ISLE_BOSS_KEYS
+        else                -> false
+    }
+}
+private val ISLE_DUNGEON_KEYS = setOf("beach_and_cliffs", "ancient_forest", "volcano_peak", "abyssal_depths")
+private val ISLE_BOSS_KEYS    = setOf("last_elder")
 
 private fun applyCombatCapeBonus(xpPerSkill: MutableMap<String, Long>, capeSkill: String?, capeBonus: Float) {
     if (capeSkill == null || capeBonus <= 0f) return
@@ -884,7 +910,7 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun collectBossSession(session: SkillSession, frames: List<SessionFrame>, grantXp: Boolean, ctx: CollectContext, acc: CollectAcc) {
         // Elder Isle boss route: XP into elder pool, coins into shared, no mainland hooks.
-        if (session.isElderSession) {
+        if (session.isElderSession || sessionIsIsleByActivity(session)) {
             val elderXp    = mutableMapOf<String, Long>()
             val elderItems = mutableMapOf<String, Int>()
             var won = false
@@ -1000,7 +1026,7 @@ class HomeViewModel @Inject constructor(
     private suspend fun collectDungeonSession(session: SkillSession, frames: List<SessionFrame>, grantXp: Boolean, ctx: CollectContext, acc: CollectAcc) {
         // Elder Isle dungeons route combat XP into the elder pool and bypass every mainland
         // boost/quest hook, matching the bonus-flow rule. Loot lands in shared inventory.
-        if (session.isElderSession) {
+        if (session.isElderSession || sessionIsIsleByActivity(session)) {
             val elderXpPerSkill = mutableMapOf<String, Long>()
             val elderItems      = mutableMapOf<String, Int>()
             for (frame in frames) {
@@ -1148,7 +1174,7 @@ class HomeViewModel @Inject constructor(
         // Elder Isle sessions bypass every mainland boost/cape/heirloom path and write XP into
         // the elder pool. The isle economy is walled off from mainland modifiers, per the
         // bonus-flow rule in the design doc.
-        if (session.isElderSession) {
+        if (session.isElderSession || sessionIsIsleByActivity(session)) {
             playerRepo.applyElderSessionResults(session.skillName, totalXp, its.filterKeys { it != "coins" })
             acc.combinedXpBySkill[session.skillName] = (acc.combinedXpBySkill[session.skillName] ?: 0L) + totalXp
             for ((item, qty) in its) if (item != "coins") acc.combinedItems[item] = (acc.combinedItems[item] ?: 0) + qty

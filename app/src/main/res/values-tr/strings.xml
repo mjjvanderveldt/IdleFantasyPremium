@@ -1458,10 +1458,13 @@
     <string name="crafting_tier_maple">Akçaağaç</string>
     <string name="crafting_tier_mithril">Mithril</string> <!-- untranslated -->
     <string name="crafting_tier_oak">Meşe</string>
+    <string name="crafting_tier_plank">Plank</string> <!-- untranslated -->
     <string name="crafting_tier_platinum">Platin</string>
+    <string name="crafting_tier_redwood">Redwood</string> <!-- untranslated -->
     <string name="crafting_tier_runite">Runite</string> <!-- untranslated -->
     <string name="crafting_tier_silver">Gümüş</string>
     <string name="crafting_tier_steel">Çelik</string>
+    <string name="crafting_tier_stone">Stone</string> <!-- untranslated -->
     <string name="crafting_tier_willow">Söğüt</string>
     <string name="crafting_tier_yew">Porsuk</string>
 

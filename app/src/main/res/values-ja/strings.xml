@@ -1458,10 +1458,13 @@
     <string name="crafting_tier_maple">メープル</string>
     <string name="crafting_tier_mithril">ミスリル</string>
     <string name="crafting_tier_oak">オーク</string>
+    <string name="crafting_tier_plank">Plank</string> <!-- untranslated -->
     <string name="crafting_tier_platinum">プラチナ</string>
+    <string name="crafting_tier_redwood">Redwood</string> <!-- untranslated -->
     <string name="crafting_tier_runite">ルナイト</string>
     <string name="crafting_tier_silver">銀</string>
     <string name="crafting_tier_steel">鋼鉄</string>
+    <string name="crafting_tier_stone">Stone</string> <!-- untranslated -->
     <string name="crafting_tier_willow">ヤナギ</string>
     <string name="crafting_tier_yew">イチイ</string>
 

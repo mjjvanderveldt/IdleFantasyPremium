@@ -19,6 +19,7 @@ import com.fantasyidler.repository.GuildRepository
 import com.fantasyidler.repository.PlayerRepository
 import com.fantasyidler.repository.QuestRepository
 import com.fantasyidler.repository.QueuedSessionStarter
+import com.fantasyidler.repository.SessionRepository
 import com.fantasyidler.repository.SlayerRepository
 import com.fantasyidler.repository.TownRepository
 import com.fantasyidler.repository.WeeklyQuestRepository
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -88,6 +90,7 @@ class SlayerViewModel @Inject constructor(
     private val slayerRepo: SlayerRepository,
     val gameData: GameDataRepository,
     private val queuedSessionStarter: QueuedSessionStarter,
+    private val sessionRepo: SessionRepository,
     @ApplicationContext private val context: Context,
     private val townRepo: TownRepository,
     private val questRepo: QuestRepository,
@@ -96,6 +99,18 @@ class SlayerViewModel @Inject constructor(
     private val weeklyQuestRepo: WeeklyQuestRepository,
     private val json: Json,
 ) : ViewModel() {
+
+    init {
+        // Mirror the ticker Home/CombatViewModel already run: Doze can defer AlarmManager
+        // for hours, so while the Slayer view is open, drain overdue sessions ourselves so
+        // the queue advances and playerFlow emits fresh state (issue #1848).
+        viewModelScope.launch {
+            while (true) {
+                try { sessionRepo.completeOverdueSessions(queuedSessionStarter) } catch (_: Exception) {}
+                delay(1_000L)
+            }
+        }
+    }
 
     /** Equipment data keyed by item key, for the shop stats display. */
     val shopEquipment: Map<String, EquipmentData> by lazy {

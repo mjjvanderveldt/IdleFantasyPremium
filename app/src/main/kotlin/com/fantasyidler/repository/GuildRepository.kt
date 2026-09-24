@@ -529,9 +529,9 @@ class GuildRepository @Inject constructor(
     // Daily refresh
     // -------------------------------------------------------------------------
 
-    fun shouldRefreshGuildDailies(generatedAt: Long, resetHour: Int): Boolean {
-        if (generatedAt == 0L) return true
-        return System.currentTimeMillis() >= nextResetMs(generatedAt, resetHour)
+    fun shouldRefreshGuildDailies(nextResetAt: Long): Boolean {
+        if (nextResetAt == 0L) return true
+        return System.currentTimeMillis() >= nextResetAt
     }
 
     fun nextResetMs(fromMs: Long = System.currentTimeMillis(), resetHour: Int): Long {
@@ -611,11 +611,13 @@ class GuildRepository @Inject constructor(
             selectedIds.addAll(chosen.map { it.id })
         }
 
+        val now = System.currentTimeMillis()
         return flags.copy(
             guildDailyIds           = selectedIds,
             guildDailyProgress      = emptyMap(),
             guildDailyClaimed       = emptyList(),
-            guildDailyGeneratedAt   = System.currentTimeMillis(),
+            guildDailyGeneratedAt   = now,
+            guildDailyNextResetAt   = nextResetMs(now, flags.dailyResetHour),
         )
     }
 
@@ -657,7 +659,7 @@ class GuildRepository @Inject constructor(
             .toSet()
         val skillLevels = try { playerRepo.getSkillLevels() } catch (_: Exception) { emptyMap<String, Int>() }
         return when {
-            shouldRefreshGuildDailies(flags.guildDailyGeneratedAt, flags.dailyResetHour) -> {
+            shouldRefreshGuildDailies(flags.guildDailyNextResetAt) -> {
                 val refreshed = buildRefreshedGuildDailyFlags(flags, completedQuestIds, skillLevels)
                 playerRepo.updateFlagsUnlocked(refreshed)
                 refreshed

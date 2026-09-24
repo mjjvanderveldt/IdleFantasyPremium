@@ -1,3 +1,11 @@
+v1.15.4
+• Elder Isle sessions always credit XP to the elder pool, even if the isle flag desyncs mid-session.
+• Time zone changes no longer reset daily/weekly quests, guild dailies, or the bounty board.
+• Slayer Master view auto-refreshes when a background session completes.
+• Opening Ancient Treasures in bulk is much faster on large stacks.
+• Equip picker sorts by stat power instead of pickup order.
+• Elder Isle crafting no longer uses mainland tools, boosts, or pets, and pays XP to the elder pool.
+
 v1.15.3
 • Isle dungeon clears now correctly count toward story quest counters. Fought Beach & Cliffs but the "First Steps" quest stayed 0/8? Fixed — every successful isle dungeon run now increments the counter the way mainland dungeons already did.
 • Sea Serpent is now available on the Combat tab the moment the Dock is built, instead of also requiring Grand Monument tier 5 and total level 1500. The Dock (Construction 90) is a heavy enough gate on its own.

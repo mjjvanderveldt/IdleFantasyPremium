@@ -519,7 +519,7 @@
     <string name="guild_progress_dailies_and_quest">Complete %1$d/%2$d daily requests &amp; quests to advance</string>
     <string name="guild_progress_dailies_only">Complete %1$d/%2$d daily requests to advance</string>
     <string name="home_died_message">You died and lost most of your gains.</string>
-    <string name="home_xp_boost_was_active">2× All skills XP was active</string>
+    <string name="home_xp_boost_was_active">2× XP boosts were active</string>
     <string name="home_xp_boost_active">2× All skills XP - %1$s</string>
     <string name="home_prestige_xp_boost_active">2× %1$s XP - %2$s</string>
     <string name="boosts_show_more">+%1$d more boosts (tap to show)</string>
@@ -1467,10 +1467,13 @@
     <string name="crafting_tier_maple">Maple</string>
     <string name="crafting_tier_mithril">Mithril</string>
     <string name="crafting_tier_oak">Oak</string>
+    <string name="crafting_tier_plank">Plank</string>
     <string name="crafting_tier_platinum">Platinum</string>
+    <string name="crafting_tier_redwood">Redwood</string>
     <string name="crafting_tier_runite">Runite</string>
     <string name="crafting_tier_silver">Silver</string>
     <string name="crafting_tier_steel">Steel</string>
+    <string name="crafting_tier_stone">Stone</string>
     <string name="crafting_tier_willow">Willow</string>
     <string name="crafting_tier_yew">Yew</string>
 

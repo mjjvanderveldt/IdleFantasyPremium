@@ -14,7 +14,7 @@
       }
     },
     "address": "https://idlefantasy.tristinbaker.xyz/fdroid/repo",
-    "timestamp": 1789997592516,
+    "timestamp": 1790011255382,
     "categories": {
       "Games": {
         "name": {
@@ -31,7 +31,7 @@
           "Games"
         ],
         "issueTracker": "https://github.com/tristinbaker/IdleFantasy/issues",
-        "lastUpdated": 1789997550959,
+        "lastUpdated": 1790011214626,
         "license": "GPL-3.0-only",
         "sourceCode": "https://github.com/tristinbaker/IdleFantasy",
         "screenshots": {
@@ -140,6 +140,56 @@
         "preferredSigner": "99a980a934cb0149bfbdd5f4358471ffe69302e0467bae4d8574d4feeda34010"
       },
       "versions": {
+        "e259241c7db9f9f6b2eea5a628af89c4b5da423ad2c4024050c3b6f90a6903f6": {
+          "added": 1790011214626,
+          "file": {
+            "name": "/com.tristinbaker.idlefantasy_153000.apk",
+            "sha256": "e259241c7db9f9f6b2eea5a628af89c4b5da423ad2c4024050c3b6f90a6903f6",
+            "size": 10913933
+          },
+          "manifest": {
+            "nativecode": [
+              "arm64-v8a",
+              "armeabi-v7a",
+              "x86",
+              "x86_64"
+            ],
+            "versionName": "1.15.3",
+            "versionCode": 153000,
+            "usesSdk": {
+              "minSdkVersion": 26,
+              "targetSdkVersion": 35
+            },
+            "signer": {
+              "sha256": [
+                "99a980a934cb0149bfbdd5f4358471ffe69302e0467bae4d8574d4feeda34010"
+              ]
+            },
+            "usesPermission": [
+              {
+                "name": "android.permission.POST_NOTIFICATIONS"
+              },
+              {
+                "name": "android.permission.RECEIVE_BOOT_COMPLETED"
+              },
+              {
+                "name": "android.permission.WAKE_LOCK"
+              },
+              {
+                "name": "android.permission.USE_EXACT_ALARM"
+              },
+              {
+                "name": "android.permission.SCHEDULE_EXACT_ALARM"
+              },
+              {
+                "name": "com.tristinbaker.idlefantasy.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+              }
+            ]
+          },
+          "whatsNew": {
+            "en-US": "• Isle dungeon clears now correctly count toward story quest counters. Fought Beach & Cliffs but the \"First Steps\" quest stayed 0/8? Fixed — every successful isle dungeon run now increments the counter the way mainland dungeons already did.\n• Sea Serpent is now available on the Combat tab the moment the Dock is built, instead of also requiring Grand Monument tier 5 and total level 1500. The Dock (Construction 90) is a heavy enough gate on its own.\n• Isle skill sessions queued on the island no lo"
+          }
+        },
         "5011d7c1b26aef1af368cb003512120b88e724d5ca1eb4349e04a0c984fb1aa0": {
           "added": 1789997550959,
           "file": {

@@ -8,7 +8,7 @@
     <string name="nav_combat">Combate</string>
     <string name="nav_home">Inicio</string>
     <string name="nav_crafting">Crafting</string> <!-- untranslated -->
-    <string name="nav_quests">Quests</string> <!-- untranslated -->
+    <string name="nav_quests">Misiones</string>
     <string name="nav_profile">Perfil</string>
 
     <!-- ===== Common buttons ===== -->
@@ -159,7 +159,7 @@
     <string name="tab_label_with_count">%1$s (%2$d)</string> <!-- untranslated -->
     <string name="label_shop">Tienda</string>
     <string name="label_sell_items">Vender artículos</string>
-    <string name="label_total_level">Total Level</string> <!-- untranslated -->
+    <string name="label_total_level">Nivel Total</string>
     <string name="label_wins">Victorias</string>
     <string name="label_losses">Losses</string> <!-- untranslated -->
     <string name="label_active">Active</string> <!-- untranslated -->
@@ -366,7 +366,7 @@
     <string name="label_daily_reward_complete">2,000 coins</string> <!-- untranslated -->
     <string name="msg_daily_claimed_coins">Daily quest complete! +2,000 coins.</string> <!-- untranslated -->
     <string name="msg_daily_claimed_dwarven">Daily quest complete! You found %1$s!</string> <!-- untranslated -->
-    <string name="label_hide_completed">Hide completed</string> <!-- untranslated -->
+    <string name="label_hide_completed">Ocultar completadas</string>
 
     <!-- ===== OnboardingScreen ===== -->
     <string name="onboarding_lets_go">Vamos!</string>
@@ -508,16 +508,16 @@
     <string name="settings_backup_folder_set">Backup folder set.</string> <!-- untranslated -->
 
     <!-- ===== HomeScreen ===== -->
-    <string name="home_town_title">Town</string> <!-- untranslated -->
+    <string name="home_town_title">Ciudad</string>
     <string name="home_town_desc">Visita la tienda, la posada, el gremio, la iglesia, el taller del constructor, el maestro cazador y el salón de juegos</string>
-    <string name="guild_not_unlocked">Not yet unlocked</string> <!-- untranslated -->
-    <string name="guild_dailies_done_today">Dailies done today</string> <!-- untranslated -->
-    <string name="guild_dailies_remaining_today">%1$d left today</string> <!-- untranslated -->
+    <string name="guild_not_unlocked">Aún no desbloqueado</string>
+    <string name="guild_dailies_done_today">Diarias completadas hoy</string>
+    <string name="guild_dailies_remaining_today">%1$d restantes hoy</string>
     <string name="guild_do_dailies_hint">Do dailies to increase your reputation</string>
     <string name="guild_quest_gate_blocked">Complete quests to advance your rank</string> <!-- untranslated -->
-    <string name="guild_quest_required">Quest required to advance</string> <!-- untranslated -->
-    <string name="guild_progress_dailies_and_quest">Complete %1$d/%2$d daily requests &amp; quests to advance</string> <!-- untranslated -->
-    <string name="guild_progress_dailies_only">Complete %1$d/%2$d daily requests to advance</string> <!-- untranslated -->
+    <string name="guild_quest_required">Se requiere una misión para avanzar</string>
+    <string name="guild_progress_dailies_and_quest">Completa %1$d/%2$d solicitudes diarias y misiones para avanzar</string>
+    <string name="guild_progress_dailies_only">Completa %1$d/%2$d solicitudes diarias para avanzar</string>
     <string name="home_died_message">Moriste y perdiste la mayor parte de tus ganancias.</string>
     <string name="home_xp_boost_was_active">2× All skills XP was active</string> <!-- untranslated -->
     <string name="home_xp_boost_active">2× All skills XP - %1$s</string> <!-- untranslated -->
@@ -863,7 +863,7 @@
         <item>Xander</item>
         <item>Yara</item>
     </string-array> <!-- untranslated -->
-    <string name="inn_title">Inn</string> <!-- untranslated -->
+    <string name="inn_title">Posada</string>
     <string name="inn_desc">Hire a worker to train skills for you, or buy food from the daily menu.</string>
     <string name="inn_worker_already_hired">A worker is already hired.</string> <!-- untranslated -->
     <string name="inn_not_enough_coins">Not enough coins.</string> <!-- untranslated -->
@@ -971,19 +971,19 @@
     <string name="worker_skills_title_nav">Worker Skills</string> <!-- untranslated -->
 
     <!-- Guild Hall -->
-    <string name="guild_hall_title">Guild Hall</string> <!-- untranslated -->
+    <string name="guild_hall_title">Sede del Gremio</string>
     <string name="guild_hall_desc">Guilds and rep rewards</string>
-    <string name="guild_hall_intro">Guilds reward you for activities you already do. Complete quests and daily requests to earn cross-skill materials, coins, and XP, so specialists can still access resources from skills they don\'t train.</string> <!-- untranslated -->
-    <string name="guild_level_label">Level %1$d</string> <!-- untranslated -->
+    <string name="guild_hall_intro">Los gremios te recompensan por actividades que ya haces. Completa misiones y solicitudes diarias para ganar materiales de otras habilidades, monedas y XP, para que los especialistas puedan acceder a recursos de habilidades que no entrenan.</string>
+    <string name="guild_level_label">Nivel %1$d</string>
     <string name="guild_level_max">Level 10 (Max)</string> <!-- untranslated -->
-    <string name="guild_tab_quests">Quests</string> <!-- untranslated -->
-    <string name="guild_tab_dailies">Daily Requests</string> <!-- untranslated -->
-    <string name="guild_daily_resets_in">Resets daily at 6am</string>
-    <string name="guild_locked_hint">Requires Guild Level %1$d</string> <!-- untranslated -->
+    <string name="guild_tab_quests">Misiones</string>
+    <string name="guild_tab_dailies">Solicitudes diarias</string>
+    <string name="guild_daily_resets_in">Se reinicia todos los días a las %1$s</string>
+    <string name="guild_locked_hint">Requiere nivel de gremio %1$d</string>
     <string name="guild_no_dailies">Complete guild quests to earn reputation and unlock daily requests.</string>
-    <string name="guild_dailies_all_done">All of today\'s daily requests are complete. Come back after the daily reset.</string> <!-- untranslated -->
-    <string name="guild_contribute_inventory">Contribute from inventory (%1$d available)</string> <!-- untranslated -->
-    <string name="guild_go_to_skill">Go to Skill</string> <!-- untranslated -->
+    <string name="guild_dailies_all_done">Todas las solicitudes diarias de hoy están completas. ¡Vuelve mañana!</string>
+    <string name="guild_contribute_inventory">Contribuir desde el inventario (%1$d disponibles)</string>
+    <string name="guild_go_to_skill">Ir a la habilidad</string>
     <string name="guild_quest_desc_gather">%1$s %2$d %3$s for the %4$s.</string> <!-- untranslated -->
     <string name="guild_quest_desc_kill">Defeat %1$d enemies using %2$s combat.</string> <!-- untranslated -->
     <string name="guild_quest_desc_prayer">Bury %1$d bones for the %2$s.</string> <!-- untranslated -->
@@ -997,32 +997,32 @@
     <string name="guild_rep_label">%1$d / %2$d rep</string>
     <string name="guild_quest_complete">Quest complete: %1$s</string>
     <string name="guild_daily_complete">Daily reward claimed!</string> <!-- untranslated -->
-    <string name="guild_name_mining">Mining Guild</string> <!-- untranslated -->
-    <string name="guild_name_fishing">Fishing Guild</string> <!-- untranslated -->
-    <string name="guild_name_woodcutting">Woodcutting Guild</string> <!-- untranslated -->
-    <string name="guild_name_farming">Farming Guild</string> <!-- untranslated -->
-    <string name="guild_name_firemaking">Firemakers Guild</string> <!-- untranslated -->
-    <string name="guild_name_agility">Agility Guild</string> <!-- untranslated -->
-    <string name="guild_name_smithing">Smithing Guild</string> <!-- untranslated -->
-    <string name="guild_name_cooking">Cooks Guild</string> <!-- untranslated -->
-    <string name="guild_name_fletching">Fletchers Guild</string> <!-- untranslated -->
-    <string name="guild_name_crafting">Crafting Guild</string> <!-- untranslated -->
-    <string name="guild_name_runecrafting">Runecrafters Guild</string> <!-- untranslated -->
-    <string name="guild_name_herblore">Herblorists Guild</string> <!-- untranslated -->
-    <string name="guild_name_warriors">Warriors Guild</string> <!-- untranslated -->
-    <string name="guild_name_archers">Archers Guild</string> <!-- untranslated -->
-    <string name="guild_name_mages">Mages Guild</string> <!-- untranslated -->
-    <string name="guild_name_prayer">Prayer Guild</string> <!-- untranslated -->
+    <string name="guild_name_mining">Gremio de Mineros</string>
+    <string name="guild_name_fishing">Gremio de Pescadores</string>
+    <string name="guild_name_woodcutting">Gremio de Leñadores</string>
+    <string name="guild_name_farming">Gremio de Granjeros</string>
+    <string name="guild_name_firemaking">Gremio de Fogateros</string>
+    <string name="guild_name_agility">Gremio de Agilidad</string>
+    <string name="guild_name_smithing">Gremio de Herreros</string>
+    <string name="guild_name_cooking">Gremio de Cocineros</string>
+    <string name="guild_name_fletching">Gremio de Flecheros</string>
+    <string name="guild_name_crafting">Gremio de Artesanía</string>
+    <string name="guild_name_runecrafting">Gremio de Runas</string>
+    <string name="guild_name_herblore">Gremio de Herbolarios</string>
+    <string name="guild_name_warriors">Gremio de Guerreros</string>
+    <string name="guild_name_archers">Gremio de Arqueros</string>
+    <string name="guild_name_mages">Gremio de Magos</string>
+    <string name="guild_name_prayer">Gremio de Plegarias</string>
     <string name="guild_name_thieving">Gremio de Ladrones</string>
-    <string name="guild_name_mercantile">Merchants Guild</string> <!-- untranslated -->
-    <string name="guild_name_construction">Builders Guild</string> <!-- untranslated -->
-    <string name="guild_name_slayer">Slayers Guild</string> <!-- untranslated -->
+    <string name="guild_name_mercantile">Gremio de Mercaderes</string>
+    <string name="guild_name_construction">Gremio de Constructores</string>
+    <string name="guild_name_slayer">Gremio de Slayer</string>
     <string name="guild_quest_desc_slayer_task">Complete %1$d slayer tasks for the %2$s.</string> <!-- untranslated -->
     <string name="guild_quest_desc_slayer_kill">Defeat %1$d enemies while on a slayer task.</string> <!-- untranslated -->
 
     <!-- Mercantile skill -->
     <string name="skill_mercantile">Mercantile</string> <!-- untranslated -->
-    <string name="label_support_skills">Support</string> <!-- untranslated -->
+    <string name="label_support_skills">Apoyo</string>
     <string name="mercantile_routes_label">Trade Routes</string> <!-- untranslated -->
     <string name="mercantile_level_label">Level %1$d Mercantile</string> <!-- untranslated -->
     <string name="mercantile_xp_label">XP: %1$s</string> <!-- untranslated -->
@@ -1038,7 +1038,7 @@
     <string name="mercantile_queue_label">Add to Queue</string> <!-- untranslated -->
 
     <!-- Church -->
-    <string name="church_title">Church</string> <!-- untranslated -->
+    <string name="church_title">Iglesia</string>
     <string name="church_desc">Blessings for XP, defense, and coins</string> <!-- untranslated -->
     <string name="church_no_active_blessing">No active blessing — visit the Church to pray.</string> <!-- untranslated -->
     <string name="church_active_label">Active Blessing</string> <!-- untranslated -->
@@ -1138,7 +1138,7 @@
     <string name="builder_card_desc">Mejora la Posada, el Gremio y la Iglesia</string>
 
     <!-- Player housing -->
-    <string name="house_title">My House</string> <!-- untranslated -->
+    <string name="house_title">Mi Casa</string>
     <string name="house_edit">Edit</string> <!-- untranslated -->
     <string name="house_done">Done</string> <!-- untranslated -->
     <string name="house_share">Share a picture of your house</string> <!-- untranslated -->
@@ -1332,7 +1332,7 @@
     <string name="house_item_shield_kite">Kite Shield Display</string> <!-- untranslated -->
     <string name="house_item_swords_crossed">Crossed Swords</string> <!-- untranslated -->
     <string name="house_item_lamp">Wall Lantern</string> <!-- untranslated -->
-    <string name="slayer_title">Slayer Master</string> <!-- untranslated -->
+    <string name="slayer_title">Maestro de Slayer</string>
     <string name="slayer_card_desc">Tasks and rewards for slayers</string> <!-- untranslated -->
     <string name="slayer_desc">Complete tasks to earn Slayer XP and points. Spend points in the shop for exclusive gear.</string> <!-- untranslated -->
     <string name="slayer_level_label">Level %1$d</string> <!-- untranslated -->
@@ -1458,10 +1458,13 @@
     <string name="crafting_tier_maple">Arce</string>
     <string name="crafting_tier_mithril">Mithril</string> <!-- untranslated -->
     <string name="crafting_tier_oak">Roble</string>
+    <string name="crafting_tier_plank">Plank</string> <!-- untranslated -->
     <string name="crafting_tier_platinum">Platino</string>
+    <string name="crafting_tier_redwood">Redwood</string> <!-- untranslated -->
     <string name="crafting_tier_runite">Runite</string> <!-- untranslated -->
     <string name="crafting_tier_silver">Plata</string>
     <string name="crafting_tier_steel">Acero</string>
+    <string name="crafting_tier_stone">Stone</string> <!-- untranslated -->
     <string name="crafting_tier_willow">Sauce</string>
     <string name="crafting_tier_yew">Tejo</string>
 
@@ -1731,7 +1734,7 @@
     <string name="achievement_tower_all_milestones_desc">Claim all 25 tower milestones</string> <!-- untranslated -->
 
     <!-- ===== Carnival ===== -->
-    <string name="carnival_title">Carnival</string> <!-- untranslated -->
+    <string name="carnival_title">Carnaval</string>
     <string name="carnival_desc">Games, prizes, and merriment!</string> <!-- untranslated -->
     <string name="carnival_prize_xp_lamp_small_name">Small XP Lamp</string> <!-- untranslated -->
     <string name="carnival_prize_xp_lamp_small_desc">Grants 10,000 XP to a chosen skill.</string> <!-- untranslated -->
@@ -1967,7 +1970,7 @@
         <item quantity="one">×%1$d item</item>
         <item quantity="other">×%1$d items</item>
     </plurals> <!-- untranslated -->
-    <string name="monument_title">Grand Monument</string> <!-- untranslated -->
+    <string name="monument_title">Gran Monumento</string>
     <string name="monument_desc">A civic wonder raised coin by coin. Every stage is a gift to the town.</string> <!-- untranslated -->
     <string name="monument_your_coins">Your coins: %1$s</string> <!-- untranslated -->
     <string name="monument_stage_0_name">Empty Plot</string> <!-- untranslated -->
@@ -2095,7 +2098,7 @@
     <!-- ===== Seasonal Events ===== -->
     <string name="seasonal_event_title">Seasonal Event</string> <!-- untranslated -->
     <string name="seasonal_event_none">No event running right now. Check back later!</string> <!-- untranslated -->
-    <string name="seasonal_event_token_progress">%1$d / %2$d tokens</string> <!-- untranslated -->
+    <string name="seasonal_event_token_progress">%1$d / %2$d fichas</string>
     <string name="seasonal_event_complete">Complete!</string> <!-- untranslated -->
     <string name="seasonal_bounty_board_title">Bounty Board</string> <!-- untranslated -->
     <string name="seasonal_expedition_title">Expedition</string> <!-- untranslated -->
@@ -2154,7 +2157,7 @@
     <string name="seasonal_market_limit_left">%1$d left</string> <!-- untranslated -->
     <string name="seasonal_market_purchase_success">Purchase complete!</string> <!-- untranslated -->
     <string name="seasonal_donate">Donate</string> <!-- untranslated -->
-    <string name="seasonal_event_gloomharvest_2026_name">Gloomharvest</string> <!-- untranslated -->
+    <string name="seasonal_event_gloomharvest_2026_name">Cosecha Sombría</string>
     <string name="seasonal_event_gloomharvest_2026_banner">Participated in the Gloomharvest 2026</string> <!-- untranslated -->
     <string name="seasonal_minigame_lantern_lights_name">Lantern Lights</string> <!-- untranslated -->
     <string name="seasonal_minigame_sequence_hint">Watch the lanterns, then repeat the order. Reach round %1$d of %2$d to win a token!</string> <!-- untranslated -->
@@ -2279,7 +2282,7 @@
 
     <string name="title_seasonal_champion_of">Champion of %1$s</string> <!-- untranslated -->
     <string name="title_seasonal_requirement">Complete the %1$s Seasonal Event</string> <!-- untranslated -->
-    <string name="home_welcome_greeting">Welcome back,</string> <!-- untranslated -->
+    <string name="home_welcome_greeting">Bienvenido de nuevo,</string>
     <string name="home_welcome_name">%1$s!</string> <!-- untranslated -->
     <string name="home_welcome_title">The %1$s!</string> <!-- untranslated -->
 

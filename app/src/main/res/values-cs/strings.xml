@@ -1473,10 +1473,13 @@
     <string name="crafting_tier_maple">Javor</string>
     <string name="crafting_tier_mithril">Mithril</string> <!-- untranslated -->
     <string name="crafting_tier_oak">Dub</string>
+    <string name="crafting_tier_plank">Plank</string> <!-- untranslated -->
     <string name="crafting_tier_platinum">Platina</string>
+    <string name="crafting_tier_redwood">Redwood</string> <!-- untranslated -->
     <string name="crafting_tier_runite">Runit</string>
     <string name="crafting_tier_silver">Stříbro</string>
     <string name="crafting_tier_steel">Ocel</string>
+    <string name="crafting_tier_stone">Stone</string> <!-- untranslated -->
     <string name="crafting_tier_willow">Vrba</string>
     <string name="crafting_tier_yew">Tis</string>
 

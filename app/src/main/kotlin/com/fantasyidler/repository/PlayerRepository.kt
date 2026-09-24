@@ -496,7 +496,7 @@ class PlayerRepository @Inject constructor(
      */
     suspend fun openAncientTreasures(count: Int): Triple<Int, Long, Map<String, Int>>? = playerMutex.withLock {
         val player = getOrCreatePlayer()
-        val inventory: Map<String, Int> = json.decodeFromString(player.inventory)
+        val inventory: MutableMap<String, Int> = json.decodeFromString(player.inventory)
         val opened = minOf(count, inventory[ANCIENT_TREASURE_KEY] ?: 0)
         if (opened <= 0) return@withLock null
         val gemKeys = gameData.gems.keys.toList()
@@ -509,9 +509,20 @@ class PlayerRepository @Inject constructor(
                 gems[gem] = (gems[gem] ?: 0) + 1
             }
         }
-        consumeItemsUnlocked(mapOf(ANCIENT_TREASURE_KEY to opened))
-        addCoinsUnlocked(coins)
-        if (gems.isNotEmpty()) addItemsUnlocked(gems)
+        // One player read + one JSON encode + one DB write — the previous split into
+        // consumeItemsUnlocked / addCoinsUnlocked / addItemsUnlocked forced 3 sequential
+        // Room writes and a full PlayerFlags re-encode per open, which stacked to seconds
+        // when opening 1k+ treasures at once on an endgame save (#1852).
+        val newTreasureQty = (inventory[ANCIENT_TREASURE_KEY] ?: 0) - opened
+        if (newTreasureQty <= 0) inventory.remove(ANCIENT_TREASURE_KEY) else inventory[ANCIENT_TREASURE_KEY] = newTreasureQty
+        for ((gem, qty) in gems) {
+            inventory[gem] = ((inventory[gem] ?: 0).toLong() + qty).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
+        }
+        val newCoins = (player.coins + coins).coerceAtMost(Long.MAX_VALUE)
+        playerDao.upsert(player.copy(
+            inventory = json.encode<Map<String, Int>>(inventory),
+            coins     = newCoins,
+        ))
         Triple(opened, coins, gems)
     }
 
@@ -1723,12 +1734,12 @@ class PlayerRepository @Inject constructor(
         val player = getOrCreatePlayer()
         val original: PlayerFlags = json.decodeFromString(player.flags)
         var flags = original
-        if (dailyQuestRepo.shouldRefresh(flags.dailyQuestGeneratedAt, flags.dailyResetHour) ||
-            weeklyQuestRepo.shouldRefresh(flags.weeklyQuestGeneratedAt, flags.dailyResetHour)
+        if (dailyQuestRepo.shouldRefresh(flags.dailyQuestNextResetAt) ||
+            weeklyQuestRepo.shouldRefresh(flags.weeklyQuestNextResetAt)
         ) {
             val skillLevels: Map<String, Int> = json.decodeFromString(player.skillLevels)
-            if (dailyQuestRepo.shouldRefresh(flags.dailyQuestGeneratedAt, flags.dailyResetHour)) flags = dailyQuestRepo.refreshFlags(flags, skillLevels)
-            if (weeklyQuestRepo.shouldRefresh(flags.weeklyQuestGeneratedAt, flags.dailyResetHour)) flags = weeklyQuestRepo.refreshFlags(flags, skillLevels)
+            if (dailyQuestRepo.shouldRefresh(flags.dailyQuestNextResetAt)) flags = dailyQuestRepo.refreshFlags(flags, skillLevels)
+            if (weeklyQuestRepo.shouldRefresh(flags.weeklyQuestNextResetAt)) flags = weeklyQuestRepo.refreshFlags(flags, skillLevels)
         }
         flags = transform(flags)
         if (flags != original) updateFlagsUnlocked(flags)
@@ -1789,12 +1800,12 @@ class PlayerRepository @Inject constructor(
         var changed = false
         val skillLevels: Map<String, Int> by lazy { json.decodeFromString(player.skillLevels) }
 
-        if (dailyQuestRepo.shouldRefresh(flags.dailyQuestGeneratedAt, flags.dailyResetHour)) {
+        if (dailyQuestRepo.shouldRefresh(flags.dailyQuestNextResetAt)) {
             flags = dailyQuestRepo.refreshFlags(flags, skillLevels)
             changed = true
         }
 
-        if (weeklyQuestRepo.shouldRefresh(flags.weeklyQuestGeneratedAt, flags.dailyResetHour)) {
+        if (weeklyQuestRepo.shouldRefresh(flags.weeklyQuestNextResetAt)) {
             flags = weeklyQuestRepo.refreshFlags(flags, skillLevels)
             changed = true
         }
