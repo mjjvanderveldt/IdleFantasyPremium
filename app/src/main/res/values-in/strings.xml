@@ -306,6 +306,8 @@
     <string name="settings_profile_layout_tabs">Tab</string>
     <string name="settings_quest_dots">Quest dots on skills</string> <!-- untranslated -->
     <string name="settings_quest_dots_desc">Show a gold dot on skills that have an open quest</string> <!-- untranslated -->
+    <string name="settings_monument_touch_indicator">Monument touch indicator</string> <!-- untranslated -->
+    <string name="settings_monument_touch_indicator_desc">Show a dot on the Grand Monument on Home when the daily touch is available</string> <!-- untranslated -->
     <string name="settings_prestige_notifications">Prestige Notification Badges</string> <!-- untranslated -->
     <string name="settings_prestige_notifications_desc">Show a notification badge on navigation when a skill is ready to prestige</string> <!-- untranslated -->
     <string name="label_switch_character">Switch character</string> <!-- untranslated -->
@@ -411,6 +413,7 @@
     <string name="settings_font_small">Kecil</string>
     <string name="settings_font_normal">Normal</string> <!-- untranslated -->
     <string name="settings_font_large">Besar</string>
+    <string name="settings_font_very_large">Very Large</string> <!-- untranslated -->
     <string name="settings_font_huge">Sangat besar</string>
     <string name="settings_import_theme">Impor tema</string>
     <string name="settings_import_theme_desc">Impor tema kustom dari file</string>
@@ -443,6 +446,8 @@
     <string name="theme_editor_saved_ok">Tema disimpan dan diterapkan</string>
     <string name="theme_editor_exported_ok">Tema diekspor</string>
     <string name="settings_language_desc">Mengganti bahasa tampilan aplikasi</string>
+
+
 
 
 
@@ -584,6 +589,7 @@
     <string name="combat_spell_locked">Requires Magic level %1$d</string> <!-- untranslated -->
     <string name="combat_spell_level_met">Magic level %1$d</string> <!-- untranslated -->
     <string name="combat_no_potion">Tidak ada ramuan</string>
+    <string name="label_potion">Potion</string> <!-- untranslated -->
     <string name="combat_req_level">Level tempur yang dibutuhkan</string>
     <string name="combat_duration">Durasi</string>
     <!-- Translator note: %1$d = minutes -->
@@ -672,6 +678,7 @@
     <!-- Translator note: %1$s = formatted multiplier (e.g. "1.15") -->
     <string name="skills_tool_bonus">bonus alat ×%1$s</string>
     <string name="skills_pet_bonus">+%1$d%% XP (pet)</string> <!-- untranslated -->
+    <string name="skills_blessing_bonus">+%1$d%% XP (blessing)</string> <!-- untranslated -->
     <!-- Translator note: %1$d = fishing level -->
     <string name="skills_fishing_desc">Level %1$d  •  Level-appropriate catches</string> <!-- untranslated -->
     <!-- Translator note: %1$d = prayer level -->
@@ -730,6 +737,7 @@
     <string name="quest_legend_guild_daily">Harian guild</string>
     <string name="quest_legend_guild">Quest guild</string>
     <string name="quest_legend_quest">Quest</string> <!-- untranslated -->
+    <string name="quest_legend_slayer_target">Slayer Task</string> <!-- untranslated -->
     <string name="quest_legend_gold_dot">Timed quest is available.</string> <!-- untranslated -->
     <string name="quest_legend_notes">Ikon redup belum bisa diselesaikan (level atau bahan kurang). Angka kecil di atas berarti beberapa quest jenis itu menginginkan hal yang sama.</string>
     <!-- Translator note: %1$s = quantity in inventory -->
@@ -1043,6 +1051,8 @@
     <string name="church_active_chip">Aktif</string>
     <string name="church_activate">Mengaktifkan</string>
     <string name="church_blessing_bonus">+%1$s dari berkah</string>
+    <!-- Golden Goose pet coin share, split from the blessing line (issue #1941). Pending Weblate translation. -->
+    <string name="pet_coin_bonus">+%1$s from pet</string> <!-- untranslated -->
     <string name="church_blessing_suffix">dari berkat</string>
     <string name="church_effect_xp">×%1$.2f XP selama %2$d jam</string>
     <string name="church_effect_def">+%1$d Pertahanan selama %2$d jam</string>
@@ -1052,6 +1062,8 @@
     <string name="church_bones_available">Anda memiliki %1$d tulang (semua jenis), setara %2$d untuk berkat (tulang yang lebih besar bernilai lebih)</string>
     <string name="church_not_enough_bones">Tulang tidak cukup (membutuhkan %1$d)</string>
     <string name="church_already_active">Berkah sudah aktif</string>
+    <string name="church_blessing_activated">Blessing activated!</string> <!-- untranslated -->
+    <string name="church_blessing_extended">Blessing extended!</string> <!-- untranslated -->
     <string name="church_confirm_deactivate_title">Deactivate Blessing?</string> <!-- untranslated -->
     <string name="church_confirm_deactivate_body">Are you sure you want to deactivate your active blessing? You will not get your bones back.</string> <!-- untranslated -->
 
@@ -1360,8 +1372,11 @@
     <string name="slayer_found_in">Ditemukan di: %1$s</string>
     <string name="slayer_requires">Membutuhkan: %1$s</string>
     <string name="slayer_add_dungeon_to_queue">Tambah Dungeon ke Antrian</string>
+    <string name="slayer_add_all_dungeons_to_queue">Add All Dungeons to Queue</string> <!-- untranslated -->
     <string name="slayer_queue_added">Ditambahkan ke antrian: %1$s.</string>
     <string name="slayer_queue_full">Antrian penuh.</string>
+    <string name="slayer_queue_added_many">Added %1$d dungeons to queue.</string> <!-- untranslated -->
+    <string name="slayer_queue_added_partial">Added %1$d of %2$d dungeons to queue.</string> <!-- untranslated -->
     <string name="slayer_foretell_title">Foretell Future Tasks</string> <!-- untranslated -->
     <string name="slayer_foretell_desc">Pre-assign upcoming Slayer tasks by paying bones. They are assigned automatically when your current task is completed.</string> <!-- untranslated -->
     <string name="slayer_foretell_queue_empty">No tasks queued.</string> <!-- untranslated -->
@@ -1409,6 +1424,7 @@
     <string name="shop_cat_food">Makanan</string>
     <string name="shop_cat_materials">Material</string>
     <string name="shop_cat_misc">Lain-lain</string>
+    <string name="shop_cat_capes">Capes</string> <!-- untranslated -->
 
     <string name="crafting_per_craft">×%1$d per kerajinan</string>
 
@@ -1427,6 +1443,7 @@
     <string name="trade_route_merchants_quarter_desc">Perdagangkan komoditas langka di distrik perdagangan bergengsi.</string>
     <string name="trade_route_northern_ports_desc">Mengangkut kargo berharga ke kota-kota pelabuhan di utara. Risiko tinggi, imbalan tinggi.</string>
     <string name="crafting_cat_bar">Batang</string>
+    <string name="crafting_cat_brew">Brew</string> <!-- untranslated -->
     <string name="crafting_cat_component">Komponen</string>
     <string name="crafting_cat_tool">Alat</string>
     <string name="crafting_cat_weapon">Senjata</string>
@@ -1440,6 +1457,7 @@
     <string name="crafting_cat_bow">Busur</string>
     <string name="crafting_cat_plank">Papan</string>
     <string name="crafting_cat_staff">Tongkat</string>
+    <string name="crafting_cat_super_potion">Super Potion</string> <!-- untranslated -->
 
     <!-- Crafting tier filter chips -->
     <string name="crafting_tier_adamantite">Adamantit</string>
@@ -1559,6 +1577,8 @@
     <string name="town_artisans_workshop_active_bonus">%1$d%% chance to preserve secondary crafting materials</string> <!-- untranslated -->
     <string name="town_building_chronos_spire_name">Chronos Spire</string> <!-- untranslated -->
     <string name="town_building_dock_name">Dock</string> <!-- untranslated -->
+    <string name="town_dock_no_bonus">Upgrade to sail to new locations</string> <!-- untranslated -->
+    <string name="town_dock_t1_bonus">Unlocks sailing to the Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_title">Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_sail_title">Sail to Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_zone_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
@@ -1997,7 +2017,7 @@
     <string name="monument_not_enough_coins">Koin tidak cukup.</string>
     <string name="title_patron_of_the_realm_name">Pelindung Kerajaan</string>
     <string name="title_patron_of_the_realm_requirement">Selesaikan Monumen Agung</string>
-    <string name="title_isle_champion_name">Isle Champion</string> <!-- untranslated -->
+    <string name="title_isle_champion_name">Champion of the Elder Isle</string> <!-- untranslated -->
     <string name="title_isle_champion_requirement">Defeat the Last Elder on Elder Isle</string> <!-- untranslated -->
     <string name="item_gilded_full_helmet_name">Helm Penuh Berlapis Emas</string>
     <string name="item_gilded_platebody_name">Zirah Berlapis Emas</string>

@@ -313,6 +313,8 @@
     <string name="settings_profile_layout_tabs">Tabbladen</string>
     <string name="settings_quest_dots">Quest dots on skills</string> <!-- untranslated -->
     <string name="settings_quest_dots_desc">Show a gold dot on skills that have an open quest</string> <!-- untranslated -->
+    <string name="settings_monument_touch_indicator">Monument touch indicator</string> <!-- untranslated -->
+    <string name="settings_monument_touch_indicator_desc">Show a dot on the Grand Monument on Home when the daily touch is available</string> <!-- untranslated -->
     <string name="settings_prestige_notifications">Prestige Notification Badges</string> <!-- untranslated -->
     <string name="settings_prestige_notifications_desc">Show a notification badge on navigation when a skill is ready to prestige</string> <!-- untranslated -->
     <string name="label_switch_character">Switch character</string> <!-- untranslated -->
@@ -418,6 +420,7 @@
     <string name="settings_font_small">Klein</string>
     <string name="settings_font_normal">Normaal</string>
     <string name="settings_font_large">Groot</string>
+    <string name="settings_font_very_large">Very Large</string>
     <string name="settings_font_huge">Enorm</string>
     <string name="settings_import_theme">Thema\'s importeren</string>
     <string name="settings_import_theme_desc">Importeer aangepaste thema\'s uit een bestand</string>
@@ -450,6 +453,8 @@
     <string name="theme_editor_saved_ok">Thema opgeslagen en toegepast</string>
     <string name="theme_editor_exported_ok">Thema geëxporteerd</string>
     <string name="settings_language_desc">Kies de taal van de app</string>
+
+
 
 
 
@@ -592,6 +597,7 @@
     <string name="combat_spell_locked">Requires Magic level %1$d</string> <!-- untranslated -->
     <string name="combat_spell_level_met">Magic level %1$d</string> <!-- untranslated -->
     <string name="combat_no_potion">Geen drank</string>
+    <string name="label_potion">Potion</string> <!-- untranslated -->
     <string name="combat_req_level">Vereist gevechtslevel</string>
     <string name="combat_duration">Duur</string>
     <!-- Translator note: %1$d = minutes -->
@@ -680,6 +686,7 @@
     <!-- Translator note: %1$s = formatted multiplier (e.g. "1.15") -->
     <string name="skills_tool_bonus">×%1$s Gereedschapsbonus</string>
     <string name="skills_pet_bonus">+%1$d%% XP (pet)</string> <!-- untranslated -->
+    <string name="skills_blessing_bonus">+%1$d%% XP (blessing)</string> <!-- untranslated -->
     <!-- Translator note: %1$d = fishing level -->
     <string name="skills_fishing_desc">Lvl %1$d  •  Level-geschikte vangsten</string>
     <!-- Translator note: %1$d = prayer level -->
@@ -738,6 +745,7 @@
     <string name="quest_legend_guild_daily">Dagelijkse gildequest</string>
     <string name="quest_legend_guild">Gildequest</string>
     <string name="quest_legend_quest">Quest</string> <!-- untranslated -->
+    <string name="quest_legend_slayer_target">Slayer Task</string> <!-- untranslated -->
     <string name="quest_legend_gold_dot">Timed quest is available.</string> <!-- untranslated -->
     <string name="quest_legend_notes">Gedimde pictogrammen kunnen nog niet voltooid worden (level of materialen ontbreken). Een klein verhoogd cijfer betekent dat meerdere quests van dat type hetzelfde willen.</string>
     <!-- Translator note: %1$s = quantity in inventory -->
@@ -1051,6 +1059,8 @@
     <string name="church_active_chip">Actief</string>
     <string name="church_activate">Activeren</string>
     <string name="church_blessing_bonus">+%1$s van zegen</string>
+    <!-- Golden Goose pet coin share, split from the blessing line (issue #1941). Pending Weblate translation. -->
+    <string name="pet_coin_bonus">+%1$s from pet</string> <!-- untranslated -->
     <string name="church_blessing_suffix">van zegen</string>
     <string name="church_effect_xp">×%1$.2f XP voor %2$d uur</string>
     <string name="church_effect_def">+%1$d Verdediging voor %2$d uur</string>
@@ -1060,6 +1070,8 @@
     <string name="church_bones_available">Je hebt %1$d botten (alle soorten), gelijk aan %2$d voor zegeningen (grotere botten tellen meer)</string>
     <string name="church_not_enough_bones">Niet genoeg botten (je hebt %1$d nodig)</string>
     <string name="church_already_active">Er is al een zegen actief</string>
+    <string name="church_blessing_activated">Blessing activated!</string> <!-- untranslated -->
+    <string name="church_blessing_extended">Blessing extended!</string> <!-- untranslated -->
     <string name="church_confirm_deactivate_title">Zegen deactiveren?</string>
     <string name="church_confirm_deactivate_body">Weet je zeker dat je je actieve zegen wilt deactiveren? Je krijgt je botten niet terug.</string>
 
@@ -1368,8 +1380,11 @@
     <string name="slayer_found_in">Gevonden in: %1$s</string>
     <string name="slayer_requires">Vereist: %1$s</string>
     <string name="slayer_add_dungeon_to_queue">Kerker aan wachtrij toevoegen</string>
+    <string name="slayer_add_all_dungeons_to_queue">Add All Dungeons to Queue</string> <!-- untranslated -->
     <string name="slayer_queue_added">Toegevoegd aan wachtrij: %1$s.</string>
     <string name="slayer_queue_full">Wachtrij is vol.</string>
+    <string name="slayer_queue_added_many">Added %1$d dungeons to queue.</string> <!-- untranslated -->
+    <string name="slayer_queue_added_partial">Added %1$d of %2$d dungeons to queue.</string> <!-- untranslated -->
     <string name="slayer_foretell_title">Foretell Future Tasks</string> <!-- untranslated -->
     <string name="slayer_foretell_desc">Pre-assign upcoming Slayer tasks by paying bones. They are assigned automatically when your current task is completed.</string> <!-- untranslated -->
     <string name="slayer_foretell_queue_empty">No tasks queued.</string> <!-- untranslated -->
@@ -1417,6 +1432,7 @@
     <string name="shop_cat_food">Voedsel</string>
     <string name="shop_cat_materials">Materialen</string>
     <string name="shop_cat_misc">Overig</string>
+    <string name="shop_cat_capes">Capes</string> <!-- untranslated -->
 
     <string name="crafting_per_craft">×%1$d per beurt</string>
 
@@ -1435,6 +1451,7 @@
     <string name="trade_route_merchants_quarter_desc">Verhandel zeldzame goederen in het prestigieuze koopliedenwijk.</string>
     <string name="trade_route_northern_ports_desc">Vervoer kostbare lading naar de noordelijke havensteden. Hoog risico, hoge beloning.</string>
     <string name="crafting_cat_bar">Staaf</string>
+    <string name="crafting_cat_brew">Brew</string> <!-- untranslated -->
     <string name="crafting_cat_component">Onderdeel</string>
     <string name="crafting_cat_tool">Gereedschap</string>
     <string name="crafting_cat_weapon">Wapen</string>
@@ -1448,6 +1465,7 @@
     <string name="crafting_cat_bow">Boog</string>
     <string name="crafting_cat_plank">Plank</string> <!-- untranslated -->
     <string name="crafting_cat_staff">Staf</string>
+    <string name="crafting_cat_super_potion">Super Potion</string> <!-- untranslated -->
 
     <!-- Crafting tier filter chips -->
     <string name="crafting_tier_adamantite">Adamantiet</string>
@@ -1567,6 +1585,8 @@
     <string name="town_artisans_workshop_active_bonus">%1$d%% chance to preserve secondary crafting materials</string> <!-- untranslated -->
     <string name="town_building_chronos_spire_name">Chronos Spire</string> <!-- untranslated -->
     <string name="town_building_dock_name">Dock</string> <!-- untranslated -->
+    <string name="town_dock_no_bonus">Upgrade to sail to new locations</string> <!-- untranslated -->
+    <string name="town_dock_t1_bonus">Unlocks sailing to the Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_title">Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_sail_title">Sail to Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_zone_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
@@ -2005,7 +2025,7 @@
     <string name="monument_not_enough_coins">Niet genoeg munten.</string>
     <string name="title_patron_of_the_realm_name">Beschermheer van het Rijk</string>
     <string name="title_patron_of_the_realm_requirement">Voltooi het Grote Monument</string>
-    <string name="title_isle_champion_name">Isle Champion</string> <!-- untranslated -->
+    <string name="title_isle_champion_name">Champion of the Elder Isle</string> <!-- untranslated -->
     <string name="title_isle_champion_requirement">Defeat the Last Elder on Elder Isle</string> <!-- untranslated -->
     <string name="item_gilded_full_helmet_name">Vergulde helm</string>
     <string name="item_gilded_platebody_name">Verguld borstpantser</string>

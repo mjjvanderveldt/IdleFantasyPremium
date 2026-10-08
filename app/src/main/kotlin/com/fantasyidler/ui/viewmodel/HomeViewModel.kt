@@ -22,7 +22,9 @@ import com.fantasyidler.repository.BoostRepository
 import com.fantasyidler.repository.ChurchRepository
 import com.fantasyidler.repository.GameDataRepository
 import com.fantasyidler.repository.GuildRepository
+import com.fantasyidler.repository.MonumentRepository
 import com.fantasyidler.repository.PlayerRepository
+import com.fantasyidler.repository.predictionXpMult
 import com.fantasyidler.simulator.PrestigeBoosts
 import com.fantasyidler.repository.QuestRepository
 import com.fantasyidler.repository.QueuedSessionStarter
@@ -66,6 +68,7 @@ data class SeasonalEventSummary(
     val displayName: String,
     val tokens: Int,
     val goal: Int,
+    val endMs: Long,
     val bannerIcon: String? = null,
 )
 
@@ -124,6 +127,16 @@ private fun applyCombatCapeBonus(xpPerSkill: MutableMap<String, Long>, capeSkill
 // Session summary shown in the collect dialog
 // ---------------------------------------------------------------------------
 
+/**
+ * Splits a multiplied coin total into blessing and pet portions (issue #1941).
+ * The summed parts always equal the displayed total.
+ */
+internal fun splitCoinBonus(combined: Long, blessingMult: Float, petMult: Float): Pair<Long, Long> {
+    val total = (combined.toDouble() * (blessingMult * petMult)).toLong()
+    val blessing = (combined.toDouble() * blessingMult).toLong() - combined
+    return blessing to (total - combined - blessing)
+}
+
 data class SessionSummary(
     val title: String,
     val died: Boolean = false,
@@ -164,6 +177,8 @@ data class SessionSummary(
     val totalXpValue: Long = 0L,
     /** Extra coins granted by active prayer blessing — 0 if no blessing. */
     val coinBlessingBonus: Long = 0L,
+    /** Extra coins granted by the Golden Goose pet — 0 if no pet bonus. */
+    val coinPetBonus: Long = 0L,
     /** Expedition: highlighted lore note lines found during the session. */
     val noteLines: List<String> = emptyList(),
     /** Expedition: set when this collect triggered a new combat dungeon unlock. */
@@ -224,6 +239,9 @@ data class HomeUiState(
     val allBlessings: List<BlessingData> = emptyList(),
     val prayerCapeMult: Float = 1f,
     val activeBlessingRemainingMs: Long = 0L,
+    /** True when the Grand Monument's once-a-day touch is unlocked and unclaimed today. */
+    val monumentTouchAvailable: Boolean = false,
+    val showMonumentTouchIndicator: Boolean = true,
     val xpBoostRemainingMs: Long = 0L,
     /** Skill → remaining ms for active post-prestige 48h boosts (earned, so shown for ironmen too). */
     val prestigeBoostsRemainingMs: Map<String, Long> = emptyMap(),
@@ -291,6 +309,7 @@ class HomeViewModel @Inject constructor(
     private val queuedSessionStarter: QueuedSessionStarter,
     private val workerStarter: WorkerQueuedSessionStarter,
     private val slayerRepo: SlayerRepository,
+    private val monumentRepo: MonumentRepository,
     private val seasonalEventRepo: SeasonalEventRepository,
     private val titleRepo: TitleRepository,
     private val saveSlotRepo: SaveSlotRepository,
@@ -304,7 +323,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch { sessionRepo.recoverActiveWorkerSession(1, workerStarter) }
         viewModelScope.launch { sessionRepo.recoverActiveWorkerSession(2, workerStarter) }
         viewModelScope.launch { playerRepo.awardMissingCapes() }
-        viewModelScope.launch { playerRepo.migratePetsFromInventory(gameData.pets.keys) }
+        viewModelScope.launch { playerRepo.migratePetsFromInventory(gameData.pets) }
         viewModelScope.launch { playerRepo.ensureCharacterCreatedAt() }
         viewModelScope.launch { guildRepo.migrateLegacyGuildReputation() }
         viewModelScope.launch { playerRepo.migrateLegacyPrestigePointsIfNeeded() }
@@ -428,12 +447,17 @@ class HomeViewModel @Inject constructor(
             val sessionXpGain: (SkillSession?) -> Long = { s ->
                 if (s == null || s.skillName in listOf("combat", "boss", "expedition", "farming", "tower", "carnival")) 0L
                 else try {
-                    val base = json.decodeFromString<List<SessionFrame>>(s.frames).sumOf { it.xpGain.toLong() }
+                    val cardFrames = json.decodeFromString<List<SessionFrame>>(s.frames)
+                    val base = cardFrames.sumOf { it.xpGain.toLong() }
                     // Same multiplier chain collection applies (applySessionResults), so the
                     // card matches the eventual payout and reacts to boosts live (issue #1748).
-                    val boostMult = boostRepo.xpMultiplier(s.skillName, flags, capeMult)
-                    if (s.isWorkerSession) (base * s.efficiencyMultiplier * innXpMult * boostMult).toLong()
-                    else (base * boostMult).toLong()
+                    // Isle sessions run at base rates (issue #1930).
+                    val hasLoot = cardFrames.any { f -> f.items.keys.any { it != "coins" && it !in gameData.pets } }
+                    val capeXpMult = if (!hasLoot) resolveCapeMultiplier(s.skillName, equipped[EquipSlot.CAPE]?.let { gameData.equipment[it] }, json.decodeFromString<Map<String, Int>>(player.inventory).keys, flags.townBuildingTiers, boostRepo.capeScalingBySkill(flags), gameData.equipment, flags.ironman).toDouble() else 1.0
+                    val boostMult = predictionXpMult(flags.ironman, s.isElderSession, boostRepo.xpMultiplier(s.skillName, flags, capeMult) * sigilXpMult(flags.embeddedSigils))
+                    val effectiveBase = (base * capeXpMult).toLong()
+                    if (s.isWorkerSession) (effectiveBase * s.efficiencyMultiplier * innXpMult * boostMult).toLong()
+                    else (effectiveBase * boostMult).toLong()
                 } catch (_: Exception) { 0L }
             }
             val activeSessionXpGain   = sessionXpGain(session)
@@ -480,6 +504,7 @@ class HomeViewModel @Inject constructor(
                     displayName = event.displayName,
                     tokens      = (flags.seasonalTokensByEvent[event.id] ?: 0).coerceAtMost(event.tokenGoal),
                     goal        = event.tokenGoal,
+                    endMs       = event.endMs,
                     bannerIcon  = event.bannerIcon,
                 )
             }
@@ -509,7 +534,9 @@ class HomeViewModel @Inject constructor(
                 // prestige included) so previews match the eventual payout (issues #1748, #1790).
                 // Legacy entries (mult 0) are shown as stored.
                 sessionQueue        = flags.activeQueue.map { a ->
-                    if (a.xpBoostMultAtQueue > 0.0 && a.estimatedXpGain > 0L)
+                    // Isle entries were estimated at base rates; rescaling them with live
+                    // mainland boosts would reintroduce the phantom boost (issue #1930).
+                    if (!a.isElderSession && a.xpBoostMultAtQueue > 0.0 && a.estimatedXpGain > 0L)
                         a.copy(estimatedXpGain = (a.estimatedXpGain * (boostRepo.xpMultiplier(a.skillName, flags, capeMult) / a.xpBoostMultAtQueue)).toLong())
                     else a
                 },
@@ -529,6 +556,8 @@ class HomeViewModel @Inject constructor(
                 allBlessings               = gameData.blessings,
                 prayerCapeMult             = capeMult,
                 activeBlessingRemainingMs  = (flags.activeBlessingExpiresAt - System.currentTimeMillis()).coerceAtLeast(0L),
+                monumentTouchAvailable     = flags.monumentTier >= 2 && !monumentRepo.touchedToday(flags),
+                showMonumentTouchIndicator = flags.showMonumentTouchIndicator,
                 xpBoostRemainingMs         = if (flags.ironman) 0L else (flags.xpBoostExpiresAt - System.currentTimeMillis()).coerceAtLeast(0L),
                 prestigeBoostsRemainingMs  = flags.prestigeXpBoosts
                     .mapValues { (it.value - System.currentTimeMillis()).coerceAtLeast(0L) }
@@ -640,8 +669,9 @@ class HomeViewModel @Inject constructor(
             val boostFactorFor   = { skill: String -> boostRepo.xpBoostFactor(skill, flags) }
             val blessingCapeMult = blessingPrayerCapeMult(player, flags, gameData)
             val blessingXpMult   = if (flags.ironman) 1.0f else ChurchRepository.xpMultiplier(flags, blessingCapeMult, gameData.blessings)
-            val blessingCoinMult = if (flags.ironman) 1.0f else ChurchRepository.coinMultiplier(flags, blessingCapeMult, gameData.blessings) *
-                PlayerRepository.gooseCoinMultiplier(json.decodeFromString<List<OwnedPet>>(player.pets)).toFloat()
+            val blessingChurchCoinMult = if (flags.ironman) 1.0f else ChurchRepository.coinMultiplier(flags, blessingCapeMult, gameData.blessings)
+            val petCoinMult = if (flags.ironman) 1.0f else PlayerRepository.gooseCoinMultiplier(json.decodeFromString<List<OwnedPet>>(player.pets)).toFloat()
+            val blessingCoinMult = blessingChurchCoinMult * petCoinMult
 
             val ctx = CollectContext(flags, inventory, equippedCape, capeScalingBySkill, blessingCoinMult, petIds, player)
             val acc = CollectAcc()
@@ -765,7 +795,7 @@ class HomeViewModel @Inject constructor(
             }
 
             val displayedCoins    = (acc.combinedCoins.toDouble() * blessingCoinMult).toLong()
-            val coinBlessingBonus = displayedCoins - acc.combinedCoins
+            val (coinBlessingBonus, coinPetBonus) = splitCoinBonus(acc.combinedCoins, blessingChurchCoinMult, petCoinMult)
             val sortedXpEntries   = acc.combinedXpBySkill.entries.sortedByDescending { it.value }
             val singleXpFactor    = acc.combinedXpBySkill.keys.firstOrNull()?.let(boostFactorFor) ?: 1L
             val xpLineBonuses     = sortedXpEntries.map { (skill, xp) ->
@@ -811,6 +841,7 @@ class HomeViewModel @Inject constructor(
                 totalXpBoostFactor = if (useTotalLabel) singleXpFactor else 1L,
                 xpLineBonuses    = xpLineBonuses,
                 coinBlessingBonus = coinBlessingBonus,
+                coinPetBonus      = coinPetBonus,
                 noteLines        = acc.expeditionNoteLines +
                                      (if (acc.bossCoinsReduced) listOf(context.withAppLocale().getString(R.string.session_note_boss_coin_cap)) else emptyList()),
                 unlockMessage    = acc.expeditionUnlockMessage,
@@ -913,17 +944,47 @@ class HomeViewModel @Inject constructor(
         if (session.isElderSession || sessionIsIsleByActivity(session)) {
             val elderXp    = mutableMapOf<String, Long>()
             val elderItems = mutableMapOf<String, Int>()
+            val elderFood  = mutableMapOf<String, Int>()
+            val elderArrows = mutableMapOf<String, Int>()
+            val elderRunes = mutableMapOf<String, Int>()
             var won = false
             for (frame in frames) {
                 for ((skill, xp) in frame.xpBySkill) elderXp[skill] = (elderXp[skill] ?: 0L) + xp
                 for ((item, qty) in frame.items) elderItems[item] = (elderItems[item] ?: 0) + qty
-                if (frame.kills > 0) won = true
+                for ((f, q) in frame.foodConsumed)   elderFood[f]   = (elderFood[f] ?: 0) + q
+                for ((a, q) in frame.arrowsConsumed) elderArrows[a] = (elderArrows[a] ?: 0) + q
+                for ((r, q) in frame.runesConsumed)  elderRunes[r]  = (elderRunes[r] ?: 0) + q
+                if (frame.kills > 0 || frame.killsByEnemy.isNotEmpty()) won = true
             }
             val elderCoins = elderItems.remove("coins")?.toLong() ?: 0L
+            val elderPets = elderItems.filterKeys { it in ctx.petIds }
+            val elderLoot = elderItems.filterKeys { it !in ctx.petIds }
             if (!grantXp) elderXp.clear()
-            playerRepo.applyElderMultiSkillResults(elderXp, elderItems, elderCoins)
+            playerRepo.applyElderMultiSkillResults(elderXp, elderLoot, elderCoins)
+            for ((id, _) in elderPets) {
+                val pd = gameData.pets[id] ?: continue
+                if (playerRepo.addPetIfNew(id, pd.boostPercent))
+                    acc.petFoundName = GameStrings.petName(context, pd.id)
+            }
+            acc.bossWon = won
+            val bossSkillLvls = playerRepo.getSkillLevels()
+            val bossArrowsRec = elderArrows.mapValues { (_, qty) -> (qty * (reclaimChance(bossSkillLvls[Skills.RANGED] ?: 1) + boostRepo.arrowReclaimBonus(ctx.flags)).coerceAtMost(0.95)).toInt() }.filterValues { it > 0 }
+            val bossRunesRec  = elderRunes.mapValues  { (_, qty) -> (qty * (reclaimChance(bossSkillLvls[Skills.MAGIC] ?: 1) + boostRepo.runeReclaimBonus(ctx.flags)).coerceAtMost(0.95)).toInt() }.filterValues { it > 0 }
+            if (elderFood.isNotEmpty())     playerRepo.consumeItems(elderFood)
+            if (elderArrows.isNotEmpty())   playerRepo.consumeItems(elderArrows)
+            if (bossArrowsRec.isNotEmpty()) playerRepo.addItems(bossArrowsRec)
+            if (bossRunesRec.isNotEmpty())  playerRepo.addItems(bossRunesRec)
+            if (won) {
+                acc.dailyKills[session.activityKey] = (acc.dailyKills[session.activityKey] ?: 0) + 1
+                acc.combinedKills[session.activityKey] = (acc.combinedKills[session.activityKey] ?: 0) + 1
+            }
             for ((skill, xp) in elderXp) acc.combinedXpBySkill[skill] = (acc.combinedXpBySkill[skill] ?: 0L) + xp
-            for ((item, qty) in elderItems) acc.combinedItems[item] = (acc.combinedItems[item] ?: 0) + qty
+            for ((item, qty) in elderLoot) acc.combinedItems[item] = (acc.combinedItems[item] ?: 0) + qty
+            for ((f, q) in elderFood)            acc.combinedFood[f]           = (acc.combinedFood[f] ?: 0) + q
+            for ((a, q) in elderArrows)          acc.combinedArrows[a]         = (acc.combinedArrows[a] ?: 0) + q
+            for ((a, q) in bossArrowsRec)        acc.combinedArrowsReclaimed[a] = (acc.combinedArrowsReclaimed[a] ?: 0) + q
+            for ((r, q) in elderRunes)           acc.combinedRunes[r]          = (acc.combinedRunes[r] ?: 0) + q
+            for ((r, q) in bossRunesRec)         acc.combinedRunesReclaimed[r]  = (acc.combinedRunesReclaimed[r] ?: 0) + q
             acc.combinedCoins += elderCoins
             if (won && session.activityKey == "last_elder") {
                 val f = playerRepo.getFlags()
@@ -934,7 +995,7 @@ class HomeViewModel @Inject constructor(
             return
         }
         val frame = frames.lastOrNull() ?: return
-        val won = frame.kills > 0
+        val won = frame.kills > 0 || frame.killsByEnemy.isNotEmpty()
         acc.bossWon = won
         val its   = frame.items.toMutableMap()
         val coins = if (won) {
@@ -1029,20 +1090,60 @@ class HomeViewModel @Inject constructor(
         if (session.isElderSession || sessionIsIsleByActivity(session)) {
             val elderXpPerSkill = mutableMapOf<String, Long>()
             val elderItems      = mutableMapOf<String, Int>()
+            val elderKills      = mutableMapOf<String, Int>()
+            val elderFood       = mutableMapOf<String, Int>()
+            val elderArrows     = mutableMapOf<String, Int>()
+            val elderRunes      = mutableMapOf<String, Int>()
+            val elderDied       = frames.any { it.died }
+            if (elderDied) acc.anyDied = true
             for (frame in frames) {
-                for ((skill, xp) in frame.xpBySkill) elderXpPerSkill[skill] = (elderXpPerSkill[skill] ?: 0L) + xp
-                for ((item, qty) in frame.items) elderItems[item] = (elderItems[item] ?: 0) + qty
+                for ((skill, xp) in frame.xpBySkill)  elderXpPerSkill[skill] = (elderXpPerSkill[skill] ?: 0L) + xp
+                for ((item, qty) in frame.items)       elderItems[item]       = (elderItems[item] ?: 0) + qty
+                for ((e, k) in frame.killsByEnemy)     elderKills[e]          = (elderKills[e] ?: 0) + k
+                for ((f, q) in frame.foodConsumed)     elderFood[f]           = (elderFood[f] ?: 0) + q
+                for ((a, q) in frame.arrowsConsumed)   elderArrows[a]         = (elderArrows[a] ?: 0) + q
+                for ((r, q) in frame.runesConsumed)    elderRunes[r]          = (elderRunes[r] ?: 0) + q
             }
             val elderCoins = elderItems.remove("coins")?.toLong() ?: 0L
+            val elderPets = elderItems.filterKeys { it in ctx.petIds }
+            val elderLoot = elderItems.filterKeys { it !in ctx.petIds }
             if (!grantXp) elderXpPerSkill.clear()
-            playerRepo.applyElderMultiSkillResults(elderXpPerSkill, elderItems, elderCoins)
+            playerRepo.applyElderMultiSkillResults(elderXpPerSkill, elderLoot, elderCoins)
+            for ((id, _) in elderPets) {
+                val pd = gameData.pets[id] ?: continue
+                if (playerRepo.addPetIfNew(id, pd.boostPercent))
+                    acc.petFoundName = GameStrings.petName(context, pd.id)
+            }
+            val skillLvls = playerRepo.getSkillLevels()
+            val elderArrowsRec = elderArrows.mapValues { (_, qty) -> (qty * (reclaimChance(skillLvls[Skills.RANGED] ?: 1) + boostRepo.arrowReclaimBonus(ctx.flags)).coerceAtMost(0.95)).toInt() }.filterValues { it > 0 }
+            val elderRunesRec  = elderRunes.mapValues  { (_, qty) -> (qty * (reclaimChance(skillLvls[Skills.MAGIC] ?: 1) + boostRepo.runeReclaimBonus(ctx.flags)).coerceAtMost(0.95)).toInt() }.filterValues { it > 0 }
+            if (elderFood.isNotEmpty())       playerRepo.consumeItems(elderFood)
+            if (elderArrows.isNotEmpty())     playerRepo.consumeItems(elderArrows)
+            if (elderArrowsRec.isNotEmpty())  playerRepo.addItems(elderArrowsRec)
+            if (elderRunesRec.isNotEmpty())   playerRepo.addItems(elderRunesRec)
             // Isle dungeon runs feed the story quest counters (dungeonRuns[key]) even though
             // mainland questRepo/guildRepo hooks stay walled off, per bonus-flow rule.
             // Without this the Voyage/Landing/Ascent quests stay at 0 forever.
-            val elderDied = frames.any { it.died }
             if (!elderDied) playerRepo.incrementDungeonRun(session.activityKey)
+            if (elderKills.isNotEmpty()) {
+                for ((e, k) in elderKills) acc.dailyKills[e] = (acc.dailyKills[e] ?: 0) + k
+            }
+            val elderRunFlags = playerRepo.getFlags()
+            playerRepo.updateFlags(elderRunFlags.copy(
+                dungeonLastRunStats = elderRunFlags.dungeonLastRunStats + (session.activityKey to DungeonRunStats(
+                    foodConsumed = elderFood.values.sum(),
+                    killCount    = elderKills.values.sum(),
+                    survived     = !elderDied,
+                ))
+            ))
             for ((skill, xp) in elderXpPerSkill) acc.combinedXpBySkill[skill] = (acc.combinedXpBySkill[skill] ?: 0L) + xp
-            for ((item, qty) in elderItems) acc.combinedItems[item] = (acc.combinedItems[item] ?: 0) + qty
+            for ((item, qty) in elderLoot)       acc.combinedItems[item]      = (acc.combinedItems[item] ?: 0) + qty
+            for ((e, k) in elderKills)           acc.combinedKills[e]         = (acc.combinedKills[e] ?: 0) + k
+            for ((f, q) in elderFood)            acc.combinedFood[f]          = (acc.combinedFood[f] ?: 0) + q
+            for ((a, q) in elderArrows)          acc.combinedArrows[a]        = (acc.combinedArrows[a] ?: 0) + q
+            for ((a, q) in elderArrowsRec)       acc.combinedArrowsReclaimed[a] = (acc.combinedArrowsReclaimed[a] ?: 0) + q
+            for ((r, q) in elderRunes)           acc.combinedRunes[r]         = (acc.combinedRunes[r] ?: 0) + q
+            for ((r, q) in elderRunesRec)        acc.combinedRunesReclaimed[r] = (acc.combinedRunesReclaimed[r] ?: 0) + q
             acc.combinedCoins += elderCoins
             return
         }
@@ -1162,9 +1263,9 @@ class HomeViewModel @Inject constructor(
      * granted amount, so every summary line fed from raw frame XP must bake it in too or the
      * dialog understates what was paid (issue #1790).
      */
-    private fun prestigeAdjustedXp(skill: String, xp: Long, flags: PlayerFlags): Long {
-        val xpPct = boostRepo.prestigeXpPct(skill, flags)
-        return if (xpPct > 0) (xp * (1.0 + xpPct / 100.0)).toLong() else xp
+    private fun prestigeAdjustedXp(skill: String, xp: Long, flags: PlayerFlags, isElder: Boolean = false): Long {
+        val prestigeMult = 1.0 + boostRepo.prestigeXpPct(skill, flags) / 100.0
+        return displayStoredXp(xp, prestigeMult, sigilXpMult(flags.embeddedSigils), isElder)
     }
 
     private suspend fun collectGenericSkillSession(session: SkillSession, frames: List<SessionFrame>, grantXp: Boolean, ctx: CollectContext, acc: CollectAcc) {
@@ -1175,9 +1276,16 @@ class HomeViewModel @Inject constructor(
         // the elder pool. The isle economy is walled off from mainland modifiers, per the
         // bonus-flow rule in the design doc.
         if (session.isElderSession || sessionIsIsleByActivity(session)) {
-            playerRepo.applyElderSessionResults(session.skillName, totalXp, its.filterKeys { it != "coins" })
+            val elderPets = its.filterKeys { it in ctx.petIds }
+            val elderLoot = its.filterKeys { it != "coins" && it !in ctx.petIds }
+            playerRepo.applyElderSessionResults(session.skillName, totalXp, elderLoot)
+            for ((id, _) in elderPets) {
+                val pd = gameData.pets[id] ?: continue
+                if (playerRepo.addPetIfNew(id, pd.boostPercent))
+                    acc.petFoundName = GameStrings.petName(context, pd.id)
+            }
             acc.combinedXpBySkill[session.skillName] = (acc.combinedXpBySkill[session.skillName] ?: 0L) + totalXp
-            for ((item, qty) in its) if (item != "coins") acc.combinedItems[item] = (acc.combinedItems[item] ?: 0) + qty
+            for ((item, qty) in elderLoot) acc.combinedItems[item] = (acc.combinedItems[item] ?: 0) + qty
             return
         }
         val coinsFromItems = (its.remove("coins") ?: 0).toLong()
@@ -1238,7 +1346,7 @@ class HomeViewModel @Inject constructor(
             if (playerRepo.addPetIfNew(id, pd.boostPercent))
                 acc.petFoundName = GameStrings.petName(context, pd.id)
         }
-        acc.combinedXpBySkill[session.skillName] = (acc.combinedXpBySkill[session.skillName] ?: 0L) + prestigeAdjustedXp(session.skillName, totalXp, ctx.flags)
+        acc.combinedXpBySkill[session.skillName] = (acc.combinedXpBySkill[session.skillName] ?: 0L) + prestigeAdjustedXp(session.skillName, effectiveXp, ctx.flags, session.isElderSession)
         for ((item, qty) in regular) acc.combinedItems[item] = (acc.combinedItems[item] ?: 0) + qty
         if (session.skillName == Skills.PRAYER) {
             val count = frames.sumOf { it.kills }
@@ -1337,7 +1445,7 @@ class HomeViewModel @Inject constructor(
                     ?: EquipSlot.WEAPON_SLOTS.firstOrNull { equipped[it] != null }
                     ?: EquipSlot.WEAPON_ATK
             } else null
-            val xpQueueMult = if (flags.ironman) 1.0 else (if (flags.xpBoostExpiresAt > System.currentTimeMillis()) 2.0 else 1.0) * ChurchRepository.xpMultiplier(flags, blessingPrayerCapeMult(player, flags, gameData), gameData.blessings)
+            val xpQueueMult = predictionXpMult(flags.ironman, session.isElderSession, (if (flags.xpBoostExpiresAt > System.currentTimeMillis()) 2.0 else 1.0) * ChurchRepository.xpMultiplier(flags, blessingPrayerCapeMult(player, flags, gameData), gameData.blessings))
             val rawXpGain = frames.sumOf { it.xpGain }
             // The original fight/run count isn't stored on the session itself, only in the
             // repeat-chain flags set when it was first started -- carry it forward so
@@ -1351,6 +1459,7 @@ class HomeViewModel @Inject constructor(
                 skillName           = session.skillName,
                 activityKey         = activityKeyForRepeat,
                 skillDisplayName    = displayName,
+                isElderSession      = session.isElderSession,
                 qty                 = qty,
                 repeatCount         = repeatCount,
                 estimatedDurationMs = session.endsAt - session.startedAt,
@@ -1396,8 +1505,15 @@ class HomeViewModel @Inject constructor(
                 val coinCost = gameData.tradeRoutes.firstOrNull { it.id == session.activityKey }?.coinCost?.toLong() ?: 0L
                 if (coinCost > 0) playerRepo.addCoins(coinCost)
             } else {
-                playerSessionMaterials(session.skillName, session.activityKey, frames.sumOf { it.kills }, gameData)
-                    ?.let { playerRepo.addItems(it) }
+                val storedMats: Map<String, Int>? = session.consumedMaterials?.let {
+                    try { json.decodeFromString<Map<String, Int>>(it) } catch (_: Exception) { null }
+                }
+                if (!storedMats.isNullOrEmpty()) {
+                    playerRepo.addItems(storedMats)
+                } else {
+                    playerSessionMaterials(session.skillName, session.activityKey, frames.sumOf { it.kills }, gameData)
+                        ?.let { playerRepo.addItems(it) }
+                }
             }
             if (session.catalystKey != null && session.catalystQty > 0) {
                 playerRepo.addItem(session.catalystKey, session.catalystQty)
@@ -1454,8 +1570,9 @@ class HomeViewModel @Inject constructor(
             val boostFactorFor   = { skill: String -> boostRepo.xpBoostFactor(skill, flags) }
             val workerCapeMult   = blessingPrayerCapeMult(workerPlayer, flags, gameData)
             val blessingXpMult   = if (flags.ironman) 1.0f else ChurchRepository.xpMultiplier(flags, workerCapeMult, gameData.blessings)
-            val blessingCoinMult = if (flags.ironman) 1.0f else ChurchRepository.coinMultiplier(flags, workerCapeMult, gameData.blessings) *
-                PlayerRepository.gooseCoinMultiplier(json.decodeFromString<List<OwnedPet>>(workerPlayer.pets)).toFloat()
+            val blessingChurchCoinMult = if (flags.ironman) 1.0f else ChurchRepository.coinMultiplier(flags, workerCapeMult, gameData.blessings)
+            val petCoinMult = if (flags.ironman) 1.0f else PlayerRepository.gooseCoinMultiplier(json.decodeFromString<List<OwnedPet>>(workerPlayer.pets)).toFloat()
+            val blessingCoinMult = blessingChurchCoinMult * petCoinMult
             val innXpMult        = townRepo.workerXpMultiplier(flags)
             val workerOwnedPets: List<OwnedPet> = if (flags.ironman) emptyList()
                 else try { json.decodeFromString(workerPlayer.pets) } catch (_: Exception) { emptyList() }
@@ -1483,7 +1600,7 @@ class HomeViewModel @Inject constructor(
                 when (session.skillName) {
                     "boss" -> {
                         val frame = frames.lastOrNull() ?: continue
-                        val won = frame.kills > 0
+                        val won = frame.kills > 0 || frame.killsByEnemy.isNotEmpty()
                         if (won) {
                             val its   = frame.items.toMutableMap()
                             val coins = its.remove("coins")?.toLong() ?: 0L
@@ -1633,7 +1750,7 @@ class HomeViewModel @Inject constructor(
             val useTotalLabel    = n == 1 && combinedXpBySkill.size == 1 && combinedKills.isEmpty()
             val singleXp         = combinedXpBySkill.values.firstOrNull() ?: 0L
             val displayedCoins   = (combinedCoins.toDouble() * blessingCoinMult).toLong()
-            val coinBlessingBonus = displayedCoins - combinedCoins
+            val (coinBlessingBonus, coinPetBonus) = splitCoinBonus(combinedCoins, blessingChurchCoinMult, petCoinMult)
             val sortedXpEntries   = combinedXpBySkill.entries.sortedByDescending { it.value }
             val singleXpFactor    = combinedXpBySkill.keys.firstOrNull()?.let(boostFactorFor) ?: 1L
             val xpLineBonuses     = sortedXpEntries.map { (skill, xp) ->
@@ -1669,6 +1786,7 @@ class HomeViewModel @Inject constructor(
                 totalXpBoostFactor = if (useTotalLabel) singleXpFactor else 1L,
                 xpLineBonuses    = xpLineBonuses,
                 coinBlessingBonus = coinBlessingBonus,
+                coinPetBonus      = coinPetBonus,
             )
 
             val capeMessage = if (awardedCapes.isNotEmpty()) {
@@ -1718,8 +1836,12 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val action = playerRepo.removeFromQueue(index) ?: return@launch
             if (action.coinRefund > 0) playerRepo.addCoins(action.coinRefund)
-            playerSessionMaterials(action.skillName, action.activityKey, action.qty, gameData)
-                ?.let { playerRepo.addItems(it) }
+            if (action.consumedMaterials.isNotEmpty()) {
+                playerRepo.addItems(action.consumedMaterials)
+            } else {
+                playerSessionMaterials(action.skillName, action.activityKey, action.qty, gameData)
+                    ?.let { playerRepo.addItems(it) }
+            }
             if (action.catalystKey != null && action.catalystQty > 0) {
                 playerRepo.addItem(action.catalystKey, action.catalystQty)
             }
@@ -1988,6 +2110,9 @@ fun isSkillSessionStillEligible(
     currentLevels: Map<String, Int>,
     gameData: GameDataRepository,
 ): Boolean {
+    // Isle levels have no prestige and never drop, and levelAtStart for isle sessions is
+    // an isle level, so comparing it to mainland levels would void their XP (issue #1970).
+    if (session.isElderSession) return true
     val currentLevel = when (session.skillName) {
         "boss", "combat", "tower" -> combatLevelFrom(currentLevels)
         "expedition" -> gameData.skillingDungeons[session.activityKey]?.skill?.let { currentLevels[it] } ?: 1
@@ -1996,3 +2121,19 @@ fun isSkillSessionStillEligible(
     return currentLevel >= session.levelAtStart
 }
 
+/**
+ * Display-side XP parity with the payout (`PlayerRepository.applySessionResults`).
+ * The summary stores base * prestige * sigils; the render layer then applies 2x * blessing,
+ * so the shown total equals card (`sessionXpGain`) and payout mainland chains.
+ * Isle bypasses every mainland multiplier and stores raw base XP.
+ */
+internal fun sigilXpMult(embeddedSigils: Map<String, String>): Double =
+    1.0 + embeddedSigils.values.count { it == "elder_sapphire" } * 0.05
+
+internal fun displayStoredXp(
+    baseXp: Long,
+    prestigeMult: Double,
+    sigilMult: Double,
+    isElder: Boolean,
+): Long =
+    if (isElder) baseXp else (baseXp * prestigeMult * sigilMult).toLong()

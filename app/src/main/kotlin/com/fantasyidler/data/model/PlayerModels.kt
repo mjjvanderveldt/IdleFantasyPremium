@@ -192,6 +192,8 @@ data class PlayerFlags(
     @SerialName("show_session_end_time") val showSessionEndTime: Boolean = true,
     /** Gold quest dots on the Skills tab icons; some players prefer them off (discussion #1386). */
     @SerialName("show_quest_dots") val showQuestDots: Boolean = true,
+    /** Highlights the Grand Monument icon on Home when the daily touch is available (discussion #1931). */
+    @SerialName("show_monument_touch_indicator") val showMonumentTouchIndicator: Boolean = true,
     /** Whether to abbreviate large item quantities/numbers (e.g. 2.46M vs 2,461,940). */
     @SerialName("compact_numbers") val compactNumbers: Boolean = false,
     /** Nav bar badge dots for combat/skill prestige availability. */
@@ -529,6 +531,7 @@ data class QueuedAction(
      * Agility instead of elder Agility).
      */
     @SerialName("is_elder_session") val isElderSession: Boolean = false,
+    @SerialName("consumed_materials") val consumedMaterials: Map<String, Int> = emptyMap(),
 )
 
 // ---------------------------------------------------------------------------

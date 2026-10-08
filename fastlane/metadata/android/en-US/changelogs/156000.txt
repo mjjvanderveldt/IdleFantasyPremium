@@ -1,0 +1,19 @@
+• Added Slayer and quest icons to Combat dungeons that hold a task or quest target
+• Added a button on the Slayer screen to queue dungeons for all active and foretold tasks
+• Added a Capes section to the Shop to buy back earned capes you no longer own
+• Added a confirmation when activating or extending a Church blessing
+• Added an optional dot on the Grand Monument when the daily touch is ready
+• Added a time remaining countdown to the seasonal event card on Home
+• Added a separate pet line for coin bonuses in the Collect summary
+• Added the active blessing XP bonus to skill rows
+• Fixed queued combat sessions using more food than you own when several went uncollected
+• Fixed queued Elder Isle dungeons using mainland combat levels
+• Fixed Elder Isle XP estimates including mainland boosts
+• Fixed repeating an Elder Isle session starting it as a mainland session
+• Fixed the house page not scrolling in portrait edit mode
+• Fixed carnival game names showing in English in the queue and banner
+• Fixed Slayer shop stats and requirements showing in English
+• Fixed Elder Isle dungeon descriptions claiming guaranteed Ancient Sigil drops
+• Fixed boss fights that ran out of time picking the winner without counting damage already dealt
+• Fixed queued Elder Isle sessions being dropped when your mainland level was below the requirement
+• Updated Italian translations

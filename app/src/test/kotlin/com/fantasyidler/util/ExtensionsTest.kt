@@ -97,7 +97,7 @@ class ExtensionsTest {
     fun `formatDurationMs renders hours minutes and seconds`() {
         assertEquals("45s", 45_000L.formatDurationEn())
         assertEquals("1m", 60_000L.formatDurationEn())
-        assertEquals("1m", 90_000L.formatDurationEn())     // sub-minute remainder dropped
+        assertEquals("1m 30s", 90_000L.formatDurationEn())   // seconds shown under an hour
         assertEquals("1h", 3_600_000L.formatDurationEn())
         assertEquals("1h 1m", 3_660_000L.formatDurationEn())
         assertEquals("1h 30m", 5_400_000L.formatDurationEn())

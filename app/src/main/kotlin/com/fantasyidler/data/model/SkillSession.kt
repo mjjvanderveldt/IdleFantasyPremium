@@ -84,4 +84,7 @@ data class SkillSession(
      *  the elder combat skill pool. Loot still lands in the shared inventory. */
     @ColumnInfo(name = "is_elder_session", defaultValue = "0")
     val isElderSession: Boolean = false,
+
+    @ColumnInfo(name = "consumed_materials")
+    val consumedMaterials: String? = null,
 )

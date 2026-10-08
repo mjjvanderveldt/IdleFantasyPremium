@@ -71,6 +71,9 @@ object CombatSimulator {
                 else     -> effStrength + weaponStrengthBonus
             },
             "def" to effDefence,
+            "atk_potion" to when (combatStyle) { "ranged" -> potionBonuses["ranged"] ?: 0; "magic" -> potionBonuses["magic"] ?: 0; else -> potionBonuses["attack"] ?: 0 },
+            "str_potion" to when (combatStyle) { "ranged" -> potionBonuses["ranged"] ?: 0; "magic" -> 0; else -> potionBonuses["strength"] ?: 0 },
+            "def_potion" to (potionBonuses["defense"] ?: 0),
         )
 
         val frames = mutableListOf<SessionFrame>()
@@ -426,6 +429,9 @@ object CombatSimulator {
         mercenaries: List<MercCombatant> = emptyList(),
         /** Rare-drop item keys that must not roll (heirlooms the player already owns). */
         blockedRareDrops: Set<String> = emptySet(),
+        potionAttackBonus: Int = 0,
+        potionStrengthBonus: Int = 0,
+        potionDefenseBonus: Int = 0,
         random: Random = Random.Default,
     ): List<SessionFrame> {
         val speed = attackSpeedSec.coerceIn(1.2, BASE_ATTACK_SPEED_SEC)
@@ -480,6 +486,9 @@ object CombatSimulator {
                 else     -> playerStrength + weaponStrBonus
             },
             "def" to effPlayerDefence,
+            "atk_potion" to potionAttackBonus,
+            "str_potion" to potionStrengthBonus,
+            "def_potion" to potionDefenseBonus,
         )
         val bossHitChance = (when {
             bossEffAtk > effPlayerDefence -> 1.0 - effPlayerDefence / (2.0 * bossEffAtk.coerceAtLeast(1))
@@ -700,15 +709,15 @@ object CombatSimulator {
 
         // DPS fallback if the frame cap was hit with neither side dead.
         if (frames.isEmpty() || (frames.last().kills == 0 && currentBossHp > 0 && currentHp > 0)) {
-            val mercDps = mercenaries.indices.sumOf { i ->
+            // Decided from the health left at the cap, not full pools, so damage already
+            // dealt counts (issue #1961). Downed mercenaries add neither HP nor damage.
+            val mercDps = mercenaries.indices.filter { mercHp[it] > 0 }.sumOf { i ->
                 (mercenaries[i].maxHit / 2.0) * mercHitChance[i] / BASE_ATTACK_SPEED_SEC
             }
-            val partyHp   = maxHp + mercenaries.sumOf { it.hpLevel * 10 }
+            val partyHpLeft = currentHp + mercHp.filter { it > 0 }.sum()
             val playerDps = (playerMax / 2.0) * playerHitChance / speed + mercDps
             val bossDps   = (bossMax / 2.0) * bossHitChance / BASE_ATTACK_SPEED_SEC
-            won = if (playerDps > 0 && bossDps > 0) {
-                (boss.hp / playerDps) <= (partyHp / bossDps)
-            } else playerDps >= bossDps
+            won = timeoutWon(currentBossHp, partyHpLeft, playerDps, bossDps)
             val stub = SessionFrame(
                 minute = frames.size, xpGain = 0, xpBefore = 0L, xpAfter = 0L,
                 levelBefore = 0, levelAfter = 0,
@@ -747,12 +756,21 @@ object CombatSimulator {
             xpAfter      = totalXp,
             items        = items,
             xpBySkill    = xpBySkill,
+            kills        = if (won) 1 else 0,
             killsByEnemy = if (won) mapOf(bossKey to 1) else emptyMap(),
             combatStyle  = combatStyle,
         )
 
         return frames
     }
+
+    /**
+     * Boss fight that hit its time cap with both sides alive: the party wins if it would
+     * finish the boss's remaining HP no later than the boss finishes the party's.
+     */
+    internal fun timeoutWon(bossHpLeft: Int, partyHpLeft: Int, playerDps: Double, bossDps: Double): Boolean =
+        if (playerDps > 0 && bossDps > 0) (bossHpLeft / playerDps) <= (partyHpLeft / bossDps)
+        else playerDps >= bossDps
 
     /** Ticks per 60-second frame at the base attack speed (one attack every 2.4 s). */
     const val TICKS_PER_FRAME = 25

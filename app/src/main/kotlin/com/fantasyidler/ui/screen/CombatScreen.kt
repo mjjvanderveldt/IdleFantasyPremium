@@ -91,6 +91,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import com.fantasyidler.data.model.DungeonRunStats
 import com.fantasyidler.data.model.EquipSlot
 import com.fantasyidler.data.model.Skills
+import com.fantasyidler.ui.components.SkillRowCard
 import com.fantasyidler.ui.theme.ScaledSheetContent
 import com.fantasyidler.ui.viewmodel.CombatViewModel
 import com.fantasyidler.ui.viewmodel.InventoryViewModel
@@ -99,6 +100,10 @@ import com.fantasyidler.ui.viewmodel.nextLevelThreshold
 import com.fantasyidler.ui.viewmodel.xpProgressFraction
 import com.fantasyidler.ui.viewmodel.xpToMaxLevel
 import com.fantasyidler.ui.viewmodel.xpToNextLevel
+import com.fantasyidler.ui.viewmodel.QuestCategory
+import com.fantasyidler.ui.viewmodel.QuestIndicator
+import com.fantasyidler.ui.screen.skills.QuestIndicatorIcons
+import com.fantasyidler.ui.screen.skills.superscriptCount
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.formatXp
 
@@ -249,6 +254,8 @@ fun CombatScreen(
                             dungeonRuns         = state.dungeonRuns,
                             dungeonLastRunStats = state.dungeonLastRunStats,
                             unlockedDungeons    = state.unlockedDungeons,
+                            slayerTargetEnemies = state.slayerTargetEnemies,
+                            questTargetEnemies  = state.questTargetEnemies,
                             towerBestFloor      = state.towerBestFloor,
                             bossKillCounts      = state.bossKillCounts,
                             isQueueFull         = state.isQueueFull,
@@ -348,6 +355,8 @@ fun CombatScreen(
                             dungeonRuns         = state.dungeonRuns,
                             dungeonLastRunStats = state.dungeonLastRunStats,
                             unlockedDungeons    = state.unlockedDungeons,
+                            slayerTargetEnemies = state.slayerTargetEnemies,
+                            questTargetEnemies  = state.questTargetEnemies,
                             towerBestFloor      = state.towerBestFloor,
                             bossKillCounts      = state.bossKillCounts,
                             isQueueFull         = state.isQueueFull,
@@ -553,6 +562,8 @@ private fun CombatSelectionList(
     dungeonRuns: Map<String, Int> = emptyMap(),
     dungeonLastRunStats: Map<String, DungeonRunStats> = emptyMap(),
     unlockedDungeons: List<String> = emptyList(),
+    slayerTargetEnemies: Set<String> = emptySet(),
+    questTargetEnemies: Map<String, Set<QuestCategory>> = emptyMap(),
     towerBestFloor: Int = 0,
     bossKillCounts: Map<String, Int> = emptyMap(),
     isQueueFull: Boolean = false,
@@ -588,6 +599,9 @@ private fun CombatSelectionList(
                 survivalRating = survivalRatings[dungeon.name],
                 runCount       = dungeonRuns[dungeon.name] ?: 0,
                 lastRunStats   = dungeonLastRunStats[dungeon.name],
+                slayerTargetCount = dungeon.enemySpawns.map { it.enemy }.distinct().count { it in slayerTargetEnemies },
+                questIndicators = dungeon.enemySpawns.map { it.enemy }.distinct()
+                    .flatMap { enemy -> questTargetEnemies[enemy].orEmpty().map { category -> QuestIndicator(category, unlocked, "$enemy:$category") } },
                 onTap          = { onDungeon(dungeon) },
                 loreLockedHint = if (!discovered)
                     dungeon.loreHint ?: stringResource(R.string.expedition_discover_hint) else null,
@@ -954,15 +968,9 @@ private fun CombatSkillRow(
     val emoji    = GameStrings.skillEmoji(skillKey)
     val progress = xpProgressFraction(xp)
 
-    Column(Modifier.fillMaxWidth()) {
-        Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Box(modifier = Modifier.size(44.dp)) {
+    SkillRowCard(
+        onClick = onClick,
+        icon = {
             Box(
                 modifier = Modifier
                     .size(44.dp)
@@ -997,9 +1005,8 @@ private fun CombatSkillRow(
                     )
                     .padding(horizontal = 3.dp, vertical = 1.dp),
             )
-        }
-        Spacer(Modifier.width(12.dp))
-        Column(Modifier.weight(1f)) {
+        },
+        header = {
             Row(
                 modifier              = Modifier.fillMaxWidth(),
                 verticalAlignment     = Alignment.CenterVertically,
@@ -1026,20 +1033,10 @@ private fun CombatSkillRow(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Spacer(Modifier.height(4.dp))
-            LinearProgressIndicator(
-                gapSize = 0.dp,
-                drawStopIndicator = {},
-                progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(4.dp)
-                    .clip(RoundedCornerShape(2.dp)),
-                color            = MaterialTheme.colorScheme.primary,
-                trackColor       = MaterialTheme.colorScheme.surfaceVariant,
-            )
-            if (gearBonus > 0 || prestigeBonus > 0) {
-                Spacer(Modifier.height(6.dp))
+        },
+        progress = progress,
+        description = if (gearBonus > 0 || prestigeBonus > 0) {
+            {
                 FlowRow(
                     modifier              = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -1060,7 +1057,9 @@ private fun CombatSkillRow(
                     }
                 }
             }
-            if (prestigeLevel > 0 || (onOpenPrestige != null && level >= 99)) {
+        } else null,
+        action = if (prestigeLevel > 0 || (onOpenPrestige != null && level >= 99)) {
+            {
                 Row(
                     modifier              = Modifier.fillMaxWidth(),
                     verticalAlignment     = Alignment.CenterVertically,
@@ -1080,7 +1079,7 @@ private fun CombatSkillRow(
                                 modifier = Modifier.height(24.dp),
                             ) {
                                 Text(
-                                    text  = stringResource(R.string.prestige),
+                                    text  = stringResource(if (isPrestigeMaxed) R.string.prestige_skill_tree else R.string.prestige),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.primary,
                                 )
@@ -1089,9 +1088,8 @@ private fun CombatSkillRow(
                     }
                 }
             }
-        }
-    }
-    }
+        } else null,
+    )
     HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
 }
 
@@ -1259,6 +1257,8 @@ private fun DungeonRow(
     survivalRating: CombatSimulator.SurvivalRating? = null,
     runCount: Int = 0,
     lastRunStats: DungeonRunStats? = null,
+    slayerTargetCount: Int = 0,
+    questIndicators: List<QuestIndicator> = emptyList(),
     loreLockedHint: String? = null,
     onTap: () -> Unit,
 ) {
@@ -1273,12 +1273,32 @@ private fun DungeonRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
-            Text(
-                text       = GameStrings.dungeonName(context, dungeon.name),
-                style      = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium,
-                color      = if (unlocked) MaterialTheme.colorScheme.onSurface else dimColor,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text       = GameStrings.dungeonName(context, dungeon.name),
+                    style      = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    color      = if (unlocked) MaterialTheme.colorScheme.onSurface else dimColor,
+                )
+                if (slayerTargetCount > 0) {
+                    Image(
+                        painter            = painterResource(R.drawable.skill_slayer),
+                        contentDescription = stringResource(R.string.slayer_title),
+                        modifier           = Modifier
+                            .padding(start = 6.dp)
+                            .size(16.dp)
+                            .alpha(if (unlocked) 1f else 0.38f),
+                    )
+                    if (slayerTargetCount > 1) {
+                        Text(
+                            text  = superscriptCount(slayerTargetCount),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (unlocked) MaterialTheme.colorScheme.onSurface else dimColor,
+                        )
+                    }
+                }
+                QuestIndicatorIcons(questIndicators)
+            }
             Text(
                 text     = GameStrings.dungeonDesc(context, dungeon.name).takeIf { it.isNotBlank() } ?: dungeon.description,
                 style    = MaterialTheme.typography.bodySmall,

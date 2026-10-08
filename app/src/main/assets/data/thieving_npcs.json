@@ -3,7 +3,7 @@
     "key": "peasant",
     "display_name": "Peasant",
     "level_required": 1,
-    "base_xp": 8,
+    "base_xp": 20,
     "coins_min": 5,
     "coins_max": 15,
     "loot_table": [
@@ -20,7 +20,7 @@
     "key": "merchant",
     "display_name": "Merchant",
     "level_required": 15,
-    "base_xp": 20,
+    "base_xp": 40,
     "coins_min": 20,
     "coins_max": 50,
     "loot_table": [
@@ -35,7 +35,7 @@
     "key": "guardsman",
     "display_name": "Guardsman",
     "level_required": 30,
-    "base_xp": 40,
+    "base_xp": 75,
     "coins_min": 30,
     "coins_max": 80,
     "loot_table": [
@@ -51,7 +51,7 @@
     "key": "artisan",
     "display_name": "Artisan",
     "level_required": 45,
-    "base_xp": 70,
+    "base_xp": 110,
     "coins_min": 50,
     "coins_max": 150,
     "loot_table": [
@@ -68,7 +68,7 @@
     "key": "noble",
     "display_name": "Noble",
     "level_required": 60,
-    "base_xp": 110,
+    "base_xp": 170,
     "coins_min": 100,
     "coins_max": 300,
     "loot_table": [
@@ -85,7 +85,7 @@
     "key": "city_guard",
     "display_name": "City Guard",
     "level_required": 70,
-    "base_xp": 155,
+    "base_xp": 215,
     "coins_min": 150,
     "coins_max": 400,
     "loot_table": [
@@ -99,7 +99,7 @@
     "key": "royal_guard",
     "display_name": "Royal Guard",
     "level_required": 75,
-    "base_xp": 182,
+    "base_xp": 245,
     "coins_min": 175,
     "coins_max": 500,
     "loot_table": [
@@ -115,7 +115,7 @@
     "key": "knight",
     "display_name": "Knight",
     "level_required": 80,
-    "base_xp": 210,
+    "base_xp": 280,
     "coins_min": 200,
     "coins_max": 600,
     "loot_table": [
@@ -130,7 +130,7 @@
     "key": "bishop",
     "display_name": "Bishop",
     "level_required": 85,
-    "base_xp": 245,
+    "base_xp": 330,
     "coins_min": 250,
     "coins_max": 800,
     "loot_table": [
@@ -146,7 +146,7 @@
     "key": "high_priest",
     "display_name": "High Priest",
     "level_required": 90,
-    "base_xp": 280,
+    "base_xp": 380,
     "coins_min": 300,
     "coins_max": 1000,
     "loot_table": [

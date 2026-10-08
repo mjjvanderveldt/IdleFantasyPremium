@@ -121,6 +121,7 @@ class SessionRepository @Inject constructor(
         weaponSlot: String? = null,
         playerMutexHeld: Boolean = false,
         isElderSession: Boolean = false,
+        consumedMaterials: String? = null,
     ): SkillSession {
         val now = System.currentTimeMillis()
         val startedAt = now - backdateMs
@@ -138,6 +139,7 @@ class SessionRepository @Inject constructor(
             startElapsedMs = if (insertAsCompleted) null else SystemClock.elapsedRealtime() - backdateMs,
             startBootCount = if (insertAsCompleted) null else currentBootCount(),
             isElderSession = isElderSession,
+            consumedMaterials = consumedMaterials,
             // Lane follows the session's own isle flag, never the player's live location —
             // a queued isle session that fires after the player sailed home still belongs
             // to the isle lane.
@@ -452,6 +454,32 @@ class SessionRepository @Inject constructor(
 
     suspend fun getOldestCompletedSession(): SkillSession? =
         sessionDao.getOldestCompletedSession()
+
+    /**
+     * Food already simulated but not yet deducted from inventory, summed over the
+     * whole completed-but-uncollected backlog (collected sessions are deleted, so
+     * the remainder is exactly what collection will still deduct). Every combat
+     * simulation input must subtract this (see [FoodReservation]); reading only
+     * the active session lets queued/offline sessions 2..N simulate against a
+     * phantom full supply (issue #1960).
+     *
+     * Both player lanes count: the mainland and the isle eat from one shared bag,
+     * so a finished isle fight's food must be withheld from a mainland start too.
+     */
+    suspend fun pendingFoodConsumed(): Map<String, Int> {
+        val sessions = try {
+            PLAYER_SLOTS.flatMap { getAllCompletedSessions(it) }
+        } catch (_: Exception) {
+            return emptyMap()
+        }
+        return FoodReservation.aggregatePending(sessions) { raw ->
+            try {
+                json.decodeFromString<List<SessionFrame>>(raw)
+            } catch (_: Exception) {
+                emptyList()
+            }
+        }
+    }
 
     // ------------------------------------------------------------------
 

@@ -272,6 +272,7 @@ fun SettingsScreen(
                         0.85f to stringResource(R.string.settings_font_small),
                         1.0f  to stringResource(R.string.settings_font_normal),
                         1.25f to stringResource(R.string.settings_font_large),
+                        1.35f to stringResource(R.string.settings_font_very_large),
                         1.5f  to stringResource(R.string.settings_font_huge),
                     )
                     val fontLabel = fontOptions.firstOrNull { it.first == fontScale }?.second
@@ -323,6 +324,17 @@ fun SettingsScreen(
                     Switch(
                         checked         = showQuestDots,
                         onCheckedChange = { viewModel.setShowQuestDots(it) },
+                    )
+                }
+            )
+            val showMonumentTouchIndicator by viewModel.showMonumentTouchIndicator.collectAsState()
+            SettingsRow(
+                title    = stringResource(R.string.settings_monument_touch_indicator),
+                subtitle = stringResource(R.string.settings_monument_touch_indicator_desc),
+                trailing = {
+                    Switch(
+                        checked         = showMonumentTouchIndicator,
+                        onCheckedChange = { viewModel.setShowMonumentTouchIndicator(it) },
                     )
                 }
             )
@@ -761,6 +773,8 @@ private fun LanguageSection() {
         "he"     to stringResource(R.string.settings_lang_hebrew),
         "ar"     to stringResource(R.string.settings_lang_arabic),
         "ca"     to stringResource(R.string.settings_lang_catalan),
+        "uk"     to stringResource(R.string.settings_lang_ukrainian),
+        "vi"     to stringResource(R.string.settings_lang_vietnamese),
         "system" to stringResource(R.string.settings_lang_system),
     )
     val selectedLabel =

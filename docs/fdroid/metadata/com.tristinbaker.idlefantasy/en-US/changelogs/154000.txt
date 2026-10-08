@@ -1,0 +1,6 @@
+• Elder Isle sessions always credit XP to the elder pool, even if the isle flag desyncs mid-session.
+• Time zone changes no longer reset daily/weekly quests, guild dailies, or the bounty board.
+• Slayer Master view auto-refreshes when a background session completes.
+• Opening Ancient Treasures in bulk is much faster on large stacks.
+• Equip picker sorts by stat power instead of pickup order.
+• Elder Isle crafting no longer uses mainland tools, boosts, or pets, and pays XP to the elder pool.

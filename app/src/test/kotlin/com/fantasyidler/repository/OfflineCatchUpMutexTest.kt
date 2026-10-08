@@ -82,11 +82,11 @@ class OfflineCatchUpMutexTest {
         while (!playerRepo.playerMutex.isLocked && waited < 2_000) { delay(5); waited += 5 }
         assertTrue("holder never acquired playerMutex", playerRepo.playerMutex.isLocked)
 
-        val ranWhileLocked = withTimeoutOrNull(300) { starter.insertNextQueuedAsOffline(1_000L); true }
+        val ranWhileLocked = withTimeoutOrNull(300) { starter.insertNextQueuedAsOffline(1_000L, isle = false); true }
         assertNull("offline catch-up ran while playerMutex was held elsewhere", ranWhileLocked)
 
         gate.complete(Unit)
-        val finishedAfterRelease = withTimeoutOrNull(3_000) { starter.insertNextQueuedAsOffline(1_000L); true }
+        val finishedAfterRelease = withTimeoutOrNull(3_000) { starter.insertNextQueuedAsOffline(1_000L, isle = false); true }
         assertNotNull("offline catch-up did not finish after lock release (re-entry deadlock)", finishedAfterRelease)
 
         holder.cancel()
@@ -103,7 +103,7 @@ class OfflineCatchUpMutexTest {
                 skillDisplayName = "Mining",
             )
         )
-        val started = withTimeoutOrNull(10_000) { starter.startNextQueued() }
+        val started = withTimeoutOrNull(10_000) { starter.startNextQueued(isle = false) }
         assertNotNull("startNextQueued deadlocked (playerMutex re-entry via heirloom stamp)", started)
         assertTrue("queued action failed to start", started == true)
     }

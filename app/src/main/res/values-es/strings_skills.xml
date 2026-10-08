@@ -14,18 +14,18 @@
     <string name="skill_firemaking_name">Hacer fuego</string>
     <string name="skill_firemaking_desc">Quema troncos para ganar XP de Hacer fuego. Cada tronco también produce cenizas que pueden usarse en Plegarias para obtener XP adicional.</string>
     <string name="skill_agility_name">Agilidad</string>
-    <string name="skill_agility_desc">Entrena Agilidad para reducir el tiempo de sesión en todas las habilidades. En nivel 99 reduces 20 minutos de la hora (60 → 40), con una reducción gradual a medida que subes de nivel.</string>
+    <string name="skill_agility_desc">Entrena Agilidad para reducir el tiempo de sesión en todas las habilidades. En nivel 99 reduces %1$d minutos de la hora (60 → %2$d), con una reducción gradual a medida que subes de nivel.</string>
 
     <!-- Crafting skills -->
     <string name="skill_smithing_name">Herrería</string>
-    <string name="skill_smithing_desc">Funde minerales en barras y forja equipo metálico poderoso.</string>
+    <string name="skill_smithing_desc">Forja minerales en barras y forja equipo metálico poderoso.</string>
     <string name="skill_cooking_name">Cocina</string>
     <string name="skill_cooking_desc">Cocina ingredientes crudos para crear comida que restaura HP en combate.</string>
     <string name="skill_fletching_name">Arquería</string>
     <string name="skill_fletching_desc">Crea arcos y flechas usando madera y componentes metálicos.</string>
-    <string name="skill_crafting_name">Crafting</string> <!-- untranslated -->
+    <string name="skill_crafting_name">Artesanía</string>
     <string name="skill_crafting_desc">Crea joyería y otros objetos a partir de materiales preciosos.</string>
-    <string name="skill_runecrafting_name">Runecrafting</string> <!-- untranslated -->
+    <string name="skill_runecrafting_name">Creación de runas</string>
     <string name="skill_runecrafting_desc">Crea runas mágicas a partir de esencia rúnica para usar en hechizos.</string>
     <string name="skill_herblore_name">Herboristería</string>
     <string name="skill_herblore_desc">Prepara pociones con hierbas y materiales de mazmorra para mejorar tus estadísticas de combate.</string>
@@ -48,8 +48,8 @@
 
     <!-- ===== Skill unlock sheet labels ===== -->
     <string name="label_lv">Nv. %1$d</string>
-    <string name="armory_req_level">Lv. %1$d</string> <!-- untranslated -->
-    <string name="skills_projected_xp_level">+%1$s XP → Level %2$d</string> <!-- untranslated -->
+    <string name="armory_req_level">Nv. %1$d</string>
+    <string name="skills_projected_xp_level">+%1$s XP → Nivel %2$d</string>
     <string name="skills_agility_course_detail">Nv. %1$d  •  %2$d XP/vuelta</string>
     <string name="label_hp_passive">Pasivo — aumenta los PS máximos</string>
     <string name="label_hp_scales">Los PS máximos aumentan cada nivel</string>
@@ -58,18 +58,18 @@
     <string name="label_xp_per_kill">%1$s (%2$d XP/muerte)</string>
 
     <!-- ===== Tree names ===== -->
-    <string name="tree_tree_name">Tree</string> <!-- untranslated -->
-    <string name="tree_oak_tree_name">Oak Tree</string> <!-- untranslated -->
-    <string name="tree_willow_tree_name">Willow Tree</string> <!-- untranslated -->
-    <string name="tree_maple_tree_name">Maple Tree</string> <!-- untranslated -->
-    <string name="tree_yew_tree_name">Yew Tree</string> <!-- untranslated -->
-    <string name="tree_magic_tree_name">Magic Tree</string> <!-- untranslated -->
-    <string name="tree_redwood_tree_name">Redwood Tree</string> <!-- untranslated -->
+    <string name="tree_tree_name">Árbol</string>
+    <string name="tree_oak_tree_name">Árbol de roble</string>
+    <string name="tree_willow_tree_name">Árbol de sauce</string>
+    <string name="tree_maple_tree_name">Árbol de arce</string>
+    <string name="tree_yew_tree_name">Árbol de tejo</string>
+    <string name="tree_magic_tree_name">Árbol mágico</string>
+    <string name="tree_redwood_tree_name">Árbol de secuoya</string>
     <!-- Elder Isle woodcutting targets -->
-    <string name="tree_coastal_pine_name">Coastal Pine</string> <!-- untranslated -->
-    <string name="tree_grove_oak_name">Grove Oak</string> <!-- untranslated -->
-    <string name="tree_abyssal_tree_name">Abyssal Tree</string> <!-- untranslated -->
-    <string name="tree_starwood_tree_name">Starwood Tree</string> <!-- untranslated -->
+    <string name="tree_coastal_pine_name">Pino Costero</string>
+    <string name="tree_grove_oak_name">Roble del Bosque</string>
+    <string name="tree_abyssal_tree_name">Árbol Abisal</string>
+    <string name="tree_starwood_tree_name">Árbol Estelar</string>
 
     <!-- ===== Agility course names and descriptions ===== -->
     <string name="agility_beginner_course_name">Curso Principiante</string>
@@ -103,18 +103,18 @@
     <string name="agility_transcendent_course_name">Curso Transcendente</string>
     <string name="agility_transcendent_course_desc">El desafío definitivo de agilidad que trasciende los límites mortales.</string>
     <!-- Elder Isle agility courses (train elder Agility to shorten isle sessions to 45 min at 99) -->
-    <string name="agility_elder_coastal_run_name">Coastal Run</string> <!-- untranslated -->
-    <string name="agility_elder_coastal_run_desc">A jog along the isle\'s wave-scarred beach. Rocks shift underfoot with the tide.</string> <!-- untranslated -->
-    <string name="agility_elder_grove_traverse_name">Grove Traverse</string> <!-- untranslated -->
-    <string name="agility_elder_grove_traverse_desc">A rope-and-ledge circuit through the rune-lit canopy of the Ancient Forest.</string> <!-- untranslated -->
-    <string name="agility_elder_volcano_scramble_name">Volcano Scramble</string> <!-- untranslated -->
-    <string name="agility_elder_volcano_scramble_desc">A climb across the smoking flanks of the peak. The stone remembers being an altar.</string> <!-- untranslated -->
-    <string name="agility_elder_abyssal_ascent_name">Abyssal Ascent</string> <!-- untranslated -->
-    <string name="agility_elder_abyssal_ascent_desc">A vertical route up the pressure-cracked walls of the Abyssal Depths. Few make the top.</string> <!-- untranslated -->
+    <string name="agility_elder_coastal_run_name">Correría Costera</string>
+    <string name="agility_elder_coastal_run_desc">Un trote por la playa marcada por las olas de la isla. Las rocas se mueven bajo tus pies con la marea.</string>
+    <string name="agility_elder_grove_traverse_name">Travesía del Bosquecillo</string>
+    <string name="agility_elder_grove_traverse_desc">Un circuito de cuerdas y repisas por la copa iluminada por runas del Bosque Antiguo.</string>
+    <string name="agility_elder_volcano_scramble_name">Escalada del Volcán</string>
+    <string name="agility_elder_volcano_scramble_desc">Una escalada por los flancos humeantes del pico. La piedra recuerda haber sido un altar.</string>
+    <string name="agility_elder_abyssal_ascent_name">Ascenso Abisal</string>
+    <string name="agility_elder_abyssal_ascent_desc">Una ruta vertical por las paredes agrietadas de las Profundidades Abisales. Pocos llegan a la cima.</string>
 
     <!-- ===== Session skill type labels ===== -->
     <string name="skill_expedition_name">Expedición</string>
     <string name="skill_boss_name">Jefe</string>
     <string name="skill_mercantile_name">Mercantil</string>
-    <string name="skill_mercantile_desc">Dispatch trade caravans along routes for coins and XP. Higher levels improve shop buy and sell prices and unlock exclusive Merchants Guild goods.</string> <!-- untranslated -->
+    <string name="skill_mercantile_desc">Despacha caravanas comerciales por las rutas para ganar monedas y XP. Los niveles más altos mejoran los precios de compra y venta de la tienda y desbloquean artículos exclusivos del Gremio de Mercaderes.</string>
 </resources>

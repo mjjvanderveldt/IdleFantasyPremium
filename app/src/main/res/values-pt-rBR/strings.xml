@@ -313,6 +313,8 @@
     <string name="settings_profile_layout_tabs">Abas</string>
     <string name="settings_quest_dots">Quest dots on skills</string> <!-- untranslated -->
     <string name="settings_quest_dots_desc">Show a gold dot on skills that have an open quest</string> <!-- untranslated -->
+    <string name="settings_monument_touch_indicator">Monument touch indicator</string> <!-- untranslated -->
+    <string name="settings_monument_touch_indicator_desc">Show a dot on the Grand Monument on Home when the daily touch is available</string> <!-- untranslated -->
     <string name="settings_prestige_notifications">Prestige Notification Badges</string> <!-- untranslated -->
     <string name="settings_prestige_notifications_desc">Show a notification badge on navigation when a skill is ready to prestige</string> <!-- untranslated -->
     <string name="label_switch_character">Switch character</string> <!-- untranslated -->
@@ -418,6 +420,7 @@
     <string name="settings_font_small">Pequeno</string>
     <string name="settings_font_normal">Normal</string> <!-- untranslated -->
     <string name="settings_font_large">Grande</string>
+    <string name="settings_font_very_large">Very Large</string> <!-- untranslated -->
     <string name="settings_font_huge">Enorme</string>
     <string name="settings_import_theme">Importar temas</string>
     <string name="settings_import_theme_desc">Importe temas personalizados de um arquivo</string>
@@ -450,6 +453,8 @@
     <string name="theme_editor_saved_ok">Tema salvo e aplicado</string>
     <string name="theme_editor_exported_ok">Tema exportado</string>
     <string name="settings_language_desc">Substituir o idioma de exibição do app</string>
+
+
 
 
 
@@ -592,6 +597,7 @@
     <string name="combat_spell_locked">Requires Magic level %1$d</string> <!-- untranslated -->
     <string name="combat_spell_level_met">Magic level %1$d</string> <!-- untranslated -->
     <string name="combat_no_potion">Sem Poção</string>
+    <string name="label_potion">Potion</string> <!-- untranslated -->
     <string name="combat_req_level">Nível de combate necessário</string>
     <string name="combat_duration">Duração</string>
     <!-- Translator note: %1$d = minutes -->
@@ -680,6 +686,7 @@
     <!-- Translator note: %1$s = formatted multiplier (e.g. "1.15") -->
     <string name="skills_tool_bonus">×%1$s de bônus de ferramenta</string>
     <string name="skills_pet_bonus">+%1$d%% XP (mascote)</string>
+    <string name="skills_blessing_bonus">+%1$d%% XP (blessing)</string> <!-- untranslated -->
     <!-- Translator note: %1$d = fishing level -->
     <string name="skills_fishing_desc">Nível %1$d  •  Capturas adequadas ao nível</string>
     <!-- Translator note: %1$d = prayer level -->
@@ -738,6 +745,7 @@
     <string name="quest_legend_guild_daily">Diária da guilda</string>
     <string name="quest_legend_guild">Missão da guilda</string>
     <string name="quest_legend_quest">Missão</string>
+    <string name="quest_legend_slayer_target">Slayer Task</string> <!-- untranslated -->
     <string name="quest_legend_gold_dot">Timed quest is available.</string> <!-- untranslated -->
     <string name="quest_legend_notes">Ícones esmaecidos ainda não podem ser concluídos (falta nível ou materiais). Um pequeno número elevado indica que várias missões desse tipo pedem a mesma coisa.</string>
     <!-- Translator note: %1$s = quantity in inventory -->
@@ -1051,6 +1059,8 @@
     <string name="church_active_chip">Ativa</string>
     <string name="church_activate">Ativar</string>
     <string name="church_blessing_bonus">+%1$s da bênção</string>
+    <!-- Golden Goose pet coin share, split from the blessing line (issue #1941). Pending Weblate translation. -->
+    <string name="pet_coin_bonus">+%1$s from pet</string> <!-- untranslated -->
     <string name="church_blessing_suffix">da bênção</string>
     <string name="church_effect_xp">×%1$.2f XP por %2$d horas</string>
     <string name="church_effect_def">+%1$d de Defesa por %2$d horas</string>
@@ -1060,6 +1070,8 @@
     <string name="church_bones_available">Você tem %1$d ossos (todos os tipos), equivalentes a %2$d para as bênçãos (ossos maiores valem mais)</string>
     <string name="church_not_enough_bones">Ossos insuficientes (precisa de %1$d)</string>
     <string name="church_already_active">Uma bênção já está ativa</string>
+    <string name="church_blessing_activated">Blessing activated!</string> <!-- untranslated -->
+    <string name="church_blessing_extended">Blessing extended!</string> <!-- untranslated -->
     <string name="church_confirm_deactivate_title">Desativar Bênção?</string>
     <string name="church_confirm_deactivate_body">Tem certeza de que deseja desativar sua bênção ativa? Você não receberá seus ossos de volta.</string>
 
@@ -1368,8 +1380,11 @@
     <string name="slayer_found_in">Encontrado em: %1$s</string>
     <string name="slayer_requires">Requer: %1$s</string>
     <string name="slayer_add_dungeon_to_queue">Adicionar Masmorra à Fila</string>
+    <string name="slayer_add_all_dungeons_to_queue">Add All Dungeons to Queue</string> <!-- untranslated -->
     <string name="slayer_queue_added">Adicionado à fila: %1$s.</string>
     <string name="slayer_queue_full">A fila está cheia.</string>
+    <string name="slayer_queue_added_many">Added %1$d dungeons to queue.</string> <!-- untranslated -->
+    <string name="slayer_queue_added_partial">Added %1$d of %2$d dungeons to queue.</string> <!-- untranslated -->
     <string name="slayer_foretell_title">Prever Tarefas Futuras</string>
     <string name="slayer_foretell_desc">Reserve tarefas de Extermínio futuras pagando com ossos. Elas são atribuídas automaticamente quando sua tarefa atual for concluída.</string>
     <string name="slayer_foretell_queue_empty">Nenhuma tarefa na fila.</string>
@@ -1417,6 +1432,7 @@
     <string name="shop_cat_food">Comida</string>
     <string name="shop_cat_materials">Materiais</string>
     <string name="shop_cat_misc">Diversos</string>
+    <string name="shop_cat_capes">Capes</string> <!-- untranslated -->
 
     <string name="crafting_per_craft">×%1$d por criação</string>
 
@@ -1435,6 +1451,7 @@
     <string name="trade_route_merchants_quarter_desc">Negocie mercadorias raras no prestigiado distrito dos mercadores.</string>
     <string name="trade_route_northern_ports_desc">Navegue com cargas preciosas até as cidades portuárias do norte. Alto risco, alta recompensa.</string>
     <string name="crafting_cat_bar">Barra</string>
+    <string name="crafting_cat_brew">Brew</string> <!-- untranslated -->
     <string name="crafting_cat_component">Componente</string>
     <string name="crafting_cat_tool">Ferramenta</string>
     <string name="crafting_cat_weapon">Arma</string>
@@ -1448,6 +1465,7 @@
     <string name="crafting_cat_bow">Arco</string>
     <string name="crafting_cat_plank">Tábua</string>
     <string name="crafting_cat_staff">Cajado</string>
+    <string name="crafting_cat_super_potion">Super Potion</string> <!-- untranslated -->
 
     <!-- Crafting tier filter chips -->
     <string name="crafting_tier_adamantite">Adamantita</string>
@@ -1567,6 +1585,8 @@
     <string name="town_artisans_workshop_active_bonus">%1$d%% chance to preserve secondary crafting materials</string> <!-- untranslated -->
     <string name="town_building_chronos_spire_name">Chronos Spire</string> <!-- untranslated -->
     <string name="town_building_dock_name">Dock</string> <!-- untranslated -->
+    <string name="town_dock_no_bonus">Upgrade to sail to new locations</string> <!-- untranslated -->
+    <string name="town_dock_t1_bonus">Unlocks sailing to the Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_title">Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_sail_title">Sail to Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_zone_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
@@ -2005,7 +2025,7 @@
     <string name="monument_not_enough_coins">Moedas insuficientes.</string>
     <string name="title_patron_of_the_realm_name">Patrono do Reino</string>
     <string name="title_patron_of_the_realm_requirement">Complete o Grande Monumento</string>
-    <string name="title_isle_champion_name">Isle Champion</string> <!-- untranslated -->
+    <string name="title_isle_champion_name">Champion of the Elder Isle</string> <!-- untranslated -->
     <string name="title_isle_champion_requirement">Defeat the Last Elder on Elder Isle</string> <!-- untranslated -->
     <string name="item_gilded_full_helmet_name">Elmo completo dourado</string>
     <string name="item_gilded_platebody_name">Peitoral dourado</string>

@@ -1,12 +1,16 @@
 package com.fantasyidler.ui.screen
 
 import android.content.Context
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -76,6 +80,7 @@ import com.fantasyidler.BuildConfig
 import com.fantasyidler.R
 import com.fantasyidler.ui.viewmodel.ExpeditionsViewModel
 import com.fantasyidler.data.model.Skills
+import com.fantasyidler.ui.components.SkillRowCard
 import com.fantasyidler.ui.theme.ScaledSheetContent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -161,6 +166,14 @@ fun SkillsScreen(
                         QuestCategory.MAIN.emoji        to R.string.quest_legend_quest,
                     ).forEach { (emoji, labelRes) ->
                         Text("$emoji  ${stringResource(labelRes)}")
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter            = painterResource(R.drawable.skill_slayer),
+                            contentDescription = null,
+                            modifier           = Modifier.size(20.dp),
+                        )
+                        Text("  ${stringResource(R.string.quest_legend_slayer_target)}")
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("●  ", color = MaterialTheme.colorScheme.primary)
@@ -369,7 +382,7 @@ fun SkillActivitySheet(
                         currentXp = state.skillXp[Skills.MINING] ?: 0L,
                         efficiency = state.miningEfficiency,
                         petBoostPct = state.petBoosts[Skills.MINING] ?: 0,
-                        xpBonusMult = state.xpBonusMult,
+                        xpBonusMult = state.xpMultBySkill[Skills.MINING]?.toFloat() ?: state.xpBonusMult,
                         activeQuests = state.activeQuests,
                         inventory = state.inventory,
                         onSelect = { oreKey -> viewModel.startMiningSession(oreKey) },
@@ -384,7 +397,7 @@ fun SkillActivitySheet(
                         currentXp = state.skillXp[Skills.WOODCUTTING] ?: 0L,
                         efficiency = state.woodcuttingEfficiency,
                         petBoostPct = state.petBoosts[Skills.WOODCUTTING] ?: 0,
-                        xpBonusMult = state.xpBonusMult,
+                        xpBonusMult = state.xpMultBySkill[Skills.WOODCUTTING]?.toFloat() ?: state.xpBonusMult,
                         activeQuests = state.activeQuests,
                         inventory = state.inventory,
                         onSelect = { treeKey -> viewModel.startWoodcuttingSession(treeKey) },
@@ -399,7 +412,7 @@ fun SkillActivitySheet(
                         currentXp = state.skillXp[Skills.FISHING] ?: 0L,
                         efficiency = state.fishingEfficiency,
                         petBoostPct = state.petBoosts[Skills.FISHING] ?: 0,
-                        xpBonusMult = state.xpBonusMult,
+                        xpBonusMult = state.xpMultBySkill[Skills.FISHING]?.toFloat() ?: state.xpBonusMult,
                         activeQuests = state.activeQuests,
                         inventory = state.inventory,
                         onSelect = { fishKey -> viewModel.startFishingSession(fishKey) },
@@ -413,8 +426,9 @@ fun SkillActivitySheet(
                         sessionDurationMs = state.sessionDurationMs,
                         currentXp = state.skillXp[Skills.AGILITY] ?: 0L,
                         efficiency = state.agilityEfficiency,
+                        isIsle = state.onElderIsle,
                         petBoostPct = state.petBoosts[Skills.AGILITY] ?: 0,
-                        xpBonusMult = state.xpBonusMult,
+                        xpBonusMult = state.xpMultBySkill[Skills.AGILITY]?.toFloat() ?: state.xpBonusMult,
                         activeQuests = state.activeQuests,
                         onSelect = { courseKey -> viewModel.startAgilitySession(courseKey) },
                     )
@@ -429,6 +443,8 @@ fun SkillActivitySheet(
                         isQueueFull = state.queueSize >= state.maxQueueSize,
                         sessionDurationMs = state.sessionDurationMs,
                         perLogMs = state.firemakingPerLogMs,
+                        xpBonusMult = state.xpMultBySkill[Skills.FIREMAKING]?.toFloat() ?: state.xpBonusMult,
+                        petBoostPct = state.petBoostBySkill[Skills.FIREMAKING] ?: 0,
                         onStart = { logKey, qty -> viewModel.startFiremakingSession(logKey, qty) },
                         context = context,
                         questFills = sheet.questFills,
@@ -451,6 +467,8 @@ fun SkillActivitySheet(
                             )
                         },
                         currentXp = state.skillXp[Skills.RUNECRAFTING] ?: 0L,
+                        xpBonusMult = state.xpMultBySkill[Skills.RUNECRAFTING]?.toFloat() ?: state.xpBonusMult,
+                        petBoostPct = state.petBoostBySkill[Skills.RUNECRAFTING] ?: 0,
                         questFills = sheet.questFills,
                         activeQuests = state.activeQuests,
                     )
@@ -461,6 +479,8 @@ fun SkillActivitySheet(
                         inventory = sheet.inventory,
                         prayerLevel = state.skillLevels[Skills.PRAYER] ?: 1,
                         currentXp = state.skillXp[Skills.PRAYER] ?: 0L,
+                        xpBonusMult = state.xpMultBySkill[Skills.PRAYER]?.toFloat() ?: state.xpBonusMult,
+                        petBoostPct = state.petBoostBySkill[Skills.PRAYER] ?: 0,
                         isStarting = state.startingSession,
                         hasActiveSession = state.anySessionActive,
                         isQueueFull = state.queueSize >= state.maxQueueSize,
@@ -500,6 +520,10 @@ fun SkillActivitySheet(
                         isQueueFull = state.queueSize >= state.maxQueueSize,
                         sessionDurationMs = state.sessionDurationMs,
                         context = context,
+                        npcEfficiency = state.thievingNpcEfficiency,
+                        petBoostPct = state.petBoostBySkill[Skills.THIEVING] ?: 0,
+                        xpBonusMult = state.xpMultBySkill[Skills.THIEVING]?.toFloat() ?: state.xpBonusMult,
+                        successBonus = state.thievingSuccessBonus,
                         activeQuests = state.activeQuests,
                         onSelect = { npcKey -> viewModel.startThievingSession(npcKey) },
                     )
@@ -752,6 +776,7 @@ private fun SkillsTabContent(
                 isPrestigeMaxed = key in state.prestigeMaxedSkills,
                 onOpenPrestige = { onNavigateToPrestige(key) },
                 cropsReady     = if (key == Skills.FARMING) state.cropsReadyCount else 0,
+                blessingXpPct  = state.blessingXpPct,
                 guildDailyOpen = state.showQuestDots && state.sheetQuests[key]?.any { !it.claimed && !(it.source == SheetQuestSource.GUILD && it.guildMaxed) } == true,
                 questIndicators = state.timedQuestsBySkill[key] ?: emptyList(),
             )
@@ -778,6 +803,7 @@ private fun SkillsTabContent(
                 isActive       = state.activeSession?.skillName == key && state.activeSession?.completed == false,
                 onClick        = { viewModel.onSkillTapped(key) },
                 toolEfficiency = craftEfficiency,
+                blessingXpPct  = state.blessingXpPct,
                 petBoostPct    = state.petBoostBySkill[key] ?: 0,
                 prestigeLevel  = state.skillPrestige[key] ?: 0,
                 isPrestigeMaxed = key in state.prestigeMaxedSkills,
@@ -801,6 +827,7 @@ private fun SkillsTabContent(
                 isActive       = state.activeSession?.skillName == key && state.activeSession?.completed == false,
                 onClick        = { viewModel.onSkillTapped(key) },
                 toolEfficiency = if (key == Skills.AGILITY) state.agilityEfficiency else 1.0f,
+                blessingXpPct  = state.blessingXpPct,
                 petBoostPct    = if (state.onElderIsle) 0 else state.petBoostBySkill[key] ?: 0,
                 prestigeLevel  = if (state.onElderIsle) 0 else state.skillPrestige[key] ?: 0,
                 isPrestigeMaxed = !state.onElderIsle && key in state.prestigeMaxedSkills,
@@ -820,6 +847,7 @@ private fun SkillsTabContent(
                     isActive      = false,
                     onClick       = onNavigateToSlayer,
                     petBoostPct   = state.petBoostBySkill[Skills.SLAYER] ?: 0,
+                    blessingXpPct = state.blessingXpPct,
                     prestigeLevel = state.skillPrestige[Skills.SLAYER] ?: 0,
                     isPrestigeMaxed = Skills.SLAYER in state.prestigeMaxedSkills,
                     onOpenPrestige = { onNavigateToPrestige(Skills.SLAYER) },
@@ -940,6 +968,7 @@ private fun ActiveSessionBanner(
 // Skill row
 // ---------------------------------------------------------------------------
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun SkillRow(
     skillKey: String,
@@ -951,6 +980,8 @@ internal fun SkillRow(
     petBoostPct: Int = 0,
     prestigeLevel: Int = 0,
     isPrestigeMaxed: Boolean = false,
+    /** Active Church XP blessing percent — 0 if none/ironman/isle. */
+    blessingXpPct: Int = 0,
     onOpenPrestige: (() -> Unit)? = null,
     cropsReady: Int = 0,
     /** Shows a gold dot when this skill's guild daily is still open and worth doing (guild not maxed). */
@@ -963,166 +994,161 @@ internal fun SkillRow(
     val emoji    = GameStrings.skillEmoji(skillKey)
     val progress = xpProgressFraction(xp)
 
-    Column(Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = onClick)
-                .padding(horizontal = 16.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            // Icon badge with level overlay
-            Box(modifier = Modifier.size(44.dp)) {
-                Box(
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (isActive) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.surfaceVariant
-                        ),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    val iconRes = GameStrings.skillIconRes(skillKey)
-                    if (iconRes != null) {
-                        Image(
-                            painter            = painterResource(iconRes),
-                            contentDescription = null,
-                            modifier           = Modifier.size(28.dp),
-                        )
-                    } else {
-                        Text(
-                            text  = emoji,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    }
-                }
-                Text(
-                    text       = level.toString(),
-                    style      = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.Bold,
-                    color      = MaterialTheme.colorScheme.onSurface,
-                    modifier   = Modifier
-                        .align(Alignment.BottomEnd)
-                        .background(
-                            color = MaterialTheme.colorScheme.surface,
-                            shape = CircleShape,
-                        )
-                        .padding(horizontal = 3.dp, vertical = 1.dp),
-                )
-                if (cropsReady > 0) {
-                    Badge(modifier = Modifier.align(Alignment.TopEnd))
-                }
-                if (guildDailyOpen) {
-                    Badge(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        modifier       = Modifier.align(Alignment.TopStart),
+    SkillRowCard(
+        onClick = onClick,
+        icon = {
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .background(
+                        if (isActive) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.surfaceVariant
+                    ),
+                contentAlignment = Alignment.Center,
+            ) {
+                val iconRes = GameStrings.skillIconRes(skillKey)
+                if (iconRes != null) {
+                    Image(
+                        painter            = painterResource(iconRes),
+                        contentDescription = null,
+                        modifier           = Modifier.size(28.dp),
+                    )
+                } else {
+                    Text(
+                        text  = emoji,
+                        style = MaterialTheme.typography.titleMedium,
                     )
                 }
             }
-
-            Spacer(Modifier.width(12.dp))
-
-            Column(Modifier.weight(1f)) {
+            Text(
+                text       = level.toString(),
+                style      = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                color      = MaterialTheme.colorScheme.onSurface,
+                modifier   = Modifier
+                    .align(Alignment.BottomEnd)
+                    .background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = CircleShape,
+                    )
+                    .padding(horizontal = 3.dp, vertical = 1.dp),
+            )
+            if (cropsReady > 0) {
+                Badge(modifier = Modifier.align(Alignment.TopEnd))
+            }
+            if (guildDailyOpen) {
+                Badge(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    modifier       = Modifier.align(Alignment.TopStart),
+                )
+            }
+        },
+        header = {
+            Row(
+                modifier             = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
                 Row(
-                    modifier             = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier          = Modifier.weight(1f, fill = false),
+                ) {
+                    @OptIn(ExperimentalFoundationApi::class)
+                    Text(
+                        text       = name,
+                        style      = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        maxLines   = 1,
+                        modifier   = Modifier.weight(1f, fill = false).basicMarquee(),
+                    )
+                    QuestIndicatorIcons(questIndicators)
+                }
+                if (isActive) {
+                    Text(
+                        text  = stringResource(R.string.label_training),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                } else {
+                    val remainingToCap = xpToMaxLevel(xp)
+                    val xpText = when {
+                        remainingToCap in 1 until 100_000L ->
+                            stringResource(R.string.xp_to_99, remainingToCap.formatXp())
+                        xpToNextLevel(xp) > 0L ->
+                            "${xp.formatXp()} / ${nextLevelThreshold(xp).formatXp()} XP"
+                        else -> "${xp.formatXp()} XP"
+                    }
+                    Text(
+                        text  = xpText,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        },
+        progress = progress,
+        description = if (toolEfficiency > 1.0f || petBoostPct > 0 || blessingXpPct > 0) {
+            {
+                // One bonus line: tool left, blessing middle, pet right. Wraps rather than
+                // overlapping when all three don't fit on narrow screens.
+                FlowRow(
+                    modifier              = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier          = Modifier.weight(1f, fill = false),
-                    ) {
+                    // Keeps a lone pet bonus right-aligned, where it has always sat.
+                    if (toolEfficiency <= 1.0f && blessingXpPct <= 0) Spacer(Modifier.width(0.dp))
+                    if (toolEfficiency > 1.0f) {
                         Text(
-                            text       = name,
-                            style      = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Medium,
-                            modifier   = Modifier.weight(1f, fill = false),
-                        )
-                        QuestIndicatorIcons(questIndicators)
-                    }
-                    if (isActive) {
-                        Text(
-                            text  = stringResource(R.string.label_training),
+                            text  = stringResource(R.string.skills_tool_bonus, "%.2f".format(toolEfficiency)),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.primary,
                         )
-                    } else {
-                        val remainingToCap = xpToMaxLevel(xp)
-                        val xpText = when {
-                            remainingToCap in 1 until 100_000L ->
-                                stringResource(R.string.xp_to_99, remainingToCap.formatXp())
-                            xpToNextLevel(xp) > 0L ->
-                                "${xp.formatXp()} / ${nextLevelThreshold(xp).formatXp()} XP"
-                            else -> "${xp.formatXp()} XP"
-                        }
-                        Text(
-                            text  = xpText,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
                     }
-                }
-                Spacer(Modifier.height(4.dp))
-                LinearProgressIndicator(
-                    gapSize = 0.dp,
-                    drawStopIndicator = {},
-                    progress = { progress },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(4.dp)
-                        .clip(RoundedCornerShape(2.dp)),
-                    color    = MaterialTheme.colorScheme.primary,
-                )
-                if (toolEfficiency > 1.0f || petBoostPct > 0) {
-                    Spacer(Modifier.height(6.dp))
-                    Box(Modifier.fillMaxWidth()) {
-                        if (toolEfficiency > 1.0f) {
-                            Text(
-                                text     = stringResource(R.string.skills_tool_bonus, "%.2f".format(toolEfficiency)),
-                                style    = MaterialTheme.typography.labelSmall,
-                                color    = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.align(Alignment.CenterStart),
-                            )
-                        }
-                        if (petBoostPct > 0) {
-                            Text(
-                                text     = stringResource(R.string.skills_pet_bonus, petBoostPct),
-                                style    = MaterialTheme.typography.labelSmall,
-                                color    = MaterialTheme.colorScheme.tertiary,
-                                modifier = Modifier.align(Alignment.CenterEnd),
-                            )
-                        }
-                    }
-                }
-                if (prestigeLevel > 0 || (onOpenPrestige != null && level >= 99)) {
-                    Spacer(Modifier.height(4.dp))
-                    Row(
-                        modifier              = Modifier.fillMaxWidth(),
-                        verticalAlignment     = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
+                    if (blessingXpPct > 0) {
                         Text(
-                            text  = if (isPrestigeMaxed) stringResource(R.string.skills_prestige_max, prestigeLevel)
-                                    else "★×$prestigeLevel",
-                            style = MaterialTheme.typography.labelMedium,
+                            text  = stringResource(R.string.skills_blessing_bonus, blessingXpPct),
+                            style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.primary,
                         )
-                        if (onOpenPrestige != null) {
-                            Text(
-                                text     = stringResource(R.string.prestige),
-                                style    = MaterialTheme.typography.labelSmall,
-                                color    = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .clickable(role = Role.Button) { onOpenPrestige() }
-                                    .padding(horizontal = 8.dp, vertical = 2.dp),
-                            )
-                        }
+                    }
+                    if (petBoostPct > 0) {
+                        Text(
+                            text  = stringResource(R.string.skills_pet_bonus, petBoostPct),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.tertiary,
+                        )
                     }
                 }
             }
-        }
-    }
+        } else null,
+        action = if (prestigeLevel > 0 || (onOpenPrestige != null && level >= 99)) {
+            {
+                Row(
+                    modifier              = Modifier.fillMaxWidth(),
+                    verticalAlignment     = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text  = if (isPrestigeMaxed) stringResource(R.string.skills_prestige_max, prestigeLevel)
+                                else "★×$prestigeLevel",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    if (onOpenPrestige != null) {
+                        Text(
+                            text     = stringResource(if (isPrestigeMaxed) R.string.prestige_skill_tree else R.string.prestige),
+                            style    = MaterialTheme.typography.labelSmall,
+                            color    = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable(role = Role.Button) { onOpenPrestige() }
+                                .padding(horizontal = 8.dp, vertical = 2.dp),
+                        )
+                    }
+                }
+            }
+        } else null,
+    )
 }
 
 // ---------------------------------------------------------------------------

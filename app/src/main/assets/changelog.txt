@@ -1,3 +1,55 @@
+v1.15.7
+• Buffed Thieving: higher XP from every target, better base success, and failed attempts no longer stun you
+• Lockpicks now boost Thieving XP like other gathering tools
+• Fixed the Thieving list showing XP per attempt and ignoring lockpick and prestige success bonuses
+• Fixed fishing losing the base catch on minutes the bonus table hit
+• Fixed queued Elder Isle mining, woodcutting and fishing using mainland boosts
+• Fixed skill XP previews and queue estimates leaving out prestige XP bonuses
+• Fixed the session card, summary and skill previews disagreeing on XP with sigil and cape bonuses
+• Added Vietnamese as a language option
+• Updated Czech, German, Italian, Lithuanian and Ukrainian translations
+
+v1.15.6
+• Added Slayer and quest icons to Combat dungeons that hold a task or quest target
+• Added a button on the Slayer screen to queue dungeons for all active and foretold tasks
+• Added a Capes section to the Shop to buy back earned capes you no longer own
+• Added a confirmation when activating or extending a Church blessing
+• Added an optional dot on the Grand Monument when the daily touch is ready
+• Added a time remaining countdown to the seasonal event card on Home
+• Added a separate pet line for coin bonuses in the Collect summary
+• Added the active blessing XP bonus to skill rows
+• Fixed queued combat sessions using more food than you own when several went uncollected
+• Fixed queued Elder Isle dungeons using mainland combat levels
+• Fixed Elder Isle XP estimates including mainland boosts
+• Fixed repeating an Elder Isle session starting it as a mainland session
+• Fixed the house page not scrolling in portrait edit mode
+• Fixed carnival game names showing in English in the queue and banner
+• Fixed Slayer shop stats and requirements showing in English
+• Fixed Elder Isle dungeon descriptions claiming guaranteed Ancient Sigil drops
+• Fixed boss fights that ran out of time picking the winner without counting damage already dealt
+• Fixed queued Elder Isle sessions being dropped when your mainland level was below the requirement
+• Updated Italian translations
+
+v1.15.5
+• Added "Very Large" text size option between Large and Huge
+• Fixed skill names wrapping character-by-character at large font sizes
+• Fixed abandoning or cancelling crafting sessions refunding more materials than were consumed when preservation bonus was active
+• Fixed Elder Isle pet drops landing in inventory as items instead of registering as pets
+• Fixed Elder Isle combat not tracking kills for the bestiary or collection summary
+• Fixed Elder Isle combat not consuming or showing food, arrows, and runes used
+• Fixed Elder Isle dungeons not recording last run stats (kills, food, survived)
+• Fixed killing The Last Elder always showing "Defeated by" instead of victory
+• Fixed queued Elder Isle boss fights using mainland combat levels instead of isle levels
+• Fixed Elder Isle total level counting hidden mainland skills
+• Fixed Elder Isle skill screen showing mainland tool bonuses and pet boosts
+• Fixed Elder Isle XP and duration estimates on queued sessions using mainland boosts
+• Fixed quest notification badge staying visible while on Elder Isle
+• Fixed "Sell Old Gear" being slow with many item types
+• Fixed daily and weekly quest progress being reset early under rare timing conditions
+• Fixed Profile Bonuses tab not including Resourceful perk in prestige stat bonuses
+• Fixed tool names being truncated in the tabbed Profile view for longer translations
+• Fixed heirloom items sorting near Bronze tier in the equip picker instead of by actual power
+
 v1.15.4
 • Elder Isle sessions always credit XP to the elder pool, even if the isle flag desyncs mid-session.
 • Time zone changes no longer reset daily/weekly quests, guild dailies, or the bounty board.

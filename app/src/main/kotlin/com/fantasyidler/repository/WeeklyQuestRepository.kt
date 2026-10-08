@@ -60,9 +60,23 @@ class WeeklyQuestRepository @Inject constructor(
         return cal.timeInMillis
     }
 
-    fun shouldRefresh(nextResetAt: Long): Boolean {
+    fun shouldRefresh(nextResetAt: Long, generatedAt: Long = 0L, resetHour: Int = 6): Boolean {
         if (nextResetAt == 0L) return true
-        return System.currentTimeMillis() >= nextResetAt
+        val now = System.currentTimeMillis()
+        if (now < nextResetAt) return false
+        if (generatedAt > 0L) {
+            val cal = Calendar.getInstance().apply { timeInMillis = now }
+            cal.set(Calendar.HOUR_OF_DAY, resetHour)
+            cal.set(Calendar.MINUTE, 0)
+            cal.set(Calendar.SECOND, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+            if (cal.timeInMillis > now) cal.add(Calendar.DAY_OF_YEAR, -1)
+            while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+                cal.add(Calendar.DAY_OF_YEAR, -1)
+            }
+            if (generatedAt >= cal.timeInMillis) return false
+        }
+        return true
     }
 
     private val combatSkills = listOf("attack", "strength", "defense", "ranged", "magic", "hitpoints")

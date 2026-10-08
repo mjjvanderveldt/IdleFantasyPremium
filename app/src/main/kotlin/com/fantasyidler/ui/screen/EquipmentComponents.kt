@@ -1,6 +1,7 @@
 package com.fantasyidler.ui.screen
 
 import android.content.Context
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -169,8 +171,8 @@ internal fun EquipSlotRow(
                     text       = displayName,
                     style      = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,
-                    maxLines   = 1,
-                    overflow   = TextOverflow.Ellipsis,
+                    softWrap   = false,
+                    modifier   = Modifier.horizontalScroll(rememberScrollState()),
                 )
                 if (equipment != null) {
                     val detail = buildEquipDetail(equipment, context, showReq = false, heirloomXp = heirloomXp)
@@ -249,11 +251,14 @@ internal fun EquipPickerSheet(
             items(
                 candidates.sortedWith(
                     compareBy(
-                        { it.requirements.values.maxOrNull() ?: 0 },
                         {
                             it.attackBonus + it.strengthBonus + it.defenseBonus +
                                 (it.rangedAttackBonus ?: 0) + (it.rangedStrengthBonus ?: 0) +
-                                (it.magicAttackBonus ?: 0) + (it.magicDamageBonus ?: 0)
+                                (it.magicAttackBonus ?: 0) + (it.magicDamageBonus ?: 0) +
+                                ((it.miningEfficiency ?: it.woodcuttingEfficiency ?: it.fishingEfficiency ?:
+                                    it.farmingEfficiency ?: it.smithingEfficiency ?: it.firemakingEfficiency ?:
+                                    it.agilityEfficiency ?: it.cookingEfficiency ?: it.thievingEfficiency ?:
+                                    0f) * 100).toInt()
                         },
                         { it.name },
                     )

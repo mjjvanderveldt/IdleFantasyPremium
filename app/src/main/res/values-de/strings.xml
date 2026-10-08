@@ -12,16 +12,16 @@
     <string name="nav_profile">Profil</string>
 
     <!-- ===== Common buttons ===== -->
-    <string name="btn_start">Beginnen</string>
-    <string name="btn_start_session">Aktivität beginnen</string>
-    <string name="btn_abandon_session">Aktivität aufgeben</string>
+    <string name="btn_start">Start</string>
+    <string name="btn_start_session">Aktivität starten</string>
+    <string name="btn_abandon_session">Aktivität abbrechen</string>
     <string name="btn_collect_results">Resultate sammeln</string>
     <string name="btn_cancel">Abbrechen</string>
     <string name="btn_craft">Herstellen</string>
     <string name="btn_confirm">Bestätigen</string>
-    <string name="btn_abandon">Aufgeben</string>
-    <string name="btn_repeat_action">Wiederholen</string>
-    <string name="btn_collect">Prämien sammeln</string>
+    <string name="btn_abandon">Abbrechen</string>
+    <string name="btn_repeat_action">Wiederhole Aktivität</string>
+    <string name="btn_collect">Belohnungen einsammeln</string>
     <string name="btn_equip">Ausrüsten</string>
     <string name="btn_unequip">Ablegen</string>
     <string name="btn_buy">Kaufen</string>
@@ -204,7 +204,7 @@
     <!-- Translator note: %1$s = formatted XP amount, %2$d = target level number -->
     <string name="format_xp_to_next">%1$s EP bis Level %2$d</string>
     <!-- Translator note: %1$s = formatted XP amount remaining to reach the level cap (99) -->
-    <string name="xp_to_99">%1$s XP bis 99</string>
+    <string name="xp_to_99">%1$s EP bis 99</string>
     <!-- Translator note: %1$s = time string (e.g. "42m 10s") -->
     <string name="format_time_remaining">%1$s verbleibend</string>
     <!-- Translator note: %1$s = relative time (e.g. "5m ago") -->
@@ -313,6 +313,8 @@
     <string name="settings_profile_layout_tabs">Reiter</string>
     <string name="settings_quest_dots">Quest-Punkte für Fähigkeiten</string>
     <string name="settings_quest_dots_desc">Goldenen Punkt auf Fähigkeiten mit offenen Quests anzeigen.</string>
+    <string name="settings_monument_touch_indicator">Berührungsanzeige für Monumente</string>
+    <string name="settings_monument_touch_indicator_desc">Zeige einen Punkt auf dem Großen Monument wenn die tägliche Berührung verfügbar ist.</string>
     <string name="settings_prestige_notifications">Prestige-Benachrichtigungsabzeichen</string>
     <string name="settings_prestige_notifications_desc">Zeige eine Benachrichtigung, wenn eine Fähigkeit bereit zum Prestige ist.</string>
     <string name="label_switch_character">Charakter wechseln</string>
@@ -418,6 +420,7 @@
     <string name="settings_font_small">Klein</string>
     <string name="settings_font_normal">Normal</string>
     <string name="settings_font_large">Groß</string>
+    <string name="settings_font_very_large">Very Large</string>
     <string name="settings_font_huge">Riesig</string>
     <string name="settings_import_theme">Designs importieren</string>
     <string name="settings_import_theme_desc">Importiert eigene Designs aus einer Datei</string>
@@ -450,6 +453,8 @@
     <string name="theme_editor_saved_ok">Design gespeichert und angewendet</string>
     <string name="theme_editor_exported_ok">Design exportiert</string>
     <string name="settings_language_desc">Anzeigesprache der App überschreiben</string>
+
+
 
 
 
@@ -592,6 +597,7 @@
     <string name="combat_spell_locked">Erfordert Magie-Level %1$d</string>
     <string name="combat_spell_level_met">Magie-Level %1$d</string>
     <string name="combat_no_potion">Kein Zaubertrank</string>
+    <string name="label_potion">Trank</string>
     <string name="combat_req_level">Erforderliches Kampflevel</string>
     <string name="combat_duration">Dauer</string>
     <!-- Translator note: %1$d = minutes -->
@@ -680,6 +686,7 @@
     <!-- Translator note: %1$s = formatted multiplier (e.g. "1.15") -->
     <string name="skills_tool_bonus">×%1$s Werkzeugbonus</string>
     <string name="skills_pet_bonus">+%1$d%% EP (Haustier)</string>
+    <string name="skills_blessing_bonus">+%1$d%% EP (Segen)</string>
     <!-- Translator note: %1$d = fishing level -->
     <string name="skills_fishing_desc">Level %1$d  •  Dem Level entsprechender Fang</string>
     <!-- Translator note: %1$d = prayer level -->
@@ -738,6 +745,7 @@
     <string name="quest_legend_guild_daily">Gilden-Tagesquest</string>
     <string name="quest_legend_guild">Gildenquest</string>
     <string name="quest_legend_quest">Aufgabe</string>
+    <string name="quest_legend_slayer_target">Kopfgeldjäger Aufgabe</string>
     <string name="quest_legend_gold_dot">Aufgabe mit Zeitbegrenzung ist verfügbar.</string>
     <string name="quest_legend_notes">Abgeblendete Symbole können noch nicht abgeschlossen werden (Level oder Materialien fehlen). Eine kleine hochgestellte Zahl bedeutet, dass mehrere Quests dieses Typs dasselbe Ziel haben.</string>
     <!-- Translator note: %1$s = quantity in inventory -->
@@ -1051,6 +1059,8 @@
     <string name="church_active_chip">Aktiv</string>
     <string name="church_activate">Segen empfangen</string>
     <string name="church_blessing_bonus">+%1$s durch Segen</string>
+    <!-- Golden Goose pet coin share, split from the blessing line (issue #1941). Pending Weblate translation. -->
+    <string name="pet_coin_bonus">+%1$s vom Haustier</string>
     <string name="church_blessing_suffix">durch Segen</string>
     <string name="church_effect_xp">×%1$.2f EP für %2$d Stunden</string>
     <string name="church_effect_def">+%1$d Verteidigung für %2$d Stunden</string>
@@ -1060,6 +1070,8 @@
     <string name="church_bones_available">Ihr habt %1$d Knochen (alle Arten), wert %2$d für Segnungen (größere Knochen zählen mehr)</string>
     <string name="church_not_enough_bones">Nicht genug Knochen (benötigt %1$d)</string>
     <string name="church_already_active">Ihr seid bereits gesegnet</string>
+    <string name="church_blessing_activated">Segen aktiviert!</string>
+    <string name="church_blessing_extended">Segen verlängert!</string>
     <string name="church_confirm_deactivate_title">Segen deaktivieren?</string>
     <string name="church_confirm_deactivate_body">Seid Ihr sicher, dass Ihr Euren aktiven Segen deaktivieren möchtest? Ihr erhaltet die Knochen nicht zurück.</string>
 
@@ -1368,8 +1380,11 @@
     <string name="slayer_found_in">Begegnet Euch in: %1$s</string>
     <string name="slayer_requires">Erfordert: %1$s</string>
     <string name="slayer_add_dungeon_to_queue">Verlies zur Warteschlange hinzufügen</string>
+    <string name="slayer_add_all_dungeons_to_queue">Alle Verliese zur Warteschlange hinzufügen</string>
     <string name="slayer_queue_added">Zur Warteschlange hinzugefügt: %1$s.</string>
     <string name="slayer_queue_full">Warteschlange ist voll.</string>
+    <string name="slayer_queue_added_many">%1$d Verliese zur Warteschlange hinzugefügt.</string>
+    <string name="slayer_queue_added_partial">%1$d von %2$d Verliesen zur Warteschlange hinzugefügt.</string>
     <string name="slayer_foretell_title">Zukünftige Aufträge vorhersagen</string>
     <string name="slayer_foretell_desc">Reiht kommende Aufträge in diese Warteschlange ein indem Ihr Knochen zahlt. Sie werden automatisch zu Eurem aktuellen Auftrag wenn der jetzige erfüllt wurde.</string>
     <string name="slayer_foretell_queue_empty">Keine Aufträge vorhergesagt.</string>
@@ -1417,6 +1432,7 @@
     <string name="shop_cat_food">Nahrung</string>
     <string name="shop_cat_materials">Materialien</string>
     <string name="shop_cat_misc">Sonstiges</string>
+    <string name="shop_cat_capes">Umhänge</string>
 
     <string name="crafting_per_craft">×%1$d pro Herstellung</string>
 
@@ -1435,6 +1451,7 @@
     <string name="trade_route_merchants_quarter_desc">Handelt mit seltenen Gütern im prestigeträchtigen Händlerviertel.</string>
     <string name="trade_route_northern_ports_desc">Bringt wertvolle Fracht in die nördlichen Hafenstädte. Hohes Risiko, hohe Belohnung.</string>
     <string name="crafting_cat_bar">Barren</string>
+    <string name="crafting_cat_brew">Brauen</string>
     <string name="crafting_cat_component">Komponente</string>
     <string name="crafting_cat_tool">Werkzeug</string>
     <string name="crafting_cat_weapon">Waffe</string>
@@ -1448,6 +1465,7 @@
     <string name="crafting_cat_bow">Bogen</string>
     <string name="crafting_cat_plank">Bohle</string>
     <string name="crafting_cat_staff">Stab</string>
+    <string name="crafting_cat_super_potion">Super-Trank</string>
 
     <!-- Crafting tier filter chips -->
     <string name="crafting_tier_adamantite">Adamantit</string>
@@ -1458,13 +1476,13 @@
     <string name="crafting_tier_maple">Ahorn</string>
     <string name="crafting_tier_mithril">Mithril</string>
     <string name="crafting_tier_oak">Eiche</string>
-    <string name="crafting_tier_plank">Plank</string> <!-- untranslated -->
+    <string name="crafting_tier_plank">Bohle</string>
     <string name="crafting_tier_platinum">Platin</string>
-    <string name="crafting_tier_redwood">Redwood</string> <!-- untranslated -->
+    <string name="crafting_tier_redwood">Mammutbaumholz</string>
     <string name="crafting_tier_runite">Runit</string>
     <string name="crafting_tier_silver">Silber</string>
     <string name="crafting_tier_steel">Stahl</string>
-    <string name="crafting_tier_stone">Stone</string> <!-- untranslated -->
+    <string name="crafting_tier_stone">Stein</string>
     <string name="crafting_tier_willow">Weide</string>
     <string name="crafting_tier_yew">Eibe</string>
 
@@ -1566,115 +1584,117 @@
     <string name="town_artisans_workshop_no_bonus">Verbessere für eine Chance, sekundäre Herstellungsmaterialien einzusparen</string>
     <string name="town_artisans_workshop_active_bonus">%1$d%% Chance, sekundäre Herstellungsmaterialien einzusparen</string>
     <string name="town_building_chronos_spire_name">Chronos-Turm</string>
-    <string name="town_building_dock_name">Dock</string> <!-- untranslated -->
-    <string name="elder_isle_title">Elder Isle</string> <!-- untranslated -->
-    <string name="elder_isle_sail_title">Sail to Elder Isle</string> <!-- untranslated -->
-    <string name="elder_isle_zone_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
-    <string name="elder_isle_zone_forest">Ancient Forest</string> <!-- untranslated -->
-    <string name="elder_isle_zone_volcano">Volcano Peak</string> <!-- untranslated -->
+    <string name="town_building_dock_name">Dock</string>
+    <string name="town_dock_no_bonus">Upgrade to sail to new locations</string> <!-- untranslated -->
+    <string name="town_dock_t1_bonus">Unlocks sailing to the Elder Isle</string> <!-- untranslated -->
+    <string name="elder_isle_title">Ältere Insel</string>
+    <string name="elder_isle_sail_title">Segle zur Älteren Insel</string>
+    <string name="elder_isle_zone_beach">Strand &amp; Klippen</string>
+    <string name="elder_isle_zone_forest">Älterer Forst</string>
+    <string name="elder_isle_zone_volcano">Vulkanspitze</string>
     <string name="elder_isle_zone_abyss">Abyssal Depths</string> <!-- untranslated -->
-    <string name="elder_isle_zone_locked">Locked</string> <!-- untranslated -->
-    <string name="elder_isle_coming_soon">Elder Isle is barely charted. Return once the isle has been built out.</string> <!-- untranslated -->
-    <string name="elder_isle_boss_sea_serpent">Sea Serpent</string> <!-- untranslated -->
-    <string name="elder_isle_set_sail">Set sail for Elder Isle</string> <!-- untranslated -->
-    <string name="elder_isle_return">Return to the mainland</string> <!-- untranslated -->
-    <string name="elder_isle_sail_blocked_by_session">Finish your active session before setting sail.</string> <!-- untranslated -->
-    <string name="elder_isle_sail_blocked_locked">Elder Isle is not yet unlocked.</string> <!-- untranslated -->
-    <string name="elder_isle_sail_blocked_serpent">The Sea Serpent guards the passage. Defeat it to reach Elder Isle.</string> <!-- untranslated -->
-    <string name="elder_isle_dock_unlocked_title">The Dock stands ready</string> <!-- untranslated -->
-    <string name="elder_isle_dock_unlocked_body">The pier is complete and the boats are waiting, but no crew will make the crossing until the Sea Serpent that has drowned every prior voyage lies dead. Find it in the mainland Combat tab under Bosses. The passage opens the moment it falls.</string> <!-- untranslated -->
-    <string name="elder_isle_dock_unlocked_cta">Face the Sea Serpent</string> <!-- untranslated -->
-    <string name="elder_isle_dock_unlocked_later">Later</string> <!-- untranslated -->
-    <string name="boss_masked_name">\?\?\?</string> <!-- untranslated -->
-    <string name="boss_last_elder_masked_desc">Something ancient stirs at the bottom of the isle. Assemble the full Elder set to face it.</string> <!-- untranslated -->
+    <string name="elder_isle_zone_locked">Gesperrt</string>
+    <string name="elder_isle_coming_soon">Demnächst verfügbar</string>
+    <string name="elder_isle_boss_sea_serpent">Seeschlange</string>
+    <string name="elder_isle_set_sail">Setze Segel zur Älteren Insel</string>
+    <string name="elder_isle_return">Kehre zum Festland zurück</string>
+    <string name="elder_isle_sail_blocked_by_session">Beende deine aktive Aktivität, bevor du in See stichst.</string>
+    <string name="elder_isle_sail_blocked_locked">Die Insel der ältesten wurde noch nicht freigeschaltet.</string>
+    <string name="elder_isle_sail_blocked_serpent">Die Seeschlange bewacht die Passage. Besiege sie um Elder Insel zu erreichen.</string>
+    <string name="elder_isle_dock_unlocked_title">Das Dock steht bereit</string>
+    <string name="elder_isle_dock_unlocked_body">Das Pier ist fertig und die Boote warten, aber keine Crew wird die Überfahrt machen wollen, solange die Seeschlange, die jede vorherigen Reiseversuche ertränkt hat, tot ist. Finde sie im Festland Reiter der Kampfverliese unter den Endgegnern. Die Passage öffnet sich, sobald sie gefallen ist.</string>
+    <string name="elder_isle_dock_unlocked_cta">Stelle dich der Seeschlange</string>
+    <string name="elder_isle_dock_unlocked_later">Später</string>
+    <string name="boss_masked_name">\?\?\?</string>
+    <string name="boss_last_elder_masked_desc">Etwas uraltes schlummert in den Tiefen der Insel. Vereine die ältesten um es zu stellen.</string>
     <string name="elder_isle_welcome_title">Landfall on Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_welcome_body">The salt spray fades and the fog lifts. Ahead: a bone-white shore, a jungle laced with pale runes, and further in, smoke curling from a peak that shouldn\'t be smoking. The old sailors were right. Something ancient still lives here.\n\nYour mainland skills, boosts, and gear stay on the ship. Everything you level or craft on the isle grows a separate track of its own. Elder gear will carry back to the mainland; mainland power will not carry here.\n\nStart with the Skills tab. Head to Mining or Woodcutting to gather isle materials. Then check the Quests tab for your first objective, and open the Lore Master in town whenever a new fragment unlocks.</string> <!-- untranslated -->
-    <string name="elder_isle_welcome_cta">Step ashore</string> <!-- untranslated -->
+    <string name="elder_isle_welcome_cta">Trete an Land</string>
     <string name="elder_isle_stub_skills">Elder skills are being charted. Full skill tracks arrive in a later build.</string> <!-- untranslated -->
     <string name="elder_isle_stub_combat">Elder dungeons and the Last Elder fight are being drawn up. Later build.</string> <!-- untranslated -->
-    <string name="elder_isle_stub_quests">Isle quests will appear here once the story chain lands.</string> <!-- untranslated -->
-    <string name="elder_isle_stub_profile">Isle stats and gear layout land with the skill-tracks build.</string> <!-- untranslated -->
-    <string name="elder_isle_skills_title">Elder Skills</string> <!-- untranslated -->
-    <string name="elder_isle_total_level_label">Total Elder Level</string> <!-- untranslated -->
-    <string name="elder_isle_total_level_value">%1$d / %2$d</string> <!-- untranslated -->
-    <string name="elder_isle_skill_activities_title">%1$s activities</string> <!-- untranslated -->
-    <string name="elder_isle_no_activities">No activities yet in this build.</string> <!-- untranslated -->
-    <string name="elder_isle_start_session">Start session</string> <!-- untranslated -->
-    <string name="elder_isle_session_started">Session started.</string> <!-- untranslated -->
-    <string name="elder_isle_session_start_failed">Could not start session: %1$s</string> <!-- untranslated -->
-    <string name="elder_isle_activity_level">Level %1$d required</string> <!-- untranslated -->
-    <string name="elder_isle_combat_title">Elder Dungeons</string> <!-- untranslated -->
-    <string name="elder_isle_profile_title">Isle Profile</string> <!-- untranslated -->
-    <string name="elder_isle_dungeon_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
-    <string name="elder_isle_dungeon_forest">Ancient Forest</string> <!-- untranslated -->
-    <string name="elder_isle_dungeon_volcano">Volcano Peak</string> <!-- untranslated -->
-    <string name="elder_isle_dungeon_abyss">Abyssal Depths</string> <!-- untranslated -->
-    <string name="elder_isle_dungeon_boss">The Last Elder</string> <!-- untranslated -->
-    <string name="elder_isle_tab_dungeons">Dungeons</string> <!-- untranslated -->
-    <string name="elder_isle_tab_bosses">Bosses</string> <!-- untranslated -->
-    <string name="elder_isle_shop_title">Isle Shop</string> <!-- untranslated -->
-    <string name="elder_isle_shop_buy">Buy</string> <!-- untranslated -->
+    <string name="elder_isle_stub_quests">Insel Aufgaben werden hier erscheinen, sobald die zugehörige Geschichte erscheint.</string>
+    <string name="elder_isle_stub_profile">Insel Boni und Ausrüstungalayouts werden mit dem Fähigkeitenpfade Update erscheinen.</string>
+    <string name="elder_isle_skills_title">Fähigkeiten der Ältesten</string>
+    <string name="elder_isle_total_level_label">Totales Ältesten Level</string>
+    <string name="elder_isle_total_level_value">%1$d / %2$d</string>
+    <string name="elder_isle_skill_activities_title">%1$s Aktivitäten</string>
+    <string name="elder_isle_no_activities">Dieser Build enthält noch keine Aktivitäten.</string>
+    <string name="elder_isle_start_session">Aktivität starten</string>
+    <string name="elder_isle_session_started">Aktivität gestartet.</string>
+    <string name="elder_isle_session_start_failed">Aktivität kann nicht gestartet werden: %1$s</string>
+    <string name="elder_isle_activity_level">Level %1$d erforderlich</string>
+    <string name="elder_isle_combat_title">Verlies der Ältesten</string>
+    <string name="elder_isle_profile_title">Insel Profil</string>
+    <string name="elder_isle_dungeon_beach">Strand &amp; Klippen</string>
+    <string name="elder_isle_dungeon_forest">Älterer Forst</string>
+    <string name="elder_isle_dungeon_volcano">Vulkanspitze</string>
+    <string name="elder_isle_dungeon_abyss">Tiefen des Abgrunds</string>
+    <string name="elder_isle_dungeon_boss">Der letzte Älteste</string>
+    <string name="elder_isle_tab_dungeons">Verliese</string>
+    <string name="elder_isle_tab_bosses">Endgegner</string>
+    <string name="elder_isle_shop_title">Inselladen</string>
+    <string name="elder_isle_shop_buy">Kaufe</string>
     <string name="elder_isle_shop_soon">Coming later</string> <!-- untranslated -->
-    <string name="elder_isle_shop_insufficient">Not enough Elder Essence.</string> <!-- untranslated -->
-    <string name="elder_isle_shop_purchased">Purchased %1$s.</string> <!-- untranslated -->
-    <string name="elder_isle_shop_button">Visit Isle Shop</string> <!-- untranslated -->
-    <string name="elder_isle_armor_master_title">Elder Armor Master</string> <!-- untranslated -->
+    <string name="elder_isle_shop_insufficient">Nicht ausreichend Essenz der Ältesten.</string>
+    <string name="elder_isle_shop_purchased">%1$s gekauft.</string>
+    <string name="elder_isle_shop_button">Besuche den Inselladen</string>
+    <string name="elder_isle_armor_master_title">Älterer Rüstungsmeister</string>
     <string name="elder_isle_lore_master_title">Lore Master</string> <!-- untranslated -->
-    <string name="elder_armor_missing_mats">Not enough materials.</string> <!-- untranslated -->
-    <string name="elder_armor_crafted">Crafted %1$s.</string> <!-- untranslated -->
-    <string name="elder_armor_queue_full">Craft queue is full (3).</string> <!-- untranslated -->
-    <string name="elder_armor_missing_stone">You don\'t own that sigil stone.</string> <!-- untranslated -->
-    <string name="elder_armor_stone_embedded">Embedded %1$s in %2$s.</string> <!-- untranslated -->
-    <string name="elder_armor_sigil_embedder">Sigil Embedder</string> <!-- untranslated -->
-    <string name="elder_armor_sigil_empty">Empty socket</string> <!-- untranslated -->
-    <string name="elder_armor_sigil_change">Change</string> <!-- untranslated -->
-    <string name="elder_armor_sigil_embed">Embed</string> <!-- untranslated -->
-    <string name="elder_armor_sigil_remove">Remove</string> <!-- untranslated -->
-    <string name="elder_armor_pick_stone">Pick a sigil stone</string> <!-- untranslated -->
-    <string name="item_mythrite_ore_name">Mythrite Ore</string> <!-- untranslated -->
-    <string name="item_abyssal_ore_name">Abyssal Ore</string> <!-- untranslated -->
-    <string name="item_voidsteel_ore_name">Voidsteel Ore</string> <!-- untranslated -->
-    <string name="item_starforged_ore_name">Starforged Ore</string> <!-- untranslated -->
-    <string name="item_mythrite_bar_name">Mythrite Bar</string> <!-- untranslated -->
-    <string name="item_abyssal_bar_name">Abyssal Bar</string> <!-- untranslated -->
-    <string name="item_voidsteel_bar_name">Voidsteel Bar</string> <!-- untranslated -->
-    <string name="item_starforged_bar_name">Starforged Bar</string> <!-- untranslated -->
-    <string name="item_coastal_pine_log_name">Coastal Pine Log</string> <!-- untranslated -->
+    <string name="elder_armor_missing_mats">Nicht genug Material.</string>
+    <string name="elder_armor_crafted">%1$s hergestellt.</string>
+    <string name="elder_armor_queue_full">Herstellungskosten Warteschlange ist voll (3).</string>
+    <string name="elder_armor_missing_stone">Du besitzt diesen Siegelstein nicht.</string>
+    <string name="elder_armor_stone_embedded">Bette %1$s in %2$s ein.</string>
+    <string name="elder_armor_sigil_embedder">Siegel Einbetter</string>
+    <string name="elder_armor_sigil_empty">Leerer Sockel</string>
+    <string name="elder_armor_sigil_change">Verändere</string>
+    <string name="elder_armor_sigil_embed">Bette ein</string>
+    <string name="elder_armor_sigil_remove">Entferne</string>
+    <string name="elder_armor_pick_stone">Wähle einen Siegelstein</string>
+    <string name="item_mythrite_ore_name">Mythrit Erz</string>
+    <string name="item_abyssal_ore_name">Erz der Tiefe</string>
+    <string name="item_voidsteel_ore_name">Leerenstahl Erz</string>
+    <string name="item_starforged_ore_name">Erz der Sternenschmiede</string>
+    <string name="item_mythrite_bar_name">Mythrit Barren</string>
+    <string name="item_abyssal_bar_name">Barren der Tiefe</string>
+    <string name="item_voidsteel_bar_name">Leerenstahl Barren</string>
+    <string name="item_starforged_bar_name">Barren der Sternenschmiede</string>
+    <string name="item_coastal_pine_log_name">Küstenpinienstamm</string>
     <string name="item_grove_oak_log_name">Grove Oak Log</string> <!-- untranslated -->
-    <string name="item_abyssal_log_name">Abyssal Log</string> <!-- untranslated -->
-    <string name="item_starwood_log_name">Starwood Log</string> <!-- untranslated -->
+    <string name="item_abyssal_log_name">Stamm der Tiefe</string>
+    <string name="item_starwood_log_name">Sternholz Stamm</string>
     <string name="item_raw_tidepool_crab_name">Tidepool Crab (raw)</string> <!-- untranslated -->
     <string name="item_raw_grove_bass_name">Grove Bass (raw)</string> <!-- untranslated -->
-    <string name="item_raw_lavafin_name">Lavafin (raw)</string> <!-- untranslated -->
-    <string name="item_raw_deepwater_ray_name">Deepwater Ray (raw)</string> <!-- untranslated -->
+    <string name="item_raw_lavafin_name">Lavaflosse (roh)</string>
+    <string name="item_raw_deepwater_ray_name">Tiefseerochen (roh)</string>
     <string name="item_tidepool_crab_name">Tidepool Crab</string> <!-- untranslated -->
     <string name="item_grove_bass_name">Grove Bass</string> <!-- untranslated -->
-    <string name="item_lavafin_name">Lavafin</string> <!-- untranslated -->
-    <string name="item_deepwater_ray_name">Deepwater Ray</string> <!-- untranslated -->
-    <string name="item_elder_bone_name">Elder Bone</string> <!-- untranslated -->
-    <string name="item_elder_essence_name">Elder Essence</string> <!-- untranslated -->
-    <string name="item_ancient_sigil_name">Ancient Sigil</string> <!-- untranslated -->
-    <string name="item_sacred_wood_name">Sacred Wood</string> <!-- untranslated -->
+    <string name="item_lavafin_name">Lavaflosse</string>
+    <string name="item_deepwater_ray_name">Tiefseerochen</string>
+    <string name="item_elder_bone_name">Älterer Knochen</string>
+    <string name="item_elder_essence_name">Ältere Essenz</string>
+    <string name="item_ancient_sigil_name">Uraltes Siegel</string>
+    <string name="item_sacred_wood_name">Heiliges Holz</string>
 
     <!-- Elder Isle: gathering targets (trees) -->
-    <string name="item_coastal_pine_name">Coastal Pine</string> <!-- untranslated -->
+    <string name="item_coastal_pine_name">Küstenpinie</string>
     <string name="item_grove_oak_name">Grove Oak</string> <!-- untranslated -->
-    <string name="item_abyssal_tree_name">Abyssal Tree</string> <!-- untranslated -->
-    <string name="item_starwood_tree_name">Starwood Tree</string> <!-- untranslated -->
+    <string name="item_abyssal_tree_name">Baum der Tiefe</string>
+    <string name="item_starwood_tree_name">Sternholz Baum</string>
 
     <!-- Elder Isle: crafted armor pieces (tier progression Coastal → Grove → Volcanic → Elder) -->
-    <string name="item_coastal_helm_name">Coastal Helm</string> <!-- untranslated -->
-    <string name="item_coastal_platebody_name">Coastal Platebody</string> <!-- untranslated -->
-    <string name="item_coastal_platelegs_name">Coastal Platelegs</string> <!-- untranslated -->
-    <string name="item_coastal_boots_name">Coastal Boots</string> <!-- untranslated -->
+    <string name="item_coastal_helm_name">Küstenhelm</string>
+    <string name="item_coastal_platebody_name">Küstenbrustpanzer</string>
+    <string name="item_coastal_platelegs_name">Küstenbeinschienen</string>
+    <string name="item_coastal_boots_name">Küstenstiefel</string>
     <string name="item_grove_helm_name">Grove Helm</string> <!-- untranslated -->
     <string name="item_grove_platebody_name">Grove Platebody</string> <!-- untranslated -->
     <string name="item_grove_platelegs_name">Grove Platelegs</string> <!-- untranslated -->
     <string name="item_grove_boots_name">Grove Boots</string> <!-- untranslated -->
-    <string name="item_volcanic_helm_name">Volcanic Helm</string> <!-- untranslated -->
-    <string name="item_volcanic_platebody_name">Volcanic Platebody</string> <!-- untranslated -->
-    <string name="item_volcanic_platelegs_name">Volcanic Platelegs</string> <!-- untranslated -->
-    <string name="item_volcanic_boots_name">Volcanic Boots</string> <!-- untranslated -->
+    <string name="item_volcanic_helm_name">Vulkanischer Helm</string>
+    <string name="item_volcanic_platebody_name">Vulkanischer Brustpanzer</string>
+    <string name="item_volcanic_platelegs_name">Vulkanische Beinschienen</string>
+    <string name="item_volcanic_boots_name">Vulkanische Stiefel</string>
     <string name="item_elder_helm_name">Elder Helm</string> <!-- untranslated -->
     <string name="item_elder_platebody_name">Elder Platebody</string> <!-- untranslated -->
     <string name="item_elder_platelegs_name">Elder Platelegs</string> <!-- untranslated -->
@@ -1700,7 +1720,7 @@
     <string name="item_abyss_wisp_name">Abyss Wisp</string> <!-- untranslated -->
     <string name="item_ancient_turtle_name">Ancient Turtle</string> <!-- untranslated -->
     <string name="item_cinder_hawk_name">Cinder Hawk</string> <!-- untranslated -->
-    <string name="item_deepwater_serpent_name">Deepwater Serpent</string> <!-- untranslated -->
+    <string name="item_deepwater_serpent_name">Tiefwasserschlange</string>
     <string name="item_elder_familiar_name">Elder Familiar</string> <!-- untranslated -->
 
     <!-- Elder Isle: ore descriptions -->
@@ -1828,7 +1848,7 @@
     <string name="farming_bean_note_8">Fast da. Die Luft wird dünner. Ihr könnt die Spitze fast sehen.</string>
     <string name="farming_bean_ready">Der Bohnenstängel reicht über die Wolken hinaus. Bereit zu klettern?</string>
     <string name="farming_bean_climb">Klettern</string>
-    <string name="farming_bean_climbed">Ihr habt den Bohnenstängel erklommen. Etwas wartet…</string>
+    <string name="farming_bean_climbed">Ihr habt den Bohnenstängel erklommen. Das Zischen einer Schlange weckt eure Aufmerksamkeit...</string>
     <string name="farming_bean_climbed_title">Bohnenstange erklommen!</string>
     <string name="farming_bean_unlock_hint">Neues Verlies freigeschaltet: %1$s. Du findest es unter „Kampf“ in der Liste der Verliese.</string>
     <string name="farming_bean_cleared">Die Magische Bohne wurde in dein Inventar zurückgelegt.</string>
@@ -1845,7 +1865,7 @@
     <string name="armory_how_to_obtain">Wie zu erhalten</string>
     <string name="armory_no_stats">Keine Statusboni.</string>
     <string name="armory_filter_all">Alle</string>
-    <string name="armory_filter_missing">Fehlt noch</string>
+    <string name="armory_filter_missing">Fehlend</string>
     <string name="armory_filter_weapons">Waffen</string>
     <string name="armory_filter_armor">Rüstung</string>
     <string name="armory_filter_accessories">Schmuck</string>
@@ -2005,7 +2025,7 @@
     <string name="monument_not_enough_coins">Nicht genug Münzen.</string>
     <string name="title_patron_of_the_realm_name">Schirmherr des Reiches</string>
     <string name="title_patron_of_the_realm_requirement">Vollendet das Große Monument</string>
-    <string name="title_isle_champion_name">Isle Champion</string> <!-- untranslated -->
+    <string name="title_isle_champion_name">Inselchampion</string>
     <string name="title_isle_champion_requirement">Defeat the Last Elder on Elder Isle</string> <!-- untranslated -->
     <string name="item_gilded_full_helmet_name">Vergoldeter Vollvisierhelm</string>
     <string name="item_gilded_platebody_name">Vergoldeter Plattenpanzer</string>
@@ -2204,7 +2224,7 @@
     <string name="seasonal_bounty_gloom_husks_name">Fällt die Strohschrecken</string>
     <string name="seasonal_bounty_gloom_husks_hint">Nur in der Hollowfen-Expedition zu finden</string>
     <string name="seasonal_bounty_gloom_stalkers_name">Jagt die Schattenschleicher</string>
-    <string name="seasonal_bounty_gloom_stalkers_hint">Nur in der Blightwood-Expedition zu finden</string>
+    <string name="seasonal_bounty_gloom_stalkers_hint">Nur in der Expedition zum Verdorbenen Wald zu finden</string>
     <string name="seasonal_bounty_gloom_wights_name">Stürzt die Grabhügel-Wiedergänger</string>
     <string name="seasonal_bounty_gloom_wights_hint">Nur in der Hollowfen-Expedition zu finden (selten)</string>
     <string name="seasonal_bounty_gloom_tithe_pumpkins_name">Zehnt: Spendet Kürbisse</string>
@@ -2332,7 +2352,7 @@
     <string name="pet_solstice_sprite_name">Solstice Sprite</string> <!-- untranslated -->
     <string name="pet_solstice_sprite_desc">Ein kleiner Glutgeist aus dem Sonnenwende-Sommerturm-Event, der dein Können im Kampf verbessert.</string>
     <string name="pet_lantern_wisp_name">Laternengeist</string>
-    <string name="pet_lantern_wisp_desc">Eine grinsende Kürbislaterne, die aus der Krone des Höhlenkönigs entkommen ist und dir nun auf dem Weg in die Schlacht leuchtet.</string>
+    <string name="pet_lantern_wisp_desc">Eine grinsende Kürbislaterne, die aus der Krone des hohlen Königs entkommen ist und dir nun auf dem Weg in die Schlacht leuchtet.</string>
     <string name="pet_grave_sprout_name">Grabsprosse</string>
     <string name="pet_grave_sprout_desc">Ein kleiner, hartnäckiger Sämling, der in einem Grabhügel Wurzeln geschlagen hat. Er weiß das Ein oder Andere übers Wachsen.</string>
     <string name="pet_golden_goose_name">Goldene Gans</string>
@@ -2347,12 +2367,12 @@
     <string name="pet_magma_salamander_desc">A heat-forged lizard that thrives in Volcano Peak\'s cracks. Its skin is always faintly warm.</string> <!-- untranslated -->
     <string name="pet_abyss_wisp_name">Abyss Wisp</string> <!-- untranslated -->
     <string name="pet_abyss_wisp_desc">A cold silver light that drifted up from the Abyssal Depths and refused to sink back.</string> <!-- untranslated -->
-    <string name="pet_ancient_turtle_name">Ancient Turtle</string> <!-- untranslated -->
-    <string name="pet_ancient_turtle_desc">A tiny turtle whose shell bears the same runes as the isle\'s seal. Older than it looks.</string> <!-- untranslated -->
+    <string name="pet_ancient_turtle_name">Uralte Schildkröte</string>
+    <string name="pet_ancient_turtle_desc">Eine winzige Schildkröte, deren Panzer dieselben Runen trägt wie das Siegel der Insel. Älter, als sie aussieht.</string>
     <string name="pet_cinder_hawk_name">Cinder Hawk</string> <!-- untranslated -->
     <string name="pet_cinder_hawk_desc">A bird of banked embers that circles the volcano and roosts on your shoulder between fights.</string> <!-- untranslated -->
-    <string name="pet_deepwater_serpent_name">Deepwater Serpent</string> <!-- untranslated -->
-    <string name="pet_deepwater_serpent_desc">A miniature cousin of the Sea Serpent, coiled around your wrist like a living bracelet.</string> <!-- untranslated -->
+    <string name="pet_deepwater_serpent_name">Tiefwasserschlange</string>
+    <string name="pet_deepwater_serpent_desc">Ein kleiner Vetter der Seeschlange, wickelt sich um dein Handgelenk wie ein lebendiger Armreif.</string>
     <string name="pet_elder_familiar_name">Elder Familiar</string> <!-- untranslated -->
     <string name="pet_elder_familiar_desc">The Last Elder\'s dying companion, bound now to whoever felled its master. Its eyes still remember.</string> <!-- untranslated -->
 

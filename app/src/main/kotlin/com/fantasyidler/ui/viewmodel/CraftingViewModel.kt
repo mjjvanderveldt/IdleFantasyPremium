@@ -104,6 +104,13 @@ data class CraftableRecipe(
 private fun tierFromKey(key: String) =
     key.substringBefore('_').replaceFirstChar { it.uppercase() }
 
+/** Herblore filter category, derived from the recipe key: brews, super/overload potions, or plain potions. */
+private fun herbloreCategory(key: String): String = when {
+    key.endsWith("_brew")                              -> "Brew"
+    key.startsWith("super_") || key == "overload_potion" -> "Super Potion"
+    else                                                -> "Potion"
+}
+
 private val CONSTRUCTION_WOOD_TIERS = listOf("redwood", "magic", "yew", "maple", "willow", "oak")
 
 private fun constructionTierFromMaterials(materials: Map<String, Int>): String {
@@ -244,7 +251,8 @@ class CraftingViewModel @Inject constructor(
                     val boostMult = if (flags.ironman) 1.0
                                     else (if (flags.xpBoostExpiresAt > System.currentTimeMillis()) 2.0 else 1.0) * ChurchRepository.xpMultiplier(flags, blessingPrayerCapeMult(player, flags, gameData), gameData.blessings)
                     val petPct = petBoostFor(player.pets, selectedRecipe.skillName, flags.ironman)
-                    selectedEff * boostMult * (1.0 + petPct / 100.0)
+                    val prestigeMult = 1.0 + boostRepo.prestigeXpPct(selectedRecipe.skillName, flags) / 100.0
+                    selectedEff * boostMult * prestigeMult * (1.0 + petPct / 100.0)
                 }
             } else 1.0
             extra.copy(
@@ -392,7 +400,7 @@ class CraftingViewModel @Inject constructor(
                 outputQty     = r.outputQuantity,
                 xpPerItem     = r.xpPerItem,
                 skillName     = Skills.HERBLORE,
-                category      = "Potion",
+                category      = herbloreCategory(key),
                 effects       = r.effects,
             )
         }.sortedBy { it.levelRequired }
@@ -505,6 +513,8 @@ class CraftingViewModel @Inject constructor(
                     xpBoostMultAtQueue  = xpQueueMult,
                     catalystKey         = ashKey,
                     catalystQty         = ashQtyToConsume,
+                    consumedMaterials   = matsToConsume,
+                    isElderSession      = isElder,
                 )
                 val enqueued = playerRepo.enqueueAction(action)
                 if (enqueued) {
@@ -582,14 +592,15 @@ class CraftingViewModel @Inject constructor(
             playerRepo.consumeItems(matsToConsume)
             if (ashKey != null && ashQtyToConsume > 0) playerRepo.consumeItems(mapOf(ashKey to ashQtyToConsume))
             sessionRepo.startSession(
-                skillName        = recipe.skillName,
-                activityKey      = recipe.key,
-                frames           = framesJson,
-                durationMs       = qty * perItemMs,
-                skillDisplayName = recipe.skillName,
-                catalystKey      = ashKey,
-                catalystQty      = ashQtyToConsume,
-                isElderSession   = isElder,
+                skillName         = recipe.skillName,
+                activityKey       = recipe.key,
+                frames            = framesJson,
+                durationMs        = qty * perItemMs,
+                skillDisplayName  = recipe.skillName,
+                catalystKey       = ashKey,
+                catalystQty       = ashQtyToConsume,
+                isElderSession    = isElder,
+                consumedMaterials = json.encodeToString(json.serializersModule.serializer<Map<String, Int>>(), matsToConsume),
             )
             _extra.update { it.copy(selectedRecipe = null, herbloreAshKey = null) }
         }

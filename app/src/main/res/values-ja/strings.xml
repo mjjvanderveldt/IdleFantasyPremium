@@ -313,6 +313,8 @@
     <string name="settings_profile_layout_tabs">タブ</string>
     <string name="settings_quest_dots">Quest dots on skills</string> <!-- untranslated -->
     <string name="settings_quest_dots_desc">Show a gold dot on skills that have an open quest</string> <!-- untranslated -->
+    <string name="settings_monument_touch_indicator">Monument touch indicator</string> <!-- untranslated -->
+    <string name="settings_monument_touch_indicator_desc">Show a dot on the Grand Monument on Home when the daily touch is available</string> <!-- untranslated -->
     <string name="settings_prestige_notifications">Prestige Notification Badges</string> <!-- untranslated -->
     <string name="settings_prestige_notifications_desc">Show a notification badge on navigation when a skill is ready to prestige</string> <!-- untranslated -->
     <string name="label_switch_character">Switch character</string> <!-- untranslated -->
@@ -418,6 +420,7 @@
     <string name="settings_font_small">小</string>
     <string name="settings_font_normal">標準</string>
     <string name="settings_font_large">大</string>
+    <string name="settings_font_very_large">Very Large</string> <!-- untranslated -->
     <string name="settings_font_huge">極大</string>
     <string name="settings_import_theme">テーマをインポート</string>
     <string name="settings_import_theme_desc">ファイルからカスタムテーマをインポート</string>
@@ -450,6 +453,8 @@
     <string name="theme_editor_saved_ok">テーマを保存して適用しました</string>
     <string name="theme_editor_exported_ok">テーマをエクスポートしました</string>
     <string name="settings_language_desc">アプリの表示言語を上書き</string>
+
+
 
 
 
@@ -592,6 +597,7 @@
     <string name="combat_spell_locked">Requires Magic level %1$d</string> <!-- untranslated -->
     <string name="combat_spell_level_met">Magic level %1$d</string> <!-- untranslated -->
     <string name="combat_no_potion">ポーションなし</string>
+    <string name="label_potion">Potion</string> <!-- untranslated -->
     <string name="combat_req_level">必要戦闘レベル</string>
     <string name="combat_duration">所要時間</string>
     <!-- Translator note: %1$d = minutes -->
@@ -680,6 +686,7 @@
     <!-- Translator note: %1$s = formatted multiplier (e.g. "1.15") -->
     <string name="skills_tool_bonus">道具ボーナス ×%1$s</string>
     <string name="skills_pet_bonus">+%1$d%% 経験値 (ペット)</string>
+    <string name="skills_blessing_bonus">+%1$d%% XP (blessing)</string> <!-- untranslated -->
     <!-- Translator note: %1$d = fishing level -->
     <string name="skills_fishing_desc">レベル %1$d  •  レベルに応じた獲物</string>
     <!-- Translator note: %1$d = prayer level -->
@@ -738,6 +745,7 @@
     <string name="quest_legend_guild_daily">ギルドデイリー</string>
     <string name="quest_legend_guild">ギルドクエスト</string>
     <string name="quest_legend_quest">クエスト</string>
+    <string name="quest_legend_slayer_target">Slayer Task</string> <!-- untranslated -->
     <string name="quest_legend_gold_dot">Timed quest is available.</string> <!-- untranslated -->
     <string name="quest_legend_notes">薄いアイコンはまだ達成できません（レベルや素材が不足）。小さな上付き数字は、同じ対象を求めるクエストがその種類に複数あることを示します。</string>
     <!-- Translator note: %1$s = quantity in inventory -->
@@ -1051,6 +1059,8 @@
     <string name="church_active_chip">有効中</string>
     <string name="church_activate">有効化</string>
     <string name="church_blessing_bonus">祝福ボーナス: +%1$s</string>
+    <!-- Golden Goose pet coin share, split from the blessing line (issue #1941). Pending Weblate translation. -->
+    <string name="pet_coin_bonus">+%1$s from pet</string> <!-- untranslated -->
     <string name="church_blessing_suffix">祝福より</string>
     <string name="church_effect_xp">%2$d 時間の間、経験値 ×%1$.2f</string>
     <string name="church_effect_def">%2$d 時間の間、防御 +%1$d</string>
@@ -1060,6 +1070,8 @@
     <string name="church_bones_available">所持している骨: %1$d 個 — 祝福価値: %2$d (大きな骨ほど効果が高くなります)</string>
     <string name="church_not_enough_bones">骨が足りません (必要数: %1$d)</string>
     <string name="church_already_active">すでに祝福が有効になっています</string>
+    <string name="church_blessing_activated">Blessing activated!</string> <!-- untranslated -->
+    <string name="church_blessing_extended">Blessing extended!</string> <!-- untranslated -->
     <string name="church_confirm_deactivate_title">祝福を無効化しますか？</string>
     <string name="church_confirm_deactivate_body">本当に現在有効な祝福を無効化しますか？消費した骨は戻りません。</string>
 
@@ -1368,8 +1380,11 @@
     <string name="slayer_found_in">出現場所: %1$s</string>
     <string name="slayer_requires">必要条件: %1$s</string>
     <string name="slayer_add_dungeon_to_queue">ダンジョンをキューに追加</string>
+    <string name="slayer_add_all_dungeons_to_queue">Add All Dungeons to Queue</string> <!-- untranslated -->
     <string name="slayer_queue_added">キューに追加: %1$s</string>
     <string name="slayer_queue_full">キューが満杯です。</string>
+    <string name="slayer_queue_added_many">Added %1$d dungeons to queue.</string> <!-- untranslated -->
+    <string name="slayer_queue_added_partial">Added %1$d of %2$d dungeons to queue.</string> <!-- untranslated -->
     <string name="slayer_foretell_title">任務の予言</string>
     <string name="slayer_foretell_desc">骨を捧げることで、次回のスレイヤー任務を予約できます。現在の任務が完了すると自動的に割り当てられます。</string>
     <string name="slayer_foretell_queue_empty">予約された任務はありません。</string>
@@ -1417,6 +1432,7 @@
     <string name="shop_cat_food">料理</string>
     <string name="shop_cat_materials">素材</string>
     <string name="shop_cat_misc">その他</string>
+    <string name="shop_cat_capes">Capes</string> <!-- untranslated -->
 
     <string name="crafting_per_craft">作成ごとに ×%1$d</string>
 
@@ -1435,6 +1451,7 @@
     <string name="trade_route_merchants_quarter_desc">一流の商人地区で希少な商品を取引します。</string>
     <string name="trade_route_northern_ports_desc">北方の港湾都市へ貴重な貨物を運びます。ハイリスク・ハイリターンです。</string>
     <string name="crafting_cat_bar">インゴット</string>
+    <string name="crafting_cat_brew">Brew</string> <!-- untranslated -->
     <string name="crafting_cat_component">部品</string>
     <string name="crafting_cat_tool">道具</string>
     <string name="crafting_cat_weapon">武器</string>
@@ -1448,6 +1465,7 @@
     <string name="crafting_cat_bow">弓</string>
     <string name="crafting_cat_plank">板</string>
     <string name="crafting_cat_staff">スタッフ</string>
+    <string name="crafting_cat_super_potion">Super Potion</string> <!-- untranslated -->
 
     <!-- Crafting tier filter chips -->
     <string name="crafting_tier_adamantite">アダマンタイト</string>
@@ -1567,6 +1585,8 @@
     <string name="town_artisans_workshop_active_bonus">%1$d%% chance to preserve secondary crafting materials</string> <!-- untranslated -->
     <string name="town_building_chronos_spire_name">Chronos Spire</string> <!-- untranslated -->
     <string name="town_building_dock_name">Dock</string> <!-- untranslated -->
+    <string name="town_dock_no_bonus">Upgrade to sail to new locations</string> <!-- untranslated -->
+    <string name="town_dock_t1_bonus">Unlocks sailing to the Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_title">Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_sail_title">Sail to Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_zone_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
@@ -2005,7 +2025,7 @@
     <string name="monument_not_enough_coins">コインが足りません。</string>
     <string name="title_patron_of_the_realm_name">王国の後援者</string>
     <string name="title_patron_of_the_realm_requirement">大記念碑を完成させる</string>
-    <string name="title_isle_champion_name">Isle Champion</string> <!-- untranslated -->
+    <string name="title_isle_champion_name">Champion of the Elder Isle</string> <!-- untranslated -->
     <string name="title_isle_champion_requirement">Defeat the Last Elder on Elder Isle</string> <!-- untranslated -->
     <string name="item_gilded_full_helmet_name">金装飾のフルヘルム</string>
     <string name="item_gilded_platebody_name">金装飾のプレートボディ</string>

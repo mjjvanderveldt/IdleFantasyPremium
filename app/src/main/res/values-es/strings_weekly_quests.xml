@@ -22,11 +22,11 @@
     <string name="quest_weekly_shark_hunter_name">Cazador de Tiburones</string>
     <string name="quest_weekly_shark_hunter_desc">Pesca 150 tiburones crudos esta semana.</string>
     <string name="quest_weekly_steel_smith_name">Forjador de Acero</string>
-    <string name="quest_weekly_steel_smith_desc">Funde 300 barras de acero esta semana.</string>
+    <string name="quest_weekly_steel_smith_desc">Forja 300 barras de acero esta semana.</string>
     <string name="quest_weekly_mithril_smith_name">Fundidor de Mithril</string>
-    <string name="quest_weekly_mithril_smith_desc">Funde 150 barras de mithril esta semana.</string>
+    <string name="quest_weekly_mithril_smith_desc">Forja 150 barras de mithril esta semana.</string>
     <string name="quest_weekly_runite_smith_name">Maestro Fundidor</string>
-    <string name="quest_weekly_runite_smith_desc">Funde 75 barras de runite esta semana.</string>
+    <string name="quest_weekly_runite_smith_desc">Forja 75 barras de runite esta semana.</string>
     <string name="quest_weekly_cook_trout_name">Cocinero de Campamento</string>
     <string name="quest_weekly_cook_trout_desc">Cocina 300 truchas esta semana.</string>
     <string name="quest_weekly_cook_lobster_name">Chef del Puerto</string>
@@ -46,7 +46,7 @@
     <string name="quest_weekly_demon_slayer_name">Cazador de Demonios</string>
     <string name="quest_weekly_demon_slayer_desc">Mata 225 demonios menores esta semana.</string>
     <string name="quest_weekly_boss_hunter_name">Cazador de Jefes</string>
-    <string name="quest_weekly_boss_hunter_desc">Defeat 10 bosses this week.</string> <!-- untranslated -->
+    <string name="quest_weekly_boss_hunter_desc">Mata 10 jefes esta semana.</string>
     <string name="quest_weekly_kbd_slayer_name">Perdición del Dragón</string>
     <string name="quest_weekly_kbd_slayer_desc">Derrota al King Black Dragon 5 veces.</string>
     <string name="quest_weekly_void_champion_name">Campeón del Vacío</string>

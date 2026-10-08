@@ -114,8 +114,8 @@
     <string name="dungeon_hollowfen_desc">A mist-drowned marsh of sunken barrows where the harvest dead walk. Part of the Gloomharvest event.</string> <!-- untranslated -->
     <string name="dungeon_cloud_kingdom_name">Wolkenkönigreich</string>
     <string name="dungeon_cloud_kingdom_desc">Ein Reich über den Wolken, erreichbar durch das Erklimmen einer legendären Bohnenranke. Riesen durchstreifen gewaltige, schwebende Inseln, Himmelsschlangen gleiten zwischen den Wolkenbänken dahin, und Sturmkobolde knistern vor unruhiger Energie. Nur wenige haben es gesehen. Noch weniger sind zurückgekehrt, um davon zu berichten.</string>
-    <string name="dungeon_blightwood_name">The Blightwood</string> <!-- untranslated -->
-    <string name="dungeon_blightwood_desc">A rotting forest deep past the Hollowfen, where the Gloomharvest\'s strongest horrors gather. Part of the Gloomharvest event.</string> <!-- untranslated -->
+    <string name="dungeon_blightwood_name">Der Verdorbene Wald</string>
+    <string name="dungeon_blightwood_desc">Ein verrotteter Forst tief hinter dem \"Hollowfen\", wo sich die stärksten Horrormonster der Düsterernte versammeln. Teil des Düsterernte Events.</string>
 
     <!-- ===== Raid bosses ===== -->
     <string name="boss_king_black_dragon_name">König der Schwarzdrachen</string>
@@ -131,7 +131,7 @@
     <string name="boss_sol_invictus_name">Sol Invictus, the Sundered Flame</string> <!-- untranslated -->
     <string name="boss_sol_invictus_desc">A shard of the sun itself, torn loose from the Sunspire ruin. Only the boldest warriors dare approach.</string> <!-- untranslated -->
     <string name="boss_the_hollow_king_name">Der hohle König</string>
-    <string name="boss_the_hollow_king_desc">Der kopflose Herrscher der Düsterernte, der aus dem „Blightwood“ herausreitet, um zu ernten, was die Lebenden gesät haben.</string>
+    <string name="boss_the_hollow_king_desc">Der kopflose Herrscher der Düsterernte, der aus dem Verdorbenen Wald herausreitet, um zu ernten, was die Lebenden gesät haben.</string>
     <string name="boss_the_vault_guardian_name">Der Tresorwächter</string>
     <string name="boss_the_vault_guardian_desc">Ein Koloss aus lebendigem Gold, erweckt durch das Entzünden der Ewigen Flamme. Nur Besucher des Großen Denkmals dürfen sich ihm stellen.</string>
     <string name="boss_obsidian_colossus_name">Obsidiankoloss</string>
@@ -155,7 +155,7 @@
     <string name="dungeon_arcane_ruins_name">Arkane Ruinen</string>
     <string name="dungeon_arcane_ruins_desc">Die funktionalen unterirdischen Kammern eines zerstörten Zaubererturms. Magische Konstrukte und verzauberte Wächter patrouillieren noch immer durch die Hallen.</string>
     <string name="dungeon_corrupted_sanctum_name">Verdorbenes Heiligtum</string>
-    <string name="dungeon_corrupted_sanctum_desc">Ein schattendurchtränktes Heiligtum im Herzen des verdorbenen Waldes. Dunkle Priester und verdorbene Bestien bewachen ein altes Böses.</string>
+    <string name="dungeon_corrupted_sanctum_desc">Ein schattendurchtränktes Heiligtum im Herzen des verdorbenen Kronendaches. Dunkle Priester und verdorbene Bestien bewachen ein altes Böses.</string>
     <string name="dungeon_drowned_temple_name">Versunkener Tempel</string>
     <string name="dungeon_drowned_temple_desc">Ein versunkener Tempel unter einer Meereshöhle, dessen Hallen mit Wasser gefüllt sind und von allerlei Meereskreaturen heimgesucht werden.</string>
     <string name="dungeon_rogue_sanctum_name">Gaunersanktum</string>
@@ -174,7 +174,7 @@
     <string name="enemy_void_seraph_name">Void Seraph</string> <!-- untranslated -->
 
     <!-- Elder Isle dungeons -->
-    <string name="dungeon_beach_and_cliffs_name">Beach &amp; Cliffs</string> <!-- untranslated -->
+    <string name="dungeon_beach_and_cliffs_name">Strand &amp; Klippen</string>
     <string name="dungeon_beach_and_cliffs_desc">The isle\'s landing zone. Coastal enemies scavenge the wrecks of prior voyages. Every clear drops one Ancient Sigil.</string> <!-- untranslated -->
     <string name="dungeon_ancient_forest_name">Ancient Forest</string> <!-- untranslated -->
     <string name="dungeon_ancient_forest_desc">A rune-laced jungle grown over an old library. Grove stalkers and rune-touched dryads keep visitors from the ruins beneath. One Ancient Sigil per clear.</string> <!-- untranslated -->
@@ -184,8 +184,8 @@
     <string name="dungeon_abyssal_depths_desc">A flooded pressure-chamber at the foot of the isle, where the Last Elder waits. Abyssal horrors and void seraphs patrol the approach. Three Ancient Sigils per clear.</string> <!-- untranslated -->
 
     <!-- Elder Isle raid bosses -->
-    <string name="boss_sea_serpent_name">Sea Serpent</string> <!-- untranslated -->
-    <string name="boss_sea_serpent_desc">The voyage boss. A rune-scarred serpent that circles the isle and turns back everyone it doesn\'t drown. Defeat once to permanently enable Set Sail.</string> <!-- untranslated -->
+    <string name="boss_sea_serpent_name">Seeschlange</string>
+    <string name="boss_sea_serpent_desc">Der Seereise Endgegner. Eine Schlange übersät mit Runennarben, die die Insel umkreist und jeden zurückschickt, den sie nicht ertränkt. Besiege sie einmal um permanent die Seeschiffahrt frei zu schalten.</string>
     <string name="boss_last_elder_name">The Last Elder</string> <!-- untranslated -->
     <string name="boss_last_elder_desc">The last of the Elders, sealed at the bottom of the Abyssal Depths. Only a full Elder set can survive the fight.</string> <!-- untranslated -->
 </resources>

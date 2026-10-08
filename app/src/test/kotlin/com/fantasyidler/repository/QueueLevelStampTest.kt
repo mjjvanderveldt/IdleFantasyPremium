@@ -96,4 +96,38 @@ class QueueLevelStampTest {
         assertFalse(isSkillSessionStillEligible(session, mapOf(Skills.MERCANTILE to 1), gameData))
         assertTrue(isSkillSessionStillEligible(session, mapOf(Skills.MERCANTILE to 80), gameData))
     }
+
+    // Issue #1970: queued isle sessions were dropped when the mainland level (here 1 after a
+    // prestige) was below the requirement, even though the isle level qualified.
+    @Test
+    fun `queued isle action gates on the isle level`() {
+        val mainland = mapOf(Skills.FISHING to 1)
+        val isle = mapOf(Skills.FISHING to 67)
+        val isleAction = action(Skills.FISHING).copy(activityKey = "raw_grove_bass", isElderSession = true)
+        assertEquals(67, queuedActionCurrentLevel(isleAction, mainland, isle, gameData))
+        assertEquals(1, queuedActionCurrentLevel(isleAction.copy(isElderSession = false), mainland, isle, gameData))
+    }
+
+    @Test
+    fun `queued isle dungeon gates on the isle combat level`() {
+        val combatSkills = listOf(Skills.ATTACK, Skills.STRENGTH, Skills.DEFENSE, Skills.HITPOINTS, Skills.RANGED, Skills.MAGIC, Skills.PRAYER)
+        val mainland = combatSkills.associateWith { 1 }
+        val isle = combatSkills.associateWith { 60 }
+        val dungeon = action("combat").copy(activityKey = "ancient_forest", isElderSession = true)
+        assertTrue(queuedActionCurrentLevel(dungeon, mainland, isle, gameData) > queuedActionCurrentLevel(dungeon.copy(isElderSession = false), mainland, isle, gameData))
+    }
+
+    @Test
+    fun `isle session is never voided by mainland levels at collect`() {
+        val session = SkillSession(
+            sessionId = "s",
+            skillName = Skills.FISHING,
+            startedAt = 0L,
+            endsAt = 1L,
+            activityKey = "raw_grove_bass",
+            levelAtStart = 67,
+            isElderSession = true,
+        )
+        assertTrue(isSkillSessionStillEligible(session, mapOf(Skills.FISHING to 1), gameData))
+    }
 }

@@ -682,7 +682,7 @@
     <string name="item_ranging_potion_name">Reichweiten-Zaubertrank</string>
     <string name="item_magic_potion_name">Zaubertrank</string>
     <string name="item_super_strength_potion_name">Zaubertrank der Überstärke</string>
-    <string name="item_super_attack_potion_name">Zaubertrank der Spezialangriffs</string>
+    <string name="item_super_attack_potion_name">Zaubertrank des Spezialangriffs</string>
     <string name="item_super_defense_potion_name">Zaubertrank der Spezialverteidigung</string>
     <string name="item_super_ranging_potion_name">Zaubertrank der Entfernung</string>
     <string name="item_super_magic_potion_name">Super-Zaubertrank</string>
@@ -813,7 +813,7 @@
     <string name="item_bronze_full_helmet_name">Bronzener Vollvisierhelm</string>
     <string name="item_bronze_kiteshield_name">Bronze-Langspitzschild</string>
     <string name="item_bronze_longsword_name">Bronzenes Langschwert</string>
-    <string name="item_bronze_med_helmet_name">Bronze Helme</string>
+    <string name="item_bronze_med_helmet_name">Bronze Helm</string>
     <string name="item_bronze_plateskirt_name">Bronzener Plattenrock</string>
     <string name="item_bronze_square_shield_name">Quadratischer Bronze-Schild</string>
     <string name="item_chicken_name">Broiler</string>
@@ -912,12 +912,12 @@
     <string name="item_ring_of_dragons_might_name">Ring der Macht des Drachen</string>
     <string name="item_ring_of_flame_name">Ring der Flamme</string>
     <string name="item_ring_of_recoil_name">Ring des Rückstoßes</string>
-    <string name="item_ring_of_recoil_desc">Wirft einen Teil des genommenen Schadens auf den Angreifer zurück. Zum Kauf ist Handel-Level 20 erforderlich.</string>
+    <string name="item_ring_of_recoil_desc">Ein Ring mit einem gezackten, verstärkten Band. Zum Kauf ist Handel-Level 20 erforderlich.</string>
     <string name="item_ring_of_suffering_name">Ring des Leidens</string>
     <string name="item_ring_of_suffering_desc">Ein starker Ring, der Verteidigung signifikant erhöht. Zum Kauf ist Handel-Level 80 erforderlich.</string>
     <string name="item_ring_of_the_seas_name">Ring der Meere</string>
     <string name="item_ring_of_wealth_name">Ring des Reichtums</string>
-    <string name="item_ring_of_wealth_desc">Erhöht die Anzahl der fallengelassenen Münzen geringfügig. Zum Kauf ist Handel-Level 40 erforderlich.</string>
+    <string name="item_ring_of_wealth_desc">Ein Ring mit einem glänzenden violetten Edelstein. Zum Kauf ist Handel-Level 40 erforderlich.</string>
     <string name="item_rock_golem_name">Steingolem</string>
     <string name="item_rogues_lockpick_name">Gaunerdietrich</string>
     <string name="item_runecrafting_cape_name">Umhang der Runenherstellung</string>
@@ -1217,7 +1217,7 @@
     <string name="item_shadow_lockpick_desc">Ein aus Schatten geschmiedeter Dietrich. Kein Schloss kann ihm lange standhalten.</string>
     <string name="item_divine_lockpick_desc">Ein Dietrich, der von göttlichem Licht berührt wurde. Jedes Schloss gibt ihm nach.</string>
     <string name="item_wraithbone_ring_desc">Ein blasser Ring, der während der Düsterernte aus Wight-Knochen geschnitzt wurde. Er verleiht der Hand und dem Herzen Festigkeit.</string>
-    <string name="item_reaper_scythe_desc">The Hollow King\'s own harvest tool. It reaps more than wheat.</string> <!-- untranslated -->
+    <string name="item_reaper_scythe_desc">Das eigene Erntewerkzeug des hohle Königs. Es erntet mehr als nur Weizen.</string>
     <string name="item_gloomweave_cape_desc">Gewebt aus der Abenddämmerung und dem Rauch der Laternen auf dem Nachtmarkt. Wird nur während der Düsterernte verkauft.</string>
     <string name="item_gilded_full_helmet_desc">Ein Runite-Vollvisierhelm umhüllt von Monumentgold. Wird vom Tresorwächter fallen gelassen.</string>
     <string name="item_gilded_platebody_desc">Ein Runit-Plattenpanzer, umhüllt von Monumentgold. Wird vom Tresorwächter fallen gelassen.</string>

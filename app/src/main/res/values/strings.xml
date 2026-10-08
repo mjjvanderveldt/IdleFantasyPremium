@@ -313,6 +313,8 @@
     <string name="settings_profile_layout_tabs">Tabs</string>
     <string name="settings_quest_dots">Quest dots on skills</string>
     <string name="settings_quest_dots_desc">Show a gold dot on skills that have an open quest</string>
+    <string name="settings_monument_touch_indicator">Monument touch indicator</string>
+    <string name="settings_monument_touch_indicator_desc">Show a dot on the Grand Monument on Home when the daily touch is available</string>
     <string name="settings_prestige_notifications">Prestige Notification Badges</string>
     <string name="settings_prestige_notifications_desc">Show a notification badge on navigation when a skill is ready to prestige</string>
     <string name="label_switch_character">Switch character</string>
@@ -418,6 +420,7 @@
     <string name="settings_font_small">Small</string>
     <string name="settings_font_normal">Normal</string>
     <string name="settings_font_large">Large</string>
+    <string name="settings_font_very_large">Very Large</string>
     <string name="settings_font_huge">Huge</string>
     <string name="settings_import_theme">Import themes</string>
     <string name="settings_import_theme_desc">Import custom themes from a file</string>
@@ -470,6 +473,8 @@
     <string name="settings_lang_hebrew" translatable="false">עברית</string>
     <string name="settings_lang_arabic" translatable="false">العربية</string>
     <string name="settings_lang_catalan" translatable="false">Català</string>
+    <string name="settings_lang_ukrainian" translatable="false">Українська</string>
+    <string name="settings_lang_vietnamese" translatable="false">Tiếng Việt</string>
     <string name="settings_lang_system">System</string>
     <string name="settings_save_data">Save Data</string>
     <string name="settings_export">Export Save</string>
@@ -601,6 +606,7 @@
     <string name="combat_spell_locked">Requires Magic level %1$d</string>
     <string name="combat_spell_level_met">Magic level %1$d</string>
     <string name="combat_no_potion">No Potion</string>
+    <string name="label_potion">Potion</string>
     <string name="combat_req_level">Required combat level</string>
     <string name="combat_duration">Duration</string>
     <!-- Translator note: %1$d = minutes -->
@@ -689,6 +695,7 @@
     <!-- Translator note: %1$s = formatted multiplier (e.g. "1.15") -->
     <string name="skills_tool_bonus">×%1$s tool bonus</string>
     <string name="skills_pet_bonus">+%1$d%% XP (pet)</string>
+    <string name="skills_blessing_bonus">+%1$d%% XP (blessing)</string>
     <!-- Translator note: %1$d = fishing level -->
     <string name="skills_fishing_desc">Level %1$d  •  Level-appropriate catches</string>
     <!-- Translator note: %1$d = prayer level -->
@@ -747,6 +754,7 @@
     <string name="quest_legend_guild_daily">Guild daily</string>
     <string name="quest_legend_guild">Guild quest</string>
     <string name="quest_legend_quest">Quest</string>
+    <string name="quest_legend_slayer_target">Slayer Task</string>
     <string name="quest_legend_gold_dot">Timed quest is available.</string>
     <string name="quest_legend_notes">Dimmed icons can\'t be completed yet (missing level or materials). A small raised number means several quests of that type want the same thing.</string>
     <!-- Translator note: %1$s = quantity in inventory -->
@@ -1060,6 +1068,8 @@
     <string name="church_active_chip">Active</string>
     <string name="church_activate">Activate</string>
     <string name="church_blessing_bonus">+%1$s from blessing</string>
+    <!-- Golden Goose pet coin share, split from the blessing line (issue #1941). Pending Weblate translation. -->
+    <string name="pet_coin_bonus">+%1$s from pet</string>
     <string name="church_blessing_suffix">from blessing</string>
     <string name="church_effect_xp">×%1$.2f XP for %2$d hours</string>
     <string name="church_effect_def">+%1$d Defense for %2$d hours</string>
@@ -1069,6 +1079,8 @@
     <string name="church_bones_available">You have %1$d bones on hand — worth %2$d toward blessings (bigger bones count for more)</string>
     <string name="church_not_enough_bones">Not enough bones (need %1$d)</string>
     <string name="church_already_active">A blessing is already active</string>
+    <string name="church_blessing_activated">Blessing activated!</string>
+    <string name="church_blessing_extended">Blessing extended!</string>
     <string name="church_confirm_deactivate_title">Deactivate Blessing?</string>
     <string name="church_confirm_deactivate_body">Are you sure you want to deactivate your active blessing? You will not get your bones back.</string>
 
@@ -1377,8 +1389,11 @@
     <string name="slayer_found_in">Found in: %1$s</string>
     <string name="slayer_requires">Requires: %1$s</string>
     <string name="slayer_add_dungeon_to_queue">Add Dungeon to Queue</string>
+    <string name="slayer_add_all_dungeons_to_queue">Add All Dungeons to Queue</string>
     <string name="slayer_queue_added">Added to queue: %1$s.</string>
     <string name="slayer_queue_full">Queue is full.</string>
+    <string name="slayer_queue_added_many">Added %1$d dungeons to queue.</string>
+    <string name="slayer_queue_added_partial">Added %1$d of %2$d dungeons to queue.</string>
     <string name="slayer_foretell_title">Foretell Future Tasks</string>
     <string name="slayer_foretell_desc">Pre-assign upcoming Slayer tasks by paying bones. They are assigned automatically when your current task is completed.</string>
     <string name="slayer_foretell_queue_empty">No tasks queued.</string>
@@ -1426,6 +1441,7 @@
     <string name="shop_cat_food">Food</string>
     <string name="shop_cat_materials">Materials</string>
     <string name="shop_cat_misc">Misc</string>
+    <string name="shop_cat_capes">Capes</string>
 
     <string name="crafting_per_craft">×%1$d per craft</string>
 
@@ -1444,6 +1460,7 @@
     <string name="trade_route_merchants_quarter_desc">Trade rare commodities in the prestigious merchant district.</string>
     <string name="trade_route_northern_ports_desc">Sail precious cargo to the northern port cities. High risk, high reward.</string>
     <string name="crafting_cat_bar">Bar</string>
+    <string name="crafting_cat_brew">Brew</string>
     <string name="crafting_cat_component">Component</string>
     <string name="crafting_cat_tool">Tool</string>
     <string name="crafting_cat_weapon">Weapon</string>
@@ -1457,6 +1474,7 @@
     <string name="crafting_cat_bow">Bow</string>
     <string name="crafting_cat_plank">Plank</string>
     <string name="crafting_cat_staff">Staff</string>
+    <string name="crafting_cat_super_potion">Super Potion</string>
 
     <!-- Crafting tier filter chips -->
     <string name="crafting_tier_adamantite">Adamantite</string>
@@ -1510,7 +1528,7 @@
 
     <!-- Thieving skill -->
     <string name="skill_thieving_name">Thieving</string>
-    <string name="skill_thieving_desc">Pickpocket NPCs each session. Success chance depends on your level vs the target. Failed attempts stun you for a frame. Higher tiers drop rare items and large coin purses.</string>
+    <string name="skill_thieving_desc">Pickpocket NPCs each session. Success chance depends on your level vs the target. Failed attempts earn nothing that minute. Better lockpicks raise both success chance and XP. Higher tiers drop rare items and large coin purses.</string>
     <string name="thieving_npc_detail">Lv. %1$d • %2$d XP • %3$d%% success</string>
     <string name="thieving_npc_coins">%1$d–%2$d coins per success</string>
 
@@ -1576,6 +1594,8 @@
     <string name="town_artisans_workshop_active_bonus">%1$d%% chance to preserve secondary crafting materials</string>
     <string name="town_building_chronos_spire_name">Chronos Spire</string>
     <string name="town_building_dock_name">Dock</string>
+    <string name="town_dock_no_bonus">Upgrade to sail to new locations</string>
+    <string name="town_dock_t1_bonus">Unlocks sailing to the Elder Isle</string>
     <string name="elder_isle_title">Elder Isle</string>
     <string name="elder_isle_sail_title">Sail to Elder Isle</string>
     <string name="elder_isle_zone_beach">Beach &amp; Cliffs</string>

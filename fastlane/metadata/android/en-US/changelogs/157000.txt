@@ -1,0 +1,9 @@
+• Buffed Thieving: higher XP from every target, better base success, and failed attempts no longer stun you
+• Lockpicks now boost Thieving XP like other gathering tools
+• Fixed the Thieving list showing XP per attempt and ignoring lockpick and prestige success bonuses
+• Fixed fishing losing the base catch on minutes the bonus table hit
+• Fixed queued Elder Isle mining, woodcutting and fishing using mainland boosts
+• Fixed skill XP previews and queue estimates leaving out prestige XP bonuses
+• Fixed the session card, summary and skill previews disagreeing on XP with sigil and cape bonuses
+• Added Vietnamese as a language option
+• Updated Czech, German, Italian, Lithuanian and Ukrainian translations

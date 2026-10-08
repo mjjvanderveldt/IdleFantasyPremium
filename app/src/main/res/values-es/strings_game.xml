@@ -4,7 +4,7 @@
     <!-- Translator note: %1$d = new level number, %2$s = skill display name -->
     <string name="game_level_up">¡Has subido de nivel! %1$s ahora es nivel %2$d!</string>
     <!-- Translator note: %1$s = skill display name, %2$d = new level number -->
-    <string name="game_level_up_short">%1$s → %2$d</string> <!-- untranslated -->
+    <string name="game_level_up_short">%1$s → %2$d</string>
     <string name="game_max_level">¡Has alcanzado el nivel máximo!</string>
 
     <!-- ===== Session result summaries ===== -->
@@ -68,9 +68,9 @@
 
     <!-- ===== XP gain messages (shown in session frame log) ===== -->
     <!-- Translator note: %1$s = formatted XP gained this minute -->
-    <string name="game_xp_gained">+%1$s XP</string> <!-- untranslated -->
+    <string name="game_xp_gained">+%1$s XP</string>
     <!-- Translator note: %1$s = item display name, %2$d = quantity -->
-    <string name="game_item_received">+%2$d %1$s</string> <!-- untranslated -->
+    <string name="game_item_received">+%2$d %1$s</string>
 
     <!-- ===== Arena messages ===== -->
     <!-- Translator note: %1$s = opponent display name -->
@@ -106,7 +106,7 @@
     <string name="equip_slot_pickaxe">Pico</string>
     <string name="equip_slot_axe">Hacha</string>
     <string name="equip_slot_fishing_rod">Caña de pescar</string>
-    <string name="equip_slot_hoe">Hoe</string> <!-- untranslated -->
+    <string name="equip_slot_hoe">Azada</string>
     <string name="equip_slot_frying_pan">Sartén</string>
     <string name="equip_slot_grappling_hook">Garfio de escalada</string>
     <string name="equip_slot_hammer">Martillo</string>

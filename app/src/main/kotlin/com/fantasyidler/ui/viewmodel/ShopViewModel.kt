@@ -104,6 +104,7 @@ data class ShopUiState(
     /** Bulk and manual sells always leave one of each item (collector safety). */
     val keepOneOfEach: Boolean = false,
     val bulkSellReceipts: List<BulkSellReceipt> = emptyList(),
+    val seenItemKeys: Set<String> = emptySet(),
 ) {
     val xpBoostActive: Boolean get() = xpBoostExpiresAt > System.currentTimeMillis()
 }
@@ -152,6 +153,7 @@ class ShopViewModel @Inject constructor(
                 compactNumbers    = flags.compactNumbers,
                 keepOneOfEach     = flags.shopKeepOneOfEach,
                 bulkSellReceipts  = flags.bulkSellReceipts,
+                seenItemKeys      = flags.seenItemKeys,
             )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ShopUiState())
@@ -233,7 +235,10 @@ class ShopViewModel @Inject constructor(
     // ------------------------------------------------------------------
 
     fun sellPriceFor(itemKey: String): Int {
+        // Buy-back capes are priced as a recovery fee, not market value; using that price
+        // here would let re-awarded skill capes be sold for a third of it.
         val marketPrice = gameData.marketplace.values
+            .filter { it.categoryName != CAPES_CATEGORY }
             .mapNotNull { it.items[itemKey]?.price }
             .firstOrNull()
 
@@ -426,29 +431,48 @@ class ShopViewModel @Inject constructor(
 
     fun confirmBulkSell() {
         val preview = _extra.value.pendingBulkSell ?: return
-        // Close the dialog before the sale, not after: a large sale takes seconds, and
-        // every extra tap on the still-open dialog launched a duplicate run whose lines
-        // re-capped to zero and posted a spurious "sold for 0 gold" snackbar (issue #1718).
         _extra.update { it.copy(pendingBulkSell = null) }
         viewModelScope.launch {
-            // The dialog can sit open while the world changes (a queued session starting
-            // swaps gear, issue #1630), so previewed quantities are only an upper bound:
-            // each line is re-capped against the live player state before selling.
-            val sold = mutableMapOf<String, Int>()
-            var coins = 0L
-            for (item in preview.items) {
-                val qty = minOf(item.qty, currentSellableCap(item.key))
-                if (qty <= 0) continue
-                if (playerRepo.sellItem(item.key, qty, item.priceEach, protectEquipped = true)) {
-                    sold[item.key] = qty
-                    coins += item.priceEach.toLong() * qty
-                }
+            val player = playerRepo.getOrCreatePlayer()
+            val flags: PlayerFlags = json.decodeFromString(player.flags)
+            val inventory: Map<String, Int> = json.decodeFromString(player.inventory)
+            val equipped: Map<String, String?> = json.decodeFromString(player.equipped)
+            val reserved = computeReserved(flags.allQueues)
+            val queuedGearKeys = flags.allQueues.flatMapTo(mutableSetOf()) { action ->
+                action.equippedSnapshot?.let {
+                    try { json.decodeFromString<Map<String, String?>>(it).values.filterNotNull() }
+                    catch (_: Exception) { emptyList() }
+                } ?: emptyList()
             }
+            val loadoutKeys = flags.armorLoadouts.values.flatMapTo(mutableSetOf()) { it.values.filterNotNull() } + queuedGearKeys
+
+            val toSell = mutableMapOf<String, Int>()
+            val prices = mutableMapOf<String, Int>()
+            for (item in preview.items) {
+                val key = item.key
+                val equipData = gameData.equipment[key]
+                if (key in flags.lockedItems) continue
+                if (equipData?.heirloomSkill != null) continue
+                if (equipData?.capeSkill != null) continue
+                val have = inventory[key] ?: 0
+                val equippedCount = if (equipData != null) {
+                    maxOf(equipped.values.count { it == key }, if (key in loadoutKeys) 1 else 0)
+                } else 0
+                val reservedQty = reserved[key] ?: 0
+                val keeper = if (flags.shopKeepOneOfEach && equippedCount == 0) 1 else 0
+                val cap = (have - equippedCount - reservedQty - keeper).coerceAtLeast(0)
+                val qty = minOf(item.qty, cap)
+                if (qty <= 0) continue
+                toSell[key] = qty
+                prices[key] = item.priceEach
+            }
+
+            val (sold, coins) = playerRepo.sellItemsBulk(toSell, prices)
             if (sold.isNotEmpty()) {
-                val flags = playerRepo.getFlags()
+                val updatedFlags = playerRepo.getFlags()
                 val receipt = BulkSellReceipt(atMs = System.currentTimeMillis(), items = sold, coins = coins)
-                playerRepo.updateFlags(flags.copy(
-                    bulkSellReceipts = (listOf(receipt) + flags.bulkSellReceipts).take(MAX_BULK_SELL_RECEIPTS)))
+                playerRepo.updateFlags(updatedFlags.copy(
+                    bulkSellReceipts = (listOf(receipt) + updatedFlags.bulkSellReceipts).take(MAX_BULK_SELL_RECEIPTS)))
             }
             _extra.update { it.copy(
                 snackbarMessage = context.withAppLocale().getString(preview.soldMsgRes, coins.toCoinsString()),
@@ -520,7 +544,7 @@ class ShopViewModel @Inject constructor(
                     key         = entry.key,
                     displayName = entry.displayName,
                     priceEach   = discPrice,
-                    maxQty      = if (isXpBoost) 1 else maxAffordable,
+                    maxQty      = if (isXpBoost || entry.categoryName == CAPES_CATEGORY) 1 else maxAffordable,
                     qty         = 1,
                     isBuy       = true,
                 )
@@ -629,6 +653,13 @@ class ShopViewModel @Inject constructor(
     // Private helpers
     // ------------------------------------------------------------------
 
+    /** Capes entries only appear once earned (ever seen) and no longer owned/equipped — everything else is always eligible. */
+    fun isBuyEntryEligible(entry: ShopEntry, state: ShopUiState): Boolean {
+        if (entry.categoryName != CAPES_CATEGORY) return true
+        val owned = (state.inventory[entry.key] ?: 0) > 0 || entry.key in state.equipped.values
+        return entry.key in state.seenItemKeys && !owned
+    }
+
     fun sellCategoryFor(itemKey: String): String {
         val equip = gameData.equipment[itemKey]
         if (equip != null) {
@@ -658,6 +689,7 @@ class ShopViewModel @Inject constructor(
 
     companion object {
         const val XP_BOOST_KEY = "xp_boost_48h"
+        const val CAPES_CATEGORY = "Capes"
         const val MAX_BULK_SELL_RECEIPTS = 5
 
         /**

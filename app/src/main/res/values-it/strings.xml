@@ -313,6 +313,8 @@
     <string name="settings_profile_layout_tabs">Schede</string>
     <string name="settings_quest_dots">Indicatori missione</string>
     <string name="settings_quest_dots_desc">Mostra un indicatore quando una missione è disponibile</string>
+    <string name="settings_monument_touch_indicator">Indicatore Monumento</string>
+    <string name="settings_monument_touch_indicator_desc">Mostra un indicatore quando il Monumento può essere toccato.</string>
     <string name="settings_prestige_notifications">Indicatori Onore</string>
     <string name="settings_prestige_notifications_desc">Mostra un indicatore quando una abilità può essere onorata</string>
     <string name="label_switch_character">Cambia personaggio</string>
@@ -418,6 +420,7 @@
     <string name="settings_font_small">Piccolo</string>
     <string name="settings_font_normal">Normale</string>
     <string name="settings_font_large">Grande</string>
+    <string name="settings_font_very_large">Very Large</string>
     <string name="settings_font_huge">Enorme</string>
     <string name="settings_import_theme">Importa temi</string>
     <string name="settings_import_theme_desc">Importa temi personalizzati da un file</string>
@@ -450,6 +453,8 @@
     <string name="theme_editor_saved_ok">Tema salvato e applicato</string>
     <string name="theme_editor_exported_ok">Tema esportato</string>
     <string name="settings_language_desc">Forza lingua dell\'app</string>
+
+
 
 
 
@@ -592,6 +597,7 @@
     <string name="combat_spell_locked">Richiede Magia liv. %1$d</string>
     <string name="combat_spell_level_met">Magia liv. %1$d</string>
     <string name="combat_no_potion">Nessuna pozione</string>
+    <string name="label_potion">Pozione</string>
     <string name="combat_req_level">Livello di combattimento richiesto</string>
     <string name="combat_duration">Durata</string>
     <!-- Translator note: %1$d = minutes -->
@@ -680,6 +686,7 @@
     <!-- Translator note: %1$s = formatted multiplier (e.g. "1.15") -->
     <string name="skills_tool_bonus">×%1$s bonus strumento</string>
     <string name="skills_pet_bonus">+%1$d%% XP (compagno)</string>
+    <string name="skills_blessing_bonus">+%1$d%% XP (benedizione)</string>
     <!-- Translator note: %1$d = fishing level -->
     <string name="skills_fishing_desc">Livello %1$d  •  Pesca in base al livello</string>
     <!-- Translator note: %1$d = prayer level -->
@@ -738,6 +745,7 @@
     <string name="quest_legend_guild_daily">Giornaliera di gilda</string>
     <string name="quest_legend_guild">Missione di gilda</string>
     <string name="quest_legend_quest">Missione</string>
+    <string name="quest_legend_slayer_target">Incarico Sicario</string>
     <string name="quest_legend_gold_dot">Una missione a tempo è disponibile.</string>
     <string name="quest_legend_notes">Le missioni con icone attenuate non possono ancora essere completate (livello o materiali mancanti). Un numerino in apice indica che più missioni richiedono la stessa azione.</string>
     <!-- Translator note: %1$s = quantity in inventory -->
@@ -1051,6 +1059,8 @@
     <string name="church_active_chip">Attiva</string>
     <string name="church_activate">Attiva</string>
     <string name="church_blessing_bonus">+%1$s da benedizione</string>
+    <!-- Golden Goose pet coin share, split from the blessing line (issue #1941). Pending Weblate translation. -->
+    <string name="pet_coin_bonus">+%1$s da compagno</string>
     <string name="church_blessing_suffix">da benedizione</string>
     <string name="church_effect_xp">×%1$.2f XP per %2$d ore</string>
     <string name="church_effect_def">+%1$d Difesa per %2$d ore</string>
@@ -1060,6 +1070,8 @@
     <string name="church_bones_available">Hai %1$d ossa, pari a %2$d per le benedizioni (le ossa più grandi valgono più)</string>
     <string name="church_not_enough_bones">Non hai abbastanza ossa (ne servono %1$d)</string>
     <string name="church_already_active">Una benedizione è già attiva</string>
+    <string name="church_blessing_activated">Benedizione attivata!</string>
+    <string name="church_blessing_extended">Benedizione estesa!</string>
     <string name="church_confirm_deactivate_title">Interrompere la benedizione?</string>
     <string name="church_confirm_deactivate_body">Sei sicuro di voler interrompere la benedizione attiva? Le ossa non verranno restituite.</string>
 
@@ -1368,8 +1380,11 @@
     <string name="slayer_found_in">Si trova in: %1$s</string>
     <string name="slayer_requires">Necessita di: %1$s</string>
     <string name="slayer_add_dungeon_to_queue">Aggiungi Dungeon alla Coda</string>
+    <string name="slayer_add_all_dungeons_to_queue">Aggiungi tutti all Coda</string>
     <string name="slayer_queue_added">Aggiunto alla coda: %1$s.</string>
     <string name="slayer_queue_full">La coda è piena.</string>
+    <string name="slayer_queue_added_many">%1$d dungeon aggiunti alla coda</string>
+    <string name="slayer_queue_added_partial">%1$d su %2$d dungeon aggiunti alla coda</string>
     <string name="slayer_foretell_title">Divina il prossimo incarico</string>
     <string name="slayer_foretell_desc">Assegna automaticamente il prossimo incarico usando ossa. Inizierà al termine del tuo incarico attuale.</string>
     <string name="slayer_foretell_queue_empty">Nessun incarico in coda.</string>
@@ -1417,6 +1432,7 @@
     <string name="shop_cat_food">Cibo</string>
     <string name="shop_cat_materials">Materiali</string>
     <string name="shop_cat_misc">Varie</string>
+    <string name="shop_cat_capes">Mantelli</string>
 
     <string name="crafting_per_craft">×%1$d per ricetta</string>
 
@@ -1435,6 +1451,7 @@
     <string name="trade_route_merchants_quarter_desc">Scambia merci rare nel prestigioso quartiere dei mercanti.</string>
     <string name="trade_route_northern_ports_desc">Porta carichi preziosi nelle città portuali del nord. Grande rischio, grande ricompensa.</string>
     <string name="crafting_cat_bar">Lingotto</string>
+    <string name="crafting_cat_brew">Miscela</string>
     <string name="crafting_cat_component">Componente</string>
     <string name="crafting_cat_tool">Strumento</string>
     <string name="crafting_cat_weapon">Arma</string>
@@ -1448,6 +1465,7 @@
     <string name="crafting_cat_bow">Arco</string>
     <string name="crafting_cat_plank">Asse</string>
     <string name="crafting_cat_staff">Bastone</string>
+    <string name="crafting_cat_super_potion">Pozione Super</string>
 
     <!-- Crafting tier filter chips -->
     <string name="crafting_tier_adamantite">Adamantio</string>
@@ -1458,13 +1476,13 @@
     <string name="crafting_tier_maple">Acero</string>
     <string name="crafting_tier_mithril">Mithril</string>
     <string name="crafting_tier_oak">Quercia</string>
-    <string name="crafting_tier_plank">Plank</string> <!-- untranslated -->
+    <string name="crafting_tier_plank">Asse</string>
     <string name="crafting_tier_platinum">Platino</string>
-    <string name="crafting_tier_redwood">Redwood</string> <!-- untranslated -->
+    <string name="crafting_tier_redwood">Sequoia</string>
     <string name="crafting_tier_runite">Runite</string>
     <string name="crafting_tier_silver">Argento</string>
     <string name="crafting_tier_steel">Acciaio</string>
-    <string name="crafting_tier_stone">Stone</string> <!-- untranslated -->
+    <string name="crafting_tier_stone">Pietra</string>
     <string name="crafting_tier_willow">Salice</string>
     <string name="crafting_tier_yew">Tasso</string>
 
@@ -1493,7 +1511,7 @@
     <string name="catalyst_enhanced_output">Produce pozione potenziata</string>
     <string name="catalyst_rune_bonus">%1$d rune per essenza</string>
     <string name="catalyst_none">Nessun catalizzatore</string>
-    <string name="skills_rune_output">Produces %1$d runes</string> <!-- untranslated -->
+    <string name="skills_rune_output">Produce %1$d rune</string>
 
     <!-- Construction skill -->
     <string name="skill_construction_name">Costruzione</string>
@@ -1566,148 +1584,150 @@
     <string name="town_artisans_workshop_no_bonus">Migliora per avere possibilità di recuperare materiali</string>
     <string name="town_artisans_workshop_active_bonus">%1$d%% di recuperare materiali</string>
     <string name="town_building_chronos_spire_name">Guglia di Crono</string>
-    <string name="town_building_dock_name">Dock</string> <!-- untranslated -->
-    <string name="elder_isle_title">Elder Isle</string> <!-- untranslated -->
-    <string name="elder_isle_sail_title">Sail to Elder Isle</string> <!-- untranslated -->
-    <string name="elder_isle_zone_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
-    <string name="elder_isle_zone_forest">Ancient Forest</string> <!-- untranslated -->
-    <string name="elder_isle_zone_volcano">Volcano Peak</string> <!-- untranslated -->
-    <string name="elder_isle_zone_abyss">Abyssal Depths</string> <!-- untranslated -->
-    <string name="elder_isle_zone_locked">Locked</string> <!-- untranslated -->
-    <string name="elder_isle_coming_soon">Elder Isle is barely charted. Return once the isle has been built out.</string> <!-- untranslated -->
-    <string name="elder_isle_boss_sea_serpent">Sea Serpent</string> <!-- untranslated -->
-    <string name="elder_isle_set_sail">Set sail for Elder Isle</string> <!-- untranslated -->
-    <string name="elder_isle_return">Return to the mainland</string> <!-- untranslated -->
-    <string name="elder_isle_sail_blocked_by_session">Finish your active session before setting sail.</string> <!-- untranslated -->
-    <string name="elder_isle_sail_blocked_locked">Elder Isle is not yet unlocked.</string> <!-- untranslated -->
-    <string name="elder_isle_sail_blocked_serpent">The Sea Serpent guards the passage. Defeat it to reach Elder Isle.</string> <!-- untranslated -->
-    <string name="elder_isle_dock_unlocked_title">The Dock stands ready</string> <!-- untranslated -->
-    <string name="elder_isle_dock_unlocked_body">The pier is complete and the boats are waiting, but no crew will make the crossing until the Sea Serpent that has drowned every prior voyage lies dead. Find it in the mainland Combat tab under Bosses. The passage opens the moment it falls.</string> <!-- untranslated -->
-    <string name="elder_isle_dock_unlocked_cta">Face the Sea Serpent</string> <!-- untranslated -->
-    <string name="elder_isle_dock_unlocked_later">Later</string> <!-- untranslated -->
-    <string name="boss_masked_name">\?\?\?</string> <!-- untranslated -->
-    <string name="boss_last_elder_masked_desc">Something ancient stirs at the bottom of the isle. Assemble the full Elder set to face it.</string> <!-- untranslated -->
-    <string name="elder_isle_welcome_title">Landfall on Elder Isle</string> <!-- untranslated -->
-    <string name="elder_isle_welcome_body">The salt spray fades and the fog lifts. Ahead: a bone-white shore, a jungle laced with pale runes, and further in, smoke curling from a peak that shouldn\'t be smoking. The old sailors were right. Something ancient still lives here.\n\nYour mainland skills, boosts, and gear stay on the ship. Everything you level or craft on the isle grows a separate track of its own. Elder gear will carry back to the mainland; mainland power will not carry here.\n\nStart with the Skills tab. Head to Mining or Woodcutting to gather isle materials. Then check the Quests tab for your first objective, and open the Lore Master in town whenever a new fragment unlocks.</string> <!-- untranslated -->
-    <string name="elder_isle_welcome_cta">Step ashore</string> <!-- untranslated -->
-    <string name="elder_isle_stub_skills">Elder skills are being charted. Full skill tracks arrive in a later build.</string> <!-- untranslated -->
-    <string name="elder_isle_stub_combat">Elder dungeons and the Last Elder fight are being drawn up. Later build.</string> <!-- untranslated -->
-    <string name="elder_isle_stub_quests">Isle quests will appear here once the story chain lands.</string> <!-- untranslated -->
-    <string name="elder_isle_stub_profile">Isle stats and gear layout land with the skill-tracks build.</string> <!-- untranslated -->
-    <string name="elder_isle_skills_title">Elder Skills</string> <!-- untranslated -->
-    <string name="elder_isle_total_level_label">Total Elder Level</string> <!-- untranslated -->
-    <string name="elder_isle_total_level_value">%1$d / %2$d</string> <!-- untranslated -->
-    <string name="elder_isle_skill_activities_title">%1$s activities</string> <!-- untranslated -->
-    <string name="elder_isle_no_activities">No activities yet in this build.</string> <!-- untranslated -->
-    <string name="elder_isle_start_session">Start session</string> <!-- untranslated -->
-    <string name="elder_isle_session_started">Session started.</string> <!-- untranslated -->
-    <string name="elder_isle_session_start_failed">Could not start session: %1$s</string> <!-- untranslated -->
-    <string name="elder_isle_activity_level">Level %1$d required</string> <!-- untranslated -->
-    <string name="elder_isle_combat_title">Elder Dungeons</string> <!-- untranslated -->
-    <string name="elder_isle_profile_title">Isle Profile</string> <!-- untranslated -->
-    <string name="elder_isle_dungeon_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
-    <string name="elder_isle_dungeon_forest">Ancient Forest</string> <!-- untranslated -->
-    <string name="elder_isle_dungeon_volcano">Volcano Peak</string> <!-- untranslated -->
-    <string name="elder_isle_dungeon_abyss">Abyssal Depths</string> <!-- untranslated -->
-    <string name="elder_isle_dungeon_boss">The Last Elder</string> <!-- untranslated -->
-    <string name="elder_isle_tab_dungeons">Dungeons</string> <!-- untranslated -->
-    <string name="elder_isle_tab_bosses">Bosses</string> <!-- untranslated -->
-    <string name="elder_isle_shop_title">Isle Shop</string> <!-- untranslated -->
-    <string name="elder_isle_shop_buy">Buy</string> <!-- untranslated -->
-    <string name="elder_isle_shop_soon">Coming later</string> <!-- untranslated -->
-    <string name="elder_isle_shop_insufficient">Not enough Elder Essence.</string> <!-- untranslated -->
-    <string name="elder_isle_shop_purchased">Purchased %1$s.</string> <!-- untranslated -->
-    <string name="elder_isle_shop_button">Visit Isle Shop</string> <!-- untranslated -->
-    <string name="elder_isle_armor_master_title">Elder Armor Master</string> <!-- untranslated -->
-    <string name="elder_isle_lore_master_title">Lore Master</string> <!-- untranslated -->
-    <string name="elder_armor_missing_mats">Not enough materials.</string> <!-- untranslated -->
-    <string name="elder_armor_crafted">Crafted %1$s.</string> <!-- untranslated -->
-    <string name="elder_armor_queue_full">Craft queue is full (3).</string> <!-- untranslated -->
-    <string name="elder_armor_missing_stone">You don\'t own that sigil stone.</string> <!-- untranslated -->
-    <string name="elder_armor_stone_embedded">Embedded %1$s in %2$s.</string> <!-- untranslated -->
-    <string name="elder_armor_sigil_embedder">Sigil Embedder</string> <!-- untranslated -->
-    <string name="elder_armor_sigil_empty">Empty socket</string> <!-- untranslated -->
-    <string name="elder_armor_sigil_change">Change</string> <!-- untranslated -->
-    <string name="elder_armor_sigil_embed">Embed</string> <!-- untranslated -->
-    <string name="elder_armor_sigil_remove">Remove</string> <!-- untranslated -->
-    <string name="elder_armor_pick_stone">Pick a sigil stone</string> <!-- untranslated -->
-    <string name="item_mythrite_ore_name">Mythrite Ore</string> <!-- untranslated -->
-    <string name="item_abyssal_ore_name">Abyssal Ore</string> <!-- untranslated -->
-    <string name="item_voidsteel_ore_name">Voidsteel Ore</string> <!-- untranslated -->
-    <string name="item_starforged_ore_name">Starforged Ore</string> <!-- untranslated -->
-    <string name="item_mythrite_bar_name">Mythrite Bar</string> <!-- untranslated -->
-    <string name="item_abyssal_bar_name">Abyssal Bar</string> <!-- untranslated -->
-    <string name="item_voidsteel_bar_name">Voidsteel Bar</string> <!-- untranslated -->
-    <string name="item_starforged_bar_name">Starforged Bar</string> <!-- untranslated -->
-    <string name="item_coastal_pine_log_name">Coastal Pine Log</string> <!-- untranslated -->
-    <string name="item_grove_oak_log_name">Grove Oak Log</string> <!-- untranslated -->
-    <string name="item_abyssal_log_name">Abyssal Log</string> <!-- untranslated -->
-    <string name="item_starwood_log_name">Starwood Log</string> <!-- untranslated -->
-    <string name="item_raw_tidepool_crab_name">Tidepool Crab (raw)</string> <!-- untranslated -->
-    <string name="item_raw_grove_bass_name">Grove Bass (raw)</string> <!-- untranslated -->
-    <string name="item_raw_lavafin_name">Lavafin (raw)</string> <!-- untranslated -->
-    <string name="item_raw_deepwater_ray_name">Deepwater Ray (raw)</string> <!-- untranslated -->
-    <string name="item_tidepool_crab_name">Tidepool Crab</string> <!-- untranslated -->
-    <string name="item_grove_bass_name">Grove Bass</string> <!-- untranslated -->
-    <string name="item_lavafin_name">Lavafin</string> <!-- untranslated -->
-    <string name="item_deepwater_ray_name">Deepwater Ray</string> <!-- untranslated -->
-    <string name="item_elder_bone_name">Elder Bone</string> <!-- untranslated -->
-    <string name="item_elder_essence_name">Elder Essence</string> <!-- untranslated -->
-    <string name="item_ancient_sigil_name">Ancient Sigil</string> <!-- untranslated -->
-    <string name="item_sacred_wood_name">Sacred Wood</string> <!-- untranslated -->
+    <string name="town_building_dock_name">Porto</string>
+    <string name="town_dock_no_bonus">Migliora per salpare verso nuove avventure</string>
+    <string name="town_dock_t1_bonus">Viaggia verso l\'Isola Ancestrale</string>
+    <string name="elder_isle_title">Isola Ancestrale</string>
+    <string name="elder_isle_sail_title">Salpa verso l\'Isola Ancestrale</string>
+    <string name="elder_isle_zone_beach">Spiagge e Scogli</string>
+    <string name="elder_isle_zone_forest">Antica Foresta</string>
+    <string name="elder_isle_zone_volcano">Cratere Vulcanico</string>
+    <string name="elder_isle_zone_abyss">Profondità Abissali</string>
+    <string name="elder_isle_zone_locked">Bloccato</string>
+    <string name="elder_isle_coming_soon">L\'isola non è ancora stata esplorata del tutto. Ritorna quando ci saranno progressi.</string>
+    <string name="elder_isle_boss_sea_serpent">Serpe dei Mari</string>
+    <string name="elder_isle_set_sail">Salpa in direzione dell\'Isola Ancestrale.</string>
+    <string name="elder_isle_return">Torna nell\'entroterra</string>
+    <string name="elder_isle_sail_blocked_by_session">Termina la tua sessione prima di partire.</string>
+    <string name="elder_isle_sail_blocked_locked">L\'Isola Ancestrale non è ancora disponibile.</string>
+    <string name="elder_isle_sail_blocked_serpent">La Serpe dei Mari blocca il passaggio. Sconfiggila per raggiungere l\'isola.</string>
+    <string name="elder_isle_dock_unlocked_title">Il porto è in funzione.</string>
+    <string name="elder_isle_dock_unlocked_body">Il molo si staglia verso l\'orizzonte blu, ma nessuna nave osa salpare: la Serpe dei Mari ha affondato chiunque volesse attraversare la grande distesa d\'acqua. Sconfiggila selezionandola dall\'elenco dei boss e libererai il passaggio.</string>
+    <string name="elder_isle_dock_unlocked_cta">Affronta la Serpe dei Mari.</string>
+    <string name="elder_isle_dock_unlocked_later">In seguito</string>
+    <string name="boss_masked_name">\?\?\?</string>
+    <string name="boss_last_elder_masked_desc">Un\'antica entità aspetta nelle profondità dell\'isola. Raccogli ogni oggetto Ancestrale per affrontarla.</string>
+    <string name="elder_isle_welcome_title">Approdo all\'Isola Ancestrale</string>
+    <string name="elder_isle_welcome_body">Le grosse onde si indeboliscono e la fitta nebbia si dirada, rivelando una spiaggia di pallido bianco e una giungla intagliata di rune. Una colonna di fumo si innalza da un vulcano ritenuto inattivo. Le vecchie leggende erano vere: qualcosa ancora vive su questa isola.\n\n\n\nTutte le abilità sviluppate nell\'entroterra rimarrano sulla nave: tutto ciò che si svolge sull\'isola è completamente separato dai tuoi progressi esistenti. Potrai portare nell\'entroterra oggetti Ancestrali, ma l\'isola non accetta niente che non sia creato nei suoi confini.\n\n\n\nInizia esplorando le tue abilità. Inizia ad estrarre minerali e tagliare legna per fare scorta di materiali. Controlla il tuo Registro nel Villaggio quando ci sono novità.</string>
+    <string name="elder_isle_welcome_cta">Sbarca</string>
+    <string name="elder_isle_stub_skills">Le Abilità Ancestrali sono in fase di esplorazione. Torna più tardi.</string>
+    <string name="elder_isle_stub_combat">I Dungeon Ancestrali sono in fase di esplorazione. Torna più tardi.</string>
+    <string name="elder_isle_stub_quests">Qui troverai le missioni dell\'isola in seguito.</string>
+    <string name="elder_isle_stub_profile">Queste informazioni verranno mostrate in seguito.</string>
+    <string name="elder_isle_skills_title">Abilità Ancestrali</string>
+    <string name="elder_isle_total_level_label">Livello Ancestrale Totale</string>
+    <string name="elder_isle_total_level_value">%1$d / %2$d</string>
+    <string name="elder_isle_skill_activities_title">%1$s attività</string>
+    <string name="elder_isle_no_activities">Nessuna attività disponibile al momento.</string>
+    <string name="elder_isle_start_session">Avvia sessione</string>
+    <string name="elder_isle_session_started">Sessione attiva.</string>
+    <string name="elder_isle_session_start_failed">Non è stato possibile avviare la sessione: %1$s</string>
+    <string name="elder_isle_activity_level">Necessario livello %%1%%d</string>
+    <string name="elder_isle_combat_title">Dungeon Ancestrali</string>
+    <string name="elder_isle_profile_title">Profilo sull\'Isola</string>
+    <string name="elder_isle_dungeon_beach">Spiagge e Scogli</string>
+    <string name="elder_isle_dungeon_forest">Antica Foresta</string>
+    <string name="elder_isle_dungeon_volcano">Cratere Vulcanico</string>
+    <string name="elder_isle_dungeon_abyss">Profondità Abissali</string>
+    <string name="elder_isle_dungeon_boss">L\'Ultimo Anziano</string>
+    <string name="elder_isle_tab_dungeons">Dungeon</string>
+    <string name="elder_isle_tab_bosses">Boss</string>
+    <string name="elder_isle_shop_title">Emporio</string>
+    <string name="elder_isle_shop_buy">Compra</string>
+    <string name="elder_isle_shop_soon">In arrivo</string>
+    <string name="elder_isle_shop_insufficient">Non hai abbastanza Essenza Ancestrale</string>
+    <string name="elder_isle_shop_purchased">Acquistato: %1$s.</string>
+    <string name="elder_isle_shop_button">Visita l\'Emporio</string>
+    <string name="elder_isle_armor_master_title">Armeria Ancestrale</string>
+    <string name="elder_isle_lore_master_title">Registro</string>
+    <string name="elder_armor_missing_mats">Non hai abbastanza materiali</string>
+    <string name="elder_armor_crafted">Realizzato: %1$s.</string>
+    <string name="elder_armor_queue_full">La coda è piena.</string>
+    <string name="elder_armor_missing_stone">Non possiedi questa gemma del sigillo.</string>
+    <string name="elder_armor_stone_embedded">%1$s incastonata in %2$s.</string>
+    <string name="elder_armor_sigil_embedder">Gioielliere</string>
+    <string name="elder_armor_sigil_empty">Fessura vuota</string>
+    <string name="elder_armor_sigil_change">Cambia</string>
+    <string name="elder_armor_sigil_embed">Incastona</string>
+    <string name="elder_armor_sigil_remove">Rimuovi</string>
+    <string name="elder_armor_pick_stone">Scegli il sigillo</string>
+    <string name="item_mythrite_ore_name">Minerale di Mithrite</string>
+    <string name="item_abyssal_ore_name">Minerale Abissale</string>
+    <string name="item_voidsteel_ore_name">Minerale di Ferrovacuo</string>
+    <string name="item_starforged_ore_name">Minerale di Stellargento</string>
+    <string name="item_mythrite_bar_name">Lingotto di Mithrite</string>
+    <string name="item_abyssal_bar_name">Lingotto Abissale</string>
+    <string name="item_voidsteel_bar_name">Lingotto di Ferrovacuo</string>
+    <string name="item_starforged_bar_name">Lingotto di Stellargento</string>
+    <string name="item_coastal_pine_log_name">Legno di Pino Costiero</string>
+    <string name="item_grove_oak_log_name">Legno di Quercia Boschiva</string>
+    <string name="item_abyssal_log_name">Legno Abissale</string>
+    <string name="item_starwood_log_name">Legno di Stellaviva</string>
+    <string name="item_raw_tidepool_crab_name">Granchio delle Maree (fresco)</string>
+    <string name="item_raw_grove_bass_name">Trota dei Boschi (fresca)</string>
+    <string name="item_raw_lavafin_name">Magmapinna (fresca)</string>
+    <string name="item_raw_deepwater_ray_name">Mantabisso (fresca)</string>
+    <string name="item_tidepool_crab_name">Granchio delle Maree</string>
+    <string name="item_grove_bass_name">Trota dei Boschi</string>
+    <string name="item_lavafin_name">Magmapinna</string>
+    <string name="item_deepwater_ray_name">Mantabisso</string>
+    <string name="item_elder_bone_name">Osso Ancestrale</string>
+    <string name="item_elder_essence_name">Essenza Ancestrale</string>
+    <string name="item_ancient_sigil_name">Sigillo Ancestrale</string>
+    <string name="item_sacred_wood_name">Legno Sacro</string>
 
     <!-- Elder Isle: gathering targets (trees) -->
-    <string name="item_coastal_pine_name">Coastal Pine</string> <!-- untranslated -->
-    <string name="item_grove_oak_name">Grove Oak</string> <!-- untranslated -->
-    <string name="item_abyssal_tree_name">Abyssal Tree</string> <!-- untranslated -->
-    <string name="item_starwood_tree_name">Starwood Tree</string> <!-- untranslated -->
+    <string name="item_coastal_pine_name">Pino Costiero</string>
+    <string name="item_grove_oak_name">Quercia Boschiva</string>
+    <string name="item_abyssal_tree_name">Albero Abissale</string>
+    <string name="item_starwood_tree_name">Stellaviva</string>
 
     <!-- Elder Isle: crafted armor pieces (tier progression Coastal → Grove → Volcanic → Elder) -->
-    <string name="item_coastal_helm_name">Coastal Helm</string> <!-- untranslated -->
-    <string name="item_coastal_platebody_name">Coastal Platebody</string> <!-- untranslated -->
-    <string name="item_coastal_platelegs_name">Coastal Platelegs</string> <!-- untranslated -->
-    <string name="item_coastal_boots_name">Coastal Boots</string> <!-- untranslated -->
-    <string name="item_grove_helm_name">Grove Helm</string> <!-- untranslated -->
-    <string name="item_grove_platebody_name">Grove Platebody</string> <!-- untranslated -->
-    <string name="item_grove_platelegs_name">Grove Platelegs</string> <!-- untranslated -->
-    <string name="item_grove_boots_name">Grove Boots</string> <!-- untranslated -->
-    <string name="item_volcanic_helm_name">Volcanic Helm</string> <!-- untranslated -->
-    <string name="item_volcanic_platebody_name">Volcanic Platebody</string> <!-- untranslated -->
-    <string name="item_volcanic_platelegs_name">Volcanic Platelegs</string> <!-- untranslated -->
-    <string name="item_volcanic_boots_name">Volcanic Boots</string> <!-- untranslated -->
-    <string name="item_elder_helm_name">Elder Helm</string> <!-- untranslated -->
-    <string name="item_elder_platebody_name">Elder Platebody</string> <!-- untranslated -->
-    <string name="item_elder_platelegs_name">Elder Platelegs</string> <!-- untranslated -->
-    <string name="item_elder_boots_name">Elder Boots</string> <!-- untranslated -->
-    <string name="item_elder_cape_name">Elder Cape</string> <!-- untranslated -->
-    <string name="item_elder_shield_name">Elder Shield</string> <!-- untranslated -->
-    <string name="item_elder_signet_ring_name">Elder Signet Ring</string> <!-- untranslated -->
-    <string name="item_elder_amulet_name">Elder Amulet</string> <!-- untranslated -->
-    <string name="item_ancient_signet_name">Ancient Signet</string> <!-- untranslated -->
+    <string name="item_coastal_helm_name">Elmetto Costiero</string>
+    <string name="item_coastal_platebody_name">Corazza Costiera</string>
+    <string name="item_coastal_platelegs_name">Gambali Costieri</string>
+    <string name="item_coastal_boots_name">Stivali Costieri</string>
+    <string name="item_grove_helm_name">Elmetto dei Boschi</string>
+    <string name="item_grove_platebody_name">Corazza dei Boschi</string>
+    <string name="item_grove_platelegs_name">Gambali dei Boschi</string>
+    <string name="item_grove_boots_name">Stivali dei Boschi</string>
+    <string name="item_volcanic_helm_name">Elmetto Vulcanico</string>
+    <string name="item_volcanic_platebody_name">Corazza Vulcanica</string>
+    <string name="item_volcanic_platelegs_name">Gambali Vulcanici</string>
+    <string name="item_volcanic_boots_name">Stivali Vulcanici</string>
+    <string name="item_elder_helm_name">Elmetto Ancestrale</string>
+    <string name="item_elder_platebody_name">Corazza Ancestrale</string>
+    <string name="item_elder_platelegs_name">Gambali Ancestrali</string>
+    <string name="item_elder_boots_name">Stivali Ancestrali</string>
+    <string name="item_elder_cape_name">Mantello Ancestrale</string>
+    <string name="item_elder_shield_name">Scudo Ancestrale</string>
+    <string name="item_elder_signet_ring_name">Marchio Ancestrale</string>
+    <string name="item_elder_amulet_name">Amuleto Ancestrale</string>
+    <string name="item_ancient_signet_name">Antico Marchio</string>
 
     <!-- Elder Isle: sigil stones (four wired, two shipped-but-cosmetic) -->
-    <string name="item_elder_sapphire_name">Sapphire Sigil Stone</string> <!-- untranslated -->
-    <string name="item_elder_ruby_name">Ruby Sigil Stone</string> <!-- untranslated -->
-    <string name="item_elder_emerald_name">Emerald Sigil Stone</string> <!-- untranslated -->
-    <string name="item_elder_amethyst_name">Amethyst Sigil Stone</string> <!-- untranslated -->
-    <string name="item_elder_topaz_name">Topaz Sigil Stone</string> <!-- untranslated -->
-    <string name="item_elder_diamond_name">Diamond Sigil Stone</string> <!-- untranslated -->
+    <string name="item_elder_sapphire_name">Sigillo Zaffiro</string>
+    <string name="item_elder_ruby_name">Sigillo Rubino</string>
+    <string name="item_elder_emerald_name">Sigillo Smeraldo</string>
+    <string name="item_elder_amethyst_name">Sigillo Ametista</string>
+    <string name="item_elder_topaz_name">Sigillo Topazio</string>
+    <string name="item_elder_diamond_name">Sigillo Diamante</string>
 
     <!-- Elder Isle: pet item entries (parallel to pet_* below; used by drop tables and inventory) -->
-    <string name="item_tidal_sprite_name">Tidal Sprite</string> <!-- untranslated -->
-    <string name="item_grove_fawn_name">Grove Fawn</string> <!-- untranslated -->
-    <string name="item_magma_salamander_name">Magma Salamander</string> <!-- untranslated -->
-    <string name="item_abyss_wisp_name">Abyss Wisp</string> <!-- untranslated -->
-    <string name="item_ancient_turtle_name">Ancient Turtle</string> <!-- untranslated -->
-    <string name="item_cinder_hawk_name">Cinder Hawk</string> <!-- untranslated -->
-    <string name="item_deepwater_serpent_name">Deepwater Serpent</string> <!-- untranslated -->
-    <string name="item_elder_familiar_name">Elder Familiar</string> <!-- untranslated -->
+    <string name="item_tidal_sprite_name">Folletto delle Maree</string>
+    <string name="item_grove_fawn_name">Cerbiatto dei Boschi</string>
+    <string name="item_magma_salamander_name">Salamandra del Magma</string>
+    <string name="item_abyss_wisp_name">Spirito Abissale</string>
+    <string name="item_ancient_turtle_name">Tartaruga Secolare</string>
+    <string name="item_cinder_hawk_name">Falco Cinereo</string>
+    <string name="item_deepwater_serpent_name">Serpente del Profondo</string>
+    <string name="item_elder_familiar_name">Famiglio Ancestrale</string>
 
     <!-- Elder Isle: ore descriptions -->
-    <string name="item_mythrite_ore_desc">Silvery isle ore. Smelts into Mythrite Bars, the base metal of the Coastal armor tier.</string> <!-- untranslated -->
-    <string name="item_abyssal_ore_desc">Dark isle ore laced with pressure-cracked veins. Smelts into Abyssal Bars for Grove-tier gear.</string> <!-- untranslated -->
-    <string name="item_voidsteel_ore_desc">Isle ore that hums faintly under pressure. Smelts into Voidsteel Bars for Volcanic-tier gear.</string> <!-- untranslated -->
-    <string name="item_starforged_ore_desc">The isle\'s rarest ore, said to be shed from the seal itself. Smelts into Starforged Bars for the Elder set.</string> <!-- untranslated -->
+    <string name="item_mythrite_ore_desc">Minerale dai riflessi argentei. Fondilo in lingotti di Mithrite, necessari per creare armature Costiere.</string>
+    <string name="item_abyssal_ore_desc">Cupo minerale con profonde venature create dalla pressione dell\'acqua. Fondilo in lingotti Abissali per creare armature dei Boschi.</string>
+    <string name="item_voidsteel_ore_desc">Minerale che produce una lieve vibrazione. Fondilo in lingotti di Ferrovacuo per creare armature Vulcaniche.</string>
+    <string name="item_starforged_ore_desc">Raro minerale che si racconta provenire dall\'essenza stessa dell\'isola. Fondilo in lingotti di Stellargento per creare oggetti Ancestrali.</string>
     <string name="town_chronos_spire_no_bonus">Migliora per ridurre i tempi di sessione</string>
     <string name="town_chronos_spire_active_bonus">Riduzione del %1$d%% ai tempi di sessione</string>
 
@@ -2005,8 +2025,8 @@
     <string name="monument_not_enough_coins">Monete insufficienti.</string>
     <string name="title_patron_of_the_realm_name">Mecenate del Reame</string>
     <string name="title_patron_of_the_realm_requirement">Completa il Grande Monumento</string>
-    <string name="title_isle_champion_name">Isle Champion</string> <!-- untranslated -->
-    <string name="title_isle_champion_requirement">Defeat the Last Elder on Elder Isle</string> <!-- untranslated -->
+    <string name="title_isle_champion_name">Campione dell\'Isola</string>
+    <string name="title_isle_champion_requirement">Sconfiggi l\'Ultimo Anziano sull\'Isola Ancestrale</string>
     <string name="item_gilded_full_helmet_name">Elmo Dorato</string>
     <string name="item_gilded_platebody_name">Corazza Dorata</string>
     <string name="item_gilded_kiteshield_name">Granscudo Dorato</string>
@@ -2339,22 +2359,22 @@
     <string name="pet_golden_goose_desc">Oca d\'alto lignaggio che siede in cima al Monumento d\'orato. Le monete sembrano arrivare a lei da sole.</string>
 
     <!-- Elder Isle pets: 7 dungeon drops + 1 raid-boss drop -->
-    <string name="pet_tidal_sprite_name">Tidal Sprite</string> <!-- untranslated -->
-    <string name="pet_tidal_sprite_desc">A shimmering water spirit born from the surf of Beach &amp; Cliffs. Never seems to fully dry.</string> <!-- untranslated -->
-    <string name="pet_grove_fawn_name">Grove Fawn</string> <!-- untranslated -->
-    <string name="pet_grove_fawn_desc">A young forest creature with rune-patterned fur, found among the ancient trees.</string> <!-- untranslated -->
-    <string name="pet_magma_salamander_name">Magma Salamander</string> <!-- untranslated -->
-    <string name="pet_magma_salamander_desc">A heat-forged lizard that thrives in Volcano Peak\'s cracks. Its skin is always faintly warm.</string> <!-- untranslated -->
-    <string name="pet_abyss_wisp_name">Abyss Wisp</string> <!-- untranslated -->
-    <string name="pet_abyss_wisp_desc">A cold silver light that drifted up from the Abyssal Depths and refused to sink back.</string> <!-- untranslated -->
-    <string name="pet_ancient_turtle_name">Ancient Turtle</string> <!-- untranslated -->
-    <string name="pet_ancient_turtle_desc">A tiny turtle whose shell bears the same runes as the isle\'s seal. Older than it looks.</string> <!-- untranslated -->
-    <string name="pet_cinder_hawk_name">Cinder Hawk</string> <!-- untranslated -->
-    <string name="pet_cinder_hawk_desc">A bird of banked embers that circles the volcano and roosts on your shoulder between fights.</string> <!-- untranslated -->
-    <string name="pet_deepwater_serpent_name">Deepwater Serpent</string> <!-- untranslated -->
-    <string name="pet_deepwater_serpent_desc">A miniature cousin of the Sea Serpent, coiled around your wrist like a living bracelet.</string> <!-- untranslated -->
-    <string name="pet_elder_familiar_name">Elder Familiar</string> <!-- untranslated -->
-    <string name="pet_elder_familiar_desc">The Last Elder\'s dying companion, bound now to whoever felled its master. Its eyes still remember.</string> <!-- untranslated -->
+    <string name="pet_tidal_sprite_name">Folletto delle Maree</string>
+    <string name="pet_tidal_sprite_desc">Creatura marina nata dal moto delle onde sulle spiagge dell\'isola. Rimane sempre umida anche in condizioni aride.</string>
+    <string name="pet_grove_fawn_name">Cerbiatto dei Boschi</string>
+    <string name="pet_grove_fawn_desc">Animaletto dal manto ricoperto di rune. Vive tra gli antichi alberi della foresta.</string>
+    <string name="pet_magma_salamander_name">Salamandra del Magma</string>
+    <string name="pet_magma_salamander_desc">Rettile nato tra le fiamme del Cratere Vulcanico. La sua pelle emette sempre un certo calore.</string>
+    <string name="pet_abyss_wisp_name">Spirito Abissale</string>
+    <string name="pet_abyss_wisp_desc">Una luce argentea risalita dalle profondità dei mari. Si rifiuta di tornare indietro.</string>
+    <string name="pet_ancient_turtle_name">Tartaruga Antica</string>
+    <string name="pet_ancient_turtle_desc">Una piccola tartaruga il cui guscio riporta le stesse rune presenti sull\'isola. Non dimostra la sua età.</string>
+    <string name="pet_cinder_hawk_name">Falco Cinereo</string>
+    <string name="pet_cinder_hawk_desc">Volatile di brace che vive sui versanti del vulcano.</string>
+    <string name="pet_deepwater_serpent_name">Serpente del Profondo</string>
+    <string name="pet_deepwater_serpent_desc">Un piccolo serpente imparentato con la Serpe dei Mari. Si stringe a te come un bracciale.</string>
+    <string name="pet_elder_familiar_name">Famiglio Ancestrale</string>
+    <string name="pet_elder_familiar_desc">L\'inseparabile compagno dell\'Ultimo Anziano, ora legato a chi ha vinto sul suo padrone. I suoi occhi tengono in vita la memoria.</string>
 
     <!-- Save slots / character manager -->
     <string name="settings_characters">Personaggi</string>
@@ -2379,7 +2399,7 @@
     <string name="save_slot_delete_body">Eliminare definitivamente %1$s? Questa azione non può essere annullata.</string>
     <string name="save_slot_delete_btn">Elimina</string>
     <string name="save_slot_switch_failed">Impossibile cambiare personaggio.</string>
-    <string name="collect_blocked_switching">Character switch in progress. Please wait and try again.</string> <!-- untranslated -->
+    <string name="collect_blocked_switching">Cambio personaggio in corso. Attendi un momento.</string>
 
     <!-- Ironman mode -->
     <string name="character_ironman_title">Modalità Superuomo</string>
@@ -2410,9 +2430,9 @@
     <string name="carnival_stat_str">FRZ +%1$d</string>
     <string name="carnival_stat_def">DIF +%1$d</string>
     <!-- Translator note: %1$s = "${skill name} ", %2$d = percentage bonus -->
-    <string name="carnival_stat_xp">%1$sXP +%2$d%%</string> <!-- untranslated -->
+    <string name="carnival_stat_xp">%1$sXP +%2$d%%</string>
     <!-- Translator note: %1$s = "${skill name} ", %2$d = percentage bonus -->
-    <string name="carnival_stat_yield">%1$sYield +%2$d%%</string> <!-- untranslated -->
+    <string name="carnival_stat_yield">Resa %1$s+%2$d%%</string>
     <string name="carnival_potion_letter_green">V</string>
     <string name="carnival_potion_letter_blue">B</string>
     <string name="carnival_potion_letter_red">R</string>
@@ -2433,7 +2453,7 @@
     <!-- Translator note: %1$d = current skill level -->
     <string name="prestige_requires_99">Raggiungi il livello 99 per onorare (al momento %1$d).</string>
     <string name="prestige_maxed_cap">Raggiunto il massimo onore. Hai ottenuto tutti i punti possibili.</string>
-    <string name="skills_prestige_max">★×%1$d (Max)</string> <!-- untranslated -->
+    <string name="skills_prestige_max">★×%1$d (Max)</string>
     <!-- Translator note: %1$s = skill name, %2$d = points awarded -->
     <string name="prestige_confirm_message_points">Il livello di %1$s tornerà a 1 e otterrai %2$d punti onore da spendere in talenti. Non potrai più usare armamenti di livello superiore, e le missioni giornaliere di %1$s saranno reimpostate. Otterrai 2x %1$s XP per 48 ore.</string>
     <string name="prestige_respec">Reimposta punti</string>

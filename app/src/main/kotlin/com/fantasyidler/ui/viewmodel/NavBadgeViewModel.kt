@@ -43,6 +43,7 @@ class NavBadgeViewModel @Inject constructor(
         }
         if (player == null) return@combine regularCount
         val flags: PlayerFlags = json.decodeFromString(player.flags)
+        if (flags.onElderIsle) return@combine 0
         val dailyCount = dailyQuestRepo.getActiveDailyQuests(flags)
             .count { it.progress >= it.template.amount && !it.claimed }
         val weeklyCount = weeklyQuestRepo.getActiveWeeklyQuests(flags)

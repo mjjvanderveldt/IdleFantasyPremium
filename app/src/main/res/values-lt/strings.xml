@@ -58,7 +58,7 @@
     <string name="label_hitpoints">Hitpoints</string> <!-- untranslated -->
     <string name="label_inventory">Inventorius</string>
     <string name="label_equipment">Įranga</string>
-    <string name="label_combat_equipment">Gear</string> <!-- untranslated -->
+    <string name="label_combat_equipment">Įranga</string>
     <string name="label_pets">Augintiniai</string>
     <string name="label_achievements">Pasiekimai</string>
     <string name="label_locations">Vietos</string>
@@ -67,38 +67,38 @@
     <string name="label_bosses">Bosai</string>
     <string name="label_by_location">Pagal Vieta</string>
     <string name="bestiary_not_encountered">Dar Ne Sutikes</string>
-    <string name="bestiary_filter_all">All</string> <!-- untranslated -->
-    <string name="bestiary_filter_missing">Missing</string> <!-- untranslated -->
-    <string name="bestiary_qty_header">Qty</string> <!-- untranslated -->
-    <string name="bestiary_chance_header">Chance</string> <!-- untranslated -->
+    <string name="bestiary_filter_all">Visi</string>
+    <string name="bestiary_filter_missing">Nesutikti</string>
+    <string name="bestiary_qty_header">Vnt.</string>
+    <string name="bestiary_chance_header">Šansas</string>
     <string name="label_completion_progress">%1$d / %2$d %3$s</string>
     <string name="achievements_progress_bar">obtained</string>
-    <string name="bestiary_progress_bar">encountered</string> <!-- untranslated -->
+    <string name="bestiary_progress_bar">Sutikta</string>
     <string name="bestiary_always_drops">Visada Išmetami Daiktai</string>
     <string name="bestiary_rare_drops">Retai Išmetami Daiktai</string>
     <string name="bestiary_common_loot">Dažnai išmetami Daiktai</string>
     <string name="bestiary_pet_drop">Augintinio gavimo šansai</string>
-    <string name="bestiary_atk_def">Atk Def</string> <!-- untranslated -->
-    <string name="bestiary_str_def">Str Def</string> <!-- untranslated -->
+    <string name="bestiary_atk_def">Atk Def</string>
+    <string name="bestiary_str_def">Str Def</string>
     <string name="bestiary_rng_def">Rng Def</string> <!-- untranslated -->
     <string name="bestiary_mag_def">Mag Def</string> <!-- untranslated -->
     <string name="label_session_in_progress">Sesija Dabar Vyksta</string>
     <string name="label_session_active">Sesija dabar Aktyvi</string>
     <string name="label_no_active_session">Jokios Aktyvios Sesijos</string>
     <string name="label_session_complete">Sesija Pabaigta!</string>
-    <string name="home_sessions_complete_title">%1$d Sessions Complete!</string> <!-- untranslated -->
-    <string name="home_boss_defeated_title">Defeated %1$s!</string> <!-- untranslated -->
-    <string name="home_boss_defeated_by_title">Defeated by %1$s.</string> <!-- untranslated -->
-    <string name="home_dungeon_died_title">%1$s — You Died</string> <!-- untranslated -->
-    <string name="home_dungeon_complete_title">%1$s Complete!</string> <!-- untranslated -->
-    <string name="home_expedition_complete_title">%1$s Expedition Complete</string> <!-- untranslated -->
-    <string name="home_skill_session_complete_title">%1$s Session Complete</string> <!-- untranslated -->
-    <string name="home_bones_buried_row">%1$s buried</string> <!-- untranslated -->
-    <string name="worker_sessions_complete_title">Worker: %1$d Sessions Complete!</string> <!-- untranslated -->
-    <string name="worker_boss_defeated_title">Worker: Defeated %1$s!</string> <!-- untranslated -->
-    <string name="worker_dungeon_died_title">Worker: %1$s — Died</string> <!-- untranslated -->
-    <string name="worker_dungeon_complete_title">Worker: %1$s Complete!</string> <!-- untranslated -->
-    <string name="worker_skill_complete_title">Worker: %1$s Complete</string> <!-- untranslated -->
+    <string name="home_sessions_complete_title">%1$d Sesijos Pabaigtos!</string>
+    <string name="home_boss_defeated_title">Nugalėta %1$s!</string>
+    <string name="home_boss_defeated_by_title">Nugalėtas %1$s.</string>
+    <string name="home_dungeon_died_title">%1$s — Tu Mirei</string>
+    <string name="home_dungeon_complete_title">%1$s Pabaigta!</string>
+    <string name="home_expedition_complete_title">%1$s Ekspedicija Pabaigta</string>
+    <string name="home_skill_session_complete_title">%1$s Sesija Pabaigta</string>
+    <string name="home_bones_buried_row">%1$s užkastą</string>
+    <string name="worker_sessions_complete_title">Darbininkas: %1$d Sesijos Pabaigtos!</string>
+    <string name="worker_boss_defeated_title">Darbininkas: Nugalėta %1$s!</string>
+    <string name="worker_dungeon_died_title">Darbininkas: %1$s — Mirė</string>
+    <string name="worker_dungeon_complete_title">Darbininkas: %1$s Pabaigtas!</string>
+    <string name="worker_skill_complete_title">Darbininkas: %1$s Pabaigtas</string>
     <string name="label_training">Treniruotis</string>
     <string name="label_gathering_skills">Rinkti</string>
     <string name="label_crafting_skills">Gaminimo Įgudžiai</string>
@@ -106,14 +106,14 @@
     <string name="label_coming_soon">Greitai Pasirodys</string>
     <string name="label_time_remaining">Liko Laiko</string>
     <!-- Translator note: compact duration units; English puts the letter(s) right after the number -->
-    <string name="duration_years">%1$dy</string> <!-- untranslated -->
-    <string name="duration_months">%1$dmo</string> <!-- untranslated -->
-    <string name="duration_weeks">%1$dw</string> <!-- untranslated -->
-    <string name="duration_days">%1$dd</string> <!-- untranslated -->
-    <string name="duration_hours">%1$dh</string> <!-- untranslated -->
-    <string name="duration_minutes">%1$dm</string> <!-- untranslated -->
-    <string name="duration_seconds">%1$ds</string> <!-- untranslated -->
-    <string name="duration_complete">Complete</string> <!-- untranslated -->
+    <string name="duration_years">%1$dmet.</string>
+    <string name="duration_months">%1$dmėn.</string>
+    <string name="duration_weeks">%1$dsav.</string>
+    <string name="duration_days">%1$dd.</string>
+    <string name="duration_hours">%1$dval.</string>
+    <string name="duration_minutes">%1$dmin.</string>
+    <string name="duration_seconds">%1$dsec.</string>
+    <string name="duration_complete">Pabaigta</string>
     <string name="label_session_results">Sesijos Rezultatas</string>
     <string name="label_xp_gained">XP surinktą</string>
     <string name="label_items_collected">Daiktų Surinktą</string>
@@ -131,7 +131,7 @@
     <string name="label_ready_to_harvest">Paruošta Nuimti Derlių</string>
     <string name="label_empty">Tuščia</string>
     <string name="inventory_sort_quantity">Vienietai</string>
-    <string name="inventory_sort_az">A-Z</string> <!-- untranslated -->
+    <string name="inventory_sort_az">A-Z</string>
     <string name="inventory_cat_weapons">Ginklai</string>
     <string name="inventory_cat_armour">Šarvai</string>
     <string name="inventory_cat_tools">Įrankiai</string>
@@ -164,9 +164,9 @@
     <string name="label_losses">Pralaimejimai</string>
     <string name="label_active">Aktyvus</string>
     <string name="label_inactive">Neaktyvus</string>
-    <string name="label_boost">Boost</string> <!-- untranslated -->
+    <string name="label_boost">Bonusas</string>
     <string name="label_xp_boost">XP Padauginimas</string>
-    <string name="label_prestige_xp_boost">Prestige XP Boost</string> <!-- untranslated -->
+    <string name="label_prestige_xp_boost">Atgimimo XP Bonusas</string>
     <string name="label_weapon">Ginklas</string>
     <string name="label_armour">Šarvai</string>
     <string name="label_food">Maistas</string>
@@ -204,7 +204,7 @@
     <!-- Translator note: %1$s = formatted XP amount, %2$d = target level number -->
     <string name="format_xp_to_next">%1$s XP to Lygio %2$d</string>
     <!-- Translator note: %1$s = formatted XP amount remaining to reach the level cap (99) -->
-    <string name="xp_to_99">%1$s XP to 99</string> <!-- untranslated -->
+    <string name="xp_to_99">%1$s XP iki 99</string>
     <!-- Translator note: %1$s = time string (e.g. "42m 10s") -->
     <string name="format_time_remaining">%1$s Liko</string>
     <!-- Translator note: %1$s = relative time (e.g. "5m ago") -->
@@ -224,7 +224,7 @@
     <!-- Translator note: %1$s = skill display name, %2$d = level number -->
     <string name="format_skill_level">%1$s: Lygis %2$d</string>
     <!-- Translator note: %1$d = boost percentage -->
-    <string name="format_xp_boost_percent">+%1$d%% XP</string> <!-- untranslated -->
+    <string name="format_xp_boost_percent">+%1$d%% XP</string>
     <string name="format_coin_boost_percent">+%1$d%% monetų</string>
     <!-- Translator note: %1$s = item/resource name, %2$d = quantity drop amount -->
 
@@ -277,22 +277,22 @@
     <string name="error_patch_empty">Ši Lysvė Yra Tuščia.</string>
     <string name="error_crop_not_ready">Šis Derlius dar pilnai Neužaugo.</string>
     <string name="error_quest_active">Jus Jau Turite Aktyvią Užduotį</string>
-    <string name="error_quest_requirements_not_met">You don\'t meet the requirements for this quest.</string> <!-- untranslated -->
-    <string name="error_dungeon_level_too_low">Your combat level is too low for this dungeon.</string> <!-- untranslated -->
-    <string name="error_unknown">Something went wrong. Please try again.</string> <!-- untranslated -->
+    <string name="error_quest_requirements_not_met">"Tu Nesieki Reikalavimų Šiai Užduočiai. "</string>
+    <string name="error_dungeon_level_too_low">"Tavo Kovojimo Lygis Yra Per Žemas Šiam Požemiui. "</string>
+    <string name="error_unknown">"Kaškas Atsitiko Ne Taip. Prašau Pameginti Dar Kartą. "</string>
 
     <!-- ===== Session dialogs ===== -->
-    <string name="session_abandon_title">Abandon Session?</string> <!-- untranslated -->
-    <string name="session_abandon_body">All progress from this session will be lost.</string> <!-- untranslated -->
+    <string name="session_abandon_title">Palikti Sesija?</string>
+    <string name="session_abandon_body">"Visas Progresas Iš Šios Sesijos Bus Prarastas. "</string>
 
     <!-- ===== Onboarding ===== -->
-    <string name="onboarding_welcome_title">Welcome to Idle Fantasy</string> <!-- untranslated -->
+    <string name="onboarding_welcome_title">"Sveiki Atvykė į \"Idle Fantasy\" "</string>
     <string name="onboarding_welcome_body">Start a skill session and watch your character grow. Sessions run for one hour, even when the app is closed.</string> <!-- untranslated -->
     <string name="onboarding_first_session_hint">Tap any skill to get started.</string> <!-- untranslated -->
 
     <!-- ===== Settings ===== -->
-    <string name="settings_title">Settings</string> <!-- untranslated -->
-    <string name="settings_notifications">Session Notifications</string> <!-- untranslated -->
+    <string name="settings_title">Nustatymai</string>
+    <string name="settings_notifications">Sesijos Pranešimai</string>
     <string name="settings_notifications_desc">Show an alert when your session completes</string> <!-- untranslated -->
     <string name="settings_battery_optimization">Battery Optimization</string> <!-- untranslated -->
     <string name="settings_battery_optimization_desc">Disable battery optimization for Idle Fantasy to receive timely session alerts</string> <!-- untranslated -->
@@ -313,6 +313,8 @@
     <string name="settings_profile_layout_tabs">Tabs</string> <!-- untranslated -->
     <string name="settings_quest_dots">Quest dots on skills</string> <!-- untranslated -->
     <string name="settings_quest_dots_desc">Show a gold dot on skills that have an open quest</string> <!-- untranslated -->
+    <string name="settings_monument_touch_indicator">Monument touch indicator</string> <!-- untranslated -->
+    <string name="settings_monument_touch_indicator_desc">Show a dot on the Grand Monument on Home when the daily touch is available</string> <!-- untranslated -->
     <string name="settings_prestige_notifications">Prestige Notification Badges</string> <!-- untranslated -->
     <string name="settings_prestige_notifications_desc">Show a notification badge on navigation when a skill is ready to prestige</string> <!-- untranslated -->
     <string name="label_switch_character">Switch character</string> <!-- untranslated -->
@@ -418,6 +420,7 @@
     <string name="settings_font_small">Small</string> <!-- untranslated -->
     <string name="settings_font_normal">Normal</string> <!-- untranslated -->
     <string name="settings_font_large">Large</string> <!-- untranslated -->
+    <string name="settings_font_very_large">Very Large</string> <!-- untranslated -->
     <string name="settings_font_huge">Huge</string> <!-- untranslated -->
     <string name="settings_import_theme">Import themes</string> <!-- untranslated -->
     <string name="settings_import_theme_desc">Import custom themes from a file</string> <!-- untranslated -->
@@ -450,6 +453,8 @@
     <string name="theme_editor_saved_ok">Theme saved and applied</string> <!-- untranslated -->
     <string name="theme_editor_exported_ok">Theme exported</string> <!-- untranslated -->
     <string name="settings_language_desc">Override the app display language</string> <!-- untranslated -->
+
+
 
 
 
@@ -519,7 +524,7 @@
     <string name="guild_progress_dailies_and_quest">Complete %1$d/%2$d daily requests &amp; quests to advance</string> <!-- untranslated -->
     <string name="guild_progress_dailies_only">Complete %1$d/%2$d daily requests to advance</string> <!-- untranslated -->
     <string name="home_died_message">You died and lost most of your gains.</string> <!-- untranslated -->
-    <string name="home_xp_boost_was_active">2× All skills XP was active</string> <!-- untranslated -->
+    <string name="home_xp_boost_was_active">2× XP boosts were active</string> <!-- untranslated -->
     <string name="home_xp_boost_active">2× All skills XP - %1$s</string> <!-- untranslated -->
     <string name="home_prestige_xp_boost_active">2× %1$s XP - %2$s</string> <!-- untranslated -->
     <string name="boosts_show_more">+%1$d more boosts (tap to show)</string> <!-- untranslated -->
@@ -592,6 +597,7 @@
     <string name="combat_spell_locked">Requires Magic level %1$d</string> <!-- untranslated -->
     <string name="combat_spell_level_met">Magic level %1$d</string> <!-- untranslated -->
     <string name="combat_no_potion">No Potion</string> <!-- untranslated -->
+    <string name="label_potion">Potion</string> <!-- untranslated -->
     <string name="combat_req_level">Required combat level</string> <!-- untranslated -->
     <string name="combat_duration">Duration</string> <!-- untranslated -->
     <!-- Translator note: %1$d = minutes -->
@@ -680,6 +686,7 @@
     <!-- Translator note: %1$s = formatted multiplier (e.g. "1.15") -->
     <string name="skills_tool_bonus">×%1$s tool bonus</string> <!-- untranslated -->
     <string name="skills_pet_bonus">+%1$d%% XP (pet)</string> <!-- untranslated -->
+    <string name="skills_blessing_bonus">+%1$d%% XP (blessing)</string> <!-- untranslated -->
     <!-- Translator note: %1$d = fishing level -->
     <string name="skills_fishing_desc">Level %1$d  •  Level-appropriate catches</string> <!-- untranslated -->
     <!-- Translator note: %1$d = prayer level -->
@@ -738,6 +745,7 @@
     <string name="quest_legend_guild_daily">Guild daily</string> <!-- untranslated -->
     <string name="quest_legend_guild">Guild quest</string> <!-- untranslated -->
     <string name="quest_legend_quest">Quest</string> <!-- untranslated -->
+    <string name="quest_legend_slayer_target">Slayer Task</string> <!-- untranslated -->
     <string name="quest_legend_gold_dot">Timed quest is available.</string> <!-- untranslated -->
     <string name="quest_legend_notes">Dimmed icons can\'t be completed yet (missing level or materials). A small raised number means several quests of that type want the same thing.</string> <!-- untranslated -->
     <!-- Translator note: %1$s = quantity in inventory -->
@@ -1051,6 +1059,8 @@
     <string name="church_active_chip">Active</string> <!-- untranslated -->
     <string name="church_activate">Activate</string> <!-- untranslated -->
     <string name="church_blessing_bonus">+%1$s from blessing</string> <!-- untranslated -->
+    <!-- Golden Goose pet coin share, split from the blessing line (issue #1941). Pending Weblate translation. -->
+    <string name="pet_coin_bonus">+%1$s from pet</string> <!-- untranslated -->
     <string name="church_blessing_suffix">from blessing</string> <!-- untranslated -->
     <string name="church_effect_xp">×%1$.2f XP for %2$d hours</string> <!-- untranslated -->
     <string name="church_effect_def">+%1$d Defense for %2$d hours</string> <!-- untranslated -->
@@ -1060,6 +1070,8 @@
     <string name="church_bones_available">You have %1$d bones on hand — worth %2$d toward blessings (bigger bones count for more)</string> <!-- untranslated -->
     <string name="church_not_enough_bones">Not enough bones (need %1$d)</string> <!-- untranslated -->
     <string name="church_already_active">A blessing is already active</string> <!-- untranslated -->
+    <string name="church_blessing_activated">Blessing activated!</string> <!-- untranslated -->
+    <string name="church_blessing_extended">Blessing extended!</string> <!-- untranslated -->
     <string name="church_confirm_deactivate_title">Deactivate Blessing?</string> <!-- untranslated -->
     <string name="church_confirm_deactivate_body">Are you sure you want to deactivate your active blessing? You will not get your bones back.</string> <!-- untranslated -->
 
@@ -1368,8 +1380,11 @@
     <string name="slayer_found_in">Found in: %1$s</string> <!-- untranslated -->
     <string name="slayer_requires">Requires: %1$s</string> <!-- untranslated -->
     <string name="slayer_add_dungeon_to_queue">Add Dungeon to Queue</string> <!-- untranslated -->
+    <string name="slayer_add_all_dungeons_to_queue">Add All Dungeons to Queue</string> <!-- untranslated -->
     <string name="slayer_queue_added">Added to queue: %1$s.</string> <!-- untranslated -->
     <string name="slayer_queue_full">Queue is full.</string> <!-- untranslated -->
+    <string name="slayer_queue_added_many">Added %1$d dungeons to queue.</string> <!-- untranslated -->
+    <string name="slayer_queue_added_partial">Added %1$d of %2$d dungeons to queue.</string> <!-- untranslated -->
     <string name="slayer_foretell_title">Foretell Future Tasks</string> <!-- untranslated -->
     <string name="slayer_foretell_desc">Pre-assign upcoming Slayer tasks by paying bones. They are assigned automatically when your current task is completed.</string> <!-- untranslated -->
     <string name="slayer_foretell_queue_empty">No tasks queued.</string> <!-- untranslated -->
@@ -1417,6 +1432,7 @@
     <string name="shop_cat_food">Food</string> <!-- untranslated -->
     <string name="shop_cat_materials">Materials</string> <!-- untranslated -->
     <string name="shop_cat_misc">Misc</string> <!-- untranslated -->
+    <string name="shop_cat_capes">Capes</string> <!-- untranslated -->
 
     <string name="crafting_per_craft">×%1$d per craft</string> <!-- untranslated -->
 
@@ -1435,6 +1451,7 @@
     <string name="trade_route_merchants_quarter_desc">Trade rare commodities in the prestigious merchant district.</string> <!-- untranslated -->
     <string name="trade_route_northern_ports_desc">Sail precious cargo to the northern port cities. High risk, high reward.</string> <!-- untranslated -->
     <string name="crafting_cat_bar">Bar</string> <!-- untranslated -->
+    <string name="crafting_cat_brew">Brew</string> <!-- untranslated -->
     <string name="crafting_cat_component">Component</string> <!-- untranslated -->
     <string name="crafting_cat_tool">Tool</string> <!-- untranslated -->
     <string name="crafting_cat_weapon">Weapon</string> <!-- untranslated -->
@@ -1448,6 +1465,7 @@
     <string name="crafting_cat_bow">Bow</string> <!-- untranslated -->
     <string name="crafting_cat_plank">Plank</string> <!-- untranslated -->
     <string name="crafting_cat_staff">Staff</string> <!-- untranslated -->
+    <string name="crafting_cat_super_potion">Super Potion</string> <!-- untranslated -->
 
     <!-- Crafting tier filter chips -->
     <string name="crafting_tier_adamantite">Adamantite</string> <!-- untranslated -->
@@ -1567,6 +1585,8 @@
     <string name="town_artisans_workshop_active_bonus">%1$d%% chance to preserve secondary crafting materials</string> <!-- untranslated -->
     <string name="town_building_chronos_spire_name">Chronos Spire</string> <!-- untranslated -->
     <string name="town_building_dock_name">Dock</string> <!-- untranslated -->
+    <string name="town_dock_no_bonus">Upgrade to sail to new locations</string> <!-- untranslated -->
+    <string name="town_dock_t1_bonus">Unlocks sailing to the Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_title">Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_sail_title">Sail to Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_zone_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
@@ -2005,7 +2025,7 @@
     <string name="monument_not_enough_coins">Not enough coins.</string> <!-- untranslated -->
     <string name="title_patron_of_the_realm_name">Patron of the Realm</string> <!-- untranslated -->
     <string name="title_patron_of_the_realm_requirement">Complete the Grand Monument</string> <!-- untranslated -->
-    <string name="title_isle_champion_name">Isle Champion</string> <!-- untranslated -->
+    <string name="title_isle_champion_name">Champion of the Elder Isle</string> <!-- untranslated -->
     <string name="title_isle_champion_requirement">Defeat the Last Elder on Elder Isle</string> <!-- untranslated -->
     <string name="item_gilded_full_helmet_name">Gilded Full Helmet</string> <!-- untranslated -->
     <string name="item_gilded_platebody_name">Gilded Platebody</string> <!-- untranslated -->

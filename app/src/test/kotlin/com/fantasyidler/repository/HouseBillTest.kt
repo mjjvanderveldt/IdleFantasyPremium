@@ -110,7 +110,8 @@ class HouseBillTest {
         assertEquals("bed_default", after.house!!.placements[0].item)
         assertEquals(coinsBefore - bill.netCoins, playerRepo.getOrCreatePlayer().coins)
         assertEquals(plankBefore - (bill.netMaterials()["plank"] ?: 0), playerRepo.getInventory()["plank"] ?: 0)
-        assertEquals(xpBefore + bill.xp, playerRepo.getSkillXp()[Skills.CONSTRUCTION] ?: 0L)
+        // Idle Fantasy+ doubles every XP grant before boosts.
+        assertEquals(xpBefore + bill.xp * PlayerRepository.BASE_XP_RATE_MULTIPLIER, playerRepo.getSkillXp()[Skills.CONSTRUCTION] ?: 0L)
     }
 
     @Test

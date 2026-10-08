@@ -100,7 +100,7 @@ object GameStrings {
 
     fun craftingCategory(context: Context, raw: String): String {
         val resId = context.resources.getIdentifier(
-            "crafting_cat_${raw.lowercase()}", "string", context.packageName)
+            "crafting_cat_${raw.lowercase().replace(' ', '_')}", "string", context.packageName)
         return if (resId != 0) context.getString(resId) else raw
     }
 
@@ -116,9 +116,14 @@ object GameStrings {
     fun treeName(context: Context, key: String, fallback: String = key.toTitleCase()): String =
         context.stringByName("tree_${key}_name") ?: fallback
 
+    /** Carnival idle-game name; keys map to `carnival_<key>` (no `_name` suffix, issue #1865). */
+    fun carnivalGameName(context: Context, key: String): String =
+        context.stringByName("carnival_${key}") ?: key.toTitleCase()
+
     /** Localised activity name; each skill keys its activities in a different string domain. */
     fun activityName(context: Context, skillName: String, activityKey: String): String = when (skillName) {
         "combat"      -> dungeonName(context, activityKey)
+        "carnival"    -> carnivalGameName(context, activityKey)
         "boss"        -> bossName(context, activityKey)
         "mercantile"  -> tradeRouteName(context, activityKey)
         "agility"     -> agilityCourse(context, activityKey)

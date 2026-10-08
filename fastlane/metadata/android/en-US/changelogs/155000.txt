@@ -1,0 +1,18 @@
+• Added "Very Large" text size option between Large and Huge
+• Fixed skill names wrapping character-by-character at large font sizes
+• Fixed abandoning or cancelling crafting sessions refunding more materials than were consumed when preservation bonus was active
+• Fixed Elder Isle pet drops landing in inventory as items instead of registering as pets
+• Fixed Elder Isle combat not tracking kills for the bestiary or collection summary
+• Fixed Elder Isle combat not consuming or showing food, arrows, and runes used
+• Fixed Elder Isle dungeons not recording last run stats (kills, food, survived)
+• Fixed killing The Last Elder always showing "Defeated by" instead of victory
+• Fixed queued Elder Isle boss fights using mainland combat levels instead of isle levels
+• Fixed Elder Isle total level counting hidden mainland skills
+• Fixed Elder Isle skill screen showing mainland tool bonuses and pet boosts
+• Fixed Elder Isle XP and duration estimates on queued sessions using mainland boosts
+• Fixed quest notification badge staying visible while on Elder Isle
+• Fixed "Sell Old Gear" being slow with many item types
+• Fixed daily and weekly quest progress being reset early under rare timing conditions
+• Fixed Profile Bonuses tab not including Resourceful perk in prestige stat bonuses
+• Fixed tool names being truncated in the tabbed Profile view for longer translations
+• Fixed heirloom items sorting near Bronze tier in the equip picker instead of by actual power

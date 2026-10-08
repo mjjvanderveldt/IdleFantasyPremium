@@ -3,7 +3,7 @@
     <!-- ===== Skill names and descriptions ===== -->
 
     <!-- Gathering skills -->
-    <string name="skill_mining_name">Dobývání</string>
+    <string name="skill_mining_name">Hornictví</string>
     <string name="skill_mining_desc">Dobývej ze země cenné rudy a drahokamy.</string>
     <string name="skill_fishing_name">Rybaření</string>
     <string name="skill_fishing_desc">Lov ryby a získávej z vodních hlubin cenné poklady.</string>
@@ -14,7 +14,7 @@
     <string name="skill_firemaking_name">Uhlířství</string>
     <string name="skill_firemaking_desc">Spaluj polena z inventáře a získávej XP z uhlířství. Z každého spáleného polena navíc vznikne popel, který můžeš v dovednosti Zbožnost rozprášit a získat tak bonusové XP zbožnosti.</string>
     <string name="skill_agility_name">Agility</string> <!-- untranslated -->
-    <string name="skill_agility_desc">Trénuj hbitost, aby se zkrátila délka střetnutí ve všech dovednostech. Na 99. úrovni zkrátíš každou hodinu o 20 minut (60 min → 40 min); zkracování probíhá plynule a lineárně s každou dosaženou úrovní.</string>
+    <string name="skill_agility_desc">Trénuj hbitost, aby se zkrátila délka střetnutí ve všech dovednostech. Na 99. úrovni zkrátíš každou hodinu o %1$d minut (60 min → %2$d min); zkracování probíhá plynule a lineárně s každou dosaženou úrovní.</string>
 
     <!-- Crafting skills -->
     <string name="skill_smithing_name">Kovářství</string>
@@ -115,6 +115,6 @@
     <!-- ===== Session skill type labels ===== -->
     <string name="skill_expedition_name">Expedition</string> <!-- untranslated -->
     <string name="skill_boss_name">Boss</string> <!-- untranslated -->
-    <string name="skill_mercantile_name">Mercantile</string> <!-- untranslated -->
-    <string name="skill_mercantile_desc">Dispatch trade caravans along routes for coins and XP. Higher levels improve shop buy and sell prices and unlock exclusive Merchants Guild goods.</string> <!-- untranslated -->
+    <string name="skill_mercantile_name">Kupectví</string>
+    <string name="skill_mercantile_desc">Vysílejte obchodní karavany po trasách a získávejte zlaté a XP. Vyšší úrovně zlepšují ceny při nákupu a prodeji v obchodě a odemykají exkluzivní zboží Kupeckého cechu.</string>
 </resources>

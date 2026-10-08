@@ -7,6 +7,7 @@ import com.fantasyidler.data.db.dao.FarmingPatchDao
 import com.fantasyidler.data.db.dao.PlayerDao
 import com.fantasyidler.data.db.dao.QuestProgressDao
 import com.fantasyidler.data.json.EquipmentData
+import com.fantasyidler.data.json.PetData
 import com.fantasyidler.data.model.*
 import com.fantasyidler.simulator.HeirloomStats
 import com.fantasyidler.simulator.PrestigeBoosts
@@ -1108,6 +1109,39 @@ class PlayerRepository @Inject constructor(
         return true
     }
 
+    suspend fun sellItemsBulk(
+        items: Map<String, Int>,
+        pricePerItem: Map<String, Int>,
+    ): Pair<Map<String, Int>, Long> = playerMutex.withLock {
+        val player = getOrCreatePlayer()
+        val inventory: MutableMap<String, Int> = json.decodeFromString(player.inventory)
+        val equipped: MutableMap<String, String?> = json.decodeFromString(player.equipped)
+        val sold = mutableMapOf<String, Int>()
+        var coins = 0L
+        for ((key, qty) in items) {
+            val have = inventory[key] ?: 0
+            val actual = qty.coerceAtMost(have)
+            if (actual <= 0) continue
+            val remaining = have - actual
+            if (remaining <= 0) inventory.remove(key) else inventory[key] = remaining
+            if (!inventory.containsKey(key)) {
+                equipped.entries.forEach { if (it.value == key) it.setValue(null) }
+            }
+            sold[key] = actual
+            coins += (pricePerItem[key] ?: 0).toLong() * actual
+        }
+        if (sold.isNotEmpty()) {
+            playerDao.upsert(
+                player.copy(
+                    coins     = player.coins + coins,
+                    inventory = json.encode<Map<String, Int>>(inventory),
+                    equipped  = json.encode<Map<String, String?>>(equipped),
+                )
+            )
+        }
+        sold to coins
+    }
+
     /**
      * Apply combat session results: XP distributed across multiple skills (doubled if
      * boost active), loot added to inventory, coins added to the coins field.
@@ -1566,16 +1600,16 @@ class PlayerRepository @Inject constructor(
      * pet keys were absent from pets.json. Moves any matching inventory items into
      * the OwnedPet list and removes them from inventory.
      */
-    suspend fun migratePetsFromInventory(petKeys: Set<String>) {
+    suspend fun migratePetsFromInventory(petData: Map<String, PetData>) {
         val player = getOrCreatePlayer()
         val inventory: MutableMap<String, Int> = json.decodeFromString(player.inventory)
         val pets: MutableList<OwnedPet> = json.decodeFromString(player.pets)
         val ownedIds = pets.map { it.id }.toSet()
-        val toMigrate = petKeys.filter { it in inventory && it !in ownedIds }
+        val toMigrate = petData.keys.filter { it in inventory && it !in ownedIds }
         if (toMigrate.isEmpty()) return
         toMigrate.forEach { key ->
             inventory.remove(key)
-            pets.add(OwnedPet(id = key, boostPercent = 0))
+            pets.add(OwnedPet(id = key, boostPercent = petData[key]?.boostPercent ?: 0))
         }
         playerDao.upsert(player.copy(
             inventory = json.encode<Map<String, Int>>(inventory),
@@ -1736,12 +1770,12 @@ class PlayerRepository @Inject constructor(
         val player = getOrCreatePlayer()
         val original: PlayerFlags = json.decodeFromString(player.flags)
         var flags = original
-        if (dailyQuestRepo.shouldRefresh(flags.dailyQuestNextResetAt) ||
-            weeklyQuestRepo.shouldRefresh(flags.weeklyQuestNextResetAt)
+        if (dailyQuestRepo.shouldRefresh(flags.dailyQuestNextResetAt, flags.dailyQuestGeneratedAt, flags.dailyResetHour) ||
+            weeklyQuestRepo.shouldRefresh(flags.weeklyQuestNextResetAt, flags.weeklyQuestGeneratedAt, flags.dailyResetHour)
         ) {
             val skillLevels: Map<String, Int> = json.decodeFromString(player.skillLevels)
-            if (dailyQuestRepo.shouldRefresh(flags.dailyQuestNextResetAt)) flags = dailyQuestRepo.refreshFlags(flags, skillLevels)
-            if (weeklyQuestRepo.shouldRefresh(flags.weeklyQuestNextResetAt)) flags = weeklyQuestRepo.refreshFlags(flags, skillLevels)
+            if (dailyQuestRepo.shouldRefresh(flags.dailyQuestNextResetAt, flags.dailyQuestGeneratedAt, flags.dailyResetHour)) flags = dailyQuestRepo.refreshFlags(flags, skillLevels)
+            if (weeklyQuestRepo.shouldRefresh(flags.weeklyQuestNextResetAt, flags.weeklyQuestGeneratedAt, flags.dailyResetHour)) flags = weeklyQuestRepo.refreshFlags(flags, skillLevels)
         }
         flags = transform(flags)
         if (flags != original) updateFlagsUnlocked(flags)
@@ -1802,12 +1836,12 @@ class PlayerRepository @Inject constructor(
         var changed = false
         val skillLevels: Map<String, Int> by lazy { json.decodeFromString(player.skillLevels) }
 
-        if (dailyQuestRepo.shouldRefresh(flags.dailyQuestNextResetAt)) {
+        if (dailyQuestRepo.shouldRefresh(flags.dailyQuestNextResetAt, flags.dailyQuestGeneratedAt, flags.dailyResetHour)) {
             flags = dailyQuestRepo.refreshFlags(flags, skillLevels)
             changed = true
         }
 
-        if (weeklyQuestRepo.shouldRefresh(flags.weeklyQuestNextResetAt)) {
+        if (weeklyQuestRepo.shouldRefresh(flags.weeklyQuestNextResetAt, flags.weeklyQuestGeneratedAt, flags.dailyResetHour)) {
             flags = weeklyQuestRepo.refreshFlags(flags, skillLevels)
             changed = true
         }

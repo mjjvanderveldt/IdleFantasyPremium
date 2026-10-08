@@ -300,15 +300,15 @@
     <string name="quest_herblore_6_objective">Mischia 1500 Pozioni Super Forza</string>
 
     <!-- Construction -->
-    <string name="quest_construction_1_name">Construzione I</string>
+    <string name="quest_construction_1_name">Costruzione I</string>
     <string name="quest_construction_1_objective">Costruisci 50 Rastrelliere di Legno</string>
-    <string name="quest_construction_2_name">Construzione II</string>
+    <string name="quest_construction_2_name">Costruzione II</string>
     <string name="quest_construction_2_objective">Costruisci 50 Tavoli di Quercia</string>
-    <string name="quest_construction_3_name">Construzione III</string>
+    <string name="quest_construction_3_name">Costruzione III</string>
     <string name="quest_construction_3_objective">Costruisci 50 Mobiletti in Salice.</string>
-    <string name="quest_construction_4_name">Construzione IV</string>
+    <string name="quest_construction_4_name">Costruzione IV</string>
     <string name="quest_construction_4_objective">Costruisci 50 Cassettiere in Acero</string>
-    <string name="quest_construction_5_name">Construzione V</string>
+    <string name="quest_construction_5_name">Costruzione V</string>
     <string name="quest_construction_5_objective">Costruisci 25 Troni della Magia</string>
     <string name="quest_construction_upgrade_inn_name">Restaura la Locanda</string>
     <string name="quest_construction_upgrade_inn_objective">Migliora la Locanda almeno una volta</string>
@@ -478,7 +478,7 @@
     <string name="quest_daily_mine_runite_objective">Estrai 20 minerali di runite.</string>
     <string name="quest_daily_fish_salmon_objective">Pesca 120 salmoni.</string>
     <string name="quest_daily_fish_lobster_objective">Pesca 60 astici.</string>
-    <string name="quest_daily_fish_swordfish_objective">Pesca 30 pescatrici.</string>
+    <string name="quest_daily_fish_swordfish_objective">Pesca 30 pescispada.</string>
     <string name="quest_daily_fish_shark_objective">Pesca 15 squali.</string>
     <string name="quest_daily_wc_oak_objective">Taglia 100 legni di quercia.</string>
     <string name="quest_daily_wc_willow_objective">Taglia 70 legni di salice.</string>

@@ -313,6 +313,8 @@
     <string name="settings_profile_layout_tabs">标签页</string>
     <string name="settings_quest_dots">技能上的任务标记</string>
     <string name="settings_quest_dots_desc">在有可接任务的技能上显示金色圆点</string>
+    <string name="settings_monument_touch_indicator">Monument touch indicator</string> <!-- untranslated -->
+    <string name="settings_monument_touch_indicator_desc">Show a dot on the Grand Monument on Home when the daily touch is available</string> <!-- untranslated -->
     <string name="settings_prestige_notifications">转生通知徽章</string>
     <string name="settings_prestige_notifications_desc">当技能可转生时在导航栏显示通知徽章</string>
     <string name="label_switch_character">切换角色</string>
@@ -418,6 +420,7 @@
     <string name="settings_font_small">小</string>
     <string name="settings_font_normal">正常</string>
     <string name="settings_font_large">大</string>
+    <string name="settings_font_very_large">Very Large</string> <!-- untranslated -->
     <string name="settings_font_huge">极大</string>
     <string name="settings_import_theme">导入主题</string>
     <string name="settings_import_theme_desc">从文件导入自定义主题</string>
@@ -450,6 +453,8 @@
     <string name="theme_editor_saved_ok">主题已保存并应用</string>
     <string name="theme_editor_exported_ok">主题已导出</string>
     <string name="settings_language_desc">覆盖应用显示语言</string>
+
+
 
 
 
@@ -592,6 +597,7 @@
     <string name="combat_spell_locked">需要魔法等级 %1$d</string>
     <string name="combat_spell_level_met">魔法等级 %1$d</string>
     <string name="combat_no_potion">无药水</string>
+    <string name="label_potion">Potion</string> <!-- untranslated -->
     <string name="combat_req_level">所需战斗等级</string>
     <string name="combat_duration">持续时间</string>
     <!-- Translator note: %1$d = minutes -->
@@ -680,6 +686,7 @@
     <!-- Translator note: %1$s = formatted multiplier (e.g. "1.15") -->
     <string name="skills_tool_bonus">×%1$s 工具加成</string>
     <string name="skills_pet_bonus">+%1$d%% 经验（宠物）</string>
+    <string name="skills_blessing_bonus">+%1$d%% XP (blessing)</string> <!-- untranslated -->
     <!-- Translator note: %1$d = fishing level -->
     <string name="skills_fishing_desc">等级 %1$d  •  根据等级捕获鱼类</string>
     <!-- Translator note: %1$d = prayer level -->
@@ -738,6 +745,7 @@
     <string name="quest_legend_guild_daily">公会每日</string>
     <string name="quest_legend_guild">公会任务</string>
     <string name="quest_legend_quest">任务</string>
+    <string name="quest_legend_slayer_target">Slayer Task</string> <!-- untranslated -->
     <string name="quest_legend_gold_dot">有定时任务可接。</string>
     <string name="quest_legend_notes">灰色图标暂不可完成（缺少等级或材料）。小数字表示多个同类任务需要相同物品。</string>
     <!-- Translator note: %1$s = quantity in inventory -->
@@ -1051,6 +1059,8 @@
     <string name="church_active_chip">生效中</string>
     <string name="church_activate">激活</string>
     <string name="church_blessing_bonus">祝福加成 +%1$s</string>
+    <!-- Golden Goose pet coin share, split from the blessing line (issue #1941). Pending Weblate translation. -->
+    <string name="pet_coin_bonus">+%1$s from pet</string> <!-- untranslated -->
     <string name="church_blessing_suffix">祝福加成</string>
     <string name="church_effect_xp">×%1$.2f 经验，持续 %2$d 小时</string>
     <string name="church_effect_def">+%1$d 防御，持续 %2$d 小时</string>
@@ -1060,6 +1070,8 @@
     <string name="church_bones_available">你手头有 %1$d 根骸骨——价值 %2$d 祝福点数（大骸骨价值更高）</string>
     <string name="church_not_enough_bones">骸骨不足（需要 %1$d 根）</string>
     <string name="church_already_active">已有激活的祝福</string>
+    <string name="church_blessing_activated">Blessing activated!</string> <!-- untranslated -->
+    <string name="church_blessing_extended">Blessing extended!</string> <!-- untranslated -->
     <string name="church_confirm_deactivate_title">取消祝福？</string>
     <string name="church_confirm_deactivate_body">确定要取消当前激活的祝福吗？骸骨不会退还。</string>
 
@@ -1368,8 +1380,11 @@
     <string name="slayer_found_in">出没于：%1$s</string>
     <string name="slayer_requires">需要：%1$s</string>
     <string name="slayer_add_dungeon_to_queue">将副本加入队列</string>
+    <string name="slayer_add_all_dungeons_to_queue">Add All Dungeons to Queue</string> <!-- untranslated -->
     <string name="slayer_queue_added">已加入队列：%1$s。</string>
     <string name="slayer_queue_full">队列已满。</string>
+    <string name="slayer_queue_added_many">Added %1$d dungeons to queue.</string> <!-- untranslated -->
+    <string name="slayer_queue_added_partial">Added %1$d of %2$d dungeons to queue.</string> <!-- untranslated -->
     <string name="slayer_foretell_title">预知未来任务</string>
     <string name="slayer_foretell_desc">支付骸骨来预分配后续讨伐任务。当前任务完成后自动分配。</string>
     <string name="slayer_foretell_queue_empty">暂无排队任务。</string>
@@ -1417,6 +1432,7 @@
     <string name="shop_cat_food">食物</string>
     <string name="shop_cat_materials">材料</string>
     <string name="shop_cat_misc">杂项</string>
+    <string name="shop_cat_capes">Capes</string> <!-- untranslated -->
 
     <string name="crafting_per_craft">每次制作×%1$d</string>
 
@@ -1435,6 +1451,7 @@
     <string name="trade_route_merchants_quarter_desc">在名流汇聚的商人区交易稀有商品。</string>
     <string name="trade_route_northern_ports_desc">将珍贵货物运往北方港口城市。高风险，高回报。</string>
     <string name="crafting_cat_bar">金属锭</string>
+    <string name="crafting_cat_brew">Brew</string> <!-- untranslated -->
     <string name="crafting_cat_component">部件</string>
     <string name="crafting_cat_tool">工具</string>
     <string name="crafting_cat_weapon">武器</string>
@@ -1448,6 +1465,7 @@
     <string name="crafting_cat_bow">弓</string>
     <string name="crafting_cat_plank">木板</string>
     <string name="crafting_cat_staff">法杖</string>
+    <string name="crafting_cat_super_potion">Super Potion</string> <!-- untranslated -->
 
     <!-- Crafting tier filter chips -->
     <string name="crafting_tier_adamantite">精金</string>
@@ -1567,6 +1585,8 @@
     <string name="town_artisans_workshop_active_bonus">%1$d%% 几率保留副材料</string>
     <string name="town_building_chronos_spire_name">时间之塔</string>
     <string name="town_building_dock_name">Dock</string> <!-- untranslated -->
+    <string name="town_dock_no_bonus">Upgrade to sail to new locations</string> <!-- untranslated -->
+    <string name="town_dock_t1_bonus">Unlocks sailing to the Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_title">Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_sail_title">Sail to Elder Isle</string> <!-- untranslated -->
     <string name="elder_isle_zone_beach">Beach &amp; Cliffs</string> <!-- untranslated -->
@@ -2005,7 +2025,7 @@
     <string name="monument_not_enough_coins">金币不足。</string>
     <string name="title_patron_of_the_realm_name">王国守护者</string>
     <string name="title_patron_of_the_realm_requirement">完成大纪念碑</string>
-    <string name="title_isle_champion_name">Isle Champion</string> <!-- untranslated -->
+    <string name="title_isle_champion_name">Champion of the Elder Isle</string> <!-- untranslated -->
     <string name="title_isle_champion_requirement">Defeat the Last Elder on Elder Isle</string> <!-- untranslated -->
     <string name="item_gilded_full_helmet_name">镀金全罩头盔</string>
     <string name="item_gilded_platebody_name">镀金板甲</string>

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.fantasyidler.R
 import com.fantasyidler.data.json.ThievingNpcData
 import com.fantasyidler.data.model.Skills
+import com.fantasyidler.simulator.ThievingSimulator
 import com.fantasyidler.util.GameStrings
 import com.fantasyidler.ui.viewmodel.QuestIndicator
 
@@ -30,6 +31,10 @@ internal fun ThievingSheet(
     isQueueFull: Boolean,
     sessionDurationMs: Long,
     context: Context,
+    npcEfficiency: Map<String, Float> = emptyMap(),
+    petBoostPct: Int = 0,
+    xpBonusMult: Float = 1f,
+    successBonus: Double = 0.0,
     activeQuests: Map<String, List<QuestIndicator>> = emptyMap(),
     onSelect: (String) -> Unit,
 ) {
@@ -60,9 +65,9 @@ internal fun ThievingSheet(
             npcs.values
                 .sortedBy { it.levelRequired }
                 .forEach { npc ->
-                    val successChance = ((0.40 + (thievingLevel - npc.levelRequired) * 0.02)
-                        .coerceIn(0.10, 0.95) * 100).toInt()
-                    val xpGain = npc.baseXp.toLong()
+                    val efficiency = npcEfficiency[npc.key] ?: 1.0f
+                    val successChance = (ThievingSimulator.successChance(thievingLevel, npc.levelRequired, efficiency, successBonus) * 100).toInt()
+                    val xpGain = (ThievingSimulator.expectedSessionXp(npc, thievingLevel, efficiency, successBonus, petBoostPct) * xpBonusMult).toLong()
                     ActivityRow(
                         name             = GameStrings.thievingNpcName(context, npc.key),
                         detail           = stringResource(

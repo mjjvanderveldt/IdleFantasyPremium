@@ -115,8 +115,9 @@ fun Long.toRelativeTime(): String {
 
 /**
  * Format a raw millisecond duration (not an epoch) as a human-readable string, e.g. "2h 30m",
- * "45m", or "4y 1mo 1w 1d 8h 54m". Zero-valued units are omitted; months are 30 days, years 365.
- * Unit suffixes come from string resources so each locale can abbreviate its own way (issue #1399).
+ * "45m 12s", or "4y 1mo 1w 1d 8h 54m". Zero-valued units are omitted; months are 30 days, years
+ * 365. Seconds are only shown when the whole duration is under an hour. Unit suffixes come from
+ * string resources so each locale can abbreviate its own way (issue #1399).
  */
 fun Long.formatDurationMs(context: Context): String =
     context.withAppLocale().let { ctx -> formatDurationMs { resId, value -> ctx.getString(resId, value) } }
@@ -133,6 +134,8 @@ internal fun Long.formatDurationMs(unitString: (Int, Long) -> String): String {
     val days   = rem / minutesPerDay;         rem %= minutesPerDay
     val hours  = rem / 60
     val minutes = rem % 60
+    val underAnHour = years == 0L && months == 0L && weeks == 0L && days == 0L && hours == 0L
+    val seconds = totalSeconds % 60
     return buildList {
         if (years   > 0) add(unitString(R.string.duration_years, years))
         if (months  > 0) add(unitString(R.string.duration_months, months))
@@ -140,6 +143,7 @@ internal fun Long.formatDurationMs(unitString: (Int, Long) -> String): String {
         if (days    > 0) add(unitString(R.string.duration_days, days))
         if (hours   > 0) add(unitString(R.string.duration_hours, hours))
         if (minutes > 0) add(unitString(R.string.duration_minutes, minutes))
+        if (underAnHour && seconds > 0) add(unitString(R.string.duration_seconds, seconds))
     }.joinToString(" ")
 }
 

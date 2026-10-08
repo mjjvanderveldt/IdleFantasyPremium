@@ -9,12 +9,32 @@ import kotlin.random.Random
  * Pre-simulates all 60 frames of a thieving session.
  *
  * Each frame the player attempts to pickpocket the NPC. If successful, coins
- * and loot are awarded. On failure the player is stunned — the following frame
- * is skipped (no XP, no loot) to simulate the stun penalty.
+ * and loot are awarded and XP is scaled by the lockpick's efficiency. A failed
+ * attempt earns nothing for that frame.
  *
- * success_chance = clamp(0.10, 0.40 + (thievingLevel - npcMinLevel) * 0.02 * lockpickEfficiency, 0.95)
+ * success_chance = clamp(0.10, 0.50 + (thievingLevel - npcMinLevel) * 0.02 * lockpickEfficiency + bonus, 0.98)
  */
 object ThievingSimulator {
+
+    const val BASE_SUCCESS = 0.50
+    const val SUCCESS_PER_LEVEL = 0.02
+    const val MIN_SUCCESS = 0.10
+    const val MAX_SUCCESS = 0.98
+
+    fun successChance(thievingLevel: Int, npcLevelRequired: Int, toolEfficiency: Float, successBonus: Double): Double =
+        (BASE_SUCCESS + (thievingLevel - npcLevelRequired) * SUCCESS_PER_LEVEL * toolEfficiency + successBonus)
+            .coerceIn(MIN_SUCCESS, MAX_SUCCESS)
+
+    /** XP for one successful pickpocket: base XP scaled by lockpick efficiency, then pet boost. */
+    fun xpPerSuccess(npc: ThievingNpcData, toolEfficiency: Float, petBoostPct: Int): Int {
+        val baseXp = (npc.baseXp * toolEfficiency).toInt()
+        return if (petBoostPct > 0) (baseXp * (1.0 + petBoostPct / 100.0)).toInt() else baseXp
+    }
+
+    /** Expected XP over a full 60-frame session. */
+    fun expectedSessionXp(npc: ThievingNpcData, thievingLevel: Int, toolEfficiency: Float, successBonus: Double, petBoostPct: Int): Double =
+        60.0 * successChance(thievingLevel, npc.levelRequired, toolEfficiency, successBonus) *
+            xpPerSuccess(npc, toolEfficiency, petBoostPct)
 
     data class Result(
         val frames: List<SessionFrame>,
@@ -36,38 +56,18 @@ object ThievingSimulator {
         successBonus: Double = 0.0,
         random: Random = Random.Default,
     ): Result {
-        val successChance = (0.40 + (thievingLevel - npc.levelRequired) * 0.02 * toolEfficiency + successBonus)
-            .coerceIn(0.10, 0.98)
+        val successChance = successChance(thievingLevel, npc.levelRequired, toolEfficiency, successBonus)
+        val xpGain = xpPerSuccess(npc, toolEfficiency, petBoostPct)
 
         var currentXp = startXp
         val frames = mutableListOf<SessionFrame>()
-        var stunNextFrame = false
 
         for (minute in 1..60) {
             val xpBefore = currentXp
             val levelBefore = XpTable.levelForXp(currentXp)
 
-            if (stunNextFrame) {
-                stunNextFrame = false
-                frames.add(
-                    SessionFrame(
-                        minute = minute,
-                        xpGain = 0,
-                        xpBefore = xpBefore,
-                        xpAfter = xpBefore,
-                        levelBefore = levelBefore,
-                        levelAfter = levelBefore,
-                        items = emptyMap(),
-                        leveledUp = false,
-                        success = false,
-                    )
-                )
-                continue
-            }
-
             val success = random.nextDouble() < successChance
             if (!success) {
-                stunNextFrame = true
                 frames.add(
                     SessionFrame(
                         minute = minute,
@@ -84,7 +84,6 @@ object ThievingSimulator {
                 continue
             }
 
-            val xpGain = if (petBoostPct > 0) (npc.baseXp * (1.0 + petBoostPct / 100.0)).toInt() else npc.baseXp
             currentXp += xpGain
             val levelAfter = XpTable.levelForXp(currentXp)
 

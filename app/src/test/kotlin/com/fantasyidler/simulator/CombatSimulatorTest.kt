@@ -284,4 +284,24 @@ class CombatSimulatorTest {
         val ratShare = (killsByEnemy["rat"] ?: 0).toDouble() / total
         assertTrue("expected both types near 50/50, got $killsByEnemy", ratShare in 0.40..0.60)
     }
+
+    // Issue #1961: a boss timeout is decided from the health left, not full pools.
+    @Test
+    fun `timeout win uses remaining HP when the boss is nearly dead`() {
+        // Boss ground to 10 of 1000 HP, player at 5 of 100, player deals 5x the boss's DPS:
+        // 2s to finish the boss vs 5s to fall. Full pools (200s vs 100s) would call it a loss.
+        assertTrue(CombatSimulator.timeoutWon(bossHpLeft = 10, partyHpLeft = 5, playerDps = 5.0, bossDps = 1.0))
+    }
+
+    @Test
+    fun `timeout loss uses remaining HP when the party is nearly dead`() {
+        // Boss almost untouched, party nearly dead: full pools (1000 vs 5000) would call this a win.
+        assertFalse(CombatSimulator.timeoutWon(bossHpLeft = 990, partyHpLeft = 20, playerDps = 1.0, bossDps = 1.0))
+    }
+
+    @Test
+    fun `timeout with zero dps falls back to comparing dps`() {
+        assertTrue(CombatSimulator.timeoutWon(bossHpLeft = 500, partyHpLeft = 10, playerDps = 2.0, bossDps = 0.0))
+        assertFalse(CombatSimulator.timeoutWon(bossHpLeft = 5, partyHpLeft = 500, playerDps = 0.0, bossDps = 2.0))
+    }
 }

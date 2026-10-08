@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fantasyidler.R
+import com.fantasyidler.data.model.ElderActivities
 import com.fantasyidler.data.model.HiredWorker
 import com.fantasyidler.data.model.PlayerFlags
 import com.fantasyidler.data.model.WorkerTier
@@ -77,7 +78,7 @@ class InnViewModel @Inject constructor(
                 apprenticeName  = workerName(WorkerTier.APPRENTICE, flags.dailyResetHour),
                 journeymanName  = workerName(WorkerTier.JOURNEYMAN, flags.dailyResetHour),
                 masterName      = workerName(WorkerTier.MASTER, flags.dailyResetHour),
-                dailyFoods      = computeDailyFoods(flags.dailyResetHour),
+                dailyFoods      = computeDailyFoods(flags.dailyResetHour, flags.elderIsleUnlocked),
                 dailyResetHour  = flags.dailyResetHour,
                 ironman         = flags.ironman,
             )
@@ -156,13 +157,15 @@ class InnViewModel @Inject constructor(
         return base
     }
 
-    private fun computeDailyFoods(resetHour: Int): List<DailyFoodItem> {
+    private fun computeDailyFoods(resetHour: Int, elderIsleUnlocked: Boolean): List<DailyFoodItem> {
         val cal = Calendar.getInstance()
         if (cal.get(Calendar.HOUR_OF_DAY) < resetHour) cal.add(Calendar.DAY_OF_YEAR, -1)
         val seed = cal.get(Calendar.YEAR) * 10000L + cal.get(Calendar.MONTH) * 100 + cal.get(Calendar.DAY_OF_MONTH) + 54321L
         val rng = Random(seed)
 
+        val elderCookedItems = ElderActivities.COOKING.map { it.key }.toSet()
         val recipes = gameData.cookingRecipes.values
+            .filter { elderIsleUnlocked || it.cookedItem !in elderCookedItems }
         val small  = recipes.filter { it.healingValue in 1..7 }
         val medium = recipes.filter { it.healingValue in 8..14 }
         val large  = recipes.filter { it.healingValue >= 15 }

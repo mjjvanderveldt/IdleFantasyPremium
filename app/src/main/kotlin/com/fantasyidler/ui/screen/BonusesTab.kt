@@ -38,6 +38,7 @@ import com.fantasyidler.util.GameStrings
 import com.fantasyidler.util.formatDurationMs
 import com.fantasyidler.util.stringByName
 import com.fantasyidler.util.toTitleCase
+import kotlin.math.roundToInt
 
 private val COMBAT_CAPE_SKILLS = setOf(
     "attack", "strength", "defense", "ranged", "magic", "hp",
@@ -138,7 +139,10 @@ internal fun BonusesTab(
         val totalPetPct    = specificPetPct + allPetBoostPct
         val effects        = prestigeEffects[skillKey].orEmpty()
         val prestigePct    = (effects[PrestigeBoosts.XP_PCT] ?: 0.0).toInt()
-        val statBonus      = (effects[PrestigeBoosts.COMBAT_STAT_FLAT] ?: 0.0).toInt()
+        val perLevelRate   = effects[PrestigeBoosts.PER_LEVEL_BONUS] ?: 0.0
+        val level          = state.skillLevels[skillKey] ?: 1
+        val statBonus      = (effects[PrestigeBoosts.COMBAT_STAT_FLAT] ?: 0.0).toInt() +
+            (perLevelRate * level).roundToInt()
         val prestigeYieldPct = (effects[PrestigeBoosts.YIELD_PCT] ?: 0.0).toInt()
 
         val activeCapeName = run {
@@ -197,7 +201,8 @@ internal fun BonusesTab(
     // Effects with dedicated sections above; everything else gets a generic row below.
     val coveredEffects = setOf(
         PrestigeBoosts.XP_PCT, PrestigeBoosts.YIELD_PCT, PrestigeBoosts.COMBAT_STAT_FLAT,
-        PrestigeBoosts.SESSION_FLOOR_MIN, PrestigeBoosts.COIN_PCT, PrestigeBoosts.CAPE_SCALING,
+        PrestigeBoosts.PER_LEVEL_BONUS, PrestigeBoosts.SESSION_FLOOR_MIN, PrestigeBoosts.COIN_PCT,
+        PrestigeBoosts.CAPE_SCALING,
     )
     val otherPrestigeRows = prestigeEffects.flatMap { (skill, eff) ->
         eff.filterKeys { it !in coveredEffects }.filterValues { it > 0.0 }
