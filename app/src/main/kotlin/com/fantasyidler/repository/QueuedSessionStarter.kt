@@ -171,22 +171,22 @@ class QueuedSessionStarter @Inject constructor(
                 if (current != null && !current.completed) return@withLock false
                 // A boss queued with a fight-count > 1 (CombatViewModel.startBossSession) isn't
                 // re-enqueued as N separate queue entries -- the progress lives in PlayerFlags
-                // (activeBossRepeatIndex/Total/Snapshot) instead, so it survives here even while
+                // (bossRepeatFor(isle): one chain per lane) instead, so it survives here even while
                 // the app is backgrounded (this fires from SessionAlarmReceiver too, not just
                 // collectSession). A loss stops the chain; collectSession() still applies that
                 // final fight's rewards independently once the app is reopened.
                 if (current != null && current.completed && current.skillName == "boss") {
                     val repeatFlags = playerRepo.getFlagsUnlocked()
-                    // Repeat-chain state is a single set of flags shared by both lanes, so only
-                    // the lane that actually owns the chain may advance it.
-                    val snapshot = repeatFlags.activeBossRepeatSnapshot?.takeIf { it.isElderSession == isle }
-                    if (snapshot != null && repeatFlags.activeBossRepeatIndex < repeatFlags.activeBossRepeatTotal) {
+                    // Each lane keeps its own chain, so this lane only ever advances its own.
+                    val chain = repeatFlags.bossRepeatFor(isle)
+                    val snapshot = chain.snapshot
+                    if (snapshot != null && chain.index < chain.total) {
                         val frames: List<SessionFrame> = json.decodeFromString(current.frames)
                         val lastFrame = frames.lastOrNull()
                         val won = lastFrame != null && (lastFrame.kills > 0 || lastFrame.killsByEnemy.isNotEmpty())
                         if (won) {
                             try {
-                                playerRepo.updateFlagsUnlocked(repeatFlags.copy(activeBossRepeatIndex = repeatFlags.activeBossRepeatIndex + 1))
+                                playerRepo.updateFlagsUnlocked(repeatFlags.withBossRepeatFor(isle, chain.copy(index = chain.index + 1)))
                                 startQueuedAction(snapshot, backdateMs = backdateMs)
                                 return@withLock true
                             } catch (_: Exception) {
@@ -195,20 +195,21 @@ class QueuedSessionStarter @Inject constructor(
                             }
                         }
                     }
-                    if (snapshot != null) playerRepo.clearActiveBossRepeatUnlocked()
+                    if (snapshot != null) playerRepo.clearActiveBossRepeatUnlocked(isle)
                 }
                 // Same idea as the boss repeat chain above, but for dungeon runs queued with a
                 // run-count > 1 (CombatViewModel.startDungeonSession). A dungeon run "wins" simply
                 // by not dying, unlike a boss fight's kill count.
                 if (current != null && current.completed && current.skillName == "combat") {
                     val repeatFlags = playerRepo.getFlagsUnlocked()
-                    val snapshot = repeatFlags.activeDungeonRepeatSnapshot?.takeIf { it.isElderSession == isle }
-                    if (snapshot != null && repeatFlags.activeDungeonRepeatIndex < repeatFlags.activeDungeonRepeatTotal) {
+                    val chain = repeatFlags.dungeonRepeatFor(isle)
+                    val snapshot = chain.snapshot
+                    if (snapshot != null && chain.index < chain.total) {
                         val frames: List<SessionFrame> = json.decodeFromString(current.frames)
                         val survived = frames.lastOrNull()?.died != true
                         if (survived) {
                             try {
-                                playerRepo.updateFlagsUnlocked(repeatFlags.copy(activeDungeonRepeatIndex = repeatFlags.activeDungeonRepeatIndex + 1))
+                                playerRepo.updateFlagsUnlocked(repeatFlags.withDungeonRepeatFor(isle, chain.copy(index = chain.index + 1)))
                                 startQueuedAction(snapshot, backdateMs = backdateMs)
                                 return@withLock true
                             } catch (_: Exception) {
@@ -217,7 +218,7 @@ class QueuedSessionStarter @Inject constructor(
                             }
                         }
                     }
-                    if (snapshot != null) playerRepo.clearActiveDungeonRepeatUnlocked()
+                    if (snapshot != null) playerRepo.clearActiveDungeonRepeatUnlocked(isle)
                 }
                 // A Tower floor blocked on pending collection is skipped and stashed rather
                 // than parked at the front — otherwise it would permanently block every other
@@ -237,8 +238,8 @@ class QueuedSessionStarter @Inject constructor(
                     remaining = remaining.drop(1)
                     try {
                         startQueuedAction(next, backdateMs = backdateMs)
-                        if (next.skillName == "boss") playerRepo.stampBossRepeatStartUnlocked(next)
-                        if (next.skillName == "combat") playerRepo.stampDungeonRepeatStartUnlocked(next)
+                        if (next.skillName == "boss") playerRepo.stampBossRepeatStartUnlocked(next, isle)
+                        if (next.skillName == "combat") playerRepo.stampDungeonRepeatStartUnlocked(next, isle)
                         val finalQueue = skippedTowerActions + remaining
                         playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().withQueueFor(isle, finalQueue))
                         return@withLock true
@@ -341,45 +342,49 @@ class QueuedSessionStarter @Inject constructor(
                 // (non-offline) chain in startNextQueued() -- returning before ever reaching the
                 // sessionQueue scan below preserves the "don't let another queue item jump an
                 // in-progress chain" guarantee from issue #1167.
-                if (flags.activeBossRepeatSnapshot?.isElderSession == isle && flags.activeBossRepeatIndex < flags.activeBossRepeatTotal) {
+                val bossChain = flags.bossRepeatFor(isle)
+                if (bossChain.snapshot != null && bossChain.index < bossChain.total) {
                     val current = sessionRepo.getActiveSession(slot)
                     if (current == null || !current.completed || current.skillName != "boss") return@withLock 0L
                     val bossLastFrame = json.decodeFromString<List<SessionFrame>>(current.frames).lastOrNull()
                     val won = bossLastFrame != null && (bossLastFrame.kills > 0 || bossLastFrame.killsByEnemy.isNotEmpty())
                     if (!won) {
-                        playerRepo.clearActiveBossRepeatUnlocked()
+                        playerRepo.clearActiveBossRepeatUnlocked(isle)
                         return@withLock 0L
                     }
-                    val snapshot = flags.activeBossRepeatSnapshot!!
+                    val snapshot = bossChain.snapshot
                     val duration = estimateDuration(snapshot, sessionMsForAction(snapshot))
                     if (duration > remainingMs) return@withLock 0L
                     return@withLock try {
                         startQueuedAction(snapshot, offline = true, backdateMs = remainingMs)
-                        playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(activeBossRepeatIndex = flags.activeBossRepeatIndex + 1))
+                        val fresh = playerRepo.getFlagsUnlocked()
+                        playerRepo.updateFlagsUnlocked(fresh.withBossRepeatFor(isle, fresh.bossRepeatFor(isle).copy(index = bossChain.index + 1)))
                         actualChargeMs(duration, slot)
                     } catch (_: Exception) {
-                        playerRepo.clearActiveBossRepeatUnlocked()
+                        playerRepo.clearActiveBossRepeatUnlocked(isle)
                         0L
                     }
                 }
                 // Same idea as the boss repeat chain above, but for dungeon runs (issue #1167 / #1189).
-                if (flags.activeDungeonRepeatSnapshot?.isElderSession == isle && flags.activeDungeonRepeatIndex < flags.activeDungeonRepeatTotal) {
+                val dungeonChain = flags.dungeonRepeatFor(isle)
+                if (dungeonChain.snapshot != null && dungeonChain.index < dungeonChain.total) {
                     val current = sessionRepo.getActiveSession(slot)
                     if (current == null || !current.completed || current.skillName != "combat") return@withLock 0L
                     val survived = json.decodeFromString<List<SessionFrame>>(current.frames).lastOrNull()?.died != true
                     if (!survived) {
-                        playerRepo.clearActiveDungeonRepeatUnlocked()
+                        playerRepo.clearActiveDungeonRepeatUnlocked(isle)
                         return@withLock 0L
                     }
-                    val snapshot = flags.activeDungeonRepeatSnapshot!!
+                    val snapshot = dungeonChain.snapshot
                     val duration = estimateDuration(snapshot, sessionMsForAction(snapshot))
                     if (duration > remainingMs) return@withLock 0L
                     return@withLock try {
                         startQueuedAction(snapshot, offline = true, backdateMs = remainingMs)
-                        playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().copy(activeDungeonRepeatIndex = flags.activeDungeonRepeatIndex + 1))
+                        val fresh = playerRepo.getFlagsUnlocked()
+                        playerRepo.updateFlagsUnlocked(fresh.withDungeonRepeatFor(isle, fresh.dungeonRepeatFor(isle).copy(index = dungeonChain.index + 1)))
                         duration
                     } catch (_: Exception) {
-                        playerRepo.clearActiveDungeonRepeatUnlocked()
+                        playerRepo.clearActiveDungeonRepeatUnlocked(isle)
                         0L
                     }
                 }
@@ -400,8 +405,8 @@ class QueuedSessionStarter @Inject constructor(
                         // catch-up burst gets a distinct startedAt (now - remainingMs), staying
                         // strictly ordered by queue position instead of all colliding on "now".
                         startQueuedAction(next, offline = true, backdateMs = remainingMs)
-                        if (next.skillName == "boss") playerRepo.stampBossRepeatStartUnlocked(next)
-                        if (next.skillName == "combat") playerRepo.stampDungeonRepeatStartUnlocked(next)
+                        if (next.skillName == "boss") playerRepo.stampBossRepeatStartUnlocked(next, isle)
+                        if (next.skillName == "combat") playerRepo.stampDungeonRepeatStartUnlocked(next, isle)
                         val finalQueue = skippedTowerActions + remaining
                         playerRepo.updateFlagsUnlocked(playerRepo.getFlagsUnlocked().withQueueFor(isle, finalQueue))
                         return@withLock actualChargeMs(duration, slot)
@@ -434,19 +439,21 @@ class QueuedSessionStarter @Inject constructor(
     suspend fun debugFinishActiveSessionWithRepeats() {
         playerRepo.playerMutex.withLock {
             mutex.withLock {
-                sessionRepo.getActiveSession()?.let { if (!it.completed) sessionRepo.markCompleted(it.sessionId) }
-
                 var flags = playerRepo.getFlagsUnlocked()
-                val snapshot = flags.activeBossRepeatSnapshot ?: flags.activeDungeonRepeatSnapshot ?: return@withLock
-                val isBoss = flags.activeBossRepeatSnapshot != null
-                val remaining = (if (isBoss) flags.activeBossRepeatTotal - flags.activeBossRepeatIndex
-                                 else flags.activeDungeonRepeatTotal - flags.activeDungeonRepeatIndex).coerceAtLeast(0)
+                // The lane the player is standing in: finish its session and its chain only.
+                val isle = flags.onElderIsle
+                sessionRepo.getActiveSession(SessionRepository.slotFor(isle))?.let { if (!it.completed) sessionRepo.markCompleted(it.sessionId) }
+
+                val isBoss = flags.bossRepeatFor(isle).snapshot != null
+                val chain = if (isBoss) flags.bossRepeatFor(isle) else flags.dungeonRepeatFor(isle)
+                val snapshot = chain.snapshot ?: return@withLock
+                val remaining = (chain.total - chain.index).coerceAtLeast(0)
 
                 repeat(remaining.coerceAtMost(250)) { i ->
                     try {
                         startQueuedAction(snapshot, offline = true, backdateMs = (remaining - i).toLong() * 86_400_000L)
-                        flags = if (isBoss) flags.copy(activeBossRepeatIndex = flags.activeBossRepeatIndex + 1)
-                                else flags.copy(activeDungeonRepeatIndex = flags.activeDungeonRepeatIndex + 1)
+                        flags = if (isBoss) flags.withBossRepeatFor(isle, flags.bossRepeatFor(isle).let { it.copy(index = it.index + 1) })
+                                else flags.withDungeonRepeatFor(isle, flags.dungeonRepeatFor(isle).let { it.copy(index = it.index + 1) })
                         playerRepo.updateFlagsUnlocked(flags)
                     } catch (_: Exception) {
                         return@withLock

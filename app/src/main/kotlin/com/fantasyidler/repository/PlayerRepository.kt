@@ -629,49 +629,42 @@ class PlayerRepository @Inject constructor(
         if (updated != current) updateFlagsUnlocked(updated)
     }
 
-    /** Stops an in-progress boss repeat run (e.g. on abandon) so it doesn't leave stale "N/M" progress behind. */
-    suspend fun clearActiveBossRepeat() = playerMutex.withLock { clearActiveBossRepeatUnlocked() }
+    /** Stops an in-progress boss repeat run in one lane (e.g. on abandon) so it doesn't leave stale "N/M" progress behind.
+     *  The other lane's chain is left alone: each location keeps its own. */
+    suspend fun clearActiveBossRepeat(isle: Boolean) = playerMutex.withLock { clearActiveBossRepeatUnlocked(isle) }
 
-    internal suspend fun clearActiveBossRepeatUnlocked() {
+    internal suspend fun clearActiveBossRepeatUnlocked(isle: Boolean) {
         val flags = getFlagsUnlocked()
-        if (flags.activeBossRepeatTotal > 0) {
-            updateFlagsUnlocked(flags.copy(activeBossRepeatIndex = 0, activeBossRepeatTotal = 0, activeBossRepeatSnapshot = null))
+        if (flags.bossRepeatFor(isle).total > 0) {
+            updateFlagsUnlocked(flags.withBossRepeatFor(isle, RepeatChain()))
         }
     }
 
-    /** Stops an in-progress dungeon repeat run (e.g. on abandon) so it doesn't leave stale "N/M" progress behind. */
-    suspend fun clearActiveDungeonRepeat() = playerMutex.withLock { clearActiveDungeonRepeatUnlocked() }
+    /** Stops an in-progress dungeon repeat run in one lane (e.g. on abandon) so it doesn't leave stale "N/M" progress behind. */
+    suspend fun clearActiveDungeonRepeat(isle: Boolean) = playerMutex.withLock { clearActiveDungeonRepeatUnlocked(isle) }
 
-    internal suspend fun clearActiveDungeonRepeatUnlocked() {
+    internal suspend fun clearActiveDungeonRepeatUnlocked(isle: Boolean) {
         val flags = getFlagsUnlocked()
-        if (flags.activeDungeonRepeatTotal > 0) {
-            updateFlagsUnlocked(flags.copy(activeDungeonRepeatIndex = 0, activeDungeonRepeatTotal = 0, activeDungeonRepeatSnapshot = null))
+        if (flags.dungeonRepeatFor(isle).total > 0) {
+            updateFlagsUnlocked(flags.withDungeonRepeatFor(isle, RepeatChain()))
         }
     }
 
-    /** Called after a dungeon [QueuedAction] is freshly dequeued and started, to (re)initialise repeat progress. */
-    internal suspend fun stampDungeonRepeatStartUnlocked(action: QueuedAction) {
+    /** Called after a dungeon [QueuedAction] is freshly dequeued and started in lane [isle], to (re)initialise repeat progress. */
+    internal suspend fun stampDungeonRepeatStartUnlocked(action: QueuedAction, isle: Boolean) {
         if (action.repeatCount > 1) {
-            updateFlagsUnlocked(getFlagsUnlocked().copy(
-                activeDungeonRepeatIndex    = 1,
-                activeDungeonRepeatTotal    = action.repeatCount,
-                activeDungeonRepeatSnapshot = action,
-            ))
+            updateFlagsUnlocked(getFlagsUnlocked().withDungeonRepeatFor(isle, RepeatChain(1, action.repeatCount, action)))
         } else {
-            clearActiveDungeonRepeatUnlocked()
+            clearActiveDungeonRepeatUnlocked(isle)
         }
     }
 
-    /** Called after a boss [QueuedAction] is freshly dequeued and started, to (re)initialise repeat progress. */
-    internal suspend fun stampBossRepeatStartUnlocked(action: QueuedAction) {
+    /** Called after a boss [QueuedAction] is freshly dequeued and started in lane [isle], to (re)initialise repeat progress. */
+    internal suspend fun stampBossRepeatStartUnlocked(action: QueuedAction, isle: Boolean) {
         if (action.repeatCount > 1) {
-            updateFlagsUnlocked(getFlagsUnlocked().copy(
-                activeBossRepeatIndex    = 1,
-                activeBossRepeatTotal    = action.repeatCount,
-                activeBossRepeatSnapshot = action,
-            ))
+            updateFlagsUnlocked(getFlagsUnlocked().withBossRepeatFor(isle, RepeatChain(1, action.repeatCount, action)))
         } else {
-            clearActiveBossRepeatUnlocked()
+            clearActiveBossRepeatUnlocked(isle)
         }
     }
 

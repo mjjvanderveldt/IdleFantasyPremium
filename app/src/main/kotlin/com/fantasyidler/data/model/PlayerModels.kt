@@ -78,6 +78,15 @@ data class PlayerFlags(
     @SerialName("active_dungeon_repeat_total") val activeDungeonRepeatTotal: Int = 0,
     /** Frozen loadout/action re-queued after each run in a dungeon repeat run. */
     @SerialName("active_dungeon_repeat_snapshot") val activeDungeonRepeatSnapshot: QueuedAction? = null,
+    /** The six `active_*_repeat_*` fields above are the mainland lane's repeat chains. The
+     *  Elder Isle keeps its own in these six, so a chain in one location is never cut short
+     *  or advanced by the other. Read and write both through [bossRepeatFor]/[dungeonRepeatFor]. */
+    @SerialName("isle_boss_repeat_index") val isleBossRepeatIndex: Int = 0,
+    @SerialName("isle_boss_repeat_total") val isleBossRepeatTotal: Int = 0,
+    @SerialName("isle_boss_repeat_snapshot") val isleBossRepeatSnapshot: QueuedAction? = null,
+    @SerialName("isle_dungeon_repeat_index") val isleDungeonRepeatIndex: Int = 0,
+    @SerialName("isle_dungeon_repeat_total") val isleDungeonRepeatTotal: Int = 0,
+    @SerialName("isle_dungeon_repeat_snapshot") val isleDungeonRepeatSnapshot: QueuedAction? = null,
     @SerialName("last_seen_version_code") val lastSeenVersionCode: Int = 0,
     /** "dark" | "light" | "system". Defaults to "dark" to preserve existing behaviour. */
     @SerialName("theme_preference") val themePreference: String = "dark",
@@ -371,7 +380,57 @@ data class PlayerFlags(
      *  inventory (shop sell-blocking, essence/material reservations): levels are walled off
      *  per location, but the bag is not. */
     val allQueues: List<QueuedAction> get() = sessionQueue + isleSessionQueue
+
+    // Repeat chains ("fight this N times") are per lane too, named the same way as the queues.
+
+    fun bossRepeatFor(isle: Boolean): RepeatChain = with(withLegacyIsleRepeatsMoved()) {
+        if (isle) RepeatChain(isleBossRepeatIndex, isleBossRepeatTotal, isleBossRepeatSnapshot)
+        else RepeatChain(activeBossRepeatIndex, activeBossRepeatTotal, activeBossRepeatSnapshot)
+    }
+
+    fun withBossRepeatFor(isle: Boolean, chain: RepeatChain): PlayerFlags = with(withLegacyIsleRepeatsMoved()) {
+        if (isle) copy(isleBossRepeatIndex = chain.index, isleBossRepeatTotal = chain.total, isleBossRepeatSnapshot = chain.snapshot)
+        else copy(activeBossRepeatIndex = chain.index, activeBossRepeatTotal = chain.total, activeBossRepeatSnapshot = chain.snapshot)
+    }
+
+    fun dungeonRepeatFor(isle: Boolean): RepeatChain = with(withLegacyIsleRepeatsMoved()) {
+        if (isle) RepeatChain(isleDungeonRepeatIndex, isleDungeonRepeatTotal, isleDungeonRepeatSnapshot)
+        else RepeatChain(activeDungeonRepeatIndex, activeDungeonRepeatTotal, activeDungeonRepeatSnapshot)
+    }
+
+    fun withDungeonRepeatFor(isle: Boolean, chain: RepeatChain): PlayerFlags = with(withLegacyIsleRepeatsMoved()) {
+        if (isle) copy(isleDungeonRepeatIndex = chain.index, isleDungeonRepeatTotal = chain.total, isleDungeonRepeatSnapshot = chain.snapshot)
+        else copy(activeDungeonRepeatIndex = chain.index, activeDungeonRepeatTotal = chain.total, activeDungeonRepeatSnapshot = chain.snapshot)
+    }
+
+    /** Saves from before per-lane chains kept a chain queued on the isle in the mainland fields.
+     *  Its snapshot is stamped `isElderSession`, so it is read as the isle's chain, and the first
+     *  write through these accessors stores it there. */
+    private fun withLegacyIsleRepeatsMoved(): PlayerFlags {
+        var f = this
+        if (f.activeBossRepeatSnapshot?.isElderSession == true) {
+            if (f.isleBossRepeatSnapshot == null) {
+                f = f.copy(isleBossRepeatIndex = f.activeBossRepeatIndex, isleBossRepeatTotal = f.activeBossRepeatTotal, isleBossRepeatSnapshot = f.activeBossRepeatSnapshot)
+            }
+            f = f.copy(activeBossRepeatIndex = 0, activeBossRepeatTotal = 0, activeBossRepeatSnapshot = null)
+        }
+        if (f.activeDungeonRepeatSnapshot?.isElderSession == true) {
+            if (f.isleDungeonRepeatSnapshot == null) {
+                f = f.copy(isleDungeonRepeatIndex = f.activeDungeonRepeatIndex, isleDungeonRepeatTotal = f.activeDungeonRepeatTotal, isleDungeonRepeatSnapshot = f.activeDungeonRepeatSnapshot)
+            }
+            f = f.copy(activeDungeonRepeatIndex = 0, activeDungeonRepeatTotal = 0, activeDungeonRepeatSnapshot = null)
+        }
+        return f
+    }
 }
+
+/** One lane's "fight this N times" chain: fight [index] of [total], each replayed from [snapshot].
+ *  The empty chain (all defaults) means "not repeating". */
+data class RepeatChain(
+    val index: Int = 0,
+    val total: Int = 0,
+    val snapshot: QueuedAction? = null,
+)
 
 /** One completed bulk sell: what was sold and what it paid. */
 @Serializable

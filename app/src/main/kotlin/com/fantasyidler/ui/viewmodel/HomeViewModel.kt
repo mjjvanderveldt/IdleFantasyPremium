@@ -415,11 +415,14 @@ class HomeViewModel @Inject constructor(
             // live in the repeat flags, so price them in or the queue ETA covers just the
             // current run (issue #1750). Priced like the queued-entry sum below.
             val activeChainRemainMs = session?.takeIf { !it.completed }?.let { s ->
+                val isleChain = SessionRepository.isIsleSlot(s.workerSlot)
+                val dungeonChain = flags.dungeonRepeatFor(isleChain)
+                val bossChain = flags.bossRepeatFor(isleChain)
                 when {
-                    s.skillName == "combat" && flags.activeDungeonRepeatSnapshot != null ->
-                        (flags.activeDungeonRepeatTotal - flags.activeDungeonRepeatIndex).coerceAtLeast(0) * sessionMs
-                    s.skillName == "boss" && flags.activeBossRepeatSnapshot != null ->
-                        (flags.activeBossRepeatTotal - flags.activeBossRepeatIndex).coerceAtLeast(0) *
+                    s.skillName == "combat" && dungeonChain.snapshot != null ->
+                        (dungeonChain.total - dungeonChain.index).coerceAtLeast(0) * sessionMs
+                    s.skillName == "boss" && bossChain.snapshot != null ->
+                        (bossChain.total - bossChain.index).coerceAtLeast(0) *
                             (gameData.bosses[s.activityKey]?.durationMinutes?.toLong() ?: 60L) * perItemMs
                     else -> 0L
                 }
@@ -584,10 +587,10 @@ class HomeViewModel @Inject constructor(
                 activeSeasonalEvent        = activeSeasonalEvent,
                 activeSessionXpGain        = activeSessionXpGain,
                 activeSessionAssignedItems = activeSessionBatchTotals,
-                activeBossRepeatIndex      = flags.activeBossRepeatIndex,
-                activeBossRepeatTotal      = flags.activeBossRepeatTotal,
-                activeDungeonRepeatIndex   = flags.activeDungeonRepeatIndex,
-                activeDungeonRepeatTotal   = flags.activeDungeonRepeatTotal,
+                activeBossRepeatIndex      = flags.bossRepeatFor(flags.onElderIsle).index,
+                activeBossRepeatTotal      = flags.bossRepeatFor(flags.onElderIsle).total,
+                activeDungeonRepeatIndex   = flags.dungeonRepeatFor(flags.onElderIsle).index,
+                activeDungeonRepeatTotal   = flags.dungeonRepeatFor(flags.onElderIsle).total,
                 workerSessionXpGain        = workerSessionXpGain,
                 workerSession2XpGain       = workerSession2XpGain,
                 workerSessionAssignedItems  = workerSession?.singleBatchItems(json) ?: emptyMap(),
@@ -1450,9 +1453,10 @@ class HomeViewModel @Inject constructor(
             // The original fight/run count isn't stored on the session itself, only in the
             // repeat-chain flags set when it was first started -- carry it forward so
             // repeating a 100-fight boss session queues 100 more, not just 1 (issue #1188).
+            val sessionIsle = SessionRepository.isIsleSlot(session.workerSlot)
             val repeatCount = when (session.skillName) {
-                "boss"   -> flags.activeBossRepeatTotal.takeIf { it > 0 } ?: 1
-                "combat" -> flags.activeDungeonRepeatTotal.takeIf { it > 0 } ?: 1
+                "boss"   -> flags.bossRepeatFor(sessionIsle).total.takeIf { it > 0 } ?: 1
+                "combat" -> flags.dungeonRepeatFor(sessionIsle).total.takeIf { it > 0 } ?: 1
                 else     -> 1
             }
             val enqueued = playerRepo.enqueueAction(QueuedAction(
@@ -1519,8 +1523,10 @@ class HomeViewModel @Inject constructor(
                 playerRepo.addItem(session.catalystKey, session.catalystQty)
             }
             sessionRepo.abandonSession(session.sessionId)
-            if (session.skillName == "boss") playerRepo.clearActiveBossRepeat()
-            if (session.skillName == "combat") playerRepo.clearActiveDungeonRepeat()
+            // Only the abandoned fight's own lane loses its chain.
+            val abandonedIsle = SessionRepository.isIsleSlot(session.workerSlot)
+            if (session.skillName == "boss") playerRepo.clearActiveBossRepeat(abandonedIsle)
+            if (session.skillName == "combat") playerRepo.clearActiveDungeonRepeat(abandonedIsle)
             queuedSessionStarter.startNextQueuedHere()
             reconcileTowerQueue()
         }

@@ -20,6 +20,7 @@ import com.fantasyidler.data.model.OwnedPet
 import com.fantasyidler.data.model.Player
 import com.fantasyidler.data.model.PlayerFlags
 import com.fantasyidler.data.model.QueuedAction
+import com.fantasyidler.data.model.RepeatChain
 import com.fantasyidler.data.model.SessionFrame
 import com.fantasyidler.data.model.SkillSession
 import com.fantasyidler.data.model.Skills
@@ -394,10 +395,10 @@ class CombatViewModel @Inject constructor(
                 bossKillCounts          = flags.enemyKills,
                 selectedSpell           = extra.selectedSpell ?: flags.activeSpell?.let { gameData.spells[it] },
                 selectedPotionKey       = extra.selectedPotionKey ?: flags.activePotionKey?.takeIf { (inventory[it] ?: 0) > 0 },
-                activeBossRepeatIndex   = flags.activeBossRepeatIndex,
-                activeBossRepeatTotal   = flags.activeBossRepeatTotal,
-                activeDungeonRepeatIndex = flags.activeDungeonRepeatIndex,
-                activeDungeonRepeatTotal = flags.activeDungeonRepeatTotal,
+                activeBossRepeatIndex   = flags.bossRepeatFor(flags.onElderIsle).index,
+                activeBossRepeatTotal   = flags.bossRepeatFor(flags.onElderIsle).total,
+                activeDungeonRepeatIndex = flags.dungeonRepeatFor(flags.onElderIsle).index,
+                activeDungeonRepeatTotal = flags.dungeonRepeatFor(flags.onElderIsle).total,
                 bossFullCoinKillsLeft   = playerRepo.bossFullCoinKillsLeft(flags, extra.selectedBoss?.id ?: ""),
                 monumentComplete        = flags.monumentTier >= 5,
                 dockBuilt               = (flags.townBuildingTiers["dock"] ?: 0) >= 1,
@@ -811,14 +812,15 @@ class CombatViewModel @Inject constructor(
                         potionKey        = potionKey,
                         weaponSlot       = activeWeaponSlot,
                         repeatCount      = repeatCount,
+                        // Runs 2..N are started from this snapshot by the queue starter, which
+                        // reads the lane and the elder levels from it, not from where you stand.
+                        isElderSession   = flags.onElderIsle,
                     )
-                    playerRepo.updateFlags(playerRepo.getFlags().copy(
-                        activeDungeonRepeatIndex    = 1,
-                        activeDungeonRepeatTotal    = repeatCount,
-                        activeDungeonRepeatSnapshot = dungeonSnapshot,
+                    playerRepo.updateFlags(playerRepo.getFlags().withDungeonRepeatFor(
+                        flags.onElderIsle, RepeatChain(1, repeatCount, dungeonSnapshot),
                     ))
                 } else {
-                    playerRepo.clearActiveDungeonRepeat()
+                    playerRepo.clearActiveDungeonRepeat(flags.onElderIsle)
                 }
             } catch (e: Exception) {
                 _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.skill_session_start_failed, e.message ?: "")) }
@@ -1032,14 +1034,13 @@ class CombatViewModel @Inject constructor(
                         potionKey        = potionKey,
                         weaponSlot       = activeWeaponSlot,
                         repeatCount      = repeatCount,
+                        isElderSession   = flags.onElderIsle,
                     )
-                    playerRepo.updateFlags(playerRepo.getFlags().copy(
-                        activeBossRepeatIndex    = 1,
-                        activeBossRepeatTotal    = repeatCount,
-                        activeBossRepeatSnapshot = bossSnapshot,
+                    playerRepo.updateFlags(playerRepo.getFlags().withBossRepeatFor(
+                        flags.onElderIsle, RepeatChain(1, repeatCount, bossSnapshot),
                     ))
                 } else {
-                    playerRepo.clearActiveBossRepeat()
+                    playerRepo.clearActiveBossRepeat(flags.onElderIsle)
                 }
             } catch (e: Exception) {
                 _extra.update { it.copy(snackbarMessage = context.withAppLocale().getString(R.string.combat_start_failed, e.message ?: "")) }
@@ -1082,8 +1083,10 @@ class CombatViewModel @Inject constructor(
         }
         if (arrowsUsed.isNotEmpty()) playerRepo.consumeItems(arrowsUsed)
         sessionRepo.abandonSession(session.sessionId)
-        if (session.skillName == "boss") playerRepo.clearActiveBossRepeat()
-        if (session.skillName == "combat") playerRepo.clearActiveDungeonRepeat()
+        // Only the abandoned fight's own lane loses its chain.
+        val isle = SessionRepository.isIsleSlot(session.workerSlot)
+        if (session.skillName == "boss") playerRepo.clearActiveBossRepeat(isle)
+        if (session.skillName == "combat") playerRepo.clearActiveDungeonRepeat(isle)
     }
 
     fun debugFinishSession() {

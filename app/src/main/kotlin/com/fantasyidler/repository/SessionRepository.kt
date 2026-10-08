@@ -465,20 +465,32 @@ class SessionRepository @Inject constructor(
      *
      * Both player lanes count: the mainland and the isle eat from one shared bag,
      * so a finished isle fight's food must be withheld from a mainland start too.
+     * A fight still running in either lane counts as well: its frames were simulated
+     * in full when it started, and collection will deduct all of them. Upstream never
+     * meets this (one lane, and a start waits for that lane's fight to finish), but
+     * with parallel lanes the other location's fight can still be running.
      */
     suspend fun pendingFoodConsumed(): Map<String, Int> {
-        val sessions = try {
-            PLAYER_SLOTS.flatMap { getAllCompletedSessions(it) }
+        val (sessions, running) = try {
+            PLAYER_SLOTS.flatMap { getAllCompletedSessions(it) } to
+                PLAYER_SLOTS.mapNotNull { slot ->
+                    getActiveSession(slot)?.takeIf { !it.completed && it.skillName in FoodReservation.FOOD_SKILLS }
+                }
         } catch (_: Exception) {
             return emptyMap()
         }
-        return FoodReservation.aggregatePending(sessions) { raw ->
+        val decode: (String) -> List<SessionFrame> = { raw ->
             try {
                 json.decodeFromString<List<SessionFrame>>(raw)
             } catch (_: Exception) {
                 emptyList()
             }
         }
+        val out = FoodReservation.aggregatePending(sessions, decode).toMutableMap()
+        for (session in running) {
+            for ((key, qty) in FoodReservation.sumConsumed(decode(session.frames))) out[key] = (out[key] ?: 0) + qty
+        }
+        return out
     }
 
     // ------------------------------------------------------------------

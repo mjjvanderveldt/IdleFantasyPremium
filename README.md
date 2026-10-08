@@ -60,8 +60,8 @@ Build the **Dock** in town (Construction 90), defeat the **Sea Serpent** on the 
 - **A card on the Home screen shows what the other region is doing** — what's running and how long it has left, or how many sessions are ready to collect. Tap **Go** to sail there. Collecting on Home collects the region you're standing in.
 - **8 queue slots on the isle as well.** The base game caps the isle queue at 3. Mainland town and Monument queue bonuses still only apply to the mainland queue, as in the base game.
 - **2× XP on the isle's own XP pool**, same as everything else.
-- **Food is shared.** Both regions eat from the same bag, and food is only taken out of the bag when you collect. A fight that has finished but not been collected, in either region, has its food set aside before the next fight starts. Two fights running at the same time don't set food aside for each other, so keep enough food for both.
-- **Known quirk:** boss and dungeon **repeat runs** ("fight this N times") are tracked once for the whole game, not per region. Starting the same kind of fight (boss or dungeon) in the other region ends a running repeat chain after its current fight, and a repeat chain started on the isle stops after its first fight. Use the queue instead if you want back-to-back fights in both places.
+- **Food is shared.** Both regions eat from the same bag, and food is only taken out of the bag when you collect. Before a fight starts, the food of every fight you haven't collected yet is set aside — finished or still running, in either region — so two regions never plan to eat the same food.
+- **Each region keeps its own repeat runs** ("fight this N times"). Starting, finishing or abandoning a fight in one region never ends or advances a repeat run in the other.
 
 ## Expeditions
 
